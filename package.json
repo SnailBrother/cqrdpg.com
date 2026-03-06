@@ -20,6 +20,8 @@
     "file-saver": "^2.0.5",
     "formulajs": "^1.0.8",
     "handsontable": "^16.2.0",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^4.2.0",
     "jszip": "^3.10.1",
     "mammoth": "^1.11.0",
     "pdf-lib": "^1.17.1",
@@ -61,5 +63,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "react-snap": "^1.23.0"
   }
 }

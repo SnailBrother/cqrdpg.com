@@ -5,7 +5,7 @@ const xlsx = require('xlsx');
 const app = express();
 const port = 5202;
 const { PDFDocument } = require('pdf-lib');
-const http = require('http').Server(app);
+
 // SQL Server 配置
 const config = {
     user: 'sa',
@@ -41,13 +41,13 @@ poolConnect.then(() => {
 //实时接受消息 socket.io
 
 
+const http = require('http').Server(app);
 const io = require('socket.io')(http, {
     cors: {
         origin: '*',
-        methods: ['GET', 'POST']
+        methods: ['GET', 'POST', 'PUT', 'DELETE'],
     }
 });
-
 
 //下载
 const path = require('path');
@@ -14165,12 +14165,7 @@ poolConnect.then(() => {
 // 初始化 HTTP 服务器和 Socket.io
 //const server = http.createServer(app);  // 这一行是缺失的！
 //const http = require('http').Server(app);
-const io = require('socket.io')(http, {
-    cors: {
-        origin: '*',
-        methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    }
-});
+
 
 
 // --- Socket.io 逻辑 ---
@@ -14278,7 +14273,7 @@ app.get('/api/CodeDatabase/List', async (req, res) => {
         request.input('pageSize', sql.Int, pageSize);
 
         const query = `
-            SELECT * FROM dbo.CodeDatabase 
+            SELECT * FROM RdpgCode.dbo.CodeDatabase 
             WHERE ProjectName LIKE @keyword OR ReportNumber LIKE @keyword
             ORDER BY Id DESC
             OFFSET @offset ROWS
@@ -14286,7 +14281,7 @@ app.get('/api/CodeDatabase/List', async (req, res) => {
         `;
 
         const countQuery = `
-            SELECT COUNT(*) as total FROM dbo.CodeDatabase 
+            SELECT COUNT(*) as total FROM RdpgCode.dbo.CodeDatabase 
             WHERE ProjectName LIKE @keyword OR ReportNumber LIKE @keyword
         `;
 
@@ -14337,7 +14332,7 @@ app.post('/api/CodeDatabase/Add', async (req, res) => {
         request.input('SignerB_Number', sql.NVarChar, SignerB_Number || '');
 
         await request.query(`
-            INSERT INTO dbo.CodeDatabase 
+            INSERT INTO RdpgCode.dbo.CodeDatabase 
             (ProjectName, EvaluationAmount, ReportTime, ReportNumber, SignerA_Name, SignerA_Number, SignerB_Name, SignerB_Number)
             VALUES 
             (@ProjectName, @EvaluationAmount, @ReportTime, @ReportNumber, @SignerA_Name, @SignerA_Number, @SignerB_Name, @SignerB_Number)
@@ -14375,7 +14370,7 @@ app.put('/api/CodeDatabase/Update/:id', async (req, res) => {
         request.input('SignerB_Number', sql.NVarChar, data.SignerB_Number);
 
         await request.query(`
-            UPDATE dbo.CodeDatabase 
+            UPDATE RdpgCode.dbo.CodeDatabase 
             SET ProjectName = @ProjectName,
                 EvaluationAmount = @EvaluationAmount,
                 ReportTime = @ReportTime,
@@ -14402,7 +14397,7 @@ app.delete('/api/CodeDatabase/Delete/:id', async (req, res) => {
         const id = req.params.id;
         await pool.request()
             .input('Id', sql.Int, id)
-            .query(`DELETE FROM dbo.CodeDatabase WHERE Id = @Id`);
+            .query(`DELETE FROM RdpgCode.dbo.CodeDatabase WHERE Id = @Id`);
         res.json({ success: true, message: '删除成功' });
     } catch (err) {
         console.error('删除错误:', err);
@@ -14431,7 +14426,7 @@ app.get('/api/CodeDatabase/VerifyAndFetch', async (req, res) => {
         const request = pool.request();
         const result = await request
             .input('Id', sql.Int, realId)
-            .query(`SELECT * FROM dbo.CodeDatabase WHERE Id = @Id`);
+            .query(`SELECT * FROM RdpgCode.dbo.CodeDatabase WHERE Id = @Id`);
 
         if (result.recordset.length === 0) {
             return res.status(404).json({ error: '数据不存在' });

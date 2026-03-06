@@ -18,7 +18,7 @@ const Icon = ({ name, className }) => {
   return <span className={className}>{icons[name] || ''}</span>;
 
 };
-const bgImageUrl='./Picture/image1.png'; 
+const bgImageUrl='./images/cqrdpg/image1.png'; 
 const AVATAR_URL = '/RuidaLogo.jpg';
 const USER_NAME = "瑞达管理员";
 const MENU_ITEMS = [
@@ -80,9 +80,12 @@ const RdSetting = () => {
 
         {/* 底部用户信息 */}
         <div className={styles.userInfo}>
+
+
           <img src={AVATAR_URL} alt="Avatar" className={styles.userAvatar} onError={(e) => e.target.src='https://via.placeholder.com/32'} />
           {!isSidebarCollapsed && <span className={styles.userName}>{USER_NAME}</span>}
           {!isSidebarCollapsed && <Icon name="gear" className={styles.userIcon} />}
+
         </div>
       </aside>
 

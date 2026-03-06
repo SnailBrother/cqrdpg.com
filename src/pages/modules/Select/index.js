@@ -3,6 +3,9 @@ import Computer from './Computer';
 import Phone from './Phone'; 
 import styles from './ResponsiveLayout.module.css';
 
+//import Codesettings from './pages/QrcodeManagementSettings';
+import Codesettings from '../../cqrdpg/pages/RdSetting';
+
 const ResponsiveLayout = () => {
   const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.innerWidth < 1024 : false);
 
@@ -26,7 +29,7 @@ const ResponsiveLayout = () => {
 
   return (
     <div className={styles.desktopView}>
-       <Computer />
+       <Codesettings />
      
     </div>
   );

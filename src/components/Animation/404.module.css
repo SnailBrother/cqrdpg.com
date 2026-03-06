@@ -1,0 +1,97 @@
+
+
+.container {
+  height: 100dvh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.content {
+  text-align: center;
+  padding: 2rem;
+  width:  100%;
+  height: 100dvh;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+   display: flex;
+   flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 404 动画样式 */
+.animation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2rem;
+  gap: 20px;
+}
+
+.number {
+  font-size: 120px;
+  font-weight: bold;
+  color: #2c3e50;
+  line-height: 1;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+
+
+
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+
+/* 文字样式 */
+.title {
+  font-size: 2.5rem;
+  color: #7f8c8d;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.message {
+  font-size: 1.1rem;
+  color: #7f8c8d;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  padding: 0 1rem;
+}
+
+/* 按钮样式 */
+
+
+
+
+
+/* 底部信息 */
+.footer {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #ecf0f1;
+  color: #95a5a6;
+  font-size: 0.9rem;
+}
+
+.errorCode {
+  margin-bottom: 0.5rem;
+  font-family: monospace;
+}
+
+
