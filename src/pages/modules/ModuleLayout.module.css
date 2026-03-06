@@ -1,0 +1,268 @@
+/* #region start: 基础与背景层 */
+ 
+
+/* 背景容器 - 固定在视口最底层 */
+/* 作用：这是所有动态背景的家，它会铺满整个屏幕，但又不会影响其他内容的布局和交互。 */
+.backgroundContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100dvw;
+  height: 100dvh;
+  z-index: -1;
+  /* 将背景置于最底层 */
+  pointer-events: none;
+  /* 确保背景层本身不可点击，不干扰上层元素的交互 */
+  box-sizing: border-box;
+  overflow: hidden;
+    font-family: var(--font-family);
+}
+
+/* 统一布局容器 - 整个应用的骨架 */
+/* 作用：这是所有可见UI的根容器，它使用 CSS Grid 来定义宏观布局。 */
+.unifiedLayout {
+  height: 100dvh;
+  width: 100dvw;
+  background: transparent;
+  /* 设置为透明，以便能看到下方的 .backgroundContainer */
+  color: var(--font-color);
+  overflow: hidden;
+  /* 防止意外的内容溢出导致整个页面出现滚动条 */
+  display: grid;
+  /* 声明此容器使用 Grid 布局 */
+  transition: grid-template-columns 0.3s ease;
+  /* 当侧边栏折叠时，列宽变化有平滑的过渡动画 */
+  position: relative;
+  /* 确保内容层在背景层之上 */
+  /* font-family: var(--font-family); */
+}
+
+/* #endregion end */
+
+
+/* #region start: 桌面端布局 (> 1024px) */
+
+/* 桌面端布局的网格定义 */
+.isDesktop {
+  /* 1. 使用 grid-template-areas 来画出布局的“地图” */
+  grid-template-areas:
+    "header  header"
+    "sidebar main"
+    "sidebar player";
+  /* 2. 定义行的高度，严格按照您的要求 */
+  grid-template-rows: 60px 1fr 80px;
+  /* 顶部(60px), 主内容区(自动填充剩余空间), 播放器(80px) */
+  /* 3. 定义列的宽度 */
+  grid-template-columns: 240px 1fr;
+  /* 侧边栏(240px), 右侧所有内容(自动填充剩余空间) */
+}
+
+/* 侧边栏折叠时的桌面端布局 */
+.isDesktop.sidebarCollapsed {
+  /* 当侧边栏折叠时，只需要改变第一列的宽度即可，其他定义保持不变 */
+  grid-template-columns: 60px 1fr;
+}
+
+/* 桌面端隐藏播放器时的布局 */
+.isDesktop.noPlayer {
+  /* 当没有播放器时，重新定义“地图”，去掉 player 区域 */
+  grid-template-areas:
+    "header  header"
+    "sidebar main";
+  /* 同时重新定义行高，现在只有两行 */
+  grid-template-rows: 60px 1fr;
+}
+
+/* 将各个容器分配到网格“地图”中对应的区域 */
+.isDesktop .headerContainer {
+  grid-area: header;
+}
+
+.isDesktop .sidebarContainer {
+  grid-area: sidebar;
+}
+
+.isDesktop .mainContentArea {
+  grid-area: main;
+}
+
+.isDesktop .playerContainer {
+  grid-area: player;
+}
+
+/* 在桌面端，我们不需要底部导航栏，直接隐藏 */
+.isDesktop .bottomNavContainer {
+  display: none;
+}
+
+/* #endregion end */
+
+
+/* #region start: 移动端布局 (<= 1024px) */
+
+/* 移动端布局的网格定义 */
+.isMobile {
+  /* 1. 移动端的“地图”是垂直的三段式 */
+  grid-template-areas:
+    "main"
+    "player"
+    "bottom-nav";
+  /* 2. 定义行的高度，严格按照您的要求 */
+  grid-template-rows: 1fr 80px 60px;
+  /* 主内容区(自动填充), 播放器(80px), 底部导航(60px) */
+  /* 3. 移动端只有一列 */
+  grid-template-columns: 1fr;
+}
+
+/* 移动端隐藏播放器时的布局 */
+.isMobile.noPlayer {
+  /* 当没有播放器时，重新定义“地图”，去掉 player 区域 */
+  grid-template-areas:
+    "main"
+    "bottom-nav";
+  /* 同时重新定义行高，现在只有两行 */
+  grid-template-rows: 1fr 60px;
+  /* 主内容区(自动填充), 底部导航(60px) */
+}
+
+/* 将各个容器分配到网格“地图”中对应的区域 */
+.isMobile .mainContentArea {
+  grid-area: main;
+}
+
+.isMobile .playerContainer {
+  grid-area: player;
+}
+
+.isMobile .bottomNavContainer {
+  grid-area: bottom-nav;
+}
+
+/* 在移动端，我们不需要顶部 Header、侧边栏和Tabs，直接隐藏 */
+.isMobile .headerContainer,
+.isMobile .sidebarContainer,
+.isMobile .tabsContainer {
+  display: none;
+}
+
+/* 【【【【【 新增功能点 】】】】】 */
+/* 在移动端，我们不显示公共消息，以节省宝贵的屏幕空间 */
+.isMobile .publicMessageContainer {
+  display: none;
+}
+
+
+/* #endregion end */
+
+
+/* #region start: 各容器通用样式 */
+
+.headerContainer {
+ border-bottom: 1px solid var(--border_color); 
+  
+  z-index: 1000;
+  /* 确保 Header 在最上层，不会被内容遮挡 */
+}
+
+.sidebarContainer {
+  background: var(--secondary-background-color);
+  border-right: 1px solid var(--border_color);
+}
+
+/* 主内容区域 - 内部使用 Flex 布局 */
+/* 作用：这是容纳“公共消息”、“Tabs”和“页面内容”的容器 */
+/* 【浮动效果修改点 1】 */
+.mainContentArea {
+  position: relative;
+  /* 关键：为子元素的绝对定位提供一个定位上下文，让公共消息相对于此容器浮动 */
+  display: flex;
+  flex-direction: column;
+  /* 让其子元素垂直排列 */
+  overflow: hidden;
+  /* 防止其内部内容溢出到外部网格 */
+  min-height: 0;
+  /* Flexbox 布局中的一个重要技巧，防止子元素在空间不足时无法正确缩小 */
+    overflow: hidden;
+  box-sizing: border-box;
+  flex: 1; /* 这会让它填充父容器的剩余空间 */
+  
+}
+
+/* 公共消息容器 - 实现“浮动”效果 */
+/* 【浮动效果修改点 2】 */
+.publicMessageContainer {
+  position: absolute;
+  /* 关键：让元素脱离正常的文档流，像幽灵一样浮动起来 */
+  top: 0;
+  /* 紧贴父容器(.mainContentArea)的顶部 */
+  left: 0;
+  /* 紧贴父容器的左边 */
+  right: 0;
+  /* 紧贴父容器的右边，效果等同于 width: 100% */
+  z-index: 10;
+  /* 关键：确保它的层级高于 Tabs 和页面内容，显示在最上面 */
+  /* 注意：因为它已脱离文档流，所以不再需要 flex-shrink */
+}
+
+
+.tabsContainer {
+  flex-shrink: 0;
+  /* 不允许此元素被压缩 */
+  background: var(--background-color);
+  border-bottom: 2px solid var(--border_color,rgba(199, 197, 197, 0.199));
+}
+
+/* 页面实际内容容器 */
+.pageContent {
+  flex-grow: 1;
+  /* 占据所有可用的垂直空间 */
+  overflow-y: auto;
+  /* 如果页面内容超出，只在此容器内部产生滚动条 */
+  /* padding: 16px; */
+  padding: 0px;
+  min-height: 0;
+}
+
+.playerContainer,
+.bottomNavContainer {
+  flex-shrink: 0;
+  background: var(--secondary-background-color);
+  border-top: 1px solid var(--border_color);
+}
+
+/* #endregion end */
+/* src: url('/fonts/FZMWFont/FZMWFont.ttf') format('truetype');
+ src: url('%PUBLIC_URL%/fonts/FZMWFont/FZMWFont.ttf') format('truetype'); */
+
+@font-face {
+    font-family: FZMWFont;
+     src: url('./fonts/FZMWFont/FZMWFont.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+
+/* 自定义字体 */
+
+/* 定义阿里妈妈东方大楷字体 */
+@font-face {
+    font-family: 'AlimamaDongFangDaKai';
+    src: url('./fonts/AlimamaDongFangDaKai-Regular/AlimamaDongFangDaKai-Regular.ttf') format('truetype'),
+        url('./fonts/AlimamaDongFangDaKai-Regular/AlimamaDongFangDaKai-Regular.woff') format('woff'),
+        url('./fonts/AlimamaDongFangDaKai-Regular/AlimamaDongFangDaKai-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+
+/* 引入LED字体 */
+@font-face {
+    font-family: KaiTi_GB2312;
+    src: url('./fonts/KaiTi/KaiTi.TTF');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+/* src: url('%PUBLIC_URL%/fonts/FZMWFont/FZMWFont.ttf') format('truetype'); */

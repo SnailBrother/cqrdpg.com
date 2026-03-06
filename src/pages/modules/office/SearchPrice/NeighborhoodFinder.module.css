@@ -1,0 +1,895 @@
+/* src/pages/modules/office/NeighborhoodFinder.module.css */
+.pageContainer {
+  height: calc(100dvh - 125px); /* 减去padding */
+  width: 100%;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+   padding: 10px;  
+  box-sizing: border-box;
+  overflow: hidden; /* 防止滚动条出现 */
+}
+
+.contentContainer {
+  height: 100%;
+  width: 100%;
+  max-width: 1800px;
+  display: flex;
+  flex-direction: column;
+   
+  margin: 0 auto;
+}
+
+/* 搜索区域 */
+.searchSection {
+  margin-bottom: 5px;
+  flex-shrink: 0; /* 搜索区域不收缩 */
+}
+
+.searchCard {
+  background: white;
+  border-radius: 12px;
+  padding: 5px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+.searchHeader {
+  margin-bottom: 10px;
+}
+
+.searchHeader h3 {
+  margin: 0 0 8px 0;
+  color: #333;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.searchInputGroup {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.searchInput {
+  flex: 1;
+  padding: 14px 20px;
+  border: 2px solid #e8e8e8;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: all 0.3s;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #1890ff;
+  box-shadow: 0 0 0 3px rgba(24, 144, 255, 0.1);
+}
+
+.searchButton {
+  padding: 14px 32px;
+  background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+  white-space: nowrap;
+  min-width: 120px;
+}
+
+.searchButton:hover:not(:disabled) {
+  background: linear-gradient(135deg, #40a9ff 0%, #1890ff 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
+}
+
+.searchButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.clearButton {
+  padding: 14px 20px;
+  background: #f5f5f5;
+  color: #666;
+  border: 1px solid #d9d9d9;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s;
+  white-space: nowrap;
+}
+
+.clearButton:hover {
+  background: #e8e8e8;
+  color: #333;
+}
+
+.errorMessage {
+  color: #ff4d4f;
+  font-size: 14px;
+  padding: 5px 16px;
+  background: #fff2f0;
+  border-radius: 6px;
+  border-left: 4px solid #ff4d4f;
+  margin-top: 12px;
+}
+
+.progressInfo {
+  color: #1890ff;
+  font-size: 14px;
+  padding: 10px 16px;
+  background: #f0f9ff;
+  border-radius: 6px;
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+}
+
+.progressInfo:before {
+  content: '⏳';
+  margin-right: 8px;
+  font-size: 16px;
+}
+
+/* 搜索结果统计 */
+.searchStats {
+  margin-top: 5px;
+  padding: 5px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e8e8e8;
+}
+
+.statsHeader {
+  margin-bottom: 16px;
+}
+
+.statsHeader h4 {
+  margin: 0;
+  color: #333;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 16px;
+}
+
+.statItem {
+  background: white;
+  padding: 16px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.statValue {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: #000;
+}
+
+.statValue.hasData {
+  color: #52c41a;
+}
+
+.statValue.noData {
+  color: #8c8c8c;
+}
+
+.statValue.price {
+  color: #ff4d4f;
+}
+
+.statLabel {
+  color: #666;
+  font-size: 13px;
+}
+
+.noDataWarning {
+  margin-top: 12px;
+  padding: 10px 16px;
+  background: #fff7e6;
+  color: #fa8c16;
+  border-radius: 6px;
+  font-size: 14px;
+  border-left: 3px solid #fa8c16;
+}
+
+/* 主内容区域 */
+.mainContent {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 30px;
+  flex: 1; /* 占据剩余空间 */
+  min-height: 0; /* 防止内容溢出 */
+  overflow: hidden; /* 防止滚动条出现 */
+}
+
+@media (max-width: 1200px) {
+  .mainContent {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    overflow: auto; /* 小屏幕允许滚动 */
+  }
+}
+
+/* 地图区域 */
+.mapSection {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* 高度100% */
+}
+
+.mapHeader {
+  padding: 20px 24px;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0; /* 头部不收缩 */
+}
+
+.mapHeader h3 {
+  margin: 0;
+  color: #333;
+  font-size: 18px;
+}
+
+.mapLegend {
+  display: flex;
+  gap: 20px;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #666;
+}
+
+.legendDotRed {
+  width: 12px;
+  height: 12px;
+  background: #36df03;
+  border-radius: 50%;
+}
+
+.legendDotBlue {
+  width: 12px;
+  height: 12px;
+  background: #8c8c8c;
+  border-radius: 50%;
+}
+
+.mapContainer {
+  flex: 1; /* 占据剩余高度 */
+  min-height: 0; /* 防止溢出 */
+  position: relative;
+}
+
+@media (max-width: 1200px) {
+  .mapSection {
+    height: 500px; /* 小屏幕固定高度 */
+  }
+}
+
+/* 结果区域 */
+.resultsSection {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* 高度100% */
+}
+
+.resultsHeader {
+  padding: 20px 24px;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0; /* 头部不收缩 */
+}
+
+.resultsHeader h3 {
+  margin: 0;
+  color: #333;
+  font-size: 18px;
+}
+
+.resultsActions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.resultsCount {
+  color: #333;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.exportButton {
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #52c41a 0%, #389e0d 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.exportButton:hover {
+  background: linear-gradient(135deg, #73d13d 0%, #52c41a 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(82, 196, 26, 0.3);
+}
+
+/* 小区列表 */
+.neighborhoodsList {
+  flex: 1; /* 占据剩余空间 */
+  overflow-y: auto;
+  padding: 16px;
+  min-height: 0; /* 防止溢出 */
+}
+
+.neighborhoodCard {
+  background: white;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+}
+
+.neighborhoodCard:hover {
+  border-color: #1890ff;
+  box-shadow: 0 4px 16px rgba(24, 144, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.neighborhoodCard.active {
+  border-color: #1890ff;
+  background: #f0f9ff;
+  border-width: 2px;
+}
+
+.neighborhoodCard.hasReport {
+  border-left: 4px solid #52c41a;
+}
+
+.neighborhoodCard.noReport {
+  border-left: 4px solid #8c8c8c;
+  opacity: 0.8;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.nameSection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.neighborhoodName {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.reportBadge {
+  font-size: 11px;
+  background: #52c41a;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.noReportBadge {
+  font-size: 11px;
+  background: #8c8c8c;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.distanceBadge {
+  background: #f6ffed;
+  color: #52c41a;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.cardContent {
+  padding-left: 8px;
+}
+
+.infoRow {
+  margin-bottom: 10px;
+  display: flex;
+}
+
+.infoLabel {
+  color: #666;
+  font-size: 13px;
+  min-width: 40px;
+}
+
+.infoValue {
+  color: #333;
+  font-size: 13px;
+  flex: 1;
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+  margin-bottom: 5px;
+}
+
+.infoItem {
+  display: flex;
+  flex-direction: row;
+}
+
+.infoItem .infoLabel {
+  font-size: 12px;
+  margin-bottom: 2px;
+}
+
+.infoItem .infoValue {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.price {
+  color: #ff4d4f;
+  font-weight: 600 !important;
+}
+
+/* 报告详情部分 */
+.reportsSection {
+  margin-top: 5px;
+  border-top: 1px solid #f0f0f0;
+  padding-top: 5px;
+}
+
+.reportsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.reportsTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.toggleAllButton {
+  padding: 4px 8px;
+  background: #f5f5f5;
+  color: #666;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.toggleAllButton:hover {
+  background: #e8e8e8;
+}
+
+.reportsList {
+  max-height: 300px;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+.reportItem {
+  margin-bottom: 8px;
+  border: 1px solid #e8e8e8;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.reportSummary {
+  padding: 12px;
+  background: #fafafa;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.reportSummary:hover {
+  background: #f0f0f0;
+}
+
+.reportHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.reportName {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1890ff;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.reportDate {
+  font-size: 12px;
+  color: #666;
+  margin: 0 8px;
+  white-space: nowrap;
+}
+
+.expandIcon {
+  font-size: 10px;
+  color: #666;
+  flex-shrink: 0;
+}
+
+.reportBrief {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.reportPrice, .reportArea {
+  font-size: 12px;
+  color: #666;
+}
+ 
+/* #region start 数据详情  */
+ 
+/* 报告详情部分 - 列表横线样式 */
+.reportDetails {
+  padding: 0;
+  background: white;
+  border-top: 1px solid #f0f0f0;
+  margin-top: 2px;
+}
+
+.detailGrid {
+  display: flex;
+  flex-direction: column;
+  background: white;
+}
+
+.detailItem {
+  display: flex;
+  align-items: center;
+  justify-content:flex-start;
+  padding: 2px 5px;
+  border-bottom: 1px solid #f5f5f5;
+  /* min-height: 30px; */
+}
+.detailItemrow {
+ 
+  display: flex;
+  align-items: center;
+  justify-content:flex-start;
+  padding: 2px 5px;
+  width: 50%;
+}
+
+.detailItem:last-child {
+  border-bottom: none;
+}
+
+.detailLabel {
+  color: #666;
+  font-size: 10px;
+  font-weight: 500;  
+  width: 50px;
+  min-width: 50px;
+  margin-right: 16px;
+  white-space: nowrap;
+}
+
+.detailValue {
+  color: #333;
+  font-size: 12px;
+  font-weight: 500;
+  flex: 1;
+  text-align: left;
+}
+
+/* 评估单价特殊样式 */
+.detailItemrow:nth-child(1) .detailValue {
+  color: #ff4d4f;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+/* 其他重要字段样式 */
+.detailItem:nth-child(1) .detailValue { /* 房产坐落 */
+  color: #ff4d4f;
+}
+
+.detailItem:nth-child(2) .detailValue,
+.detailItem:nth-child(3) .detailValue, /* 建筑面积 */
+.detailItem:nth-child(4) .detailValue { /* 套内面积 */
+  color: #52c41a;
+  font-weight: 500;
+}
+
+/* 鼠标悬停效果 */
+.detailItem:hover {
+  background-color: #fafafa;
+}
+
+ 
+ 
+
+/*  #endregion end */
+
+
+
+/* 空状态 */
+.noResults {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 40px;
+  text-align: center;
+}
+
+.loadingIndicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #1890ff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.emptyIllustration {
+  max-width: 300px;
+}
+
+.emptyIcon {
+  font-size: 64px;
+  margin-bottom: 20px;
+}
+
+.emptyIllustration h4 {
+  margin: 0 0 12px 0;
+  color: #333;
+  font-size: 18px;
+}
+
+.emptyIllustration p {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.tips {
+  text-align: left;
+  background: #f8f9fa;
+  padding: 16px;
+  border-radius: 8px;
+  border-left: 4px solid #1890ff;
+}
+
+.tips p {
+  margin: 0 0 8px 0;
+  font-size: 13px;
+  color: #333;
+  font-weight: 500;
+}
+
+.tips ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.tips li {
+  padding: 4px 0;
+  color: #666;
+  font-size: 13px;
+  position: relative;
+  padding-left: 16px;
+}
+
+.tips li:before {
+  content: '•';
+  position: absolute;
+  left: 8px;
+  color: #1890ff;
+}
+
+@media (max-width: 1200px) {
+  .resultsSection {
+    height: 500px; /* 小屏幕固定高度 */
+  }
+
+  .pageContainer {
+  height: calc(100vh - 60px); /* 减去padding */
+   
+}
+
+}
+
+/* 滚动条样式 */
+.neighborhoodsList::-webkit-scrollbar,
+.reportsList::-webkit-scrollbar {
+  width: 6px;
+}
+
+.neighborhoodsList::-webkit-scrollbar-track,
+.reportsList::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.neighborhoodsList::-webkit-scrollbar-thumb,
+.reportsList::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.neighborhoodsList::-webkit-scrollbar-thumb:hover,
+.reportsList::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+/* 新增样式 */
+.legendDotGreen {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #52c41a;
+  margin-right: 6px;
+}
+
+.exactLocationBadge {
+  background-color: #52c41a;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  margin-left: 8px;
+}
+
+.neighborhoodCard.exactLocation {
+  border-left: 3px solid #52c41a;
+}
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .pageContainer {
+    padding: 10px;
+    height: calc(100vh - 20px); /* 减小padding */
+  }
+  
+  .searchHeader h3 {
+    font-size: 18px;
+  }
+  
+  .searchInputGroup {
+    flex-direction: column;
+  }
+  
+  .searchButton,
+  .clearButton {
+    width: 100%;
+  }
+  
+  .mainContent {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    overflow: auto;
+  }
+  
+  .mapContainer {
+    height: 400px;
+  }
+  
+  .mapHeader {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  
+  .mapLegend {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .resultsHeader {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  
+  .resultsActions {
+    align-items: flex-start;
+  }
+  
+  .infoGrid {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+  
+  .detailGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .reportName {
+    max-width: 150px;
+  }
+}
+/* #region start 定位图标*/
+.mapLegend img {
+  vertical-align: middle;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  margin-right: 15px;
+}
+
+/*  #endregion end */
+
+

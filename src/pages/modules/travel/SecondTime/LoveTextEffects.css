@@ -1,0 +1,54 @@
+/* LoveTextEffects.css */
+/* Compact LoveTextEffects - Decorative Version */
+.lovetexteffects-container {
+    height: 80px; /* Compact size */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: sans-serif;
+    font-size: 2rem; /* Fixed size instead of vw */
+    text-transform: uppercase;
+    overflow: hidden;
+    position: relative;
+    min-width: 300px;
+  }
+  
+  .lovetexteffects-text {
+    display: inline-block;
+  }
+  
+  .lovetexteffects-char {
+    display: inline-block;
+    color: black; /* Visible text */
+    position: relative;
+    animation: lovetexteffects-animation 3s linear infinite;
+  }
+  
+  @keyframes lovetexteffects-animation {
+    0%, 100% {
+      transform: none;
+      opacity: 1;
+      text-shadow: none;
+    }
+    30%, 70% {
+      transform: skew(-50deg) translateY(-100%);
+      opacity: 0.2;
+      text-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+    50% {
+      transform: skew(-50deg) translateY(-150%);
+      opacity: 0;
+      text-shadow: 0 0 20px rgba(0,0,0,0.8);
+    }
+  }
+  
+  /* Staggered animation for each character */
+  .lovetexteffects-char:nth-child(1) { animation-delay: 0.1s; }
+  .lovetexteffects-char:nth-child(2) { animation-delay: 0.2s; }
+  .lovetexteffects-char:nth-child(3) { animation-delay: 0.3s; }
+  .lovetexteffects-char:nth-child(4) { animation-delay: 0.4s; }
+  .lovetexteffects-char:nth-child(5) { animation-delay: 0.5s; }
+  .lovetexteffects-char:nth-child(6) { animation-delay: 0.6s; }
+  .lovetexteffects-char:nth-child(7) { animation-delay: 0.7s; }
+  .lovetexteffects-char:nth-child(8) { animation-delay: 0.8s; }
+  .lovetexteffects-char:nth-child(9) { animation-delay: 0.9s; }

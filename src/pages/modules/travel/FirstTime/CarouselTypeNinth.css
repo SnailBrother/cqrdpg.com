@@ -1,0 +1,154 @@
+.carouseltypeninth-container {
+    width: 100%;
+    max-width: 1900px;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  
+  /* First Row Styles - Two Hexagons + Text */
+  .carouseltypeninth-first-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: -10px;
+    gap: 50px;
+    width: 100%;
+  }
+  
+  .carouseltypeninth-first-row-images {
+    display: flex;
+    gap: 20px;
+    flex: 0 0 auto;
+    justify-content: center;
+  }
+  
+  .carouseltypeninth-text-content {
+    flex: 0 0 auto;
+    min-width: 300px;
+    text-align: center;
+  }
+  
+  /* First Row Hexagon Styles */
+  .carouseltypeninth-first-row-hexagon-item {
+    flex: 0 0 auto;
+  }
+  
+  .carouseltypeninth-first-row-hexagon {
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    width: 480px;
+    height: 480px;
+  }
+  
+  .carouseltypeninth-first-row-hexagon-text {
+    color: white;
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+    text-align: center;
+    padding: 0 20px;
+  }
+  
+  /* Second Row Hexagon Styles */
+  .carouseltypeninth-second-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .carouseltypeninth-second-row-item {
+    flex: 0 0 calc(25% - 20px);
+    min-width: 200px;
+  }
+  
+  .carouseltypeninth-second-row-hexagon {
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    height: 480px;
+    width: 100%;
+  }
+  
+  .carouseltypeninth-second-row-hexagon-text {
+    color: white;
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+    text-align: center;
+    padding: 0 20px;
+  }
+  
+  /* Text Content Styles */
+  .carouseltypeninth-main-title {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    color: #333;
+  }
+  
+  .carouseltypeninth-main-subtitle {
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+    color: #666;
+  }
+  
+  .carouseltypeninth-more-btn {
+    background: transparent;
+    color: #333;
+    border: 2px solid #333;
+    padding: 12px 30px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .carouseltypeninth-more-btn:hover {
+    background: #333;
+    color: white;
+  }
+  
+  /* Mobile Styles */
+  @media (max-width: 768px) {
+    .carouseltypeninth-first-row {
+      flex-direction: column;
+      align-items: center;
+      gap: 30px;
+    }
+    
+    .carouseltypeninth-first-row-images {
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .carouseltypeninth-first-row-hexagon {
+      width: 300px;
+      height: 350px;
+    }
+    
+    .carouseltypeninth-second-row-item {
+      flex: 0 0 calc(50% - 20px);
+    }
+    
+    .carouseltypeninth-main-title {
+      font-size: 2rem;
+    }
+    
+    .carouseltypeninth-main-subtitle {
+      font-size: 1.2rem;
+    }
+    
+    .carouseltypeninth-first-row-hexagon-text,
+    .carouseltypeninth-second-row-hexagon-text {
+      font-size: 1.2rem;
+    }
+  }

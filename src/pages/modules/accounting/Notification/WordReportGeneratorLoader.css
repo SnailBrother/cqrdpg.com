@@ -1,0 +1,68 @@
+/* #region start 加载等待动画 */
+/* 加载动画样式 */
+/* 遮罩层 - 固定定位确保在最前面 */
+.wordreportgeneratorloader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  background-color: rgba(34, 34, 34, 0.103);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 外圈 */
+.wordreportgeneratorloader-loader {
+  width: 200px;
+  height: 200px;
+  position: relative;
+  border-radius: 50%;
+  border: 4px solid transparent;
+  border-top-color: #4bc0c8;
+  animation: wordreportgeneratorloader-spin 2s linear infinite;
+}
+
+/* 中圈 */
+.wordreportgeneratorloader-loader::before {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 5px;
+  right: 5px;
+  bottom: 5px;
+  border-radius: 50%;
+  border: 4px solid transparent;
+  border-top-color: #c779d0;
+  animation: wordreportgeneratorloader-spin 3s linear infinite;
+}
+
+/* 内圈 */
+.wordreportgeneratorloader-loader::after {
+  content: "";
+  position: absolute;
+  left: 15px;
+  top: 15px;
+  right: 15px;
+  bottom: 15px;
+  border-radius: 50%;
+  border: 4px solid transparent;
+  border-top-color: #feac5e;
+  animation: wordreportgeneratorloader-spin 1.5s linear infinite;
+}
+
+/* 动画定义 */
+@keyframes wordreportgeneratorloader-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/*  #endregion end */
+

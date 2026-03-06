@@ -1,0 +1,439 @@
+/* ReportQrCodePage.css - 优化估价师显示 */
+.code-container {
+  max-width: 100%;
+  min-width: 320px;
+  min-height: 100dvh;
+  margin: 0 auto;
+  background: white;
+  font-family: "Microsoft YaHei", "SimHei", "PingFang SC", sans-serif;
+  line-height: 1.6;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.code-scrollable {
+  width: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.code-header {
+  background: linear-gradient(135deg, #1a5fb4 0%, #2d7bc6 100%);
+  color: white;
+  padding: 25px 20px;
+  text-align: center;
+  position: relative;
+  border-bottom: 3px solid #f0f4f8;
+  min-height: 120px;
+  box-sizing: border-box;
+}
+
+.code-title {
+  font-size: 24px;
+  margin-bottom: 8px;
+  letter-spacing: 2px;
+  font-weight: 600;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+  word-wrap: break-word;
+}
+
+.code-subtitle {
+  font-size: 18px;
+  margin: 0;
+  font-weight: 400;
+  opacity: 0.95;
+  word-wrap: break-word;
+}
+
+/* 报告有效性徽章 */
+.code-validity-badge {
+  position: absolute;
+  top: 5px;
+  right: 15px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+  white-space: nowrap;
+}
+
+.code-validity-badge.valid {
+  background: rgba(46, 204, 113, 0.2);
+  color: #2ecc71;
+  border: 1px solid rgba(46, 204, 113, 0.5);
+}
+
+.code-validity-badge.invalid {
+  background: rgba(231, 76, 60, 0.2);
+  color: #e74c3c;
+  border: 1px solid rgba(231, 76, 60, 0.5);
+}
+
+.code-content {
+  padding: 0px;
+  min-height: 400px;
+  box-sizing: border-box;
+}
+
+/* 通用部分样式 */
+.code-section {
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  align-items: flex-start; /* 改为顶部对齐 */
+  min-height: 50px;
+}
+
+.code-section:last-child,
+.code-last-section {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.code-label {
+  font-weight: 600;
+  color: #1a5fb4;
+  font-size: 15px;
+  margin-bottom: 0;
+  display: flex;
+  align-items: flex-start; /* 顶部对齐 */
+  min-height: 24px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-right: 8px;
+  padding-top: 2px; /* 与内容顶部对齐 */
+}
+
+.code-value {
+  font-size: 15px;
+  color: #333;
+  line-height: 1.5;
+  min-height: 22px;
+  display: flex;
+  align-items: flex-start;
+  flex: 1;
+}
+
+.code-long-text {
+  line-height: 1.6;
+  text-align: left;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* 专门为估价师设计的样式 */
+.code-appraiser-section {
+  display: flex;
+  align-items: flex-start; /* 顶部对齐 */
+}
+
+.code-appraiser-label {
+  font-weight: 600;
+  color: #1a5fb4;
+  font-size: 15px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-right: 8px;
+  padding-top: 2px;
+  min-width: 120px; /* 为标签设置固定宽度 */
+}
+
+.code-appraiser-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.code-appraiser-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  min-height: 24px;
+}
+
+.code-appraiser-row:last-child {
+  margin-bottom: 0;
+}
+
+.code-appraiser-name {
+  color: #333;
+  font-size: 15px;
+  min-width: 80px; /* 为名字设置最小宽度，适应2-3个字 */
+  text-align: left;
+  white-space: nowrap;
+  margin-right: 8px;
+}
+
+.code-appraiser-number {
+  color: #333;
+  font-size: 15px;
+  /* background: #f8f9fa; */
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 0px solid #e9ecef;
+  white-space: nowrap;
+  font-family: monospace; /* 证书号使用等宽字体 */
+}
+
+/* 二维码区域优化 */
+.code-qr-section {
+  padding: 0px;
+  text-align: center;
+  margin-top: 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 250px;
+}
+
+.code-qr-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+  border-radius: 10px;
+  box-shadow: 0 0px 1px rgba(0, 0, 0, 0.08);
+  margin: 2px 0;
+  border: 1px solid #e8ecef;
+  min-width: 190px;
+  min-height: 190px;
+  box-sizing: border-box;
+}
+
+.code-qr-image {
+  width: 160px;
+  height: 160px;
+  display: block;
+  min-width: 160px;
+  min-height: 160px;
+}
+
+/* 无效报告区域 */
+.code-invalid-section {
+  background: linear-gradient(135deg, #fed7d7 0%, #feb2b2 100%);
+  padding: 30px 20px;
+  text-align: center;
+  border-top: 1px solid #fc8181;
+  margin-top: 10px;
+  min-height: 300px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.code-invalid-icon {
+  font-size: 48px;
+  color: #e53e3e;
+  margin-bottom: 15px;
+  min-height: 50px;
+}
+
+.code-invalid-title {
+  font-size: 20px;
+  color: #c53030;
+  margin-bottom: 10px;
+  font-weight: 600;
+  word-wrap: break-word;
+}
+
+.code-invalid-desc {
+  color: #742a2a;
+  font-size: 15px;
+  line-height: 1.5;
+  margin-bottom: 20px;
+  word-wrap: break-word;
+  text-align: center;
+}
+
+/* 平板电脑适配 */
+@media (min-width: 768px) {
+  .code-container {
+    max-width: 700px;
+    margin: 20px auto;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  }
+  
+  .code-header {
+    padding: 30px 40px;
+    min-height: 140px;
+  }
+  
+  .code-title {
+    font-size: 28px;
+  }
+  
+  .code-subtitle {
+    font-size: 20px;
+  }
+  
+  .code-content {
+    padding: 30px 40px;
+  }
+  
+  .code-section {
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+  }
+  
+  .code-label {
+    width: 160px;
+    font-size: 16px;
+    margin-right: 15px;
+  }
+  
+  .code-appraiser-label {
+    width: 160px;
+    font-size: 16px;
+    margin-right: 15px;
+    min-width: 140px;
+  }
+  
+  .code-appraiser-name {
+    min-width: 90px;
+    font-size: 16px;
+  }
+  
+  .code-appraiser-number {
+    font-size: 16px;
+  }
+  
+  .code-value {
+    font-size: 16px;
+  }
+  
+  .code-qr-section, .code-invalid-section {
+    padding: 30px 40px;
+  }
+  
+  .code-qr-image {
+    width: 180px;
+    height: 180px;
+  }
+}
+
+/* 桌面端适配 */
+@media (min-width: 1024px) {
+  .code-container {
+    max-width: 800px;
+  }
+  
+  .code-title {
+    font-size: 32px;
+  }
+  
+  .code-label {
+    width: 200px;
+  }
+  
+  .code-appraiser-label {
+    width: 200px;
+    min-width: 160px;
+  }
+  
+  .code-appraiser-name {
+    min-width: 100px;
+  }
+  
+  .code-qr-image {
+    width: 200px;
+    height: 200px;
+  }
+}
+
+/* 小屏幕手机特殊适配 */
+@media (max-width: 767px) {
+  .code-container {
+    min-width: 320px;
+    border-radius: 0;
+    margin: 0;
+    box-shadow: none;
+  }
+  
+  .code-header {
+    padding: 20px 15px;
+    min-height: 110px;
+  }
+  
+  .code-title {
+    font-size: 22px;
+    letter-spacing: 1px;
+  }
+  
+  .code-subtitle {
+    font-size: 16px;
+  }
+  
+  .code-content {
+    padding: 15px;
+  }
+  
+  .code-appraiser-section {
+    flex-direction: column; /* 手机端改为垂直布局 */
+    align-items: flex-start;
+  }
+  
+  .code-appraiser-label {
+    margin-bottom: 8px;
+    min-width: 100px;
+  }
+  
+  .code-appraiser-container {
+    width: 100%;
+  }
+  
+  .code-appraiser-name {
+    min-width: 70px;
+    font-size: 15px;
+  }
+  
+  .code-appraiser-number {
+    font-size: 15px;
+  }
+  
+  .code-qr-section, .code-invalid-section {
+    padding: 20px 15px;
+  }
+  
+  .code-qr-image {
+    width: 140px;
+    height: 140px;
+  }
+}
+
+/* 超小屏幕适配 */
+@media (max-width: 320px) {
+  .code-container {
+    min-width: 320px;
+    overflow-x: auto;
+  }
+  
+  .code-title {
+    font-size: 20px;
+  }
+  
+  .code-appraiser-label {
+    min-width: 90px;
+    font-size: 14px;
+  }
+  
+  .code-appraiser-name {
+    min-width: 60px;
+    font-size: 14px;
+  }
+  
+  .code-appraiser-number {
+    font-size: 14px;
+    padding: 1px 6px;
+  }
+  
+  .code-invalid-icon {
+    font-size: 36px;
+  }
+}

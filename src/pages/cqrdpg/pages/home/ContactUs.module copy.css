@@ -1,0 +1,291 @@
+.contactSection {
+  width: 100%;
+  background-color: #ffffff;
+  color: #131212;
+  padding: 60px 0;
+    height: 100dvh;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  gap: 40px; /* 左右间距 */
+  padding: 30px 20px;
+}
+
+/* 左侧样式 */
+.leftCol {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.imageWrapper {
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.contactImage {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.contactImage:hover {
+  transform: scale(1.02);
+}
+
+.contactInfo {
+  background-color: #f8f8f8;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.infoTitle {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 20px 0;
+  color: #333;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #c9a982;
+}
+
+.infoList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.infoItem {
+  font-size: 15px;
+  margin-bottom: 12px;
+  line-height: 1.5;
+  display: flex;
+  align-items: flex-start;
+}
+
+.label {
+  color: #666;
+  font-weight: 500;
+  min-width: 70px; /* 固定标签宽度，保持对齐 */
+  flex-shrink: 0;
+}
+
+.value {
+  color: #333;
+  flex: 1;
+}
+
+/* 右侧样式 */
+.rightCol {
+  width: 50%;
+  background-color: #f8f8f8;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.formTitle {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0 0 1px 0;
+  color: #333;
+  text-align: center;
+  padding-bottom: 0px;
+
+
+}
+.formTitleprompt {
+
+    border-bottom: 2px solid #c9a982;
+     padding-bottom: 10px;
+     font-size: small;
+      color: #4e4e4e;
+}
+
+.contactForm {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.formGroup {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+}
+
+.formLabel {
+  width: 60px; /* 固定标签宽度 */
+  font-size: 16px;
+  font-weight: 500;
+  color: #555;
+  line-height: 38px; /* 与input高度对齐 */
+  flex-shrink: 0;
+}
+
+.formInput {
+  flex: 1;
+  height: 38px;
+  padding: 0 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.formInput:focus {
+  outline: none;
+  border-color: #c9a982;
+  box-shadow: 0 0 0 2px rgba(201, 169, 130, 0.2);
+}
+
+.formTextarea {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+  transition: all 0.3s ease;
+}
+
+.formTextarea:focus {
+  outline: none;
+  border-color: #c9a982;
+  box-shadow: 0 0 0 2px rgba(201, 169, 130, 0.2);
+}
+
+.submitBtn {
+  width: 100%;
+  height: 42px;
+  background-color: #c9a982;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+}
+
+.submitBtn:hover {
+  background-color: #b08d6a;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.submitBtn:active {
+  transform: translateY(0);
+}
+
+/* 响应式适配 */
+@media (max-width: 992px) {
+  .container {
+    gap: 20px;
+  }
+  
+  .formTitle {
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .leftCol,
+  .rightCol {
+    width: 100%;
+  }
+  
+  .formGroup {
+    gap: 10px;
+  }
+  
+  .formLabel {
+    width: 50px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .infoItem {
+    flex-direction: column;
+  }
+  
+  .label {
+    margin-bottom: 4px;
+  }
+  
+  .formGroup {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .formLabel {
+    width: auto;
+    margin-bottom: 5px;
+  }
+}
+/* 在ContactUs.module.css文件中添加以下样式 */
+
+.qrCodeItem {
+  display: flex;
+  gap: 30px;
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px dashed #ddd;
+}
+
+.qrCodeWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.qrLabel {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.qrImage {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.qrImage:hover {
+  transform: scale(1.05);
+}
+
+/* 响应式适配 - 小屏幕时二维码改为垂直排列 */
+@media (max-width: 480px) {
+  .qrCodeItem {
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+  }
+  
+  .qrCodeWrapper {
+    width: 100%;
+  }
+}

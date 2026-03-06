@@ -1,0 +1,146 @@
+/* src/components/WordEditing.module.css */
+.container {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 24px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Microsoft YaHei', sans-serif;
+  background-color: #f0f2f5;
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 24px;
+  color: #1a1a1a;
+  font-weight: 600;
+}
+
+.layout {
+  display: flex;
+  gap: 24px;
+}
+
+/* 左侧表单样式 (包含折叠逻辑) */
+.formPanel {
+  width: 320px;
+  flex-shrink: 0;
+  background: white;
+  padding: 0; /* 内边距移到 header 和 body */
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e8e8e8;
+  height: fit-content;
+  position: sticky;
+  top: 24px;
+  transition: width 0.3s ease;
+  overflow: hidden; /* 关键：配合折叠动画 */
+}
+
+.formHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.formHeader h3 {
+  margin: 0;
+  color: #262626;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.collapseButton {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #8c8c8c;
+  transition: transform 0.3s ease, background-color 0.2s ease;
+}
+
+.collapseButton:hover {
+  background-color: #f0f0f0;
+  color: #262626;
+}
+
+.formBody {
+  padding: 24px;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.formPanel.collapsed {
+  width: 80px; /* 折叠后的宽度 */
+}
+
+.formPanel.collapsed .formHeader h3 {
+  opacity: 0;
+}
+
+.formPanel.collapsed .collapseButton {
+  transform: rotate(180deg); /* 箭头向上 */
+}
+
+.formPanel.collapsed .formBody {
+  opacity: 0;
+  transform: translateY(-20px);
+  height: 0;
+  padding: 0 24px;
+  pointer-events: none; /* 折叠后不可交互 */
+}
+
+
+.formRow { margin-bottom: 18px; }
+.formRow label { display: block; margin-bottom: 6px; color: #595959; font-weight: 500; }
+.controlInput { width: 100%; padding: 8px 12px; border: 1px solid #d9d9d9; border-radius: 4px; transition: all 0.3s; box-sizing: border-box; }
+.controlInput:focus { border-color: #1890ff; box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2); outline: none; }
+.noPlaceholders { color: #8c8c8c; font-size: 14px; text-align: center; padding: 20px 0; }
+
+.buttonGroup { display: flex; gap: 12px; margin-top: 24px; }
+.exportBtn, .resetBtn { flex: 1; padding: 10px; border-radius: 4px; font-weight: 500; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 6px; }
+.exportBtn { background: #1890ff; color: white; border: 1px solid #1890ff; }
+.exportBtn:hover { background: #40a9ff; border-color: #40a9ff; }
+.resetBtn { background: white; color: #595959; border: 1px solid #d9d9d9; }
+.resetBtn:hover { border-color: #1890ff; color: #1890ff; }
+
+/* 右侧预览样式 */
+.previewPanel { flex: 1; background: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); border: 1px solid #e8e8e8; overflow: hidden; display: flex; flex-direction: column; }
+.panelHeader { padding: 20px 24px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; }
+.panelHeader h3 { margin: 0; color: #262626; font-size: 18px; font-weight: 600; }
+.hint { font-size: 13px; color: #595959; }
+.hintHighlight { font-weight: 600; color: #d46b08; background: #fff7e6; padding: 2px 4px; border-radius: 3px; }
+
+.docxContainer { flex: 1; overflow: auto; padding: 32px; background: #f0f2f5; }
+.docxViewer .docx-wrapper { background-color: white !important; box-shadow: 0 0 10px rgba(0,0,0,0.1) !important; }
+
+/* 我们自己的占位符高亮样式，不再依赖行内样式 */
+.placeholderHighlight {
+  background-color: #fffbe6 !important;
+  border-bottom: 1.5px dashed #faad14 !important;
+  cursor: pointer !important;
+  transition: background-color 0.2s ease !important;
+  border-radius: 3px !important;
+  padding: 0 3px !important;
+}
+
+.placeholderHighlight:hover {
+  background-color: #fff1b8 !important;
+}
+
+/* 加载状态 */
+.loading { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; min-height: 400px; color: #8c8c8c; }
+.spinner { width: 40px; height: 40px; border: 3px solid #f0f0f0; border-top: 3px solid #1890ff; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 16px; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+/* 响应式设计 */
+@media (max-width: 1200px) {
+  .layout { flex-direction: column; }
+  .formPanel { width: 100%; position: static; height: auto; }
+  .formPanel.collapsed { width: 100%; } /* 在垂直布局中，折叠只改变高度 */
+  .formPanel.collapsed .formHeader h3 { opacity: 1; }
+  .previewPanel { min-height: 800px; }
+}

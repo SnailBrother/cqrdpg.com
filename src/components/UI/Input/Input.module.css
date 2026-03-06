@@ -1,0 +1,81 @@
+.inputContainer {
+  margin-bottom: 16px;
+}
+
+.label {
+  display: block;
+  margin-bottom: 8px;
+  color: #333;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e1e5e9;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: #f8f9fa;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #667eea;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.input::placeholder {
+  color: #999;
+}
+
+.inputError {
+  border-color: #ff4d4f;
+  background: #fff2f0;
+}
+
+.inputError:focus {
+  border-color: #ff4d4f;
+  box-shadow: 0 0 0 3px rgba(255, 77, 79, 0.1);
+}
+
+.errorMessage {
+  color: #ff4d4f;
+  font-size: 0.8rem;
+  margin-top: 4px;
+  display: block;
+}
+
+/* 输入框尺寸 */
+.small {
+  padding: 8px 12px;
+  font-size: 0.875rem;
+}
+
+.medium {
+  padding: 12px 16px;
+  font-size: 1rem;
+}
+
+.large {
+  padding: 14px 18px;
+  font-size: 1.125rem;
+}
+
+/* 禁用状态 */
+.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: #f5f5f5;
+}
+
+/* 减少动画支持 */
+@media (prefers-reduced-motion: reduce) {
+  .input {
+    transition: none;
+  }
+}

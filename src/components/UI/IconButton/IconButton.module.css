@@ -1,0 +1,82 @@
+/* src/components/UI/IconButton/IconButton.module.css */
+.iconButton {
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+}
+
+.iconButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* 尺寸样式 */
+.small {
+  padding: 4px;
+  width: 24px;
+  height: 24px;
+}
+
+.medium {
+  padding: 6px;
+  width: 32px;
+  height: 32px;
+}
+
+.large {
+  padding: 8px;
+  width: 40px;
+  height: 40px;
+}
+
+/* 变体样式 */
+.primary {
+  background: var(--hover_border_color);
+  color: white;
+}
+
+.primary:hover:not(:disabled) {
+  background: var(--focus_border_color);
+  transform: translateY(-1px);
+}
+
+.secondary {
+  background: var(--secondary-background-color);
+  color: var(--font-color);
+  border: 1px solid var(--border_color);
+}
+
+.secondary:hover:not(:disabled) {
+  background: var(--hover_background-color);
+  border-color: var(--hover_border_color);
+}
+
+.danger {
+  background: var(--danger-color, #dc3545);
+  color: white;
+}
+
+.danger:hover:not(:disabled) {
+  background: var(--danger-hover-color, #c82333);
+}
+
+.ghost {
+  background: transparent;
+  color: var(--font-color);
+}
+
+.ghost:hover:not(:disabled) {
+  background: var(--hover_background-color);
+}
+
+.icon {
+  width: 1.5em;
+  height: 1.5em;
+  fill: currentColor;
+  flex-shrink: 0;
+}

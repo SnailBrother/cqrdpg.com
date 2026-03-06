@@ -1,0 +1,100 @@
+/* --- 整体布局与视口 --- */
+.container {
+  min-width: 1200px;
+  width: 100%;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Microsoft YaHei', sans-serif;
+  background-color: #898e96;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* --- 顶部操作栏 --- */
+.topBar {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 24px;
+  background-color: rgb(151, 142, 142);
+  border-bottom: 1px solid #c05858;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.title { margin: 0; font-size: 18px; font-weight: 600; color: #262626; }
+
+.cellInfoDisplay { display: flex; align-items: center; border: 1px solid #d9d9d9; border-radius: 4px; overflow: hidden; font-size: 13px; }
+.cellInfoDisplay span { padding: 6px 10px; background-color: #b37070; border-right: 1px solid #d9d9d9; color: #595959; white-space: nowrap; }
+.cellInfoDisplay input { padding: 6px 10px; border: none; background-color: rgb(134, 124, 124); outline: none; width: 250px; font-family: inherit; }
+
+.buttonGroup { display: flex; gap: 12px; }
+.actionBtn { padding: 8px 16px; border-radius: 4px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; background: #1890ff; color: white; border: 1px solid #1890ff; }
+.actionBtn:hover { background: #40a9ff; border-color: #40a9ff; }
+.actionBtn[for="upload-btn"] { background: white; color: #595959; border: 1px solid #d9d9d9; }
+.actionBtn[for="upload-btn"]:hover { border-color: #1890ff; color: #1890ff; }
+
+/* --- 主内容区布局 --- */
+.mainLayout { flex-grow: 1; display: flex; gap: 24px; padding: 24px; overflow: hidden; }
+
+/* --- 左侧表单面板 --- */
+.formPanel { width: 300px; flex-shrink: 0; background: white; border-radius: 8px; border: 1px solid #e8e8e8; display: flex; flex-direction: column; transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; }
+.formHeader { flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid #f0f0f0; }
+.formHeader h3 { margin: 0; font-size: 16px; font-weight: 600; white-space: nowrap; transition: opacity 0.3s; }
+
+.collapseButton { background: transparent; border: none; cursor: pointer; padding: 4px; border-radius: 50%; display: flex; color: #8c8c8c; transition: transform 0.3s ease, background-color 0.2s ease; }
+.collapseButton:hover { background-color: #f0f0f0; color: #262626; }
+
+.formBody { padding: 20px; overflow-y: auto; transition: opacity 0.2s, visibility 0.2s; }
+
+/* 折叠状态 */
+.formPanel.collapsed { width: 56px; }
+.formPanel.collapsed .formHeader h3 { opacity: 0; }
+.formPanel.collapsed .collapseButton { transform: rotate(-90deg); }
+.formPanel.collapsed .formBody { opacity: 0; visibility: hidden; }
+
+.formRow { margin-bottom: 16px; }
+.formRow label { display: block; margin-bottom: 6px; font-size: 13px; color: #595959; }
+.controlInput { width: 100%; padding: 8px 12px; border: 1px solid #d9d9d9; border-radius: 4px; box-sizing: border-box; }
+.controlInput:focus { border-color: #1890ff; box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2); outline: none; }
+.noPlaceholders { color: #8c8c8c; padding: 20px 0; text-align: center; }
+
+/* --- 右侧预览面板 --- */
+.previewPanel { flex-grow: 1; background: rgb(233, 228, 228); border-radius: 8px; border: 1px solid #e8e8e8; overflow: hidden; display: flex; flex-direction: column; }
+
+.hotContainer { flex-grow: 1; position: relative; } /* 让Handsontable占满剩余空间 */
+.hotContainer :global(.handsontable) { /* 覆盖handsontable的默认样式 */ transition: none !important; }
+
+.sheetTabs {
+  flex-shrink: 0;
+  display: flex;
+  padding: 4px 8px;
+  background-color: #d3d6da;
+  border-top: 1px solid #d9d9d9;
+  overflow-x: auto;
+}
+.sheetTab {
+  padding: 6px 12px;
+  border: 1px solid transparent;
+  border-bottom: none;
+  background: none;
+  cursor: pointer;
+  font-size: 13px;
+  color: #595959;
+  white-space: nowrap;
+}
+.sheetTab:hover { background-color: #e6f7ff; }
+.sheetTab.active {
+  background-color: white;
+  border-color: #d9d9d9;
+  border-radius: 4px 4px 0 0;
+  color: #1890ff;
+  font-weight: 500;
+  position: relative;
+  top: -1px;
+}
+
+.loading { display: flex; align-items: center; justify-content: center; height: 100%; font-size: 16px; color: #8c8c8c; }
+ 

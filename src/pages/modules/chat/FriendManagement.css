@@ -1,0 +1,355 @@
+/* 好友请求管理界面样式 */
+.chat-friendmanagement {
+    background-color: #ffffff;
+    border: 0px solid #ddd;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+.chat-friendmanagement-title {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.chat-friendmanagement-current-user {
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+.chat-friendmanagement-search {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 5px;
+    flex-direction: column;
+}
+
+.chat-friendmanagement-search-div {
+    display: flex;
+    flex-direction: row;
+}
+
+
+.chat-friendmanagement-search-input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.chat-friendmanagement-search-button {
+    padding: 10px 20px;
+    background-color: #2ecc71;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.chat-friendmanagement-search-button:hover {
+    background-color: #27ae60;
+}
+
+.chat-friendmanagement-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.chat-friendmanagement-table-header {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}
+
+.chat-friendmanagement-table-row {
+    border-bottom: 1px solid #ddd;
+}
+
+.chat-friendmanagement-table-cell {
+    padding: 10px;
+}
+
+.chat-friendmanagement-accept-button {
+    padding: 5px 10px;
+    background-color: #2ecc7000;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.chat-friendmanagement-accept-button:hover {
+    background-color: #27af6000;
+}
+
+.chat-friendmanagement-reject-button {
+    padding: 5px 10px;
+    background-color: #e74d3c00;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.chat-friendmanagement-reject-button:hover {
+    background-color: #c03a2b00;
+}
+
+.chat-friendmanagement-no-requests {
+    font-size: 16px;
+    color: #777;
+}
+
+.chat-friendmanagement-loading {
+    font-size: 16px;
+    color: #777;
+}
+
+.chat-friendmanagement-error {
+    font-size: 16px;
+    color: red;
+}
+
+.chat-friendmanagement-add-button {
+    padding: 10px 20px;
+    background-color: #2ecc71;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* 我的好友列表和好友请求列表通用样式 */
+.chat-friendmanagement-current-friends,
+.chat-friendmanagement-requests-list {
+    margin-top: 2px;
+    min-height: 200px;
+    overflow-y: auto;
+}
+
+.chat-friendmanagement-subtitle {
+    font-size: 18px;
+    margin-bottom: 5px;
+    /* 调整标题与分隔线的间距 */
+}
+
+.chat-friendmanagement-divider {
+    border-bottom: 1px solid #ddd;
+    /* 分隔线 */
+    margin-bottom: 10px;
+}
+
+.chat-friendmanagement-current-friends ul,
+.chat-friendmanagement-requests-list ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.chat-friendmanagement-current-friends li,
+.chat-friendmanagement-requests-list li {
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.chat-friendmanagement-friend-item {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    /* 为删除按钮的绝对定位提供参考 */
+}
+
+/* #region start 我的现有好友列表管理*/
+.chat-friendmanagement-friends-list-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.chat-friendmanagement-friends-list-container:hover{
+background: #28292852;
+cursor: pointer;
+}
+.chat-friendmanagement-friends-list-container-friendnicknames {
+    color: #5e5e5e;
+    font-size: 12px;
+    margin-top: 10px;
+}
+
+
+
+.chat-friendmanagement-delete-button,
+.chat-friendmanagement-editfriendnote-button {
+
+    background-color: transparent;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    /* position: absolute;    */
+    /* 绝对定位 */
+    right: 0;
+    /* 靠右显示 */
+    display: none;
+    /* 初始隐藏 */
+    width: 20px;
+    height: 20px;
+    margin-right: 20px;
+margin-top: 10px;
+}
+
+
+.chat-friendmanagement-friend-item:hover .chat-friendmanagement-delete-button,
+.chat-friendmanagement-friend-item:hover .chat-friendmanagement-editfriendnote-button {
+    display: block;
+    /* 鼠标悬浮时显示 */
+}
+
+.chat-container-friendmanagement-delete-icon {
+    width: 1.2em;
+    height: 1.2em;
+    /* 设置图标高度 */
+    margin-right: 8px;
+    /* 图标和文字之间的间距 */
+    fill: #0bcc45;
+    /* 默认图标颜色 */
+
+}
+
+/*  #endregion end */
+
+
+
+.chat-friendmanagement-tabs {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 2px;
+    position: relative;
+    /* 为计数元素提供定位参考 */
+}
+
+.chat-friendmanagement-tabs button {
+    padding-right: 3px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    padding-left: 3px;
+    background-color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.chat-friendmanagement-tabs button.active {
+    background-color: #818382;
+    color: white;
+}
+
+.chat-friendmanagement-request-item div {
+    display: flex;
+    gap: 5px;
+}
+
+.chat-friendmanagement-title {
+
+    font-size: 20px;
+    /* 适中的字号 */
+    font-weight: bold;
+    /* 加粗字体 */
+    color: #000000;
+    /* 深蓝色，与央视风格的正式感匹配 */
+    text-align: left;
+    /* 使标题居中 */
+    margin: 2px 0;
+    /* 给标题增加上下边距 */
+    padding: 10px 0;
+    /* 给标题增加内边距，使其更突出 */
+    border-bottom: 1px solid #ccc;
+    /* 底部加一条深蓝色线条 */
+    letter-spacing: 1px;
+    /* 字母间距适当增大，增加清晰感 */
+}
+
+
+
+/* 头像 */
+.chat-friendmanagement-head-image {
+    text-align: center;
+    margin-bottom: 5px;
+
+}
+
+.chat-friendmanagement-head-image-img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.chat-friendmanagement-head-image-icon {
+    width: 80px;
+    height: 80px;
+    fill: #ccc;
+}
+
+/* 上传图片按钮 */
+.chat-friendmanagement-upload-button {
+    margin-top: 10px;
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.chat-friendmanagement-upload-button:hover {
+    background-color: #0056b3;
+}
+
+
+
+.chat-friendmanagement-request-count {
+    display: inline-block;
+    position: absolute;
+    top: -8px;
+    /* 向上偏移，根据实际效果调整 */
+    left: 125px;
+    /* 向右偏移，根据实际效果调整 */
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 15px;
+    z-index: 1;
+}
+
+/* 编辑昵称输入框、保存和取消按钮样式 */
+.chat-friendmanagement-setnewnicknames-input {
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-right: 5px;
+    width: 120px;
+    /* 根据需要调整宽度 */
+}
+
+.chat-friendmanagement-setnewnicknames-button {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.chat-friendmanagement-setnewnicknames-button {
+    background-color: #2ecc71;
+    /* 保存按钮背景色 */
+    color: white;
+}
+
+.chat-friendmanagement-setnewnicknames-button:hover {
+    background-color: #27ae60;
+    /* 保存按钮悬停背景色 */
+}

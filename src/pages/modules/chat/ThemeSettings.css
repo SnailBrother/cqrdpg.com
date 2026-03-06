@@ -1,0 +1,164 @@
+/* 整体容器 */
+.themesettings-container {
+    max-width: 400px;
+    margin: 30px auto;
+    padding: 0px;
+    /* border: 1px solid #ccc; */
+    border-radius: 8px;
+    /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
+    background-color: #fff;
+    /* 新增：在内容超出容器时显示滚动条 */
+    overflow: auto; 
+    /* 可根据需要设置最大高度，确保在垂直方向内容过多时能滚动 */
+    max-height: calc(100vh - 100px); 
+}
+
+/* 标题 */
+.themesettings-title {
+    text-align: center;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+/* 内容区域 */
+.themesettings-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    /* 可根据需要设置固定高度，确保在内容过多时能滚动 */
+    height: calc(100% - 40px); 
+    overflow-y: auto;
+}
+
+/* 每个设置板块 */
+.themesettings-section {
+    /* border: 1px solid #eee; */
+    border-radius: 8px;
+    position: relative; /* 设置相对定位 */
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.themesettings-section h2 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #555;
+}
+.themesettings-item-container {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+/* 设置项 */
+.themesettings-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+    
+}
+
+.themesettings-item label {
+    width: 80px;
+    font-size: 14px;
+    color: #666;
+}
+
+.themesettings-item input[type="color"] {
+    width: 50px;
+    height: 30px;
+    border: none;
+    cursor: pointer;
+    margin-right: 10px;
+    border-radius: 10px;
+}
+
+.themesettings-color-input {
+    flex: 1;
+    height: 40px;
+    padding: 0 10px;
+    width:70px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+/* 背景图片设置区域 */
+.themesettings-background-image {
+    margin-top: 15px;
+}
+
+.themesettings-image-preview {
+    width: 150px;
+    height: 150px;
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.themesettings-image-preview span {
+    font-size: 14px;
+    color: #666;
+}
+
+.themesettings-preview-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.themesettings-image-picker {
+    margin-top: 10px;
+}
+
+.themesettings-file-input {
+    display: none; /* 隐藏文件输入框 */
+}
+
+/* 复选框样式 */
+.themesettings-item input[type="checkbox"] {
+    margin-left: 10px;
+    cursor: pointer;
+}
+/* 将父 div 设置为 Flexbox 布局 */
+.themesettings-save-button-container {
+    display: flex;
+    justify-content: center; /* 水平居中 */
+    align-items: center; /* 垂直居中（如果需要） */
+    height: 100%; /* 或者设置具体的高度 */
+}
+
+/* 保存按钮 */
+.themesettings-save-button {
+    display: block;
+    width: 80%;
+    height: 40px;
+    margin-top: 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    
+}
+
+.themesettings-save-button:hover {
+    background-color: #0056b3;
+}
+
+.themesettings-section-title {
+    font-size: 15px;
+    color: #ccc;
+    /* border-bottom: 1px solid #ccc; */
+    position: relative; /* 设置相对定位 */
+    top: 20px;
+}

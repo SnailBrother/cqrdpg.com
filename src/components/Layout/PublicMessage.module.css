@@ -1,0 +1,248 @@
+/* src/components/UI/PublicMessage/PublicMessage.module.css */
+
+/* #region 公共消息容器 */
+.publicMessage {
+  width: 100%;
+  margin-bottom: 16px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+.publicMessage:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
+}
+/* #endregion */
+
+/* #region 广告主容器 */
+.adContainer {
+  position: relative;
+  padding: 20px;
+  min-height: 140px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* 关闭按钮 */
+.closeButton {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(10px);
+}
+
+.closeButton:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.closeIcon {
+  width: 16px;
+  height: 16px;
+}
+/* #endregion */
+
+/* #region 广告内容区域 */
+.adContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* 广告标签 */
+.adBadge {
+  align-self: flex-start;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-shadow: none;
+}
+
+/* 广告标题区域 */
+.adHeader {
+  margin-bottom: 8px;
+}
+
+.adTitle {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 0 4px 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.adSubtitle {
+  font-size: 14px;
+  margin: 0;
+  opacity: 0.9;
+  font-weight: 500;
+}
+
+/* 广告描述 */
+.adDescription {
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+  opacity: 0.95;
+  flex: 1;
+}
+/* #endregion */
+
+/* #region 广告底部区域 */
+.adFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
+
+/* 行动按钮 */
+.actionButton {
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  padding: 8px 20px;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #333;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.actionButton:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* 截止时间 */
+.deadline {
+  font-size: 12px;
+  opacity: 0.8;
+  font-weight: 500;
+}
+/* #endregion */
+
+/* #region 轮播控制 */
+.carouselControls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.carouselButton {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.carouselButton:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.carouselDots {
+  display: flex;
+  gap: 6px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dot.active {
+  background: rgba(255, 255, 255, 0.9);
+  transform: scale(1.2);
+}
+
+.dot:hover {
+  background: rgba(255, 255, 255, 0.7);
+}
+/* #endregion */
+
+/* #region 移动端适配 */
+@media (max-width: 768px) {
+  .publicMessage {
+    margin-bottom: 12px;
+    border-radius: 8px;
+  }
+
+  .adContainer {
+    padding: 16px;
+    min-height: 120px;
+  }
+
+  .adTitle {
+    font-size: 18px;
+  }
+
+  .adSubtitle {
+    font-size: 13px;
+  }
+
+  .adDescription {
+    font-size: 13px;
+  }
+
+  .actionButton {
+    padding: 6px 16px;
+    font-size: 13px;
+  }
+
+  .adFooter {
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+
+  .deadline {
+    align-self: flex-end;
+  }
+}
+
+@media (max-width: 480px) {
+  .adContainer {
+    padding: 12px;
+  }
+
+  .adTitle {
+    font-size: 16px;
+  }
+
+  .adDescription {
+    font-size: 12px;
+  }
+}
+/* #endregion */

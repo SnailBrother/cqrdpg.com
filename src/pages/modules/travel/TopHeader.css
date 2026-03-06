@@ -1,0 +1,374 @@
+/* TravelHeader.css */
+.travel-header {
+  /* background: rgba(255, 255, 255, 0.98); */
+  /* box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05); */
+  margin-bottom: 30px;
+}
+
+.travel-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 30px;
+}
+
+.travel-logo {
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.travel-logo-main {
+  font-family: 'Georgia', serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: #2c3e50;
+  letter-spacing: 1px;
+}
+
+.travel-logo-sub {
+  font-size: 12px;
+  color: #7f8c8d;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.travel-nav {
+  display: flex;
+  gap: 30px;
+}
+
+.travel-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  padding: 5px 0;
+  position: relative;
+  color: #7f8c8d;
+  transition: all 0.3s ease;
+}
+
+.travel-nav-item.travel-active {
+  color: #3498db;
+}
+
+.travel-nav-item.travel-active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(to right, #3498db, #2ecc71);
+  border-radius: 2px;
+}
+
+.travel-nav-item:hover {
+  color: #3498db;
+  transform: translateY(-2px);
+}
+
+.travel-icon {
+  width: 20px;
+  height: 20px;
+  margin-bottom: 4px;
+  position: relative;
+}
+
+/* 自定义图标设计 */
+.travel-icon-map::before {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+}
+
+.travel-icon-map::after {
+  content: "";
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: currentColor;
+  border-radius: 50%;
+  top: 5px;
+  left: 5px;
+}
+
+.travel-icon-camera::before {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 14px;
+  border: 2px solid currentColor;
+  border-radius: 3px;
+  top: 3px;
+}
+
+.travel-icon-camera::after {
+  content: "";
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  top: -2px;
+  left: 5px;
+}
+
+.travel-icon-bookmark::before {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 14px solid currentColor;
+  top: 3px;
+}
+
+.travel-icon-bookmark::after {
+  content: "";
+  position: absolute;
+  width: 12px;
+  height: 10px;
+  background: white;
+  top: 7px;
+  left: 4px;
+}
+
+.travel-icon-search::before {
+  content: "";
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  top: 2px;
+  left: 2px;
+}
+
+.travel-icon-search::after {
+  content: "";
+  position: absolute;
+  width: 2px;
+  height: 8px;
+  background: currentColor;
+  transform: rotate(-45deg);
+  bottom: 1px;
+  right: 0px;
+}
+
+.travel-icon-user::before {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: 2px solid white;
+  border-radius: 50%;
+  top: 2px;
+  left: 2px;
+}
+
+.travel-icon-user::after {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 8px;
+  border: 2px solid white;
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  bottom: 0;
+  left: 2px;
+}
+
+.travel-nav-item span {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.travel-search {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.travel-search-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.travel-icon-search {
+  position: absolute;
+  left: 12px;
+  color: #95a5a6;
+}
+
+.travel-search-input {
+  padding: 10px 15px 10px 40px;
+  border: none;
+  background: rgba(236, 240, 241, 0.6);
+  border-radius: 25px;
+  width: 200px;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  color: #2c3e50;
+}
+
+.travel-search-input:focus {
+  outline: none;
+  width: 250px;
+  background: rgba(236, 240, 241, 0.9);
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.travel-user-profile {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3498db, #2ecc71);
+  border: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.travel-user-profile:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .travel-container {
+    padding: 15px 20px;
+  }
+  
+  .travel-logo-main {
+    font-size: 22px;
+  }
+  
+  .travel-nav {
+    gap: 15px;
+  }
+  
+  .travel-nav-item span {
+    display: none;
+  }
+  
+  .travel-search-input {
+    width: 150px;
+  }
+  
+  .travel-search-input:focus {
+    width: 180px;
+  }
+}
+
+@media (max-width: 480px) {
+  .travel-logo-sub {
+    display: none;
+  }
+  
+  .travel-search-input {
+    display: none;
+  }
+  
+  .travel-icon-search {
+    position: static;
+    color: #7f8c8d;
+  }
+}
+
+
+/* 音乐播放按钮 */
+/* Add to TopHeader.css */
+
+.travel-music-player {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #9b59b6, #e74c3c);
+  border: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-right: 10px;
+}
+
+.travel-music-player:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 0 3px rgba(155, 89, 182, 0.3);
+}
+
+/* Play icon */
+.travel-icon-play::before {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-left: 14px solid white;
+  left: 4px;
+}
+
+/* Pause icon */
+.travel-icon-pause::before {
+  content: "";
+  position: absolute;
+  width: 4px;
+  height: 16px;
+  background: white;
+  left: 6px;
+}
+
+.travel-icon-pause::after {
+  content: "";
+  position: absolute;
+  width: 4px;
+  height: 16px;
+  background: white;
+  right: 6px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .travel-music-player {
+    width: 35px;
+    height: 35px;
+    margin-right: 5px;
+  }
+}
+
+@media (max-width: 480px) {
+  .travel-music-player {
+    width: 30px;
+    height: 30px;
+  }
+  
+  .travel-icon-play::before {
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+    border-left: 10px solid white;
+    left: 5px;
+  }
+  
+  .travel-icon-pause::before,
+  .travel-icon-pause::after {
+    width: 3px;
+    height: 12px;
+  }
+}

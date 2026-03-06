@@ -1,0 +1,33 @@
+/* TypingAnimation.css */
+.typinganimation-container * {
+    margin: 0;
+    padding: 0;
+  }
+  
+  .typinganimation-container {
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+  }
+  
+  .typinganimation-text {
+    position: relative;
+    color: #e66a6a;
+    letter-spacing: 3px;
+    white-space: nowrap;
+    -webkit-box-reflect: below 1px linear-gradient(transparent 30%, rgba(0, 0, 0, 0.05));
+  }
+  
+  .typinganimation-cursor {
+    display: inline-block;
+    width: 2px;
+    margin-left: 2px;
+    animation: typinganimation-blink 1s step-end infinite;
+  }
+  
+  @keyframes typinganimation-blink {
+    from, to { opacity: 0; }
+    50% { opacity: 1; }
+  }

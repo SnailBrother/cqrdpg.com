@@ -1,0 +1,611 @@
+.temmanage-app-container {
+  width: 95%;
+  max-width: 2400px;
+  margin: 0 auto;
+  padding: 20px 0;
+  min-width: 520px;
+  background-color: #fff;
+  color: #333;
+ 
+}
+
+/* Header styles */
+.temmanage-header {
+  display: flex;
+  justify-content: center;
+  padding: 20px 0;
+  margin-bottom: 30px;
+  min-width: 520px;
+  border-bottom: 1px solid #eee;
+}
+
+
+/* #region start 导航条样式 */
+/* Navigation styles */
+.temmanage-header {
+  background-color: #fff;
+  padding: 15px 0;
+  /* box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); */
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.temmanage-nav ul {
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  gap: 2px;
+}
+
+.temmanage-nav-item {
+  padding: 12px 24px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  color: #555;
+  position: relative;
+  transition: all 0.3s ease;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.temmanage-nav-item:hover {
+  color: #1a73e8;
+  background-color: #f5f5f5;
+}
+
+.temmanage-nav-item.active {
+  color: #1a73e8;
+  font-weight: 600;
+}
+
+.temmanage-nav-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 3px;
+  background-color: #1a73e8;
+  border-radius: 3px;
+}
+
+/* Optional: Add animation for the active indicator */
+.temmanage-nav-item::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%) scaleX(0);
+  width: 60%;
+  height: 3px;
+  background-color: #1a73e8;
+  border-radius: 3px;
+  transition: transform 0.3s ease;
+}
+
+.temmanage-nav-item:hover::after {
+  transform: translateX(-50%) scaleX(1);
+}
+/*  #endregion end */
+ 
+/* Main content */
+.temmanage-main-content {
+  text-align: center;
+  min-width: 520px;
+  padding: 0 20px;
+}
+
+ 
+
+.temmanage-search-box {
+  display: flex;
+  justify-content: right;
+  gap: 15px;
+  margin-bottom: 40px;
+  min-width: 520px;
+}
+
+.temmanage-search-input {
+  padding: 12px 20px;
+  width: 200px;
+  border: 1px solid #ddd;
+  border-radius: 30px;
+  background-color: #fff;
+  color: #333;
+  font-size: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s;
+}
+
+.temmanage-search-input:focus {
+  outline: none;
+  border-color: #1a73e8;
+  box-shadow: 0 2px 12px rgba(26, 115, 232, 0.2);
+}
+
+/* .temmanage-search-btn {
+  padding: 12px 25px;
+  background-color: #1a73e8;
+  color: #fff;
+  border: none;
+  border-radius: 30px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.temmanage-search-btn:hover {
+  background-color: #0d62c9;
+  transform: translateY(-2px);
+} */
+
+/* Flex container */
+.temmanage-flex-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+  min-width: 520px;
+}
+
+/* Card styles */
+.temmanage-card {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 25px;
+  border: 1px solid #e0e0e0;
+  height: 550px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  min-width: 500px;
+  flex: 1 1 500px;
+  max-width: 600px;
+}
+
+.temmanage-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  border-color: #c2c2c2;
+}
+
+.temmanage-card-selected {
+  border: 2px solid #1a73e8;
+  background-color: #f8f9fa;
+}
+
+/* Folder icon */
+.temmanage-folder-iconcontainer {
+  margin-bottom: 2px;
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  text-align: center;
+  flex-direction: row;
+  margin-left: 20px;
+}
+.temmanage-folder-iconcontainer-icon {
+   width: 3em;
+    height: 3em;
+    vertical-align: -0.15em;
+    fill: currentColor;
+    overflow: hidden;
+    padding-left: 2px;
+    text-align: center;
+    margin-right: 2px;
+}
+ /* 文件预览图标 */
+ .temmanage-filepreview-icon {
+  width: 2em;
+    height: 2em;
+    vertical-align: -0.15em;
+    fill: currentColor;
+    overflow: hidden;
+    padding-left: 0px;
+    text-align: center;
+    margin-right: 0px;
+ }
+
+ .temmanage-Viewingmethod-icon {
+  width: 2em;
+    height: 2em;
+    vertical-align: -0.15em;
+    fill: currentColor;
+    overflow: hidden;
+    padding-left: 0px;
+    text-align: center;
+    margin-right: 0px;
+}
+
+.temmanage-folder-name {
+  font-size: 15px;
+  margin-bottom: 20px;
+  color: #333;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 600;
+  margin-top: 20px;
+}
+
+/* File list container */
+.temmanage-file-list-container {
+  flex: 1;
+  overflow-y: auto;
+  margin-top: 15px;
+  padding-right: 15px;
+  min-width: 460px;
+}
+
+/* Custom scrollbar */
+.temmanage-file-list-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.temmanage-file-list-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.temmanage-file-list-container::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.temmanage-file-list-container::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* File list */
+.temmanage-file-list {
+  list-style: none;
+  min-width: 460px;
+  padding: 0;
+  margin: 0;
+}
+
+.temmanage-file-item {
+  padding: 15px;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f8f9fa;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  min-width: 460px;
+}
+
+.temmanage-file-item:hover {
+  background-color: #e9ecef;
+}
+
+.temmanage-file-selected {
+  background-color: #e3f2fd;
+  font-weight: bold;
+}
+
+.temmanage-file-content-left {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.temmanage-file-content-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.temmanage-file-icon {
+  margin-right: 15px;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.temmanage-file-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 15px;
+  color: #333;
+}
+
+/* Download button */
+.temmanage-download-options {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 5;
+}
+
+.temmanage-download-btn {
+  padding: 10px 25px;
+  background-color: #1a73e8;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s;
+  font-size: 16px;
+}
+
+.temmanage-download-btn:hover {
+  background-color: #0d62c9;
+  transform: scale(1.05);
+}
+
+/* Tooltip styles */
+.temmanage-info-tooltip {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.temmanage-tooltip-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background-color: #e0e0e0;
+  color: #333;
+  border-radius: 50%;
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+.temmanage-info-tooltip:hover .temmanage-tooltip-icon {
+  background-color: #1a73e8;
+  color: #fff;
+}
+
+/* Top tooltip */
+.temmanage-top-tooltip {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  max-width: 700px;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 15px;
+  z-index: 1000;
+  opacity: 1;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* File tooltip */
+.temmanage-file-tooltip {
+  position: relative;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.temmanage-file-tooltip .temmanage-tooltip-icon {
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
+}
+
+/* File actions */
+.temmanage-file-actions {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.temmanage-action-btn {
+  border: none;
+  border-radius: 4px;
+  padding: 6px 6px;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.temmanage-pdf-btn {
+  background-color: transparent;
+  color: white;
+}
+
+.temmanage-word-btn {
+  background-color: transparent;
+  color: white;
+}
+
+.temmanage-action-btn:hover {
+  opacity: 0.9;
+  transform: scale(1.05);
+}
+
+/* Loading and error states */
+.temmanage-loading {
+  color: #1a73e8;
+  font-size: 24px;
+  text-align: center;
+  padding: 50px;
+}
+
+.temmanage-error {
+  color: #e53935;
+  font-size: 24px;
+  text-align: center;
+  padding: 50px;
+}
+
+.temmanage-no-results {
+  width: 100%;
+  text-align: center;
+  padding: 50px;
+  font-size: 18px;
+  color: #666;
+}
+
+/* Modal styles */
+.temmanage-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: auto;
+  padding: 20px;
+}
+
+.temmanage-modal-container {
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  width: 100%;
+  height: 100%;
+  
+  padding: 20px;
+  position: relative;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.temmanage-modal-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 1001;
+  transition: all 0.3s;
+}
+
+.temmanage-modal-close:hover {
+  background: #e53935;
+  color: #fff;
+  border-color: #e53935;
+}
+
+/* Responsive design */
+@media (max-width: 1600px) {
+  .temmanage-flex-container {
+    justify-content: center;
+  }
+  .temmanage-card {
+    flex: 1 1 500px;
+    max-width: 500px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .temmanage-card {
+    flex: 1 1 500px;
+    max-width: 500px;
+  }
+}
+
+@media (max-width: 1100px) {
+  .temmanage-card {
+    flex: 1 1 500px;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .temmanage-app-container {
+    width: 98%;
+  }
+  .temmanage-search-input {
+    width: 70%;
+  }
+  .temmanage-card {
+    min-width: 450px;
+  }
+  .temmanage-file-list-container {
+    min-width: 400px;
+  }
+  .temmanage-file-item {
+    min-width: 400px;
+  }
+}
+
+@media (max-width: 576px) {
+  .temmanage-nav ul {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .temmanage-card {
+    min-width: 350px;
+    padding: 20px;
+    height: 500px;
+  }
+  .temmanage-file-list-container {
+    min-width: 300px;
+  }
+  .temmanage-file-item {
+    min-width: 300px;
+    padding: 12px;
+  }
+  .temmanage-file-name {
+    min-width: 180px;
+  }
+}
+
+@media (max-width: 480px) {
+  .temmanage-search-box {
+    flex-direction: column;
+    align-items: center;
+  }
+  .temmanage-search-input {
+    width: 100%;
+  }
+  .temmanage-top-tooltip {
+    width: 90%;
+    padding: 10px;
+    font-size: 14px;
+  }
+  .temmanage-card {
+    min-width: 320px;
+  }
+  .temmanage-file-list-container {
+    min-width: 280px;
+  }
+  .temmanage-file-item {
+    min-width: 280px;
+  }
+}

@@ -1,0 +1,143 @@
+/* src/components/UI/Tabs/Tabs.module.css */
+/* src/components/UI/Tabs/Tabs.module.css */
+
+/* 标签页容器主样式 - 包含所有标签的容器 */
+.tabsContainer {
+  /* background: var(--background-color); */
+  background-color: transparent;
+  border-bottom: 1px solid var(--border_color);
+  padding: 0 10px;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+/* 标签页列表容器 - 水平排列所有标签 */
+.tabsList {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  overflow-x: auto;
+}
+
+/* 单个标签页基础样式 */
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px solid var(--border_color);
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 100px;
+  max-width: 200px;
+  position: relative;
+  color: var(--font-color);
+  background: var(--secondary-background-color);
+  height: 32px;
+  text-align: left;
+}
+
+/* 标签页悬停状态 */
+.tab:hover {
+  background: var(--hover_background-color);
+  color: var(--hover_font-color);
+  border-color: var(--hover_border_color);
+}
+
+/* 标签页激活/选中状态 */
+.tab.active {
+  background: var(--background-color);
+  border-color: var(--hover_border_color);
+  color: var(--hover_font-color);
+  font-weight: 500;
+}
+
+/* 标签页图标样式 */
+.tabIcon {
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.tabSvgIcon {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
+}
+
+/* 标签页文字标签样式 */
+.tabLabel {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 关闭按钮基础样式 */
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 2px;
+  border-radius: 2px;
+  color: var(--secondary-font-color);
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.7;
+  transition: all 0.2s ease;
+}
+
+/* 关闭按钮悬停状态 */
+.closeButton:hover {
+  background: var(--danger-color, #dc3545);
+  color: white;
+  opacity: 1;
+}
+
+/* 非悬停状态下隐藏关闭按钮 */
+.tab:not(:hover) .closeButton {
+  opacity: 0;
+}
+
+/* 悬停状态下显示关闭按钮 */
+.tab:hover .closeButton {
+  opacity: 0.7;
+}
+
+/* 只有一个标签页时隐藏所有关闭按钮 */
+.tabsList > :only-child .closeButton {
+  display: none;
+}
+
+/* ========== 滚动条样式 ========== */
+
+/* 标签列表滚动条 */
+.tabsList::-webkit-scrollbar {
+  height: 4px;
+}
+
+/* 标签列表滚动条轨道 */
+.tabsList::-webkit-scrollbar-track {
+  background: var(--secondary-background-color);
+}
+
+/* 标签列表滚动条滑块 */
+.tabsList::-webkit-scrollbar-thumb {
+  background: var(--border_color);
+  border-radius: 2px;
+}
+
+/* 标签列表滚动条滑块悬停状态 */
+.tabsList::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary-font-color);
+}

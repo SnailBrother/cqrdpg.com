@@ -1,0 +1,87 @@
+.card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.cardHeader {
+  padding: 16px 20px;
+  border-bottom: 1px solid #e1e5e9;
+  background: #f8f9fa;
+}
+
+.cardTitle {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.cardSubtitle {
+  margin: 4px 0 0 0;
+  font-size: 0.875rem;
+  color: #666;
+}
+
+.cardBody {
+  padding: 20px;
+}
+
+.cardFooter {
+  padding: 16px 20px;
+  border-top: 1px solid #e1e5e9;
+  background: #f8f9fa;
+}
+
+/* 卡片变体 */
+.bordered {
+  border: 1px solid #e1e5e9;
+  box-shadow: none;
+}
+
+.shadowNone {
+  box-shadow: none;
+}
+
+.shadowSmall {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.shadowLarge {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* 卡片尺寸 */
+.small .cardBody {
+  padding: 16px;
+}
+
+.medium .cardBody {
+  padding: 20px;
+}
+
+.large .cardBody {
+  padding: 24px;
+}
+
+/* 悬停效果 */
+.hoverable:hover {
+  transform: translateY(-2px);
+}
+
+/* 减少动画支持 */
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+  
+  .hoverable:hover {
+    transform: none;
+  }
+}

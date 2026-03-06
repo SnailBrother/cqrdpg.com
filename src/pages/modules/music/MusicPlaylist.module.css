@@ -1,0 +1,262 @@
+/* src/components/modules/music/MusicPlaylist.module.css */
+
+.playlist {
+    padding: 24px;
+    background-color: var(--secondary-background-color, #f8f9fa);  
+    min-height: 100%;
+    box-sizing: border-box;
+}
+
+.playlistSection {
+    max-width: 1200px;
+    margin: 0 auto;
+    min-height: 400px; /* 确保有最小高度 */
+}
+
+/* =================================== */
+/*          头部核心布局                */
+/* =================================== */
+.sectionHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+/* 1. 标题样式 - 固定在左侧 */
+.sectionTitle {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--font-color, #212529);
+    margin: 0;
+    white-space: nowrap;
+    flex-shrink: 0;
+    text-align: left;
+    min-width: 150px;
+}
+
+/* 2. 右侧容器 - 占据剩余空间并右对齐 */
+.sectionHeaderRight {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 16px;
+    flex: 1;
+    min-width: 0;
+}
+
+/* 搜索框容器样式 */
+.searchContainer {
+    position: relative;
+    flex: 1;
+    max-width: 400px;
+    min-width: 200px;
+}
+
+.searchIcon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    color: var(--secondary-font-color, #6c757d);
+    z-index: 1;
+}
+
+.searchInput {
+    width: 100%;
+    padding: 9px 16px 9px 40px;
+    font-size: 14px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    background-color: var(--secondary-background-color);
+    color: var(--font-color, #212529);
+    outline: none;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+    box-sizing: border-box;
+}
+
+.searchInput:focus {
+    background-color: var(--background-color, #fff);
+    border-color: var(--focus-border-color, #80bdff);
+}
+
+.searchInput::placeholder {
+    color: var(--secondary-font-color, #6c757d);
+}
+
+/* 3. 视图模式切换按钮 */
+.viewModeToggle {
+    display: flex;
+    background-color: var(--secondary-background-color);
+    border-radius: 8px;
+    padding: 4px;
+    gap: 2px;
+    flex-shrink: 0;
+}
+
+.viewModeButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: none;
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--secondary-font-color, #6c757d);
+    transition: all 0.2s ease;
+}
+
+.viewModeButton:hover {
+    background-color: var(--background-color, #fff);
+    color: var(--font-color, #212529);
+}
+
+.viewModeButton.active {
+    background-color: var(--background-color, #fff);
+    color: var(--primary-color, #007bff);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.viewModeButton svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* =================================== */
+/*      内容区域样式                   */
+/* =================================== */
+.contentArea {
+    position: relative;
+    min-height: 200px;
+}
+
+/* =================================== */
+/*      加载状态样式                   */
+/* =================================== */
+
+/* 初始加载和搜索加载 - 全屏覆盖 */
+.loadingOverlay {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+    padding: 40px 20px;
+}
+
+/* 滚动加载 - 在列表底部 */
+.loadingMore {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+}
+
+/* 错误状态 */
+.error {
+    text-align: center;
+    padding: 80px 20px;
+    color: #e74c3c;
+    font-size: 16px;
+}
+
+/* 无更多数据 */
+.noMoreData {
+    text-align: center;
+    padding: 20px;
+    color: #aaa;
+    font-size: 14px;
+}
+
+/* 无数据状态 */
+.noData {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--secondary-font-color, #6c757d);
+    font-size: 16px;
+}
+
+/* =================================== */
+/*           移动端适配                */
+/* =================================== */
+@media (max-width: 768px) {
+    .playlist {
+        padding: 16px;
+    }
+    
+    .sectionHeader {
+        gap: 12px;
+    }
+
+    .sectionTitle {
+        font-size: 20px;
+        min-width: 90px;
+        max-width: 100px;
+    }
+    
+    .sectionHeaderRight {
+        gap: 12px;
+        justify-content: flex-start;
+    }
+    
+    .searchContainer {
+        min-width: 150px;
+        max-width: 250px;
+    }
+
+    .searchInput {
+        font-size: 14px;
+        padding: 8px 12px 8px 36px;
+    }
+    
+    .searchIcon {
+        left: 12px;
+        width: 16px;
+        height: 16px;
+    }
+
+    .loadingOverlay,
+    .loadingMore {
+        min-height: 200px;
+        padding: 30px 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .sectionHeader {
+        gap: 8px;
+    }
+
+    .sectionTitle {
+        font-size: 18px;
+        max-width: 100px;
+    }
+    
+    .sectionHeaderRight {
+        gap: 8px;
+    }
+    
+    .searchContainer {
+        max-width: 180px;
+    }
+    
+    .viewModeButton {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .viewModeButton svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .loadingOverlay,
+    .loadingMore {
+        min-height: 150px;
+        padding: 20px 12px;
+    }
+}

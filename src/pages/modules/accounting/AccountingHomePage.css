@@ -1,0 +1,231 @@
+/* #region start */
+.accountinghomepage-tab-content {
+    padding: 10px;
+    height: calc(100dvh - 60px);
+    display: flex;
+    flex-direction: column;
+    background-color: transparent;
+}
+
+@media (max-width: 1024px) {
+
+    .accountinghomepage-tab-content {
+        height: calc(100dvh - 60px)
+    }
+}
+
+.accountinghomepage-summary {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    align-items: center;
+}
+
+.accountinghomepage-date-selector {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+}
+
+.accountinghomepage-date-year {
+    font-size: 0.8rem;
+    color: #757575;
+}
+
+.accountinghomepage-date-month {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.accountinghomepage-summary-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    text-align: center;
+}
+
+.accountinghomepage-summary-label {
+    font-size: 0.8rem;
+    color: #757575;
+    margin-bottom: 5px;
+}
+
+.accountinghomepage-summary-value {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.accountinghomepage-summary-value.income {
+    color: #009900;
+}
+
+.accountinghomepage-summary-value.expense {
+    color: #ff3333;
+}
+
+.accountinghomepage-summary-value.balance {
+    color: #007bff;
+}
+
+.accountinghomepage-category-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    flex: 1;
+    overflow-y: auto;
+}
+
+.accountinghomepage-income-summary,
+.accountinghomepage-expense-summary {
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.accountinghomepage-summary-title {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 0.8rem;
+    color: #504f4fcc;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 5px;
+}
+
+.accountinghomepage-category-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    color: #000000;
+}
+
+.accountinghomepage-category-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.accountinghomepage-category-item:last-child {
+    border-bottom: none;
+}
+
+.accountinghomepage-category-name {
+    font-weight: bold;
+}
+
+.accountinghomepage-category-name.income-category-name {
+    color: #009900;
+}
+
+.accountinghomepage-category-name.expense-category-name {
+    color: #ff3333;
+}
+
+.accountinghomepage-category-amount {
+    font-weight: bold;
+}
+
+.accountinghomepage-category-amount.income {
+    color: #009900;
+}
+
+.accountinghomepage-category-amount.expense {
+    color: #ff3333;
+}
+
+.accountinghomepage-no-data {
+    color: #757575;
+    text-align: center;
+    padding: 10px 0;
+}
+
+.accountinghomepage-loading,
+.accountinghomepage-error {
+    text-align: center;
+    padding: 20px;
+    color: #757575;
+}
+
+.accountinghomepage-error {
+    color: #ff3333;
+}
+
+.accountinghomepage-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    z-index: 1000;
+}
+
+.accountinghomepage-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.accountinghomepage-modal-title {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1rem;
+    color: #333;
+}
+
+.accountinghomepage-modal-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #ddd;
+    cursor: pointer;
+}
+
+.accountinghomepage-date-filter {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    gap: 15px;
+}
+
+.accountinghomepage-date-filter-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.accountinghomepage-date-filter-item label {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.accountinghomepage-date-filter-item input {
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/*  #endregion end */

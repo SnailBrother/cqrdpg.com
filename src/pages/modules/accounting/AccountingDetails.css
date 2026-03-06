@@ -1,0 +1,281 @@
+/* 容器样式 */
+.accountingdetails-container {
+    padding: 16px;
+    max-width: 1200px;
+    margin: 0 auto;
+    color: var(--font-color);
+    
+}
+
+/* 头部样式 */
+.accountingdetails-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+/* 日期选择样式 */
+.accountingdetails-date-selector {
+    cursor: pointer;
+    color: var(--font-color);
+}
+/* 汇总显示的日期 */
+.accountingdetails-date {
+    color: var(--font-color);
+}
+.date-display-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--font-color);
+}
+
+.accountingdetails-date-year {
+    font-size: 14px;
+    /* color: #757575; */
+    color: var(--font-color);
+}
+
+.accountingdetails-date-month {
+    font-size: 18px;
+    font-weight: bold;
+    /* color: #333; */
+    color: var(--font-color);
+}
+
+/* 统计样式 */
+.accountingdetails-summary {
+    display: flex;
+    gap: 24px;
+}
+
+.accountingdetails-summary-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 80px;
+}
+
+.accountingdetails-summary-amount {
+    font-weight: bold;
+    font-size: 16px;
+    margin-top: 4px;
+    color: var(--font-color);
+}
+
+.accountingdetails-summary-amount.income {
+    color: #FA5151; /* 红色表示盈利 */
+}
+
+.accountingdetails-summary-amount.expense {
+    color: #07C160; /* 绿色表示亏损 */
+}
+
+/* 日期分组样式 */
+.accountingdetails-date-group {
+    margin-bottom: 20px;
+}
+
+.accountingdetails-date-summary {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 8px;
+}
+
+/* 明细列表样式 */
+.accountingdetails-details-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.accountingdetails-details-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 12px 0;
+    /* 不要边框 */
+    border-bottom: 1px solid #f5f5f52f;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.accountingdetails-details-item:hover {
+    background-color: #f9f9f957;
+}
+
+.accountingdetails-details-category {
+    display: flex;
+    align-items: center;
+    flex: 0 0 120px;
+    color: var(--font-color);
+}
+
+.accountingdetails-details-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+}
+
+.accountingdetails-details-category-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+/* 详细描述 */
+.accountingdetails-details-description {
+    flex: 1;
+    padding: 0 12px;
+    /* color: #666; */
+    color: var(--font-color);
+    font-size: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.accountingdetails-details-amount {
+    flex: 0 0 80px;
+    text-align: right;
+    font-weight: bold;
+}
+
+.accountingdetails-details-amount.income {
+     color: #FA5151;
+      /* 红色表示收入 */
+}
+
+.accountingdetails-details-amount.expense {
+   
+    color: #07C160; 
+    /* 绿色表示支出 */
+}
+
+/* 模态框样式 */
+.accountingdetails-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    z-index: 1000;
+}
+
+.accountingdetails-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.accountingdetails-modal-title {
+    margin-top: 0;
+    margin-bottom: 16px;
+    font-size: 16px;
+    color: #333;
+}
+
+.accountingdetails-modal-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    padding: 4px 8px;
+    border: none;
+    background: none;
+    font-size: 16px;
+    cursor: pointer;
+    color: #888;
+}
+
+.accountingdetails-date-filter {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.accountingdetails-date-filter-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.accountingdetails-date-filter-item label {
+    font-size: 14px;
+    color: #555;
+}
+
+.accountingdetails-date-filter-item input {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+}
+/* 人员选择部分的样式 */
+/* 人员选择部分的样式 */
+.accountingdetails-date-filter select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+     /* 去除默认的下拉箭头样式 */
+    appearance: none; 
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: white;
+    position: relative;
+}
+
+.accountingdetails-date-filter select::after {
+    content: "";
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid #555; /* 箭头颜色 */
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.accountingdetails-date-filter select:focus {
+    outline: none;
+    border-color: #07C160; /* 选中时的边框颜色 */
+    box-shadow: 0 0 5px rgba(7, 193, 96, 0.2); /* 选中时的阴影效果 */
+}
+/* 关键字搜索样式 */
+.accountingdetails-keyword-filter {
+    margin-bottom: 16px;
+}
+
+.accountingdetails-keyword-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.accountingdetails-keyword-input:focus {
+    outline: none;
+    border-color: #07C160;
+    box-shadow: 0 0 5px rgba(7, 193, 96, 0.2);
+}

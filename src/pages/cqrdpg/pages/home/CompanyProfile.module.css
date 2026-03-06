@@ -1,0 +1,356 @@
+/* 主容器 */
+.carouseltypesecond-box {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  height: calc(100dvh - 70px);
+  padding: 0;
+  margin-top: 35px;
+  box-sizing: border-box;
+  overscroll-behavior: contain;
+}
+
+/* 轮播图片列表 */
+.carouseltypesecond-ul1 {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  box-sizing: border-box;
+  touch-action: pan-y;
+  /* 允许垂直滚动页面，拦截水平滑动交给JS */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* 单个轮播项 */
+.carouseltypesecond-slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.8s ease, opacity 0.8s ease;
+  transform: translateX(100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.carouseltypesecond-slide.carouseltypesecond-active {
+  transform: translateX(0);
+  opacity: 1;
+  z-index: 100;
+  pointer-events: auto;
+}
+
+.carouseltypesecond-slide.carouseltypesecond-prev {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+.carouseltypesecond-slide.carouseltypesecond-next {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+.carouseltypesecond-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* 左右按钮 (默认隐藏，如需显示可去掉媒体查询中的 display:none) */
+.carouseltypesecond-left-button,
+.carouseltypesecond-right-button {
+  width: 40px;
+  height: 70px;
+  background-color: rgba(0, 0, 0, 0.3);
+  color: #fff;
+  text-align: center;
+  line-height: 70px;
+  position: absolute;
+  font-size: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-radius: 4px;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.3s ease;
+  z-index: 1000;
+}
+
+.carouseltypesecond-left-button {
+  left: 10px;
+}
+
+.carouseltypesecond-right-button {
+  right: 10px;
+}
+
+.carouseltypesecond-left-button:hover,
+.carouseltypesecond-right-button:hover {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* 指示器 */
+.carouseltypesecond-ul2 {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  position: absolute;
+  bottom: 23px;
+  right: 55px;
+  display: flex;
+  gap: 10px;
+  z-index: 1000;
+}
+
+.carouseltypesecond-indicator {
+  width: 12px;
+  height: 12px;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.3s ease;
+  font-size: 0;
+  /* 隐藏数字 */
+  padding: 0;
+}
+
+.carouseltypesecond-indicator:hover {
+  background-color: #fff;
+  transform: scale(1.1);
+}
+
+.carouseltypesecond-active-indicator {
+  background-color: #c9a982;
+  transform: scale(1.1);
+  width: 14px;
+  height: 14px;
+}
+
+.carouseltypesecond-indexs {
+  z-index: 1000;
+}
+
+/* ========================================= */
+/* === 核心修改：描述框与文字动画样式开始 === */
+/* ========================================= */
+
+/* 描述框容器：全尺寸半透明黑底 */
+.carouseltypesecond-description {
+  position: absolute;
+  top: 50%;
+  right: 10%;
+
+  /* 【关键修改】初始状态：向右平移 100px (移出视觉中心)，且完全透明 */
+  transform: translateY(-50%) translateX(100px);
+  opacity: 0;
+
+  width: 300px;
+
+  /* 视觉样式：毛玻璃效果 */
+  background: rgba(255, 255, 255, 0.3);
+  /* 初始背景更透一点 */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  /* border: 1px solid rgba(151, 151, 151, 0.2); */
+
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  /* 阴影大一点，增加立体感 */
+  z-index: 200;
+  overflow: hidden;
+
+  /* 【关键修改】动画：从远处快速滑入 */
+  animation: slideInBoxStrong 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  animation-delay: 0s;
+  /* 立即开始 */
+}
+
+@keyframes slideInBoxStrong {
+  from {
+    opacity: 0;
+    /* 从右侧 100px 外开始 */
+    transform: translateY(-50%) translateX(100px);
+  }
+
+  to {
+    opacity: 1;
+    /* 滑回到正常位置 */
+    transform: translateY(-50%) translateX(0);
+    /* 结束后背景稍微实一点，边框亮一点 */
+    background: rgba(255, 255, 255, 0.35);
+    border-color: rgba(255, 255, 255, 0.6);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+  }
+}
+
+/* 描述框滑入关键帧 */
+@keyframes slideInBox {
+  from {
+    opacity: 0;
+    transform: translateY(-50%) translateX(50px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+    /* 动画结束后背景稍微实一点，保证文字可读性 */
+    background: rgba(255, 255, 255, 0.35);
+    border-color: rgba(255, 255, 255, 0.6);
+  }
+}
+
+/* 2. 左侧扫光动画条 (::before) */
+.carouseltypesecond-description::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 3px;
+  /* 光条稍细一点更精致 */
+  background-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.8);
+
+  /* 初始状态 */
+  transform: translateX(-100%);
+  opacity: 0;
+
+  /* 动画：在框体出现后紧接着扫过 */
+  animation: slideInLight 0.5s ease-out forwards;
+  animation-delay: 0.2s;
+  /* 延迟 0.2s，等框体滑入一半时开始扫 */
+}
+
+
+/* 扫光关键帧 */
+@keyframes slideInLight {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+
+  30% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateX(300%);
+    /* 扫过整个盒子宽度 */
+    opacity: 0;
+  }
+}
+
+/* 3. 文字内容包裹层 */
+.carouseltypesecond-description-content {
+  position: relative;
+  z-index: 2;
+  color: #ffffff;
+  max-width: 600px;
+  /* text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);  */
+  /* 加深阴影，确保在浅色背景下也清晰 */
+}
+
+
+/* 4. 标题样式与动画 (第二步出现) */
+.carouseltypesecond-description-title {
+  font-family: 'Georgia', serif;
+  font-size: 2.2rem;
+  font-weight: 300;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  letter-spacing: 2px;
+  border-bottom: none;
+  padding-bottom: 0;
+  color: #fff;
+  /* 强制白色 */
+
+  /* 初始状态：向下偏移且透明 */
+  opacity: 0;
+  transform: translateY(20px);
+
+  /* 动画：向上浮入 */
+  animation: fadeInUpText 0.7s ease-out forwards;
+  animation-delay: 0.4s;
+  /* 延迟 0.4s：等框体基本到位，光条扫过后出现 */
+}
+
+/* 标题中高亮单词的样式 */
+.carouseltypesecond-description-title span {
+  font-weight: 800;
+  color: #ffd700;
+  /* 更亮的金色 */
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+/* 5. 正文样式与动画 (第三步出现) */
+.carouseltypesecond-description-text {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  white-space: pre-line;
+  color: #1f1e1e;
+  /* 接近白色的浅灰 */
+
+  /* 初始状态：向下偏移更多且透明 */
+  opacity: 0;
+  transform: translateY(20px);
+
+  /* 动画：向上浮入 */
+  animation: fadeInUpText 0.7s ease-out forwards;
+  animation-delay: 0.6s;
+  /* 延迟 0.6s：比标题晚 0.2s 出现 */
+}
+
+/* 文字向上浮入的关键帧 */
+@keyframes fadeInUpText {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========================================= */
+/* === 核心修改：描述框与文字动画样式结束 === */
+/* ========================================= */
+
+/* 响应式调整 */
+@media (max-width: 1024px) {
+  .carouseltypesecond-box {
+    height: 100dvh;
+    margin-top: 0;
+    border-radius: 0;
+  }
+
+  .carouseltypesecond-description {
+    padding: 0 30px;
+  }
+
+  .carouseltypesecond-description-title {
+    font-size: 1.8rem;
+  }
+
+  .carouseltypesecond-description-text {
+    font-size: 1rem;
+  }
+
+  .carouseltypesecond-description {
+    right: 30px;
+
+    width: 100%;
+    max-width: 280px;
+  }
+
+}

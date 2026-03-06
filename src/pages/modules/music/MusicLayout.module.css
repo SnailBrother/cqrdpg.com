@@ -1,0 +1,29 @@
+/* src/components/modules/music/MusicLayout.module.css */
+.musicLayout {
+  display: flex;
+  flex-direction: column;
+  /* 使用视口高度 */
+   /* height: calc(100dvh - 150px); */
+   height: 100%;
+  position: relative;
+}
+
+.musicContent {
+  flex: 1;
+  overflow-y: auto;
+  transition: padding-bottom 0.3s ease;
+}
+
+/* 响应式设计 */
+
+/* 平板和手机端 (1024px 及以下) */
+@media (max-width: 1024px) {
+  .musicLayout {
+     height: calc(100dvh - 87px);
+  }    
+}
+@media (min-width: 1025px) {
+  .musicLayout {
+     height: calc(100dvh - 125px);
+  }    
+}

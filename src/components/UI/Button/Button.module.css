@@ -1,0 +1,67 @@
+/* src/components/UI/Button/Button.module.css */
+
+/* #region start 基础样式 */
+.button {
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap);
+  text-decoration: none;
+  /* 移除其他文本装饰线 */
+  padding: var(--padding);
+  font-size: var(--font-size);
+  min-height: var(--min-height);
+  background: var(--background-color);
+  color: var(--font-color);
+  border: var(--border) solid var(--border_color);
+}
+
+/* #endregion end */
+
+/* #region start 悬浮样式 */
+.button:hover:not(:disabled) {
+  background: var(--hover_background-color);
+  border-color: var(--hover_border_color);
+  color: var(--hover_font-color);
+  transform: translateY(-1px);
+}
+
+/* #endregion end */
+
+/* #region start 选用，获得焦点样式 */
+.button:active:not(:disabled) {
+  background: var(--focus_background-color);
+  border-color: var(--focus_border_color);
+  color: var(--focus_font-color);
+  transform: translateY(-1px);
+}
+
+/* #endregion end */
+
+/* #region start 不可用样式 */
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* #endregion end */
+
+/* #region start 阴影样式 */
+.button {
+  /* 基础阴影：水平偏移 垂直偏移 模糊半径 颜色 */
+  box-shadow: var(--shadow-default);
+}
+
+.button:hover:not(:disabled) {
+  box-shadow: var(--shadow-hover);
+}
+
+.button:active:not(:disabled) {
+  box-shadow: var(--shadow-focus);
+}
+
+/* #endregion end */

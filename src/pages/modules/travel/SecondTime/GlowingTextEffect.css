@@ -1,0 +1,54 @@
+/* GlowingTextEffect.css */
+.glowingtexteffect-container {
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* background-color: #ffffff; */
+  }
+  
+  .glowingtexteffect-char {
+    font-size: 24px; /* Slightly smaller for longer text */
+    font-weight: bold;
+    color: #88888894; /* Default gray color */
+    letter-spacing: 2px;
+    filter: blur(0.5px);
+    animation: glowingtexteffect-animate 3s linear infinite;
+    transition: all 0.3s ease;
+  }
+  
+  /* Character delay settings - adjusted for 17 characters */
+  .glowingtexteffect-char-1 { animation-delay: 0s; }
+  .glowingtexteffect-char-2 { animation-delay: 0.18s; }
+  .glowingtexteffect-char-3 { animation-delay: 0.36s; }
+  .glowingtexteffect-char-4 { animation-delay: 0.54s; }
+  .glowingtexteffect-char-5 { animation-delay: 0.72s; }
+  .glowingtexteffect-char-6 { animation-delay: 0.9s; }
+  .glowingtexteffect-char-7 { animation-delay: 1.08s; }
+  .glowingtexteffect-char-8 { animation-delay: 1.26s; }
+  .glowingtexteffect-char-9 { animation-delay: 1.44s; }
+  .glowingtexteffect-char-10 { animation-delay: 1.62s; }
+  .glowingtexteffect-char-11 { animation-delay: 1.8s; }
+  .glowingtexteffect-char-12 { animation-delay: 1.98s; }
+  .glowingtexteffect-char-13 { animation-delay: 2.16s; }
+  .glowingtexteffect-char-14 { animation-delay: 2.34s; }
+  .glowingtexteffect-char-15 { animation-delay: 2.52s; }
+  .glowingtexteffect-char-16 { animation-delay: 2.7s; }
+  .glowingtexteffect-char-17 { animation-delay: 2.88s; }
+  
+  @keyframes glowingtexteffect-animate {
+    0%, 20%, 100% {
+      color: #555; /* Darker gray when not glowing */
+      filter: blur(0.5px);
+      text-shadow: none;
+    }
+    10% {
+      color: #ff69b4; /* Pink glow color */
+      filter: blur(0px);
+      text-shadow: 
+        0 0 5px #ff69b4,
+        0 0 10px #ff69b4,
+        0 0 20px #ff69b4,
+        0 0 40px #ff69b4;
+    }
+  }

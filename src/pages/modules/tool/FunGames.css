@@ -1,0 +1,16 @@
+.fgames-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #333;
+}
+
+.fgames-canvas {
+  border: 1px solid white;
+  width: 600px;
+  height: 400px;
+  cursor: none;
+}
+
+ 

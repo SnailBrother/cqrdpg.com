@@ -1,0 +1,275 @@
+/* #region start 整体容器样式 */
+.PublicNews-container {
+  width: 93%;
+ 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  box-sizing: border-box;
+ 
+}
+/*  #endregion end */
+
+/* #region start 返回按钮 */
+.PublicNews-back-button-container {
+  width: 100%;
+  max-width: 1200px;
+  margin-bottom: 5px;
+    box-sizing: border-box;
+}
+
+.PublicNews-back-button {
+  background-color: #00796b;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.PublicNews-back-button:hover {
+  background-color: #005a4f;
+}
+/*  #endregion end */
+
+/* #region start 消息详情容器 */
+.PublicNews-detail-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 30px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.PublicNews-detail-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #e2e2e2;
+  padding-bottom: 10px;
+  text-align: center;
+  letter-spacing: 0.02em;
+}
+
+.PublicNews-detail-time {
+  font-size: 1rem;
+  color: #777;
+  margin-bottom: 20px;
+  text-align: right;
+  padding-right: 20px;
+}
+
+.PublicNews-detail-content {
+  font-size: 1.5rem;
+  line-height: 2;
+  color: #444;
+  padding: 10px 0;
+  text-align: justify;
+  white-space: pre-wrap;
+  margin-bottom: 30px;
+}
+/*  #endregion end */
+
+/* #region start 搜索框 */
+.PublicNews-search {
+  margin-bottom: 20px;
+  justify-content: center;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-left: auto;
+}
+
+.PublicNews-search-input {
+  width: 70%;
+  padding: 12px 16px;
+  margin-right: 0;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.PublicNews-search-input:focus {
+  border-color: #00796b;
+  box-shadow: 0 0 0 3px rgba(0, 121, 107, 0.2);
+}
+/*  #endregion end */
+
+/* #region start 消息列表样式 */
+.PublicNews-message-list {
+  width: 95%;
+  max-width: 1200px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 10px;
+  box-sizing: border-box;
+}
+/*  #endregion end */
+
+/* #region start 单条消息项的样式 */
+.PublicNews-message-item {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border-radius: 8px;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease-in-out, box-shadow 0.3s ease;
+}
+
+.PublicNews-message-item:hover {
+  background-color: #f9f9f9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.PublicNews-message-item-selected {
+  background-color: #e0f7fa;
+  border: 1px solid #009688;
+  box-shadow: 0 4px 16px rgba(0, 151, 167, 0.2);
+}
+/*  #endregion end */
+
+/* #region start 消息标题样式 */
+.PublicNews-message-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.PublicNews-message-title:hover {
+  color: #00796b;
+}
+/*  #endregion end */
+
+/* #region start 消息时间样式 */
+.PublicNews-message-time {
+  font-size: 14px;
+  color: #757575;
+}
+/*  #endregion end */
+
+/* #region start 加载中提示样式 */
+.PublicNews-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+  color: #00796b;
+  height: 100vh;
+  background-color: #f5f5f5;
+  animation: loadingAnimation 1s infinite;
+}
+
+@keyframes loadingAnimation {
+  0% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.5;
+  }
+}
+/*  #endregion end */
+
+/* #region start 无搜索结果样式 */
+.PublicNews-no-results {
+  font-size: 16px;
+  color: #757575;
+  text-align: center;
+  padding: 20px;
+}
+/*  #endregion end */
+
+/* #region start 新消息通知样式 */
+.PublicNews-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #4CAF50;
+  color: white;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  z-index: 1000;
+  animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.PublicNews-notification-content {
+  margin-right: 15px;
+}
+
+.PublicNews-notification-link {
+  background: none;
+  border: none;
+  color: white;
+  text-decoration: underline;
+  margin-left: 10px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.PublicNews-notification-close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0 5px;
+}
+
+/* #region start 响应式设计 */
+@media (max-width: 1024px) {
+  .PublicNews-detail-container {
+    padding: 20px;
+  }
+
+  .PublicNews-detail-title {
+    font-size: 1.8rem;
+  }
+
+  .PublicNews-detail-content {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  
+  .PublicNews-message-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}
+/*  #endregion end */

@@ -1,0 +1,835 @@
+/* 主容器 */
+.exceleditor {
+  width: 100%;
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+ 
+  background: #f5f5f5;
+  height: calc(100dvh - 110px);
+
+  /* 👇 新增：使用 flex 垂直布局 */
+  display: flex;
+  flex-direction: column;
+ 
+  box-sizing: border-box;
+}
+
+/* 工具栏样式 */
+.toolbar {
+  background: white;
+  border-radius: 8px;
+  padding: 2px;
+  margin-bottom: 2px;
+  /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); */
+  display: flex;
+  justify-content:end;
+  align-items: center;
+  flex-shrink: 0; /* 不收缩 */
+}
+
+.toolbar-section {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.toolbar-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.toolbar-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.toolbar-btn:active {
+  transform: translateY(0);
+}
+
+.toolbar-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.toolbar-btn.primary {
+  background: #2196F3;
+  color: white;
+}
+
+.toolbar-btn.success {
+  background: #4CAF50;
+  color: white;
+}
+
+.toolbar-btn.warning {
+  background: #FF9800;
+  color: white;
+}
+
+.toolbar-btn.info {
+  background: #00BCD4;
+  color: white;
+}
+
+.toolbar-btn.danger {
+  background: #F44336;
+  color: white;
+}
+
+/* 信息栏样式 */
+.info-bar {
+  background: white;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+   flex-shrink: 0; /* 不收缩 */
+}
+/* 编辑输入框 */
+.cell-input-bar {
+  flex-shrink: 0;
+  /* background: white; */
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: row;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+
+.info-label {
+  font-weight: 600;
+  color: #333;
+  min-width: 60px;
+}
+
+.info-value {
+  color: #666;
+  padding: 8px 12px;
+  background: #f5f5f5;
+  border-radius: 4px;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.cell-input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: all 0.2s;
+  width: calc(100dvw - 600px);
+   
+}
+
+.cell-input:focus {
+  outline: none;
+  border-color: #2196F3;
+  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+}
+
+.display-value {
+  font-weight: 600;
+  color: #333;
+  background: #e8f5e9;
+}
+
+.formula-display {
+  font-family: 'Consolas', 'Monaco', monospace;
+  color: #2196F3;
+  background: #e3f2fd;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Excel网格容器 */
+.excel-grid-container {
+  background: white;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 2px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: auto;
+  min-height: 300px;
+  height: 100%;
+}
+
+.excel-grid {
+  display: inline-block;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.excel-row {
+  display: flex;
+}
+
+.excel-cell {
+  min-width: 100px;
+  min-height: 35px;
+  border-right: 1px solid #e0e0e0;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  cursor: default;
+  position: relative;
+  transition: all 0.2s;
+  color: #333;
+  /* 默认字体颜色 */
+
+}
+
+.excel-cell:focus {
+  outline: 2px solid #2196F3;
+  outline-offset: -2px;
+  z-index: 10;
+}
+
+.excel-cell.active {
+  background: #e3f2fd !important;
+  border-color: #2196F3;
+  z-index: 5;
+}
+
+.excel-cell.formula-cell {
+  color: #2196F3;
+  font-style: italic;
+}
+
+.excel-cell:hover:not(.header-cell):not(.row-header):not(.corner-cell) {
+  background: #f5f5f5;
+}
+
+/* 表头单元格 */
+.header-cell {
+  background: #f5f5f5;
+  font-weight: 700;
+  color: #333;
+  justify-content: center;
+  user-select: none;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.row-header {
+  background: #f5f5f5;
+  font-weight: 700;
+  color: #333;
+  min-width: 50px;
+  max-width: 50px;
+  justify-content: center;
+  user-select: none;
+  position: sticky;
+  left: 0;
+  z-index: 15;
+}
+
+.corner-cell {
+  background: #e0e0e0;
+  min-width: 50px;
+  max-width: 50px;
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 30;
+}
+
+.header-row {
+  position: sticky;
+  top: 0;
+  z-index: 25;
+}
+
+
+.sheet-tab.active {
+  background: #2196F3;
+  color: white;
+}
+
+.active-indicator {
+  font-size: 10px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.no-sheets {
+  color: #999;
+  font-style: italic;
+  padding: 8px;
+}
+
+/* 加载状态 */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #2196F3;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* 错误提示 */
+.error-message {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #F44336;
+  color: white;
+  padding: 12px 16px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3);
+  z-index: 1001;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.error-icon {
+  font-size: 16px;
+}
+
+.error-close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0 0 0 8px;
+}
+
+/* 公式提示 */
+.formula-hints {
+  margin-top: 15px;
+  padding: 12px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.hint-title {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.hint-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.hint-list span {
+  padding: 4px 8px;
+  background: #f5f5f5;
+  border-radius: 4px;
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 12px;
+  color: #2196F3;
+}
+
+/* 自定义滚动条 */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+
+
+/* 单元格样式增强 */
+.excel-cell[style*="font-weight: bold"] {
+  font-weight: 700 !important;
+}
+
+.excel-cell[style*="font-style: italic"] {
+  font-style: italic !important;
+}
+
+/* 添加以下样式到现有的ExcelEditor.css文件中 */
+
+/* 命名单元格指示器 */
+.named-cell-indicator {
+  font-size: 10px;
+  margin-left: 4px;
+  color: #ff9800;
+}
+
+.named-cell-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  font-size: 10px;
+  opacity: 0.7;
+  z-index: 5;
+}
+
+.named-cell {
+  background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+  border-color: #ffd54f !important;
+}
+
+/* 命名单元格列表 */
+.named-ranges-list {
+  margin-top: 15px;
+  padding: 12px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.named-ranges-title {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.named-ranges-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 8px;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.named-range-item {
+  padding: 6px 10px;
+  background: #f5f5f5;
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+}
+
+.named-range-name {
+  font-weight: 600;
+  color: #2196F3;
+  background: #e3f2fd;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.named-range-value {
+  color: #666;
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 11px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 120px;
+}
+
+/* 公式输入提示 */
+.formula-hints .hint-list span {
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  color: #1976d2;
+}
+
+/* 单元格悬停时的命名提示 */
+.excel-cell:hover .named-cell-badge {
+  opacity: 1;
+}
+
+/* 当单元格有命名时，添加特殊边框 */
+.excel-cell.named-cell:not(.active) {
+  border-left: 2px solid #ff9800;
+  border-right: 2px solid #ff9800;
+}
+
+.sheet-info {
+  color: #333;
+}
+
+/* 命名单元格样式 */
+.excel-cell.named-cell {
+  background-color: #f0f9ff !important;
+  border: 1px solid #3b82f6 !important;
+  font-weight: bold;
+}
+
+.excel-cell.named-cell:hover {
+  background-color: #dbeafe !important;
+}
+
+.excel-cell.named-cell.active {
+  background-color: #bfdbfe !important;
+  box-shadow: 0 0 0 2px #3b82f6;
+}
+
+/* 数据验证相关样式 */
+.has-validation {
+  position: relative;
+}
+
+.validation-indicator {
+  position: absolute;
+  right: 2px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 10px;
+  color: #666;
+  cursor: pointer;
+}
+
+.cell-wrapper {
+  position: relative;
+}
+
+.validation-dropdown {
+  position: absolute;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  min-width: 150px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.dropdown-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+  font-weight: bold;
+}
+
+.dropdown-close {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: #999;
+}
+
+.dropdown-close:hover {
+  color: #333;
+}
+
+.dropdown-options {
+  padding: 4px 0;
+}
+
+.dropdown-option {
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.dropdown-option:hover {
+  background-color: #e3f2fd;
+}
+
+/* 活动单元格的数据验证样式 */
+.excel-cell.active.has-validation {
+  border-color: #1976d2;
+  background-color: #e3f2fd;
+}
+
+/* 信息栏样式 */
+.info-bar .info-item .validation-display {
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 添加下拉列表单元格样式 */
+.dv-cell {
+  cursor: pointer;
+  position: relative;
+}
+
+.dv-cell:hover::after {
+  /* content: '▼'; */
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+  color: #666;
+}
+
+.dv-select {
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: inherit;
+  font-family: inherit;
+  cursor: pointer;
+  box-sizing: border-box;
+
+
+}
+
+.dv-select:focus {
+  /* border: 1px solid #4d90fe; */
+  /* box-shadow: inset 0 0 5px rgba(77, 144, 254, 0.3); */
+}
+
+
+
+
+
+/* 工作表信息样式 */
+.sheet-info {
+  background-color: #f9f9f9;
+  padding: 12px 16px;
+  border-top: 1px solid #ddd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sheet-name {
+  font-weight: 600;
+  color: #333;
+}
+
+.sheet-stats {
+  display: flex;
+  gap: 20px;
+  font-size: 14px;
+  color: #666;
+}
+
+.sheet-stats span {
+  display: flex;
+  align-items: center;
+}
+
+.sheet-stats span:not(:last-child)::after {
+  content: "";
+  display: inline-block;
+  width: 1px;
+  height: 12px;
+  background-color: #ddd;
+  margin-left: 10px;
+}
+
+
+
+
+/* #region start 工作表标签页样式*/
+
+
+/* 工作表标签页样式 */
+.sheet-tabs {
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+  padding: 0 0px;
+  box-sizing: border-box;
+}
+
+.sheet-tabs-container {
+  display: flex;
+  overflow-x: auto;
+  gap: 2px;
+  padding-top: 1px;
+}
+
+.sheet-tab {
+  position: relative;
+  padding: 8px 16px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-bottom: none;
+  border-radius: 4px 4px 0 0;
+  cursor: pointer;
+  font-size: 14px;
+  color: #666;
+  white-space: nowrap;
+  transition: all 0.2s;
+  outline: none;
+}
+
+.sheet-tab:hover:not(:disabled) {
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+.sheet-tab.active {
+  background-color: #fff;
+  border-color: #4d90fe;
+  color: #333;
+  font-weight: 500;
+  z-index: 1;
+}
+
+.sheet-tab.active .tab-indicator {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: #4d90fe;
+}
+
+.sheet-tab:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/*  #endregion end */
+
+
+
+
+
+/* #region start 单元格提示 */
+ 
+.info-item-cell {
+  background-color: #eeeeee;
+  border-radius: 10px;
+  box-sizing: border-box;
+  padding: 0;
+  gap: 5px;
+  width: 50px;
+  height: 30px;
+}
+.info-item-cell .info-value {
+  background-color: #ffffff !important;
+}
+.titleicon {
+  width: 2em;
+  height: 2em;
+  vertical-align: -0.15em;
+  fill: rgb(148, 146, 146);
+  overflow: hidden;
+}
+
+/*  #endregion end */
+
+
+
+
+/* 工作表标签 */
+/* .sheet-tabs {
+
+  border-radius: 8px;
+  padding: 1px 10px;
+  display: flex;
+  gap: 5px;
+  overflow-x: auto;
+ 
+  box-sizing: border-box;
+}
+
+.sheet-tab {
+ 
+  border: none;
+  background: #f5f5f5;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: #666;
+  white-space: nowrap;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sheet-tab:hover {
+  background: #e0e0e0;
+} */

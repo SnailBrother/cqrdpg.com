@@ -1,0 +1,444 @@
+/* 登录容器 */
+.loginContainer {
+    min-height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    position: relative;
+    overflow: hidden;
+    padding: 20px;
+}
+
+/* 背景装饰 */
+.loginBackground {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+}
+
+.loginShapes {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.shape1,
+.shape2,
+.shape3 {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.shape1 {
+    width: 300px;
+    height: 300px;
+    top: -150px;
+    right: -150px;
+}
+
+.shape2 {
+    width: 200px;
+    height: 200px;
+    bottom: -100px;
+    left: -100px;
+}
+
+.shape3 {
+    width: 150px;
+    height: 150px;
+    top: 50%;
+    right: 20%;
+}
+
+/* 登录卡片 */
+.loginCard {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 440px;
+    position: relative;
+    z-index: 2;
+    animation: fadeIn 0.6s ease-out;
+}
+
+/* 头部 */
+.loginHeader {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.loginLogo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+.logoIcon {
+    font-size: 2.5rem;
+    margin-right: 12px;
+}
+
+.loginLogo h1 {
+    color: #333;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.loginSubtitle {
+    color: #666;
+    font-size: 0.95rem;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* 表单 */
+.loginForm {
+    margin-bottom: 30px;
+}
+
+.formGroup {
+    margin-bottom: 20px;
+    margin-right: 40px;
+}
+
+.formLabel {
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.formInput {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e1e5e9;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+    font-family: inherit;
+}
+
+.formInput:focus {
+    outline: none;
+    border-color: #667eea;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.formInput::placeholder {
+    color: #999;
+}
+
+.inputError {
+    border-color: #ff4d4f;
+    background: #fff2f0;
+}
+
+.inputError:focus {
+    border-color: #ff4d4f;
+    box-shadow: 0 0 0 3px rgba(255, 77, 79, 0.1);
+}
+
+.errorMessage {
+    color: #ff4d4f;
+    font-size: 0.8rem;
+    margin-top: 4px;
+    display: block;
+}
+
+/* 表单选项 */
+.formOptions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.checkboxLabel {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.checkboxInput {
+    margin-right: 8px;
+    width: 16px;
+    height: 16px;
+    accent-color: #667eea;
+}
+
+.checkboxText {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.forgotLink {
+    color: #667eea;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.forgotLink:hover {
+    text-decoration: underline;
+}
+
+/* 提交错误 */
+.submitError {
+    color: #ff4d4f;
+    text-align: center;
+    margin: 16px 0;
+    padding: 12px;
+    background: #fff2f0;
+    border: 1px solid #ffccc7;
+    border-radius: 8px;
+    font-size: 0.9rem;
+}
+
+/* 登录按钮容器调整 */
+.loginButton {
+    margin-bottom: 20px;
+}
+
+/* 底部 */
+.loginFooter {
+    text-align: center;
+}
+
+.switchMode {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.switchButton {
+    margin-left: 5px;
+}
+
+/* 分割线 */
+.divider {
+    position: relative;
+    margin: 25px 0;
+    text-align: center;
+}
+
+.divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: #e1e5e9;
+}
+
+.divider span {
+    background: white;
+    padding: 0 15px;
+    color: #666;
+    font-size: 0.8rem;
+}
+
+/* 社交登录 */
+.socialLogin {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.socialButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.socialIcon {
+    margin-right: 8px;
+    font-size: 1.1rem;
+}
+
+.githublogoIcon {
+    width: 1em;
+    height: 1em;
+    vertical-align: -0.15em;
+    fill: currentColor;
+    overflow: hidden;
+}
+
+/* 成功消息 */
+.successMessage {
+    background: #f6ffed;
+    border: 1px solid #b7eb8f;
+    color: #52c41a;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+/* 响应式设计 */
+@media (max-width: 480px) {
+    .loginCard {
+        padding: 30px 20px;
+        margin: 10px;
+    }
+
+    .loginLogo h1 {
+        font-size: 1.5rem;
+    }
+
+    .loginSubtitle {
+        font-size: 0.9rem;
+    }
+
+    .formOptions {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+
+    .socialLogin {
+        gap: 10px;
+    }
+
+    .switchMode {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .switchButton {
+        margin-left: 0;
+    }
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 减少动画支持 */
+@media (prefers-reduced-motion: reduce) {
+    .loginCard {
+        animation: none;
+    }
+
+    .formInput {
+        transition: none;
+    }
+}
+/* 登录按钮样式 */
+.loginButton {
+    width: 100%;
+    padding: 12px 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 16px;
+}
+
+.loginButton:hover:not(:disabled) {
+    background-color: #0056b3;
+    transform: translateY(-1px);
+}
+
+.loginButton:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.loginButton.loading {
+    position: relative;
+    color: transparent;
+}
+
+.loginButton.loading::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 50%;
+    left: 50%;
+    margin-left: -10px;
+    margin-top: -10px;
+    border: 2px solid transparent;
+    border-top: 2px solid #ffffff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* 切换按钮样式 */
+.switchButton {
+    background: none;
+    border: none;
+    color: #007bff;
+    cursor: pointer;
+    font-size: inherit;
+    text-decoration: underline;
+    padding: 0;
+    margin-left: 4px;
+}
+
+.switchButton:hover {
+    color: #0056b3;
+}
+
+/* 社交登录按钮样式 */
+.socialButton {
+    width: 100%;
+    padding: 12px 16px;
+    background-color: #f8f9fa;
+    color: #333;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.socialButton:hover {
+    background-color: #e9ecef;
+    border-color: #adb5bd;
+}
+
+.socialButton:last-child {
+    margin-bottom: 0;
+}

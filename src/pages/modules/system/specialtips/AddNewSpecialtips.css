@@ -1,0 +1,187 @@
+/* 基础容器样式 */
+.addnewspecialtips-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    /* min-height: 100vh; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    height: 100%;
+}
+
+/* 标题样式 */
+.addnewspecialtips-title {
+    text-align: center;
+    color: #2c3e50;
+    font-size: 2.2rem;
+    margin-bottom: 2.5rem;
+    font-weight: 600;
+    position: relative;
+}
+
+.addnewspecialtips-title::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(90deg, #4CAF50, #2E7D32);
+    margin: 0.8rem auto 0;
+    border-radius: 2px;
+}
+
+/* 错误信息样式 */
+.addnewspecialtips-error {
+    color: #c62828;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    background-color: #fde8e8;
+    padding: 1rem;
+    border: 1px solid #f5c2c2;
+    border-radius: 8px;
+}
+
+/* 表单样式 */
+.addnewspecialtips-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.8rem;
+    width: 100%;
+    max-width: 800px;
+}
+
+.addnewspecialtips-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.addnewspecialtips-label {
+    font-size: 1.1rem;
+    color: #555;
+    font-weight: 500;
+}
+
+.addnewspecialtips-input {
+    padding: 1rem 1.2rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    width: 100%;
+    background-color: #f9f9f9;
+    resize: vertical;
+}
+
+.addnewspecialtips-input:focus {
+    border-color: #4CAF50;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+    outline: none;
+}
+
+.addnewspecialtips-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1em;
+}
+
+/* 大文本区域 - 用于提示内容 */
+.addnewspecialtips-large-textarea {
+    min-height: 200px;
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+/* 小文本区域 - 用于备注 */
+.addnewspecialtips-small-textarea {
+    min-height: 80px;
+}
+
+/* 提交按钮样式 */
+.addnewspecialtips-button {
+    background: linear-gradient(135deg, #4CAF50, #2E7D32);
+    color: white;
+    border: none;
+    padding: 1.2rem;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.addnewspecialtips-button:hover {
+    background: linear-gradient(135deg, #43A047, #1B5E20);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(46, 125, 50, 0.3);
+}
+
+.addnewspecialtips-button:disabled {
+    background: #cccccc;
+    transform: none;
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
+/* 加载动画 */
+.addnewspecialtips-spinner {
+    width: 1.2rem;
+    height: 1.2rem;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .addnewspecialtips-container {
+        padding: 1.5rem;
+    }
+    .addnewspecialtips-title {
+        font-size: 1.8rem;
+        margin-bottom: 2rem;
+    }
+    .addnewspecialtips-large-textarea {
+        min-height: 180px;
+    }
+}
+
+@media (max-width: 480px) {
+    .addnewspecialtips-container {
+        padding: 1.2rem;
+        border-radius: 12px;
+    }
+    .addnewspecialtips-title {
+        font-size: 1.5rem;
+    }
+    .addnewspecialtips-input {
+        padding: 0.9rem 1rem;
+    }
+    .addnewspecialtips-button {
+        padding: 1rem;
+    }
+    .addnewspecialtips-large-textarea {
+        min-height: 150px;
+    }
+}

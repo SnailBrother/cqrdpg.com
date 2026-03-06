@@ -1,0 +1,357 @@
+.examplesSection {
+  width: 100%;
+  background-color: #ffffff;
+  color: #333333;
+  height: 100dvh; /* 占满视口高度 */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* 防止整个页面滚动 */
+}
+
+.container {
+  width: 100%;
+  max-width: 1800px; /* 增加最大宽度以适应大屏 */
+  margin: 0 auto;
+  padding: 30px 40px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+/* --- 头部区域 (固定) --- */
+.headerArea {
+  flex-shrink: 0;
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.sectionTitle {
+  font-size: 36px;
+  font-weight: 600;
+  color: #222222;
+  margin: 0 0 15px 0;
+  position: relative;
+  display: inline-block;
+}
+
+.sectionTitle::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background-color: #c9a982;
+}
+
+.sectionSubtitle {
+  font-size: 16px;
+  color: #666666;
+  margin: 25px 0 0 0;
+}
+
+/* --- 主布局 (左右分栏) --- */
+.mainLayout {
+  display: flex;
+  flex: 1;
+  min-height: 0; /* 关键：允许flex子项内部滚动 */
+  border: 1px solid #eaeaea;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+}
+
+/* --- 左侧导航栏 --- */
+.sidebar {
+  width: 280px;
+  background-color: #f9f9f9;
+  border-right: 1px solid #eaeaea;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow-y: auto; /* 如果菜单很长也可以滚动 */
+}
+
+.navList {
+  padding: 20px 0;
+  width: 100%;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  padding: 16px 24px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-left: 4px solid transparent;
+  color: #555;
+  font-weight: 500;
+  position: relative;
+}
+
+.navItem:hover {
+  background-color: #f0f0f0;
+  color: #c9a982;
+}
+
+.navItem.active {
+  background-color: #fff;
+  color: #c9a982;
+  border-left-color: #c9a982;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  z-index: 1;
+}
+
+.navNumber {
+  font-family: 'Arial', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #c9a982;
+  opacity: 0.6;
+  margin-right: 12px;
+  min-width: 30px;
+}
+
+.navItem.active .navNumber {
+  opacity: 1;
+}
+
+.navText {
+  flex: 1;
+  font-size: 15px;
+}
+
+.arrowIcon {
+  font-size: 10px;
+  color: #999;
+  transition: transform 0.3s;
+}
+
+/* 二级菜单容器 */
+.navGroup {
+  width: 100%;
+}
+
+.subNavList {
+  background-color: #fcfcfc;
+  padding: 5px 0;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+}
+
+.subNavItem {
+  padding: 12px 24px 12px 56px; /* 缩进对齐文字 */
+  font-size: 14px;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-left: 4px solid transparent;
+}
+
+.subNavItem:hover {
+  color: #c9a982;
+  background-color: #f5f5f5;
+}
+
+.subNavItem.active {
+  color: #c9a982;
+  background-color: #fff;
+  border-left-color: #c9a982;
+  font-weight: 600;
+}
+
+/* --- 右侧内容区域 (可滚动) --- */
+.contentArea {
+  flex: 1;
+  background-color: #fff;
+  overflow-y: auto; /* 核心：内容过多时出现滚动条 */
+  padding: 40px;
+  scroll-behavior: smooth;
+}
+
+/* 自定义滚动条样式 */
+.contentArea::-webkit-scrollbar {
+  width: 8px;
+}
+.contentArea::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+.contentArea::-webkit-scrollbar-thumb {
+  background: #d1d1d1;
+  border-radius: 4px;
+}
+.contentArea::-webkit-scrollbar-thumb:hover {
+  background: #c9a982;
+}
+
+.contentInner {
+  max-width: 900px;
+  margin: 0 auto;
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.contentTitle {
+  font-size: 28px;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 15px;
+}
+
+.contentDescBox {
+  background-color: #fffbf5; /* 淡淡的金色背景 */
+  border-left: 4px solid #c9a982;
+  padding: 15px 20px;
+  border-radius: 4px;
+  margin-bottom: 30px;
+}
+
+.contentDesc {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #555;
+  margin: 0;
+}
+
+/* 案例网格布局 */
+.caseGrid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 15px;
+}
+
+.caseCard {
+  background: #fff;
+  border: 1px solid #eaeaea;
+  border-radius: 8px;
+  padding: 15px 15px 15px 35px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #444;
+  position: relative;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: flex-start;
+  min-height: 60px;
+}
+
+.caseCard:hover {
+  border-color: #c9a982;
+  box-shadow: 0 4px 12px rgba(201, 169, 130, 0.15);
+  transform: translateY(-2px);
+}
+
+.cardDot {
+  position: absolute;
+  left: 15px;
+  top: 18px;
+  width: 8px;
+  height: 8px;
+  background-color: #c9a982;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.endIndicator {
+  text-align: center;
+  color: #ccc;
+  font-size: 14px;
+  margin-top: 40px;
+  letter-spacing: 2px;
+}
+
+/* --- 响应式设计 --- */
+@media (max-width: 900px) {
+  .mainLayout {
+    flex-direction: column;
+  }
+  
+  .sidebar {
+    width: 100%;
+    height: auto;
+    max-height: 200px; /* 移动端限制导航高度 */
+    border-right: none;
+    border-bottom: 1px solid #eaeaea;
+  }
+
+  .navList {
+    display: flex;
+    overflow-x: auto; /* 横向滚动 */
+    padding: 10px;
+    white-space: nowrap;
+  }
+
+  .navItem {
+    padding: 12px 20px;
+    border-left: none;
+    border-bottom: 3px solid transparent;
+    margin-right: 10px;
+    border-radius: 6px;
+  }
+  
+  .navItem.active {
+    border-left: none;
+    border-bottom-color: #c9a982;
+    background-color: #fffbf5;
+  }
+
+  .navNumber {
+    display: none; /* 移动端隐藏序号节省空间 */
+  }
+
+  .subNavList {
+    display: flex;
+    overflow-x: auto;
+    border: none;
+    padding: 10px;
+    background: #fff;
+  }
+
+  .subNavItem {
+    padding: 8px 15px;
+    border-left: none;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    margin-right: 10px;
+    border-radius: 4px;
+  }
+  
+  .subNavItem.active {
+    border-left: none;
+    border-bottom-color: #c9a982;
+    background-color: #fffbf5;
+  }
+
+  .contentArea {
+    padding: 20px;
+  }
+  
+  .caseGrid {
+    grid-template-columns: 1fr; /* 移动端单列 */
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 20px 15px;
+  }
+  .sectionTitle {
+    font-size: 26px;
+  }
+  .contentTitle {
+    font-size: 22px;
+  }
+}

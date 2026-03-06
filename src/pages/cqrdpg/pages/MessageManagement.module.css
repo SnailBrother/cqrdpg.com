@@ -1,0 +1,165 @@
+/* MessageManagement.module.css */
+.managementContainer {
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: transparent;
+    height: calc(100dvh - 180px);
+    box-sizing: border-box;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  }
+  
+  .header h2 {
+    margin: 0;
+        color: #f5f5f5;
+    font-size: 1.5rem;
+  }
+  
+  .statusBadge {
+    font-size: 0.9rem;
+       color: #f5f5f5;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  
+  .online { background-color: #2ecc71; box-shadow: 0 0 5px #2ecc71; }
+  .offline { background-color: #e74c3c; }
+  
+  .tableWrapper {
+   
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    overflow-x: auto;
+  }
+  
+  .messageTable {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+  }
+  
+  .messageTable th, .messageTable td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .messageTable th {
+     
+        color: #f5f5f5;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+  }
+  
+  .unreadRow {
+    background-color: #eeeeeb50; 
+    /* 淡黄色背景突出未读 */
+    font-weight: 500;
+  }
+  
+  .readRow {
+   
+    color: #f5f5f5;
+  }
+  
+  .descCell {
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .badgeUnread {
+    background-color: #e74c3c;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: bold;
+  }
+  
+  .badgeRead {
+    background-color: #2ecc71;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+  }
+  
+  .markBtn {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: background 0.2s;
+  }
+  
+  .markBtn:hover {
+    background-color: #2980b9;
+  }
+  
+  .emptyRow {
+    text-align: center;
+       color: #f5f5f5;
+    padding: 40px !important;
+  }
+  
+  .loading {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+    font-size: 1.1rem;
+  }
+  /* 在原有 CSS 底部添加 */
+
+.actionButtons {
+  display: flex;
+  gap: 8px;
+}
+
+.deleteBtn {
+  background-color: #e74c3c; /* 红色背景 */
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background 0.2s;
+}
+
+.deleteBtn:hover {
+  background-color: #c0392b; /* 深红色 hover */
+}
+
+/* 如果屏幕较小，让按钮换行或调整大小 */
+@media (max-width: 768px) {
+  .actionButtons {
+    flex-direction: column;
+  }
+  .markBtn, .deleteBtn {
+    width: 100%;
+    text-align: center;
+  }
+}

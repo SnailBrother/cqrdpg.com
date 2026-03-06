@@ -1,0 +1,94 @@
+.traveldetailsfourth-container-out {
+    width: 100%;
+    max-width: 1200px;
+    min-height: 530px;
+    height: 100%;
+    overflow: hidden;
+  }
+  
+  .traveldetailsfourth-container {
+    width: 300px;
+    height: 450px;
+    perspective: 1000px;
+    position: relative;
+    margin: 0 auto;
+  }
+  
+  .traveldetailsfourth-card-box {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transform: rotateY(0) translateZ(-700px);
+    animation: traveldetailsfourth-rotate 10s cubic-bezier(0.77, 0, 0.175, 1) infinite;
+  }
+  
+  .traveldetailsfourth-card {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    -webkit-box-reflect: below 15px -webkit-linear-gradient(transparent 50%, rgba(255, 255, 255, 0.3));
+  }
+  
+  .traveldetailsfourth-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .traveldetailsfourth-title {
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    color: white;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    text-shadow: 0 2px 50px rgba(0, 0, 0, 0.5);
+  }
+  
+  /* Card positions */
+  .traveldetailsfourth-card-1 {
+    transform: rotateY(0) translateZ(700px);
+  }
+  
+  .traveldetailsfourth-card-2 {
+    transform: rotateY(120deg) translateZ(700px);
+  }
+  
+  .traveldetailsfourth-card-3 {
+    transform: rotateY(240deg) translateZ(700px);
+  }
+  
+  /* Animation */
+  @keyframes traveldetailsfourth-rotate {
+    0%,
+    20% {
+      transform: translateZ(-700px) rotateY(0);
+    }
+  
+    45% {
+      transform: translateZ(-700px) rotateY(-120deg);
+    }
+  
+    75% {
+      transform: translateZ(-700px) rotateY(-240deg);
+    }
+  
+    100% {
+      transform: translateZ(-700px) rotateY(-360deg);
+    }
+  }
+  
+  /* 鼠标悬浮时暂停动画 */
+  .traveldetailsfourth-container-out:hover .traveldetailsfourth-card-box {
+    animation-play-state: paused;
+  }

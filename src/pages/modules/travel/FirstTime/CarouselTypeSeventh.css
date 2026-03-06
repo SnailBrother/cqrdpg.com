@@ -1,0 +1,534 @@
+.carouseltypeseventh-container {
+    max-width: 1900px;
+    margin: 0 auto;
+    padding: 20px;
+}
+/* #region start  标题样式*/
+/* 标题样式 */
+/* 水彩风格标题 */
+.carouseltypeseventh-header-titcontainer {
+    width: 100%;
+    display: flex;
+    justify-content: left;
+    margin: 60px 0;
+    position: relative;
+    overflow: hidden;
+}
+  
+.carouseltypeseventh-title-container {
+    position: relative;
+    padding: 0 90px;
+    text-align: center;
+    z-index: 1;
+}
+  
+/* 水彩背景效果 */
+.carouseltypeseventh-watercolor-bg {
+    position: absolute;
+    top: -30px;
+    left: 0;
+    width: 100%;
+    height: calc(100% + 60px);
+    background: 
+      radial-gradient(circle at 20% 30%, rgba(255,215,215,0.4) 0%, transparent 30%),
+      radial-gradient(circle at 80% 70%, rgba(215,255,235,0.4) 0%, transparent 30%),
+      radial-gradient(circle at 50% 20%, rgba(215,235,255,0.4) 0%, transparent 30%);
+    z-index: -1;
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    animation: watercolorMove 12s ease-in-out infinite alternate;
+}
+  
+/* 主标题样式 */
+.carouseltypeseventh-title {
+    position: relative;
+    margin: 0;
+    font-family: 'STKaiti', 'KaiTi', '楷体', serif;
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: transparent;
+    display: inline-block;
+    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.1));
+}
+  
+/* 水彩文字效果 */
+.carouseltypeseventh-title-text {
+    position: relative;
+    background: linear-gradient(135deg, #ff6b6b, #48dbfb, #1dd1a1);
+    -webkit-background-clip: text;
+    background-clip: text;
+    z-index: 2;
+}
+  
+/* 水彩晕染效果 */
+.carouseltypeseventh-title-watercolor {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 100%;
+    background: linear-gradient(135deg, #ff6b6b, #48dbfb, #1dd1a1);
+    -webkit-background-clip: text;
+    background-clip: text;
+    z-index: 1;
+    filter: blur(3px) opacity(0.6);
+}
+  
+/* 标题包装器 */
+.carouseltypeseventh-title-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    position: relative;
+}
+
+/* 蝴蝶装饰元素 */
+.carouseltypeseventh-decoration-butterfly.left {
+    font-size: 2rem;
+    animation: butterflyFly 8s ease-in-out infinite;
+    opacity: 0.9;
+    margin-right: -10px;
+}
+  
+.carouseltypeseventh-decoration-butterfly.right {
+    font-size: 2rem;
+    animation: butterflyFly 8s ease-in-out infinite;
+    opacity: 0.9;
+    margin-left: -10px;
+    transform: scaleX(-1);
+    animation-delay: 0.5s;
+}
+  
+/* 水彩背景动画 */
+@keyframes watercolorMove {
+    0% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+    50% { border-radius: 40% 60% 70% 30% / 30% 60% 40% 70%; }
+    100% { border-radius: 30% 70% 60% 40% / 70% 40% 30% 60%; }
+}
+  
+/* 蝴蝶飞舞动画 */
+@keyframes butterflyFly {
+    0%, 100% { 
+      transform: translateY(0) translateX(0) rotate(0deg);
+    }
+    25% { 
+      transform: translateY(-20px) translateX(30px) rotate(5deg);
+    }
+    50% { 
+      transform: translateY(10px) translateX(-20px) rotate(-5deg);
+    }
+    75% { 
+      transform: translateY(-15px) translateX(15px) rotate(3deg);
+    }
+}
+  
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .carouseltypeseventh-title {
+      font-size: 2.5rem;
+    }
+    
+    .carouseltypeseventh-title-container {
+      padding: 0 50px;
+    }
+    
+    .carouseltypeseventh-decoration-butterfly.left,
+    .carouseltypeseventh-decoration-butterfly.right {
+      font-size: 1.5rem;
+    }
+}
+  
+@media (max-width: 480px) {
+    .carouseltypeseventh-title {
+      font-size: 2rem;
+    }
+    
+    .carouseltypeseventh-title-container {
+      padding: 0 30px;
+    }
+    
+    .carouseltypeseventh-decoration-butterfly.left,
+    .carouseltypeseventh-decoration-butterfly.right {
+      font-size: 1.2rem;
+    }
+}
+/*  #endregion end */
+
+
+.carouseltypeseventh-grid {
+    display: flex;
+    gap: 30px;
+}
+
+.carouseltypeseventh-main {
+    flex: 1.5;
+}
+
+.carouseltypeseventh-secondary {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Main carousel styles */
+.carouseltypeseventh-main-carousel {
+    position: relative;
+    height: 500px; /* 固定高度 */
+    width: 100%; /* 固定宽度 */
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    aspect-ratio: 16/9; /* 添加宽高比 */
+}
+
+.carouseltypeseventh-main-slide {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transition: transform 0.5s ease;
+}
+
+.carouseltypeseventh-main-slide.right {
+    transform: translateX(0);
+    animation: slideInRight 0.5s ease;
+}
+
+.carouseltypeseventh-main-slide.left {
+    transform: translateX(0);
+    animation: slideInLeft 0.5s ease;
+}
+
+.carouseltypeseventh-main-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.carouseltypeseventh-main-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 30px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.7));
+    color: white;
+}
+
+.carouseltypeseventh-main-overlay h3 {
+    margin: 0 0 10px;
+    font-size: 28px;
+}
+
+.carouseltypeseventh-main-overlay p {
+    margin: 0;
+    font-size: 18px;
+    opacity: 0.9;
+}
+
+.carouseltypeseventh-main-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.carouseltypeseventh-main-prev,
+.carouseltypeseventh-main-next {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,0.8);
+    color: #333;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.carouseltypeseventh-main-prev:hover,
+.carouseltypeseventh-main-next:hover {
+    background: white;
+    transform: scale(1.1);
+}
+
+.carouseltypeseventh-main-dots {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.carouseltypeseventh-main-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: none;
+    background-color: #ccc;
+    cursor: pointer;
+    padding: 0;
+    transition: background-color 0.3s ease;
+}
+
+.carouseltypeseventh-main-dot.active {
+    background-color: #333;
+}
+
+/* Sub carousel styles */
+.carouseltypeseventh-sub-carousel {
+    position: relative;
+    height: 300px;
+    display: flex;
+    align-items: center;
+}
+
+.carouseltypeseventh-sub-slider {
+    flex: 1;
+    overflow: hidden;
+    height: 300px;
+}
+
+.carouseltypeseventh-sub-slide {
+    display: flex;
+    gap: 15px;
+    height: 100%;
+    transition: transform 0.5s ease;
+}
+
+.carouseltypeseventh-sub-item {
+    position: relative;
+    flex: 1;
+    height: 100%;
+    min-width: calc(50% - 7.5px);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    aspect-ratio: 4/3;
+}
+
+.carouseltypeseventh-sub-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.carouseltypeseventh-sub-slide.right {
+    animation: slideInRight 0.5s ease;
+}
+
+.carouseltypeseventh-sub-slide.left {
+    animation: slideInLeft 0.5s ease;
+}
+.carouseltypeseventh-sub-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 15px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.7));
+    color: white;
+}
+
+.carouseltypeseventh-sub-overlay h4 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.carouseltypeseventh-sub-prev,
+.carouseltypeseventh-sub-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,0.8);
+    color: #333;
+    font-size: 18px;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.carouseltypeseventh-sub-prev {
+    left: -20px;
+}
+
+.carouseltypeseventh-sub-next {
+    right: -20px;
+}
+
+.carouseltypeseventh-sub-prev:hover,
+.carouseltypeseventh-sub-next:hover {
+    background: white;
+    transform: translateY(-50%) scale(1.1);
+}
+
+/* 描述区域整体样式 */
+.carouseltypeseventh-description {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* 标题行样式 */
+.carouseltypeseventh-description-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.carouseltypeseventh-description-title-wrap {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+}
+
+.carouseltypeseventh-description-title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: #2c3e50;
+    letter-spacing: 0.5px;
+}
+
+.carouseltypeseventh-description-count {
+    font-size: 14px;
+    color: #7f8c8d;
+    font-weight: 500;
+}
+
+/* 查看更多链接 */
+.carouseltypeseventh-more {
+    color: #3498db;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.carouseltypeseventh-more:hover {
+    color: #2980b9;
+    transform: translateX(2px);
+}
+
+/* 景点列表样式 */
+.carouseltypeseventh-description-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px 24px;
+}
+
+.carouseltypeseventh-description-list li {
+    position: relative;
+    padding-left: 20px;
+    font-size: 15px;
+    color: #34495e;
+    line-height: 1.6;
+}
+
+.carouseltypeseventh-description-list li:before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: #3498db;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+/* Animation keyframes */
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .carouseltypeseventh-grid {
+        flex-direction: column;
+    }
+    
+    .carouseltypeseventh-main-carousel {
+        height: 400px;
+    }
+    
+    .carouseltypeseventh-sub-carousel {
+        height: 250px;
+    }
+}
+
+@media (max-width: 768px) {
+    .carouseltypeseventh-main-overlay h3 {
+        font-size: 22px;
+    }
+    
+    .carouseltypeseventh-main-overlay p {
+        font-size: 16px;
+    }
+    
+    .carouseltypeseventh-sub-items {
+        flex-direction: column;
+        height: 400px;
+    }
+    
+    .carouseltypeseventh-sub-prev,
+    .carouseltypeseventh-sub-next {
+        width: 30px;
+        height: 30px;
+        font-size: 14px;
+    }
+    
+    .carouseltypeseventh-sub-prev {
+        left: 10px;
+    }
+    
+    .carouseltypeseventh-sub-next {
+        right: 10px;
+    }
+
+    .carouseltypeseventh-description-list {
+        grid-template-columns: 1fr;
+    }
+    
+    .carouseltypeseventh-description-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .carouseltypeseventh-more {
+        align-self: flex-end;
+    }
+}

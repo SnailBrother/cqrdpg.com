@@ -1,0 +1,127 @@
+.cardflipsclock-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+     
+}
+  
+.cardflipsclock {
+    display: flex;
+}
+  
+/* Clock divider */
+.cardflipsclock .cardflipsclock-divider {
+    font-size: 66px;
+    line-height: 102px;
+    font-style: normal;
+    color: rgb(51, 50, 50);
+}
+
+/* Flip card */
+.cardflipsclock .cardflipsclock-flip {
+    position: relative;
+    width: 60px;
+    height: 100px;
+    margin: 2px;
+    font-size: 70px;
+    font-weight: 700;
+    line-height: 100px;
+    text-align: center;
+    background: rgb(46, 45, 45);
+    border: 1px solid rgb(34, 33, 33);
+    border-radius: 10px;
+    box-shadow: 0 0 6px rgba(54, 54, 54, 0.5);
+}
+
+/* Digital numbers */
+.cardflipsclock .cardflipsclock-flip .cardflipsclock-digital::before, 
+.cardflipsclock .cardflipsclock-flip .cardflipsclock-digital::after {
+    position: absolute;
+    content: attr(data-number);
+    left: 0;
+    right: 0;
+    color: white;
+    background: rgb(51, 50, 50);
+    overflow: hidden;
+    -webkit-perspective: 160px;
+    perspective: 160px;
+}
+
+/* Top half of the flip */
+.cardflipsclock .cardflipsclock-flip .cardflipsclock-digital::before {
+    top: 0;
+    bottom: 50%;
+    border-bottom: 1px solid #666;
+    border-radius: 10px 10px 0 0;
+}
+
+/* Bottom half of the flip */
+.cardflipsclock .cardflipsclock-flip .cardflipsclock-digital::after {
+    top: 50%;
+    bottom: 0;
+    line-height: 0;
+    border-radius: 0 0 10px 10px;
+}
+
+.cardflipsclock .cardflipsclock-flip .cardflipsclock-back::before,
+.cardflipsclock .cardflipsclock-flip .cardflipsclock-front::after {
+    z-index: 1;
+}
+
+.cardflipsclock .cardflipsclock-flip .cardflipsclock-back::after {
+    z-index: 2;
+}
+
+.cardflipsclock .cardflipsclock-flip .cardflipsclock-front::before {
+    z-index: 3;
+}
+
+.cardflipsclock .cardflipsclock-flip .cardflipsclock-back::after {
+    -webkit-transform-origin: center top;
+    transform-origin: center top;
+    -webkit-transform: rotateX(0.5turn);
+    transform: rotateX(0.5turn);
+}
+
+.cardflipsclock .cardflipsclock-flip.cardflipsclock-running .cardflipsclock-front::before {
+    -webkit-transform-origin: center bottom;
+    transform-origin: center bottom;
+    -webkit-animation: cardflipsclock-frontFlipDown 0.6s ease-in-out;
+    animation: cardflipsclock-frontFlipDown 0.6s ease-in-out;
+    box-shadow: 0 -2px 6px rgba(255, 255, 255, 0.3);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
+.cardflipsclock .cardflipsclock-flip.cardflipsclock-running .cardflipsclock-back::after {
+    -webkit-animation: cardflipsclock-backFlipDown 0.6s ease-in-out;
+    animation: cardflipsclock-backFlipDown 0.6s ease-in-out;
+}
+
+@-webkit-keyframes cardflipsclock-frontFlipDown {
+    to {
+        -webkit-transform: rotateX(0.5turn);
+        transform: rotateX(0.5turn);
+    }
+}
+
+@keyframes cardflipsclock-frontFlipDown {
+    to {
+        -webkit-transform: rotateX(0.5turn);
+        transform: rotateX(0.5turn);
+    }
+}
+
+@-webkit-keyframes cardflipsclock-backFlipDown {
+    to {
+        -webkit-transform: rotateX(0);
+        transform: rotateX(0);
+    }
+}
+
+@keyframes cardflipsclock-backFlipDown {
+    to {
+        -webkit-transform: rotateX(0);
+        transform: rotateX(0);
+    }
+}

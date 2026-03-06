@@ -1,0 +1,109 @@
+/* 根元素样式 */
+.detailshomecontainer-root {
+  position: relative; /* 设置为相对定位，以便背景可以相对于它定位 */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  overflow: auto;
+  align-items: center;
+  /* background: linear-gradient(150deg, #f8d1e8, #fff5f9); */
+}
+
+
+/* 亮色主题 */
+.detailshomecontainer-root.light {
+  background: linear-gradient(150deg, #ffffff, #eeeeee6b);
+}
+
+/* 暗色主题 */
+.detailshomecontainer-root.dark {
+  background: linear-gradient(150deg, #1a1a1a, #2d2d2d);
+  color: #ffffff;
+}
+
+/* 暗色主题下的内容区域 */
+.detailshomecontainer-root.dark .detailshomecontainer-section {
+  /* background-color: #333; */
+  background-color: transparent;
+  color: #fff;
+}
+
+/* 暗色主题下的头部和底部 */
+.detailshomecontainer-root.dark .detailshomecontainer-header,
+.detailshomecontainer-root.dark .detailshomecontainer-footer {
+  background-color: #222;
+  color: #fff;
+}
+
+
+  /* 背景容器样式 */
+.detailshomecontainer-background {
+  position: fixed; /* 固定定位，使背景不随内容滚动 */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1; /* 将背景放在内容后面 */
+}
+.detailshomecontainer-content {
+  position: relative; /* 确保内容在背景之上 */
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+  /* 主容器样式 */
+  .detailshomecontainer-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    /* background-color: #f8f8f8; */
+    font-family: 'Arial', sans-serif;
+  }
+  
+  /* 顶部区域样式 */
+  .detailshomecontainer-header {
+    width: 100%;
+    max-width: 1200px;
+    background-color: #ffffff;
+    margin: 0 auto;
+    border-bottom: 2px solid #f5f5f5; /* 这里设置了下边框线，1px 是边框宽度，solid 是边框样式，#000000 是边框颜色，你可以根据需求调整 */
+    /* box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); */
+  }
+  
+  /* 主要内容区域样式 */
+  .detailshomecontainer-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    gap: 30px;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* 底部区域样式 */
+  .detailshomecontainer-footer {
+    width: 100%;
+    max-width: 1200px;
+    background-color: #ffffff;
+    color: #ffffff;
+    padding: 30px 0;
+    margin: 0 auto;
+  }
+  
+  /* 内容区块样式 - 垂直水平居中 */
+  .detailshomecontainer-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+    /* background-color: #ffffff; */
+    background-color: transparent;
+    border-radius: 8px;
+    /* box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05); */
+    padding: 20px;
+    min-height: 50px; /* 设置最小高度以便更好地查看居中效果 */
+  }

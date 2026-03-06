@@ -1,0 +1,821 @@
+.container {
+    width: 100%;
+    height: calc(100dvh - 127px);
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+
+
+/* 聊天区域 - 使用flex布局 */
+.chatArea {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+/* 消息容器 */
+.messagesContainer {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    width: 100%;
+    box-sizing: border-box; /* 添加这个 */
+}
+
+/* 欢迎页面 */
+.welcomeSection {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 10px 10px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.welcomeAvatar {
+    font-size: 64px;
+    margin-bottom: 24px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+}
+
+.welcomeTitle {
+    font-size: 28px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.welcomeSubtitle {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 40px;
+    max-width: 1200px;
+    line-height: 1.6;
+}
+
+/* 重庆特色提示框 */
+.tipsBox {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin: 20px 0 40px;
+    padding: 24px;
+    background: white;
+    border-radius: 16px;
+    border: 1px solid #e1e5e9;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+
+    width: 100%;
+}
+
+.tipItem {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    color: #2d3748;
+    padding: 8px 0;
+}
+
+.tipItem:before {
+    content: "✓";
+    color: #667eea;
+    font-weight: bold;
+    font-size: 16px;
+    background: #f0f4ff;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 示例查询 */
+
+.examplesSection {
+    margin-top: 10px;
+    width: 100%;
+}
+
+.examplesTitle {
+    font-size: 16px;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 20px;
+    text-align: left;
+    padding-left: 8px;
+}
+
+.examplesGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    /* 固定2列 */
+    gap: 12px;
+}
+
+.exampleBtn {
+    background: white;
+    border: 1px solid #e1e5e9;
+    border-radius: 12px;
+    padding: 16px;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+    color: #555;
+    font-weight: 500;
+    height: 100%;
+    /* 确保按钮高度一致 */
+    display: flex;
+    align-items: center;
+}
+
+.exampleBtn:hover {
+    background: #ffffff;
+    border-color: #667eea;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.15);
+}
+
+/* 消息样式 */
+.messages {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+
+    margin: 0 auto;
+   width: 100%;
+    box-sizing: border-box; /* 添加这个 */
+}
+
+.message {
+    width: 100%;
+
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.userMessage {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-left: auto;
+    max-width: 80%;
+}
+
+.userMessage .messageContent {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 16px 20px;
+    border-radius: 20px 20px 20px 20px;
+    font-size: 15px;
+    line-height: 1.6;
+    /* box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2); */
+    word-break: break-word;
+}
+
+.userMessage .messageTime {
+    font-size: 12px;
+    color: #999;
+    margin-top: 6px;
+    padding: 0 8px;
+}
+
+.aiMessage {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    background: #f8f9fa;
+    border-radius: 20px 20px 20px 6px;
+    padding: 20px;
+    /* box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06); */
+    border: 1px solid #f0f0f0;
+    max-width: 100%;
+        width: 100%; /* 添加这个 */
+    box-sizing: border-box; /* 添加这个 */
+}
+
+.aiHeader {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.aiAvatar {
+    font-size: 24px;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.aiTitle {
+    font-weight: 600;
+    color: #333;
+    font-size: 15px;
+}
+
+.aiContent {
+    color: #333;
+    line-height: 1.7;
+    font-size: 15px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    width: 100%;
+}
+
+.aiMessage .messageTime {
+    font-size: 12px;
+    color: #999;
+    margin-top: 16px;
+    align-self: flex-end;
+}
+
+/* SQL部分 */
+.sqlSection {
+    margin-top: 20px;
+    border: 1px solid #e1e8ed;
+    border-radius: 12px;
+    overflow: hidden;
+    background: white;
+    width: 100%;
+}
+
+.sqlTitle {
+    background: #f8fafc;
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e1e8ed;
+}
+
+.sqlTitle span {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.copyBtn {
+    background: #667eea;
+    color: white;
+    border: none;
+    padding: 6px 16px;
+    border-radius: 8px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+}
+
+.copyBtn:hover {
+    background: #5a6fd8;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+}
+
+.sqlCode {
+    padding: 16px;
+    background: #f8fafc;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    overflow-x: auto;
+    color: #2d3748;
+}
+
+.sqlKeyword {
+    color: #d73a49;
+    font-weight: bold;
+}
+
+/* 数据表格 */
+.dataSection {
+    margin-top: 20px;
+    width: 100%;
+}
+
+.dataTitle {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dataTable {
+    border: 1px solid #e1e8ed;
+    border-radius: 12px;
+    overflow: auto;
+    max-height: 400px;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    width: 100%; /* 确保宽度100% */
+    box-sizing: border-box; /* 添加这个 */
+}
+
+.dataTable table {
+     width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    min-width: 100%; /* 改为100%而不是固定值 */
+}
+
+.dataTable th {
+    background: #f8fafc;
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 600;
+    color: #333;
+    border-bottom: 2px solid #e1e8ed;
+    position: sticky;
+    top: 0;
+    white-space: nowrap;
+}
+
+.dataTable td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f0f0f0;
+    color: #555;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+}
+
+.dataTable tr:hover {
+    background: #fafafa;
+}
+
+.dataTable tr:last-child td {
+    border-bottom: none;
+}
+
+.tableNote {
+    padding: 12px;
+    text-align: center;
+    font-size: 12px;
+    color: #999;
+    background: #f8fafc;
+    border-top: 1px solid #e1e8ed;
+}
+
+/* 分析部分 */
+.analysisSection {
+    margin-top: 20px;
+    padding: 20px;
+    background: linear-gradient(135deg, #667eea10 0%, #764ba210 100%);
+    border-radius: 12px;
+    border: 1px solid rgba(102, 126, 234, 0.2);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.analysisTitle {
+    font-weight: 600;
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: #667eea;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.analysisContent {
+    font-size: 14px;
+    line-height: 1.7;
+    color: #333;
+    white-space: pre-wrap;
+}
+
+
+
+
+
+
+
+
+/* 打字指示器 */
+.typingIndicator {
+    display: flex;
+    gap: 6px;
+    padding: 20px;
+    background: white;
+    border-radius: 20px 20px 20px 6px;
+    width: fit-content;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    border: 1px solid #f0f0f0;
+    margin-top: 4px;
+}
+
+.typingIndicator span {
+    width: 10px;
+    height: 10px;
+    background: #667eea;
+    border-radius: 50%;
+    animation: typing 1.4s infinite ease-in-out;
+    opacity: 0.6;
+}
+
+.typingIndicator span:nth-child(1) {
+    animation-delay: -0.32s;
+}
+
+.typingIndicator span:nth-child(2) {
+    animation-delay: -0.16s;
+}
+
+@keyframes typing {
+
+    0%,
+    80%,
+    100% {
+        transform: scale(0.8);
+        opacity: 0.6;
+    }
+
+    40% {
+        transform: scale(1.2);
+        opacity: 1;
+    }
+}
+
+/* 加载动画 */
+.spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 0.8s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* 自定义滚动条样式 */
+.messagesContainer::-webkit-scrollbar {
+    width: 8px;
+}
+
+.messagesContainer::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.messagesContainer::-webkit-scrollbar-thumb {
+    background: #c5c5c5;
+    border-radius: 4px;
+}
+
+.messagesContainer::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* 针对Firefox的滚动条样式 */
+.messagesContainer {
+    scrollbar-width: thin;
+    scrollbar-color: #c5c5c5 #f1f1f1;
+}
+
+/* 响应式设计 */
+@media (max-width: 1200px) {
+    .container {
+
+        height: calc(100dvh - 125px);
+
+    }
+}
+
+/* 显示设置区域 */
+.displaySettings {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin-top: 2px;
+    justify-content: flex-end;
+    padding: 0px 10px;
+
+}
+
+/* 切换按钮样式 */
+.toggleBtn {
+    background: #f0f4ff;
+    border: 1px solid #d1d9ff;
+    color: #667eea;
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+    box-sizing: border-box;
+}
+
+.toggleBtn:hover {
+    background: #e6ebff;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+}
+
+.toggleBtn.active {
+    background: #667eea;
+    border-color: #667eea;
+    color: white;
+}
+
+
+
+/* 输入区域 - 固定在底部 */
+.inputContainer {
+    box-sizing: border-box;
+    
+    /* border-top: 2px solid #e1e5e9; */
+    margin-top: 10px;
+
+    flex-shrink: 0;
+    /* box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05); */
+    position: relative;
+    z-index: 10;
+    border: 2px solid #e1e5e9;
+    border-radius: 12px;
+
+
+}
+
+
+
+/* 修改输入框包装器 */
+
+.inputWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* 垂直居中 */
+    justify-content: center;
+    width: 100%;
+
+}
+
+.sendBtn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    width: 50px;
+    height: 35px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+
+    margin-left: auto;
+    /* 让发送按钮在最右边 */
+    box-sizing: border-box;
+}
+
+.sendBtn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    /* box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3); */
+}
+
+.sendBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.sendIcon {
+    width: 24px;
+    height: 24px;
+    /* transform: rotate(-90deg); */
+    /* 如果需要保持旋转后的位置不偏移，可以添加： */
+    transform-origin: center;
+}
+
+.textarea {
+    flex: 1;
+    padding: 10px 10px;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    resize: none;
+    font-size: 15px;
+    font-family: inherit;
+    line-height: 0.8;
+    background: white;
+    transition: all 0.2s;
+    /* height: 30px; */
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.textarea:focus {
+    outline: none;
+    border-color: transparent;
+    /* box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);*/
+}
+
+.textarea:disabled {
+    background: #ffffff;
+    cursor: not-allowed;
+}
+/* 示例查询悬浮框样式 */
+.examplesPopup {
+    position: absolute;
+    bottom: 40px;
+    left: 10px;
+    width: 300px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    border: 1px solid #e1e5e9;
+    z-index: 1000;
+    animation: slideUp 0.2s ease;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.popupHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid #e1e5e9;
+    background: #f8fafc;
+    border-radius: 12px 12px 0 0;
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
+}
+
+.closeBtn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #999;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.closeBtn:hover {
+    background: #f0f0f0;
+    color: #666;
+}
+
+.popupContent {
+    padding: 16px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.popupExample {
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #555;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+}
+
+.popupExample:hover {
+    background: #667eea;
+    color: white;
+    transform: translateX(4px);
+    border-color: #667eea;
+}
+
+.popupExample:last-child {
+    margin-bottom: 0;
+}
+
+/* 调整displaySettings的位置，让它相对定位，方便悬浮框定位 */
+.displaySettings {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin-top: 2px;
+    justify-content: flex-end;
+    padding: 0px 10px;
+    position: relative; /* 添加这个，让悬浮框相对于这个容器定位 */
+}
+
+/* 欢迎区域的示例查询部分可以去掉或修改 */
+.welcomeSection {
+    /* 可以去掉原来的examplesSection样式 */
+}
+/* 在RealEstateAISearch.module.css中添加以下样式 */
+
+/* 阿里云标签样式 */
+.aliyunTag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    margin-bottom: 8px;
+}
+
+.aliyunIcon {
+    font-size: 14px;
+}
+
+/* 阿里云模式提示 */
+.aliyunTip {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white !important;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-top: 10px;
+}
+
+/* 阿里云按钮样式 */
+.aliyunBtn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: 1px solid #667eea;
+}
+
+.aliyunBtn:hover {
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.aliyunBtn.active {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    border-color: #f093fb;
+}

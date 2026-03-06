@@ -1,0 +1,65 @@
+/* VariableFontAnimation.css */
+.variablefontanimation-container {
+  font-family: "KaiTi", "楷体", "STKaiti", "STKai", serif; /* 设置楷体字体栈 */
+  font-optical-sizing: auto;
+  font-style: normal;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 60px;
+  width: 100%;
+  overflow: hidden;
+  /* background-color: #ffffff; */
+  color: #e02929;
+}
+
+.variablefontanimation-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.8rem;
+  line-height: 1.8rem;
+  background: linear-gradient(90deg, 
+    #ff0000, 
+    #ff7f00, 
+    #ffff00, 
+    #00ff00, 
+    #0000ff, 
+    #4b0082, 
+    #9400d3);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  background-size: 400% 400%;
+  animation: rainbow 5s ease infinite;
+}
+
+@keyframes rainbow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.variablefontanimation-letter {
+  display: inline-block;
+  --wght: 100;
+  --wdth: 85;
+  --opacity: 0.25;
+  --letter-spacing: 0;
+  --font-size: 1.8rem;
+  font-variation-settings: 'wght' var(--wght), 'wdth' var(--wdth);
+  opacity: var(--opacity);
+  letter-spacing: var(--letter-spacing);
+  font-size: var(--font-size);
+  transition: font-variation-settings 1s ease-in-out,
+              opacity 1s ease-in-out,
+              letter-spacing 2s ease-in-out,
+              font-size 1s ease-in-out;
+}

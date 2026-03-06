@@ -1,0 +1,37 @@
+ 
+   /*  background: radial-gradient(circle at 90% 10%, 
+    #bfbcc2 0%,       
+    #a19fa3 40%,     
+    #aaa7b1b4 70%,   
+    #d2c5e4 100%);   */
+.flower-scene-canvas {
+    height: 100vh;
+    left: 0;
+    position: fixed;
+    top: 0;
+    width: 100vw;
+    z-index: -1; /* 确保作为背景层 */
+    pointer-events: none; /* 防止canvas阻挡交互 */
+
+    background: radial-gradient(circle at center, 
+    #d8cfe2 0%,       
+    #cbc9cc 20%,     
+    #b3b3b4b4 40%,   
+    #d2c5e4 60%,
+    #c1d6e4 80%,
+    #b4d1e2 100%   
+);
+background-size: 200% 200%;
+animation: flowerscenegradientBackground 15s ease infinite;
+}
+@keyframes flowerscenegradientBackground {
+    0% {
+        background-size: 100% 100%;
+    }
+    50% {
+        background-size: 200% 200%;
+    }
+    100% {
+        background-size: 100% 100%;
+    }
+}    

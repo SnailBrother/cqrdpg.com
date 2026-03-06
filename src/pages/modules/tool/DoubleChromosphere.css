@@ -1,0 +1,211 @@
+/* 双色球组件样式 - 所有类名以chromosphere-开头 */
+.chromosphere-container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: 'Microsoft YaHei', sans-serif;
+}
+
+.chromosphere-title {
+    text-align: center;
+    color: #d81e06;
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.chromosphere-description {
+    text-align: center;
+    color: #666;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.chromosphere-balls-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.chromosphere-ball {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 5px;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.chromosphere-ball-red {
+    background-color: #d81e06;
+}
+
+.chromosphere-ball-blue {
+    background-color: #1e90ff;
+}
+
+.chromosphere-ball-empty {
+    background-color: #e0e0e0;
+    color: #999;
+}
+
+.chromosphere-controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.chromosphere-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #d81e06;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.chromosphere-button:hover {
+    background-color: #b71c1c;
+}
+
+.chromosphere-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.chromosphere-history {
+    margin-top: 20px;
+    border-top: 1px solid #ddd;
+    padding-top: 15px;
+}
+
+.chromosphere-history-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.chromosphere-history-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    padding: 5px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+}
+
+.chromosphere-history-balls {
+    display: flex;
+    margin-right: 10px;
+}
+
+.chromosphere-history-ball {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 5px;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.chromosphere-history-time {
+    font-size: 12px;
+    color: #666;
+}
+
+.chromosphere-animation {
+    animation: chromosphere-bounce 0.5s ease;
+}
+
+@keyframes chromosphere-bounce {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+.chromosphere-current {
+    margin-bottom: 20px;
+}
+
+.chromosphere-clear-button {
+    background-color: #666 !important;
+}
+
+.chromosphere-clear-button:hover {
+    background-color: #555 !important;
+}
+.chromosphere-history-index {
+    font-weight: bold;
+    color: #333;
+    margin-right: 10px;
+    min-width: 60px;
+    font-size: 14px;
+}
+
+/* 调整历史记录项的布局 */
+.chromosphere-history-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    padding: 8px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+}
+
+.chromosphere-history-balls {
+    display: flex;
+    margin-right: 10px;
+    flex-grow: 1;
+}
+
+.chromosphere-history-time {
+    font-size: 12px;
+    color: #666;
+    min-width: 80px;
+    text-align: right;
+}
+.chromosphere-history-index {
+    font-weight: bold;
+    color: #333;
+    margin-right: 10px;
+    min-width: 30px;
+    font-size: 14px;
+}
+
+.chromosphere-history-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    padding: 8px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+}
+
+.chromosphere-history-balls {
+    display: flex;
+    margin-right: 10px;
+    flex-grow: 1;
+}
+
+.chromosphere-history-time {
+    font-size: 12px;
+    color: #666;
+    min-width: 80px;
+    text-align: right;
+}

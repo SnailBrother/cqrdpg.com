@@ -1,0 +1,298 @@
+/* src/components/WordEditing.module.css */
+.container {
+  /* max-width: 1400px; */
+  margin: 0 auto;
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Microsoft YaHei', sans-serif;
+  background-color: #b7eb8f;
+  overflow: auto;
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 24px;
+  color: #1a1a1a;
+  font-size: 24px;
+  font-weight: 600;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #1890ff;
+}
+
+.layout {
+  display: flex;
+  gap: 24px;
+  min-height: 800px;
+}
+
+/* 左侧表单样式 */
+.formPanel {
+  width: 280px;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e8e8e8;
+  height: fit-content;
+  position: sticky;
+  top: 20px;
+}
+
+.formPanel h3 {
+  margin: 0 0 20px 0;
+  color: #262626;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.formRow {
+  margin-bottom: 16px;
+}
+
+.formRow label {
+  display: block;
+  margin-bottom: 6px;
+  color: #595959;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.controlInput {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: all 0.3s;
+  box-sizing: border-box;
+}
+
+.controlInput:focus {
+  border-color: #1890ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+  outline: none;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.exportBtn, .resetBtn {
+  flex: 1;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.exportBtn {
+  background: #1890ff;
+  color: white;
+}
+
+.exportBtn:hover {
+  background: #40a9ff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
+}
+
+.resetBtn {
+  background: #f5f5f5;
+  color: #595959;
+  border: 1px solid #d9d9d9;
+}
+
+.resetBtn:hover {
+  background: #e8e8e8;
+  color: #262626;
+}
+
+/* 右侧预览样式 */
+.previewPanel {
+  flex: 1;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e8e8e8;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.panelHeader {
+  padding: 20px 24px;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.panelHeader h3 {
+  margin: 0;
+  color: #262626;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.hint {
+  font-size: 12px;
+  color: #8c8c8c;
+  background: #f6ffed;
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid #b7eb8f;
+}
+
+.docxContainer {
+  flex: 1;
+  overflow: auto;
+  padding: 0;
+  background: #f5f5f5;
+}
+
+.docxViewer {
+  min-height: 100%;
+  background: white;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  margin: 0 auto;
+  padding: 40px;
+  box-sizing: border-box;
+}
+
+/* docx-preview 自定义样式 */
+.docxViewer .docx-wrapper {
+  background: white !important;
+  box-shadow: 0 0 0 1px #e8e8e8 !important;
+  margin: 0 !important;
+}
+
+.docxViewer .docx-wrapper > section.docx {
+  margin: 0 auto !important;
+  max-width: 21cm !important;
+  min-height: 29.7cm !important;
+  padding: 2.5cm !important;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1) !important;
+  background: white !important;
+  box-sizing: border-box !important;
+}
+
+/* 占位符高亮样式 */
+.placeholder-highlight {
+  background-color: #fff7e6 !important;
+  border-bottom: 2px dashed #ffa940 !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
+  border-radius: 2px !important;
+  padding: 1px 3px !important;
+}
+
+.placeholder-highlight:hover {
+  background-color: #ffe7ba !important;
+}
+
+/* 加载状态 */
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 400px;
+  color: #8c8c8c;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #1890ff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
+  .layout {
+    flex-direction: column;
+  }
+  
+  .formPanel {
+    width: 100%;
+    position: static;
+  }
+  
+  .previewPanel {
+    min-height: 600px;
+  }
+}
+/* WordEditing.module.css - 添加以下样式 */
+
+.previewHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #999;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.closeButton:hover {
+  background-color: #f5f5f5;
+  color: #666;
+}
+
+.closeBtn {
+  padding: 8px 16px;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s;
+  color: #666;
+}
+
+.closeBtn:hover {
+  background-color: #f5f5f5;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .previewHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .closeButton {
+    align-self: flex-end;
+    margin-top: -40px;
+  }
+}

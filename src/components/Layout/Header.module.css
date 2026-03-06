@@ -1,0 +1,46 @@
+/* src/components/Layout/Header.module.css */
+
+/* 顶部的高度为 60px; */
+
+.header {
+  background-color: var(--background-color);
+  color: var(--font-color);
+  padding: var(--padding);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  height: 60px;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+  border-bottom: 1px solid var(--border_color,rgba(87, 85, 85, 0.151));
+  box-sizing: border-box;
+}
+.headerlog {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+  margin-left: 10px;
+}
+.title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--font-color);
+}
+.titleicon {
+  width: 2em;
+  height: 2em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
+}
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-right: 15px;
+}
+
+ 

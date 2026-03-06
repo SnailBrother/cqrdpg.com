@@ -1,0 +1,87 @@
+/* #region start 通知系统样式*/
+/* 通知系统样式 */
+.notification-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.notification {
+  position: relative;
+  min-width: 250px;
+  max-width: 350px;
+  padding: 15px 20px;
+  border-radius: 5px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  color: white;
+  animation: notificationSlideIn 0.3s ease-out;
+  transition: all 0.3s ease;
+}
+
+.notification.notification-success {
+  background-color: #4caf50;
+}
+
+.notification.notification-error {
+  background-color: #f44336;
+}
+
+.notification.notification-warning {
+  background-color: #ff9800;
+}
+
+.notification.notification-info {
+  background-color: #2196f3;
+}
+
+.notification-content {
+  padding-right: 20px;
+}
+
+.notification-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.notification-close:hover {
+  opacity: 1;
+}
+
+@keyframes notificationSlideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes notificationSlideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+/*  #endregion end */
+

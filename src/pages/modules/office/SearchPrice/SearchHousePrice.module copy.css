@@ -1,0 +1,451 @@
+/* SearchHousePrice.css */
+/* SearchHousePrice.module.css */
+.outContainer {
+    margin: 0 auto;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: var(--font-family);
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.searchSection {
+    padding: 25px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.searchForm {
+    width: 100%;
+}
+
+.searchInputGroup {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.searchInput {
+    flex: 1;
+    padding: 12px 15px;
+    border: 2px solid var(--border_color);
+    border-radius: 6px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+    color: var(--font-color);
+    background-color: transparent;
+}
+ 
+.searchInput:focus {
+    outline: none;
+    border-color: var(--hover_border_color);
+}
+
+.searchButton {
+    padding: 12px 25px;
+    color: var(--font-color);
+    background: #2d7bc6;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
+    white-space: nowrap;
+}
+
+.searchButton:hover:not(:disabled) {
+    background: #2d7bc6;
+}
+
+.searchButton:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+.error {
+    background: #fee;
+    color: #c53030;
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    border-left: 4px solid #c53030;
+}
+
+.loading {
+    text-align: center;
+    padding: 30px;
+    color: #666;
+    font-size: 16px;
+}
+
+.stats {
+    color: var(--font-color);
+    padding: 12px 15px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-weight: 500;
+}
+
+.results {
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.tableContainer {
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    color: var(--font-color);
+    text-align: center;
+}
+
+.table th {
+    background: transparent;
+    color: var(--font-color);
+    padding: 15px 12px;
+    text-align: center;
+    font-weight: 600;
+    border-bottom: 2px solid var(--border_color);
+    white-space: nowrap;
+}
+
+.table td {
+    padding: 12px;
+    color: var(--font-color);
+    border-bottom: 1px solid var(--border_color);
+    vertical-align: top;
+    text-align: center;
+}
+
+.table tr:hover {
+    background: var(--hover_background-color);
+}
+
+.detailButton {
+    padding: 6px 12px;
+    background: transparent;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.detailButton:hover {
+    background: #38a169;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    gap: 5px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.pageButton {
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    background: white;
+    color: #4b5563;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 14px;
+}
+
+.pageButton:hover:not(:disabled) {
+    background: #f3f4f6;
+    border-color: #9ca3af;
+}
+
+.pageButton:disabled {
+    color: #9ca3af;
+    cursor: not-allowed;
+    background: #f9fafb;
+}
+
+.pageActive {
+    background: #1a5fb4;
+    color: white;
+    border-color: #1a5fb4;
+}
+
+.pageInfo {
+    margin-left: 15px;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.noData {
+    text-align: center;
+    padding: 50px 20px;
+    color: var(--font-color);
+    font-size: 16px;
+    background: transparent;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.tips {
+    background: transparent;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    color: var(--font-color);
+}
+
+.suggestIcon {
+    color: #1a5fb4;
+    width: 30em;
+    height: 30em;
+    vertical-align: -0.15em;
+    fill: currentColor;
+    overflow: hidden;
+}
+
+/* 完整分页样式 */
+.paginationComplete {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-top: 1px solid var(--border_color);
+    background: transparent;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.paginationLeft {
+    font-size: 14px;
+    color: var(--font-color);
+    font-weight: 500;
+}
+
+.paginationCenter {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.paginationRight {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.pageSizeSelector {
+    display: flex;
+    align-items: center;
+}
+
+.pageSizeSelect {
+    padding: 6px 10px;
+    border: 1px solid var(--border_color);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--font-color);
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.pageSizeSelect:focus {
+    outline: none;
+    border-color: var(--hover_border_color);
+}
+
+.pageJump {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--font-color);
+}
+
+.jumpInput {
+    width: 60px;
+    padding: 6px 8px;
+    border: 1px solid var(--border_color);
+    border-radius: 4px;
+    text-align: center;
+    font-size: 14px;
+    background-color: transparent;
+}
+
+.jumpInput:focus {
+    outline: none;
+    border-color: var(--hover_border_color);
+}
+
+.jumpButton {
+    padding: 6px 12px;
+    background: #1a5fb4;
+    color: var(--font-color);
+    border: none;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.jumpButton:hover {
+    background: var(--hover_background-color);
+}
+
+/* 分页按钮样式 */
+.paginationButton {
+    padding: 8px 12px;
+    border: 1px solid var(--border_color);
+    background: transparent;
+    color: var(--font-color);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 14px;
+    min-width: 40px;
+    text-align: center;
+}
+
+.paginationButton:hover:not(:disabled) {
+    background: transparent;
+    border-color: #9ca3af;
+}
+
+.paginationButton:disabled {
+    color: var(--font-color);
+    cursor: not-allowed;
+    background: transparent;
+}
+
+.paginationActive {
+    background: transparent;
+    color: var(--font-color);
+    border-color: var(--border_color);
+}
+
+/* 序号列样式 */
+.table th:first-child,
+.table td:first-child {
+    width: 60px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.icon {
+    width: 1.2em;
+    height: 1.2em;
+    vertical-align: -0.15em;
+    fill: currentColor;
+    overflow: hidden;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .searchInput {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    
+    .searchButton {
+        width: 70px;
+    }
+    
+    .table {
+        font-size: 12px;
+    }
+    
+    .table th,
+    .table td {
+        padding: 8px 6px;
+    }
+    
+    .pagination {
+        flex-wrap: wrap;
+        gap: 3px;
+    }
+    
+    .pageButton {
+        padding: 6px 8px;
+        font-size: 12px;
+    }
+    
+    /* 完整分页响应式 */
+    .paginationComplete {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    
+    .paginationCenter {
+        order: 1;
+    }
+    
+    .paginationLeft {
+        order: 2;
+    }
+    
+    .paginationRight {
+        order: 3;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .pageJump {
+        justify-content: center;
+    }
+    
+    /* 序号列响应式 */
+    .table th:first-child,
+    .table td:first-child {
+        width: 50px;
+        font-size: 0.9em;
+    }
+}
+
+@media (max-width: 480px) {
+    .tableContainer {
+        font-size: 11px;
+    }
+    
+    .pagination {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .paginationCenter {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .paginationButton {
+        padding: 6px 10px;
+        min-width: 35px;
+        font-size: 12px;
+    }
+    
+    .jumpInput {
+        width: 50px;
+    }
+}

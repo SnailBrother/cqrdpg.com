@@ -1,0 +1,265 @@
+.carouseltypefourth-container {
+  width: 100%;
+  max-width: 1900px;
+  height: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+/* #region start 标题 */
+/* 清新现代标题样式 */
+.carouseltypefourth-header {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 40px 0;
+}
+
+.carouseltypefourth-title-container {
+  position: relative;
+  padding: 0 60px;
+  text-align: center;
+}
+
+/* 主标题样式 */
+.carouseltypefourth-title {
+  margin: 0;
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-size: 2.8rem;
+  font-weight: 600;
+  color: #333;
+  letter-spacing: 4px;
+  position: relative;
+  display: inline-block;
+}
+
+/* 文字下划线动画 */
+.carouseltypefourth-title-text {
+  position: relative;
+  padding-bottom: 8px;
+  font-size: 30px;
+  color: aqua;
+}
+
+.carouseltypefourth-title-text::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(to right, transparent, #4a90e2, transparent);
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.6s ease;
+}
+
+.carouseltypefourth-title:hover .carouseltypefourth-title-text::after {
+  transform: scaleX(1);
+}
+
+/* 简约装饰线 */
+.carouseltypefourth-decoration {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 15px;
+}
+
+.carouseltypefourth-decoration-line {
+  width: 60px;
+  height: 1px;
+  background: #ddd;
+}
+
+.carouseltypefourth-decoration-dot {
+  width: 8px;
+  height: 8px;
+  background: #4a90e2;
+  border-radius: 50%;
+  margin: 0 15px;
+  position: relative;
+}
+
+.carouseltypefourth-decoration-dot::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  border: 1px solid #4a90e2;
+  border-radius: 50%;
+  opacity: 0.3;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .carouseltypefourth-title {
+    font-size: 2.2rem;
+    letter-spacing: 2px;
+  }
+  
+  .carouseltypefourth-decoration-line {
+    width: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .carouseltypefourth-title-container {
+    padding: 0 30px;
+  }
+  
+  .carouseltypefourth-title {
+    font-size: 1.8rem;
+  }
+  
+  .carouseltypefourth-decoration-dot {
+    margin: 0 10px;
+  }
+}
+/*  #endregion end */
+
+
+.carouseltypefourth-grid {
+  display: grid;
+  grid-template-areas: 
+    "top-left top-right"
+    "bottom-center bottom-center";
+  grid-gap: 20px;
+}
+
+.carouseltypefourth-item {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.carouseltypefourth-top-left {
+  grid-area: top-left;
+  height: 380px;
+}
+
+.carouseltypefourth-top-right {
+  grid-area: top-right;
+  height: 380px;
+}
+
+.carouseltypefourth-bottom-center {
+  grid-area: bottom-center;
+  height: 580px;
+}
+
+.carouseltypefourth-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.carouseltypefourth-overlay {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 20px;
+  transition: all 0.5s ease;
+  z-index: 2;
+}
+
+/* 新增的常驻显示介绍样式 */
+.carouseltypefourth-static-desc {
+  position: absolute;
+  color: white;
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+  transition: all 0.3s ease;
+  max-width: 40%;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* 为不同位置的图片设置常驻介绍的位置 */
+.carouseltypefourth-top-left .carouseltypefourth-static-desc {
+  top: 20px;
+  right: 20px;
+  border-radius: 8px 0 0 8px;
+}
+
+.carouseltypefourth-top-right .carouseltypefourth-static-desc {
+  top: 20px;
+  left: 20px;
+  border-radius: 0 8px 8px 0;
+}
+
+.carouseltypefourth-bottom-center .carouseltypefourth-static-desc {
+  top: 20px;
+  right: 20px;
+  border-radius: 8px 0 0 8px;
+}
+
+/* Top left item overlay (slides from left) */
+.carouseltypefourth-top-left .carouseltypefourth-overlay {
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+}
+
+.carouseltypefourth-top-left:hover .carouseltypefourth-overlay {
+  left: 0;
+}
+
+/* Top right item overlay (slides from right) */
+.carouseltypefourth-top-right .carouseltypefourth-overlay {
+  top: 0;
+  right: -100%;
+  width: 50%;
+  height: 100%;
+}
+
+.carouseltypefourth-top-right:hover .carouseltypefourth-overlay {
+  right: 0;
+}
+
+/* Bottom center item overlay (slides from bottom) */
+.carouseltypefourth-bottom-center .carouseltypefourth-overlay {
+  bottom: -100%;
+  left: 0;
+  width: 100%;
+  height: 40%;
+}
+
+.carouseltypefourth-bottom-center:hover .carouseltypefourth-overlay {
+  bottom: 0;
+}
+
+/* 标题样式修改 */
+.carouseltypefourth-title {
+  margin-bottom: 10px;
+  font-size: 30px;
+  color: #ffd700; /* 金色文字 */
+  font-weight: 600; /* 加粗 */
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5); /* 文字阴影增强可读性 */
+}
+
+/* 描述样式修改 */
+.carouseltypefourth-overlay .carouseltypefourth-desc {
+  font-size: 25px; /* 增大字体大小 */
+  color: #ffffff; /* 纯白色 */
+  line-height: 1.6; /* 增加行高 */
+  opacity: 0.9; /* 轻微透明效果 */
+}
+
+.carouseltypefourth-item:hover .carouseltypefourth-image {
+  transform: scale(1.05);
+}
+
+/* 悬停效果增强 */
+.carouseltypefourth-item:hover .carouseltypefourth-static-desc {
+  background: rgba(0, 0, 0, 0.7);
+}  
+.carouseltypefourth-static-desc p {
+  font-size: 30px;
+  width: 100%;
+}

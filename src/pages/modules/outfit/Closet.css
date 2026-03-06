@@ -1,0 +1,709 @@
+:root {
+    --primary-color: #4a6fa5;
+    --secondary-color: #166088;
+    --accent-color: #4fc3f7;
+    --background-color: #f8f9fa;
+    --text-color: #333;
+    --light-gray: #e9ecef;
+    --medium-gray: #adb5bd;
+    --dark-gray: #495057;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+}
+
+/* 整体容器样式 */
+.wardrobe-container {
+    width: 100dvw;
+    height: 100dvh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-color);
+    background-color: var(--background-color);
+    overflow: hidden;
+}
+
+/* 内容容器样式 */
+.wardrobe-content-container {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+}
+
+/* 效果和预览容器样式 */
+.wardrobe-results-container,
+.wardrobe-preview-container {
+    width: 50%;
+    height: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* 预览效果区域 */
+.wardrobe-results-container {
+    background-color: #fff;
+    border-right: 1px solid var(--light-gray);
+    display: flex;
+    flex-direction: column;
+}
+
+/* 预览效果标题区域 */
+.wardrobe-results-header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--light-gray);
+}
+
+.wardrobe-results-title {
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--secondary-color);
+}
+
+.wardrobe-results-function-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.wardrobe-effect-btn,
+.wardrobe-mannequin-btn {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 20px;
+    background-color: var(--primary-color);
+    color: white;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 0.9rem;
+}
+
+.wardrobe-effect-btn:hover,
+.wardrobe-mannequin-btn:hover {
+    background-color: var(--secondary-color);
+    transform: translateY(-2px);
+}
+
+.wardrobe-effect-btn.active,
+.wardrobe-mannequin-btn.active {
+    background-color: var(--secondary-color);
+    box-shadow: var(--shadow);
+}
+
+/* 模特区域 */
+.wardrobe-mannequin {
+    width: 100%;
+    flex-grow: 1;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    border-radius: 8px;
+    background-color: #ffffff;
+    overflow: hidden;
+}
+
+.image-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+/* 模特各部分 */
+.mannequin-header {
+    width: 100%;
+    height: 15%;
+    /* background-color: rgba(255, 228, 196, 0.5); */
+}
+
+.mannequin-top {
+    position: relative;
+    width: 100%;
+    height: 30%;
+    /* background-color: rgba(197, 185, 143, 0.2); */
+    transition: height 0.3s ease;
+}
+
+.mannequin-top.with-dress {
+    height: 75%;
+}
+
+.mannequin-top-img,
+.mannequin-dress-img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: auto;
+    max-width: 100%;
+    height: 100%;
+    object-fit: contain;
+    cursor: move;
+}
+
+.mannequin-dress-img {
+    height: auto;
+    max-height: 100%;
+}
+
+.mannequin-bottom {
+    position: relative;
+    width: 100%;
+    height: 45%;
+    /* background-color: rgba(207, 127, 174, 0.2); */
+}
+
+.mannequin-bottom.hidden {
+    display: none;
+}
+
+.mannequin-bottom-img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: auto;
+    height: 100%;
+    object-fit: contain;
+    cursor: move;
+}
+
+.mannequin-shoes {
+    position: relative;
+    width: 100%;
+    height: 15%;
+    /* background-color: rgba(160, 223, 154, 0.2); */
+}
+
+.mannequin-shoes-img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: auto;
+    height: 100%;
+    object-fit: contain;
+    cursor: move;
+}
+
+/* 配饰样式 */
+.accessory-item {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.accessory-item img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.remove-accessory-btn {
+    margin-top: 5px;
+    padding: 2px 6px;
+    background-color: #ff6b6b;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 10px;
+    transition: var(--transition);
+}
+
+.remove-accessory-btn:hover {
+    background-color: #ff5252;
+    transform: scale(1.1);
+}
+
+/* 衣物选择区域 */
+.wardrobe-preview-container {
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+}
+
+.wardrobe-preview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--light-gray);
+}
+
+.wardrobe-preview-title {
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--secondary-color);
+}
+
+.wardrobe-preview-link {
+    padding: 8px 15px;
+    background-color: transparent;
+    text-decoration: none;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    transition: var(--transition);
+}
+
+.wardrobe-preview-link:hover {
+    background-color: var(--secondary-color);
+    transform: translateX(5px);
+}
+
+.wardrobe-preview-content-container {
+    display: flex;
+    flex-grow: 1;
+    gap: 20px;
+}
+
+/* 标签页样式 */
+.wardrobe-preview-tab-container {
+    width: 120px;
+    background-color: var(--light-gray);
+    border-radius: 8px;
+    padding: 10px 0;
+}
+
+.wardrobe-preview-tab-nav-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.tab-btn {
+    padding: 10px 15px;
+    border: none;
+    background: none;
+    text-align: left;
+    cursor: pointer;
+    transition: var(--transition);
+    border-radius: 4px;
+    color: var(--dark-gray);
+    font-size: 0.9rem;
+}
+
+.tab-btn:hover {
+    background-color: rgba(74, 111, 165, 0.1);
+    color: var(--primary-color);
+}
+
+.tab-btn.active {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: bold;
+}
+
+/* 衣物展示区域 */
+.wardrobe-previewimage-container {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.wardrobe-preview-search-container {
+    margin-bottom: 15px;
+}
+
+.wardrobe-search-input {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid var(--medium-gray);
+    border-radius: 20px;
+    font-size: 0.9rem;
+    transition: var(--transition);
+}
+
+.wardrobe-search-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(74, 111, 165, 0.2);
+}
+
+/* 衣物列表 */
+.wardrobe-preview-items-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    justify-content: flex-start;
+    gap: 15px;
+    overflow-y: auto;
+    flex-grow: 1;
+    padding: 5px;
+    justify-content: flex-start; /* 保持从左到右排列 */
+    align-content: start; /* 从容器顶部开始填充内容 */
+}
+
+.wardrobe-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    cursor: pointer;
+    transition: var(--transition);
+    background-color: white;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: var(--shadow);
+    height: 150px;
+}
+
+.wardrobe-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.wardrobe-item-image-container {
+    width: 100%;
+    height: 120px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    border-radius: 6px;
+    background-color: #f5f5f5;
+}
+
+.wardrobe-item-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: var(--transition);
+}
+
+.wardrobe-item:hover .wardrobe-item-image {
+    transform: scale(1.05);
+}
+
+.wardrobe-item-name {
+    margin-top: 8px;
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--dark-gray);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+/* 缩放控制按钮 */
+.zoom-controls {
+    display: flex;
+    gap: 5px;
+    margin-left: 10px;
+}
+
+.zoom-controls button {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: var(--medium-gray);
+    color: white;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.zoom-controls button:hover {
+    background-color: var(--dark-gray);
+}
+
+/* 新增：衣物操作控制区域 */
+.control-panel {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    display: flex;
+    gap: 15px;
+    z-index: 30;
+}
+
+.move-controls {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+}
+
+.move-controls button,
+.zoom-controls button {
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 4px;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.move-controls button:hover,
+.zoom-controls button:hover {
+    transform: scale(1.1);
+}
+
+.move-controls button {
+    background-color: #4a6fa5;
+    color: white;
+}
+
+.zoom-controls {
+    flex-direction: column;
+    gap: 5px;
+}
+
+.zoom-controls button {
+    background-color: #166088;
+    color: white;
+}
+
+.move-controls button:nth-child(2) {
+    grid-column: 2;
+}
+
+.move-controls button:nth-child(3) {
+    grid-column: 1;
+    grid-row: 2;
+}
+
+.move-controls button:nth-child(4) {
+    grid-column: 2;
+    grid-row: 2;
+}
+
+.move-controls button:nth-child(5) {
+    grid-column: 3;
+    grid-row: 2;
+}
+
+/* 新增：衣物选择样式 */
+.clothing-item {
+    position: absolute;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    z-index: 5;
+}
+
+.clothing-item.active {
+    z-index: 15;
+    box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.5);
+}
+
+.mannequin-container {
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
+
+.mannequin {
+    width: 100%;
+    height: 100%;
+    background: url('mannequin.png') no-repeat center/contain;
+    position: relative;
+}
+
+.accessory-item {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    z-index: 20;
+}
+
+.accessory-item.active {
+    box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.5);
+}
+
+.accessory-item img {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 5px;
+}
+
+/* 响应式设计 */
+@media (max-width: 992px) {
+    .wardrobe-content-container {
+        flex-direction: column;
+        overflow-y: auto;
+    }
+    
+    .wardrobe-results-container,
+    .wardrobe-preview-container {
+        width: 100%;
+        height: auto;
+    }
+    
+    .wardrobe-mannequin {
+        height: 500px;
+    }
+    
+    .zoom-controls {
+        margin-left: 0;
+        margin-top: 10px;
+    }
+}
+
+@media (max-width: 768px) {
+    .control-panel {
+        top: auto;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .move-controls button,
+    .zoom-controls button {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .wardrobe-preview-content-container {
+        flex-direction: column;
+    }
+    
+    .wardrobe-preview-tab-container {
+        width: 100%;
+    }
+    
+    .wardrobe-preview-tab-nav-container {
+        flex-direction: row;
+        overflow-x: auto;
+        padding-bottom: 10px;
+    }
+    
+    .tab-btn {
+        white-space: nowrap;
+    }
+    
+ 
+    
+    .wardrobe-results-function-container {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}/* 新增/修改的CSS样式 */
+
+/* 衣物项选中状态 */
+.mannequin-top.selected,
+.mannequin-bottom.selected,
+.mannequin-dress.selected,
+.mannequin-shoes.selected,
+.accessory-item.selected {
+    outline: 0px dashed #ffffff;
+    box-shadow: 0 0 0px rgba(255, 255, 255, 0.5);
+}
+
+/* 衣物控制按钮 */
+.item-controls {
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 5px;
+    background-color: rgba(255, 255, 255, 0);
+    padding: 5px;
+    border-radius: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.item-controls button {
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 50%;
+    background-color: #e5ebf5cb;
+    color: rgba(66, 65, 65, 0.616);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.item-controls button:hover {
+    background-color: #166088;
+    transform: scale(1.1);
+}
+
+/* 配饰项 */
+.accessory-item {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.2s ease;
+}
+
+.accessory-item img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.remove-accessory-btn {
+    margin-top: 5px;
+    padding: 2px 6px;
+    background-color: #ff6b6b;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 10px;
+    transition: all 0.2s ease;
+}
+
+.remove-accessory-btn:hover {
+    background-color: #ff5252;
+    transform: scale(1.1);
+}
+
+/* 模特各部分定位 */
+.mannequin-top,
+.mannequin-bottom,
+.mannequin-dress,
+.mannequin-shoes {
+    position: absolute;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.mannequin-top {
+    height: 40%;
+    top: 15%;
+}
+
+.mannequin-dress {
+    height: 75%;
+    top: 15%;
+}
+
+.mannequin-bottom {
+    height: 30%;
+    top: 55%;
+}
+
+.mannequin-shoes {
+    height: 15%;
+    bottom: 0;
+}
+
+.mannequin-top-img,
+.mannequin-bottom-img,
+.mannequin-dress-img,
+.mannequin-shoes-img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}

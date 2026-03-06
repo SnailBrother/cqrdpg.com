@@ -1,0 +1,350 @@
+/* src/pages/QrcodeManagementSettings.module.css */
+.container {
+  padding: 2rem;
+ width: 100%;
+  /* 缩窄主容器，聚焦表单 */
+  margin: 0 auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  box-sizing: border-box;
+  background-color: transparent;
+}
+
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+
+.title {
+  color: #f2f4f7;
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+
+.logoutButton {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+
+/* --- 主表单卡片 --- */
+.mainFormCard {
+ 
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid #eee;
+}
+
+
+.formHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #f0f2f5;
+  padding-bottom: 1rem;
+}
+
+
+.formHeader h2 {
+  margin: 0;
+  font-size: 1.4rem;
+  color: #d9dadb;
+}
+
+
+.formActions {
+  display: flex;
+  gap: 0.8rem;
+}
+
+
+.searchBtn {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  box-shadow: 0 2px 5px rgba(52, 152, 219, 0.3);
+}
+
+
+.searchBtn:hover {
+  background-color: #2980b9;
+}
+
+
+.clearBtn {
+  background-color: #95a5a6;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+
+.submitBtn {
+  background-color: #27ae60;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  box-shadow: 0 2px 5px rgba(39, 174, 96, 0.3);
+}
+
+
+.submitBtn:hover {
+  background-color: #219150;
+}
+
+
+/* --- 新的表单布局：左标签右输入框 --- */
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+
+.formItem {
+  display: flex;
+  align-items: center;
+  min-height: 50px;
+}
+
+
+.formLabel {
+  width: 100px;
+  font-weight: 600;
+  color: #aca6a6;
+  font-size: 0.95rem;
+  flex-shrink: 0;
+}
+
+
+.formField {
+  flex: 1;
+}
+
+
+.input {
+  width: 100%;
+  padding: 0.7rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+
+.input:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+
+.sectionTitle {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #b2b3b4;
+  margin-top: 0.8rem;
+  margin-bottom: 0.5rem;
+  border-left: 4px solid #3498db;
+  padding-left: 0.8rem;
+}
+
+
+.viewQrContainer {
+  margin-bottom: 1rem;
+}
+
+
+.viewQrBtn {
+  width: 100%;
+  padding: 10px 20px;
+  background-color: #1890ff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+
+.viewQrBtn:hover {
+  background-color: #0c7cd5;
+}
+
+
+/* --- 搜索模态框 (无限下拉) --- */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(2px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+
+.searchModalContent {
+  background: white;
+  width: 90%;
+  max-width: 800px;
+  height: 80vh;
+  /* 固定高度以启用内部滚动 */
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #eee;
+  background: #f8f9fa;
+}
+
+
+.modalHeader h3 {
+  margin: 0;
+  color: #b2b3b4;
+}
+
+
+.closeBtn {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #95a5a6;
+}
+
+
+.closeBtn:hover {
+  color: #e74c3c;
+}
+
+
+.modalSearchBar {
+  padding: 1rem 1.5rem;
+  display: flex;
+  gap: 0.8rem;
+  border-bottom: 1px solid #eee;
+}
+
+
+.modalSearchBar .input {
+  flex: 1;
+}
+
+
+.modalSearchBar .searchButton {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 0 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+
+/* 列表滚动区域 */
+.modalListContainer {
+  flex: 1;
+  overflow-y: auto;
+  /* 关键：启用垂直滚动 */
+  padding: 0;
+  position: relative;
+}
+
+
+.modalTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+
+.modalTable th {
+  position: sticky;
+  top: 0;
+  background: #f1f4f6;
+  color: #b2b3b4;
+  font-weight: 600;
+  text-align: left;
+  padding: 0.8rem 1rem;
+  border-bottom: 2px solid #ddd;
+  z-index: 10;
+}
+
+
+.modalTableRow {
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+
+.modalTableRow:hover {
+  background-color: #e8f6fd;
+}
+
+
+.modalTable td {
+  padding: 0.8rem 1rem;
+  color: #333;
+}
+
+
+.urlCell {
+  font-family: monospace;
+  color: #8e44ad;
+  font-size: 0.9rem;
+}
+
+
+.loadingState,
+.emptyState,
+.noMoreState {
+  padding: 2rem;
+  text-align: center;
+  color: #7f8c8d;
+  font-style: italic;
+}
+
+
+.noMoreState {
+  font-size: 0.9rem;
+  padding: 1rem;
+  background: #f9f9f9;
+}

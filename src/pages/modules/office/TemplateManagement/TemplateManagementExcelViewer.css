@@ -1,0 +1,212 @@
+/* 基础样式 */
+.excel-container {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #f3f3f3;
+  overflow: hidden;
+}
+
+/* 工具栏样式 */
+.excel-toolbar {
+  padding: 6px 12px;
+  background-color: #f3f3f3;
+  border-bottom: 1px solid #d0d0d0;
+  display: flex;
+}
+
+.formula-bar {
+  display: flex;
+  flex: 1;
+  height: 24px;
+  border: 1px solid #d0d0d0;
+  background-color: white;
+}
+
+.cell-address {
+  width: 60px;
+  padding: 0 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f0f0;
+  border-right: 1px solid #d0d0d0;
+  font-family: 'Consolas', monospace;
+  font-size: 12px;
+}
+
+.formula-input {
+  flex: 1;
+  border: none;
+  padding: 0 8px;
+  outline: none;
+  font-family: 'Consolas', monospace;
+  font-size: 12px;
+}
+
+/* 主表格容器 */
+.excel-grid-container {
+  flex: 1;
+  overflow: auto;
+  background-color: white;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  position: relative;
+}
+
+/* 表格布局 */
+.excel-table-container {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  grid-template-rows: 24px 1fr;
+}
+
+.excel-corner {
+  grid-column: 1;
+  grid-row: 1;
+  background-color: #f0f0f0;
+  border-right: 1px solid #d0d0d0;
+  border-bottom: 1px solid #d0d0d0;
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 30;
+}
+
+/* 列标头 */
+.excel-column-headers {
+  grid-column: 2;
+  grid-row: 1;
+  display: flex;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background-color: white;
+}
+
+.excel-column-header {
+  min-width: 80px;
+  height: 24px;
+  border-right: 1px solid #d0d0d0;
+  border-bottom: 1px solid #d0d0d0;
+  background-color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+/* 行容器 */
+.excel-rows-container {
+  grid-column: 1 / span 2;
+  grid-row: 2;
+  display: flex;
+  overflow: hidden;
+}
+
+/* 行标头 (垂直排列) */
+.excel-row-headers {
+  width: 40px;
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  left: 0;
+  z-index: 10;
+  background-color: white;
+}
+
+.excel-row-header {
+  height: 24px;
+  border-right: 1px solid #d0d0d0;
+  border-bottom: 1px solid #d0d0d0;
+  background-color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+/* 数据行 */
+.excel-data-rows {
+  flex: 1;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.excel-data-row {
+  display: flex;
+  min-height: 24px;
+}
+
+/* 数据单元格 */
+.excel-cell {
+  min-width: 80px;
+  height: 24px;
+  border-right: 1px solid #e0e0e0;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 0 4px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 0;
+}
+
+.excel-cell.selected {
+  border: 2px solid #1a73e8 !important;
+  outline: none;
+  box-shadow: inset 0 0 0 1px white;
+}
+
+/* 工作表标签容器 */
+.sheet-tabs-container {
+  display: flex;
+  padding: 4px 12px;
+  background-color: #f3f3f3;
+  border-top: 1px solid #d0d0d0;
+  overflow-x: auto;
+}
+
+.sheet-tab {
+  padding: 6px 12px;
+  margin-right: 2px;
+  background-color: #e6e6e6;
+  border: 1px solid #d0d0d0;
+  border-radius: 3px 3px 0 0;
+  cursor: pointer;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.sheet-tab.active {
+  background-color: white;
+  font-weight: bold;
+  border-bottom: 1px solid white;
+  margin-bottom: -1px;
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}

@@ -1,0 +1,92 @@
+ /* 容器样式 */
+.avatarsettings-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+/* 标题样式 */
+.avatarsettings-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* 头像容器样式 */
+.avatarsettings-avatar-container {
+    width: 50px; /* 固定宽度 */
+    height: 50px; /* 固定高度 */
+    border-radius: 50%; /* 圆形 */
+    overflow: hidden; /* 隐藏超出部分 */
+    background-color: #e0e0e0; /* 背景色 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* 头像图片样式 */
+.avatarsettings-avatar {
+    width: 100%; /* 占满容器 */
+    height: 100%; /* 占满容器 */
+    object-fit: cover; /* 保持比例并覆盖容器 */
+}
+
+/* 头像占位符图标样式 */
+.avatarsettings-avatar-icon {
+    width: 30px; /* 图标大小 */
+    height: 30px;
+    fill: #666; /* 图标颜色 */
+}
+
+/* 用户名样式 */
+.avatarsettings-username {
+    font-size: 18px;
+    color: #333;
+    margin-top: 10px;
+}
+.avatarsettings-select-button,
+.avatarsettings-upload-button {
+    margin-top: 10px;
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.avatarsettings-select-button:hover,
+.avatarsettings-upload-button:hover {
+    background-color: #0056b3;
+}
+
+.avatarsettings-upload-button:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+}
+
+.avatarsettings-message {
+    margin-top: 10px;
+    padding: 8px;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.avatarsettings-message.success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.avatarsettings-message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+}

@@ -1,0 +1,504 @@
+/* SystemThemeSettings.module.css */
+
+/* ===== 容器和布局样式 ===== */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background: var(--background-color);
+  color: var(--font-color);
+  min-height: 100dvh;
+   font-family: var(--font-family);
+}
+
+/* 头部区域 - 包含标题和当前主题信息 */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border_color);
+}
+
+/* 主标题样式 */
+.title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  color: var(--font-color);
+  font-size: 24px;
+  font-weight: 600;
+}
+
+/* 预览模式徽章 */
+.previewBadge {
+  background: var(--hover_font-color);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  margin-left: 10px;
+}
+
+/* 数据库主题徽章 */
+.dbBadge {
+  background: var(--focus_font-color);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  margin-left: 10px;
+}
+
+/* 当前主题信息区域 */
+.current {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.currentLabel {
+  color: var(--secondary-font-color);
+  font-size: 14px;
+}
+
+.currentName {
+  font-weight: 600;
+  color: var(--hover_font-color);
+  font-size: 16px;
+}
+
+/* ===== 主要内容区域布局 ===== */
+.content {
+  display: grid;
+  grid-template-columns: 1fr 350px; /* 左侧编辑器，右侧侧边栏 */
+  gap: 30px;
+}
+
+/* 左侧编辑器容器 */
+.editor {
+  background: var(--secondary-background-color);
+  border-radius: 12px;
+  padding: 0;
+}
+
+/* ===== 设置区块通用样式 ===== */
+.section {
+  background: var(--background-color);
+  border: 1px solid var(--border_color);
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow_color);
+}
+
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  font-size: 18px;
+  color: var(--font-color);
+  font-weight: 600;
+}
+
+/* 图标样式 */
+.icon {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+/* ===== 颜色设置区域样式 ===== */
+
+/* 颜色网格布局 - 自适应列数 */
+.colorGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+/* 单个颜色项容器 */
+.colorItem {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.colorItem label {
+  font-size: 14px;
+  color: var(--secondary-font-color);
+  font-weight: 500;
+}
+
+/* ===== ColorPicker 颜色选择器自定义样式 ===== */
+.colorPicker {
+  width: 100%;
+}
+
+/* ColorPicker 触发器整体样式 - 左对齐布局 */
+.colorPicker :global(.ant-color-picker-trigger) {
+  width: 100%;
+  height: 40px;
+  border: 1px solid var(--border_color);
+  border-radius: 6px;
+  padding: 4px 8px 4px 4px; /* 左边距小一些，让内容更靠左 */
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* 内容左对齐 */
+  gap: 8px; /* 颜色块和文本之间的间距 */
+}
+
+/* 确保整个触发器内容左对齐 */
+.colorPicker :global(.ant-color-picker-trigger > div) {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+/* 颜色预览块样式 - 靠左显示 */
+.colorPicker :global(.ant-color-picker-trigger .ant-color-picker-color-block) {
+  margin: 0; /* 移除默认的右边距 */
+  flex-shrink: 0; /* 防止颜色块被压缩 */
+  order: 1; /* 确保颜色块在左边 */
+  border-radius: 4px;
+}
+
+/* 颜色代码文本样式 - 靠左并紧贴颜色块 */
+.colorPicker :global(.ant-color-picker-trigger-text) {
+  font-size: 12px;
+  color: var(--secondary-font-color);
+  order: 2; /* 确保文本在颜色块右边 */
+  margin-left: 0; /* 移除左边距 */
+  text-align: left; /* 文本左对齐 */
+  flex: 1; /* 让文本占据剩余空间 */
+}
+
+/* 移除颜色文本的左边距 */
+.colorPicker :global(.ant-color-picker-trigger .ant-color-picker-trigger-text) {
+  padding-left: 0;
+}
+
+/* ===== 其他设置区域样式 ===== */
+
+/* 设置网格布局 */
+.settingsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.settingItem {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.settingItem label {
+  font-size: 14px;
+  color: var(--secondary-font-color);
+  font-weight: 500;
+}
+
+/* 下拉选择框样式 */
+.select {
+  padding: 8px 12px;
+  border: 1px solid var(--border_color);
+  border-radius: 6px;
+  background: var(--background-color);
+  color: var(--font-color);
+  font-size: 14px;
+  height: 40px;
+}
+
+.select:focus {
+  border-color: var(--hover_font-color);
+  outline: none;
+  box-shadow: var(--focus_shadow_color);
+}
+
+/* ===== 预设按钮区域 ===== */
+.presets {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+/* ===== 右侧侧边栏样式 ===== */
+.sidebar {
+  background: var(--background-color);
+  border: 1px solid var(--border_color);
+  border-radius: 12px;
+  padding: 24px;
+  height: fit-content;
+  position: sticky;
+  top: 10px;
+  box-shadow: var(--shadow_color);
+}
+
+/* 侧边栏头部 - 包含标题和操作按钮 */
+.sidebarHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.sidebarTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--font-color);
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.sidebarActions {
+  display: flex;
+  gap: 8px;
+}
+
+/* 登录提示 */
+.loginTip {
+  background: var(--secondary-background-color);
+  border: 1px solid var(--border_color);
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+  color: var(--secondary-font-color);
+  margin-bottom: 16px;
+}
+
+/* 空状态提示 */
+.empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--secondary-font-color);
+}
+
+.empty p {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+}
+
+.empty small {
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+/* ===== 主题列表样式 ===== */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* 单个主题项 */
+.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border: 1px solid var(--border_color);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  background: var(--background-color);
+}
+
+.item:hover {
+  border-color: var(--hover_border_color);
+  box-shadow: var(--hover_shadow_color);
+}
+
+/* 活动主题项样式 */
+.itemActive {
+  border-color: var(--hover_font-color);
+  background: var(--hover_background-color);
+  box-shadow: 0 0 0 1px var(--hover_font-color);
+}
+
+/* 新建主题项样式 */
+.creatingItem {
+  border-color: var(--focus_font-color);
+  background: var(--focus_background-color);
+}
+
+/* 主题信息区域 */
+.itemInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.itemName {
+  font-weight: 600;
+  color: var(--font-color);
+  font-size: 14px;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 活动主题徽章 */
+.activeBadge {
+  background: var(--hover_font-color);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.itemDate {
+  font-size: 12px;
+  color: var(--secondary-font-color);
+}
+
+/* 主题名称输入框 */
+.nameInput {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid var(--border_color);
+  border-radius: 4px;
+  background: var(--background-color);
+  color: var(--font-color);
+  font-size: 14px;
+}
+
+.nameInput:focus {
+  border-color: var(--hover_font-color);
+  outline: none;
+  box-shadow: var(--focus_shadow_color);
+}
+
+/* 主题项操作按钮区域 */
+.itemActions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+/* 加载状态 */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  color: var(--secondary-font-color);
+  font-size: 16px;
+}
+
+/* ===== 响应式设计 ===== */
+@media (max-width: 768px) {
+  .content {
+    grid-template-columns: 1fr; /* 移动端单列布局 */
+  }
+  
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .sidebarHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .sidebarActions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+  
+  .colorGrid,
+  .settingsGrid {
+    grid-template-columns: 1fr; /* 移动端单列 */
+  }
+  
+  .presets {
+    grid-template-columns: 1fr;
+  }
+  
+  .item {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  
+  .itemActions {
+    justify-content: flex-end;
+  }
+  
+  /* 移动端 ColorPicker 调整 */
+  .colorPicker :global(.ant-color-picker-trigger) {
+    height: 36px;
+    padding: 3px 6px 3px 3px;
+  }
+  
+  .colorPicker :global(.ant-color-picker-trigger-text) {
+    font-size: 11px;
+  }
+}
+/* 在 SystemThemeSettings.module.css 中添加 */
+.imageUpload {
+  margin-top: 15px;
+}
+
+.fileInput {
+  display: none;
+}
+
+.uploadArea {
+  border: 2px dashed #d9d9d9;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.3s;
+}
+
+.uploadArea:hover {
+  border-color: #1890ff;
+}
+
+.imagePreview {
+  position: relative;
+}
+
+.imagePreview img {
+  max-width: 100%;
+  max-height: 200px;
+  border-radius: 4px;
+}
+
+.changeText {
+  margin-top: 8px;
+  color: #666;
+  font-size: 12px;
+}
+
+.uploadPlaceholder {
+  color: #666;
+}
+
+.uploadIcon {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.uploadText {
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.uploadHint {
+  font-size: 12px;
+  color: #999;
+}

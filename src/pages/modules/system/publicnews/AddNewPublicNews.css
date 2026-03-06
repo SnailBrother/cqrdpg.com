@@ -1,0 +1,125 @@
+/* 主容器 */
+.addnewpublicnews-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* 标题样式 */
+  .addnewpublicnews-title {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+  }
+  
+  /* 错误消息 */
+  .addnewpublicnews-error {
+    color: #d32f2f;
+    background-color: #fdecea;
+    padding: 10px 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    border-left: 4px solid #d32f2f;
+  }
+  
+  /* 表单样式 */
+  .addnewpublicnews-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  /* 表单组 */
+  .addnewpublicnews-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  /* 标签样式 */
+  .addnewpublicnews-label {
+    font-size: 16px;
+    color: #555;
+    font-weight: 500;
+  }
+  
+  /* 输入框样式 */
+  .addnewpublicnews-input {
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+  }
+  
+  .addnewpublicnews-input:focus {
+    border-color: #1976d2;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+  }
+  
+  /* 文本域样式 */
+  .addnewpublicnews-textarea {
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    resize: vertical;
+    min-height: 200px;
+    transition: border-color 0.3s;
+  }
+  
+  .addnewpublicnews-textarea:focus {
+    border-color: #1976d2;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+  }
+  
+  /* 按钮组 */
+  .addnewpublicnews-button-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 20px;
+  }
+  
+  /* 按钮样式 */
+  .addnewpublicnews-cancel-button,
+  .addnewpublicnews-submit-button {
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  
+  .addnewpublicnews-cancel-button {
+    background-color: #f5f5f5;
+    color: #555;
+    border: 1px solid #ddd;
+  }
+  
+  .addnewpublicnews-cancel-button:hover {
+    background-color: #e0e0e0;
+  }
+  
+  .addnewpublicnews-submit-button {
+    background-color: #1976d2;
+    color: white;
+    border: none;
+  }
+  
+  .addnewpublicnews-submit-button:hover {
+    background-color: #1565c0;
+  }
+  
+  .addnewpublicnews-submit-button:disabled {
+    background-color: #90caf9;
+    cursor: not-allowed;
+  }

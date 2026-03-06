@@ -1,0 +1,13 @@
+.mobileView {
+  height: 100dvh;
+  width: 100dvw;
+  box-sizing: border-box;
+  }
+  
+  .desktopView {
+    height: 100dvh;
+    width: 100dvw;
+    box-sizing: border-box;
+  }
+  
+ 

@@ -1,0 +1,462 @@
+.container {
+  height: 100dvh;
+  width: 100dvw;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+.header {
+  height: 100px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  background: #f8f9fa;
+}
+
+.avatarcontainer {
+  width: 110px;
+   
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.05), #eef1f5);
+  
+  border-radius: 20px;
+  border: 2px solid #eef1f5;
+  box-shadow: 
+    15px 15px 20px rgba(0, 0, 0, 0.1),
+    -15px -15px 20px #fff,
+    inset -5px -5px 5px rgba(255, 255, 255, 0.5),
+    inset 5px 5px 5px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+}
+
+.headercolumntwo {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  box-sizing: border-box;
+  justify-content: space-around;
+
+}
+
+.headerrowtavatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  animation: floatAnimation 4s ease-in-out infinite;
+  position: relative;
+}
+
+@keyframes floatAnimation {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+.avatarimg {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+}
+
+/* 时间卡片 */
+.Card {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: #eef1f5;
+  border-radius: 16px;
+  box-shadow:
+    8px 8px 16px rgba(165, 170, 180, 0.2),
+    -8px -8px 16px rgba(255, 255, 255, 0.8);
+ 
+  height: 60px;
+}
+
+.clockWrap {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: #f0f2f5;
+  box-shadow:
+    4px 4px 8px rgba(165, 170, 180, 0.2),
+    -4px -4px 8px rgba(255, 255, 255, 0.8),
+    inset 4px 4px 8px rgba(165, 170, 180, 0.1),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.clockFace {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #f0f2f5;
+}
+
+.clockHour,
+.clockMinute {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  background: #666;
+  transform-origin: bottom center;
+}
+
+.clockHour {
+  width: 2px;
+  height: 15px;
+  margin-left: -1px;
+  margin-top: -15px;
+}
+
+.clockMinute {
+  width: 2px;
+  height: 22px;
+  margin-left: -1px;
+  margin-top: -22px;
+  background: #333;
+}
+
+.timeText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.date {
+  font-size: 14px;
+  color: #666;
+}
+
+.hourMin {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* 主内容区 */
+.maincontent {
+  flex: 1;
+  padding: 16px;
+
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.05), #eef1f5);
+  margin: 10px;
+  border-radius: 20px;
+  border: 2px solid #eef1f5;
+  box-shadow:
+    15px 15px 20px rgba(0, 0, 0, 0.1),
+    -15px -15px 20px #fff,
+    inset -5px -5px 5px rgba(255, 255, 255, 0.5),
+    inset 5px 5px 5px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.worksCard {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  padding: 0px;
+}
+
+.worksTitle {
+
+
+ 
+  color: #333;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: baseline;
+}
+
+.lubiaoicon {
+  width: 2em;
+  height: 2em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+}
+
+.lubiaoTitle {
+  font-size: 0.7em;
+
+}
+
+.worksTitlecontent {
+  flex: 1;
+  overflow-y: auto;
+  /* 关键：允许垂直滚动 */
+ 
+  /* 防止滚动条遮挡内容 */
+   background: linear-gradient(to bottom, rgba(0, 0, 0, 0.05), #eef1f5);
+ 
+  border-radius: 20px;
+  border: 2px solid #eef1f5;
+ 
+  padding: 5px;
+  box-sizing: border-box;
+}
+
+/* 模块项 */
+.moduleItem {
+  display: flex;
+  align-items: center;
+
+  background: linear-gradient(145deg, #f0f0f0, #ffffff);
+ 
+  border-radius: 12px;
+  gap: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid #e0e0e0;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 10px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.moduleItem:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    0 8px 12px rgba(0, 0, 0, 0.15);
+}
+
+.moduleIcon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.05), #eef1f5);
+
+  border-radius: 20px;
+  border: 2px solid #eef1f5;
+  box-shadow:
+    15px 15px 20px rgba(0, 0, 0, 0.1),
+    -15px -15px 20px #fff,
+    inset -5px -5px 5px rgba(255, 255, 255, 0.5),
+    inset 5px 5px 5px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  padding: 5px;
+  box-sizing: border-box;
+  margin-left: 10px;
+}
+
+.moduleEmoji {
+  font-size: 24px;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.2));
+}
+
+.moduleInfo {
+  flex: 1;
+}
+
+.moduleName {
+
+  font-weight: bold;
+  color: #333333ce;
+
+
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.05), #eef1f5);
+
+  border-radius: 20px;
+  border: 2px solid #eef1f5;
+  box-shadow:
+    15px 15px 20px rgba(0, 0, 0, 0.1),
+    -15px -15px 20px #fff,
+    inset -5px -5px 5px rgba(255, 255, 255, 0.5),
+    inset 5px 5px 5px rgba(0, 0, 0, 0.05);
+  width: 60px;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  padding: 4px;
+  box-sizing: border-box;
+  margin-top: 5px;
+}
+
+/* 标题文字 */
+.moduleNametitle {
+  align-items: center;
+  font-size: 15px;
+  text-align: center;
+}
+
+.moduleTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 5px;
+
+}
+
+.moduleTag {
+  padding: 4px 5px;
+  border-radius: 20px;
+  font-size: 8px;
+  
+  font-weight: 500;
+  /* text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3); */
+  /* box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); */
+   background-color: #eef1f5;
+ 
+  border-radius: 10px;
+  border: 2px solid #eef1f5;
+  box-shadow: 
+    15px 15px 20px rgba(0, 0, 0, 0.1),
+    -15px -15px 20px #fff,
+    inset -5px -5px 5px rgba(255, 255, 255, 0.5),
+    inset 5px 5px 5px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  color: #9da0a3;
+}
+
+.moduleMoreTag {
+  padding: 4px 5px;
+ background-color: #eef1f5;
+  border-radius: 20px;
+  font-size: 8px;
+ color: #9da0a3;
+  border: 1px solid #ddd;
+  font-weight: 500;
+
+  border-radius: 10px;
+  border: 2px solid #eef1f5;
+  box-shadow: 
+    15px 15px 20px rgba(0, 0, 0, 0.1),
+    -15px -15px 20px #fff,
+    inset -5px -5px 5px rgba(255, 255, 255, 0.5),
+    inset 5px 5px 5px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  color: #9da0a3;
+}
+
+ 
+
+.moduleAction {
+  width: 20px;
+  height: 20px;
+  background: transparent;
+  border-radius: 50%;
+  /* box-shadow: 
+    inset 0 -2px 4px rgba(0, 0, 0, 0.1),
+    0 2px 4px rgba(0, 0, 0, 0.1); */
+  border: 0px solid #d0d0d0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px;
+}
+
+.moduleArrowIcon {
+  width: 10px;
+  height: 10px;
+  fill: #666;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.2));
+}
+
+.moduleItem:hover .moduleAction {
+  background: linear-gradient(145deg, #e0e0e070, #f0f0f041);
+  box-shadow:
+    inset 0 -2px 4px rgba(0, 0, 0, 0.1),
+    0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.moduleItem:hover .moduleArrowIcon {
+  fill: #33333348;
+}
+
+.titleicon {
+  width: 1.5em;
+  height: 1.5em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
+  animation: spin 2s linear infinite;
+  /* 旋转起来 */
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+ 
+.usercontainer {
+  display: flex;
+  flex-direction: column;
+   
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.05), #eef1f5);
+ 
+  border-radius: 20px;
+  border: 2px solid #eef1f5;
+  box-shadow: 
+    15px 15px 20px rgba(0, 0, 0, 0.1),
+    -15px -15px 20px #fff,
+    inset -5px -5px 5px rgba(255, 255, 255, 0.5),
+    inset 5px 5px 5px rgba(0, 0, 0, 0.05);
+ 
+  align-items: stretch; /* 或 center，根据需要 */
+  gap: 0; /* 确保没有间距 */
+  padding: 5px; /* 确保内边距为0 */
+ justify-content: space-around; /* 从顶部开始排列 */
+ height: 70px;
+}
+.username {
+  font-size: 10px;
+  height: 20px;
+ color: #89e5e2;
+    text-align: center;
+ margin: 0; /* 去掉默认的外边距 */
+  padding: 0; /* 去掉默认的内边距 */
+  line-height: 20px; /* 与高度相同，垂直居中 */
+ 
+  font-size: 1.5em;
+}
+.useremail {
+  font-size: 10px;
+  height: 15px;
+  color: #9eb6ac;
+  text-align: center;
+   margin: 0; /* 去掉默认的外边距 */
+  padding: 0; /* 去掉默认的内边距 */
+  line-height: 15px; /* 与高度相同，垂直居中 */
+   font-size: 0.5em;
+}
+.Windmill {
+display: flex;
+flex-direction: row;
+justify-content: center;
+align-items: center;
+}
+
+/* 当屏幕小于768px时隐藏 */
+@media (max-width: 767px) {
+  .Card {
+    display: none;
+  }
+}

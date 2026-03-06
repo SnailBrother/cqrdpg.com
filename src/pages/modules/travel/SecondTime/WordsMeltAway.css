@@ -1,0 +1,77 @@
+/* WordsMeltAway.css */
+.wordsmeltaway-container {
+    width: 100%;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent; /* 透明背景更好融入 */
+    position: relative;
+    overflow: hidden;
+}
+
+.wordsmeltaway-word {
+    /* 基础样式 */
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    text-align: center;
+    color: transparent; /* 隐藏原始文字 */
+    opacity: 0;
+    animation: wordsmeltaway-change 16s ease-in-out infinite;
+  }
+  
+  .wordsmeltaway-word::before {
+    content: attr(data-content);
+    position: absolute;
+    /* 关键居中代码 */
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap; /* 防止文字换行 */
+    
+    /* 您的渐变效果 */
+    background: linear-gradient(90deg, 
+      #ff2d75, #ff9500, #ffcc00, #00d0ff,
+      #9747ff, #ff2d75);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    background-size: 300% 300%;
+    animation: rainbow 8s linear infinite;
+    
+    /* 文字样式 */
+    font-weight: 600;
+    font-size: 24px;
+    padding: 0 20px;
+  }
+
+/* 优化后的时间点 */
+.wordsmeltaway-word-1 { animation-delay: 0s; }
+.wordsmeltaway-word-2 { animation-delay: 3s; }
+.wordsmeltaway-word-3 { animation-delay: 6s; }
+.wordsmeltaway-word-4 { animation-delay: 9s; }
+
+@keyframes wordsmeltaway-change {
+    0%, 100% { 
+        opacity: 0;
+        filter: blur(8px);
+        transform: translate(-50%, -50%) scale(0.95);
+    }
+    15%, 25% { 
+        opacity: 1;
+        filter: blur(0);
+        transform: translate(-50%, -50%) scale(1);
+    }
+    40% {
+        opacity: 0;
+        filter: blur(8px);
+        transform: translate(-50%, -50%) scale(1.05);
+    }
+}
+
+@keyframes rainbow {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
+}

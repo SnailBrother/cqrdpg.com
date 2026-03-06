@@ -1,0 +1,969 @@
+/* 定义颜色变量 */
+:root {
+ 
+  --dressing-background-main: #ffffffe3;
+  --dressing-color-main: #000000e3;
+  --dressing-color-backlinks: #dad0d0e3;
+  /* 象牙白 - 比纯白略偏黄 */
+  /* background: linear-gradient(135deg, #dddce4, #cfcddb, #8e8ec9); */
+}
+
+/* background-color: var(--their-bubble-color); */
+
+/* 全局样式 */
+.dressing-guide-container { 
+  /* background: linear-gradient(135deg, #dddce4, #cfcddb, #8e8ec9); */
+  color: var(--dressing-color-main);
+  height: calc(100dvh - 60px);
+    box-sizing: border-box;     
+}
+
+
+
+ 
+
+.dressing-error-alert {
+  margin-bottom: 5px;
+}
+
+.dressing-main-card {
+  /* background: rgb(218, 17, 17); */
+  background: var(--dressing-background-main);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  box-shadow: 0 8px 5px rgba(0, 0, 0, 0.3);
+  overflow: auto;
+  /* height: calc(100vh - 40px); */
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+
+}
+
+.dressing-main-card .ant-card-body {
+  padding: 5px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+}
+
+/* 标签页样式 */
+.ant-tabs-top>.ant-tabs-nav {
+  margin-bottom: 5px;
+}
+
+.ant-tabs-tab {
+  /* color: rgba(255, 255, 255, 0.7) !important; */
+  font-weight: 500;
+  color: var(--dressing-color-main) !important;
+}
+
+.ant-tabs-tab-active .ant-tabs-tab-btn {
+  /* color: #fff !important; */
+  color: var(--dressing-color-main) !important;
+  text-shadow: 0 0 0.25px currentcolor;
+}
+
+.ant-tabs-ink-bar {
+  /* background: linear-gradient(90deg, #ff8a00, #da1b60); */
+  background: #28ca13;
+}
+
+.ant-tabs-content-holder {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 区域头部 */
+.dressing-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.dressing-section-header h2 {
+  /* color: #fff; */
+  color: var(--dressing-color-main) !important;
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+/* 今日穿搭日期 */
+.dressing-date-badge {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  color: #000;
+}
+
+/* 今日推荐卡片 */
+.dressing-outfit-card {
+  /* background: rgba(255, 255, 255, 0.03); */
+  background: var(--dressing-background-main);
+  border-radius: 12px;
+  margin-bottom: 5px;
+  display: flex;
+  flex-direction: column;
+}
+
+.dressing-outfit-card .ant-card-body {
+  padding: 24px;
+}
+
+.dressing-weather-info-panel {
+  padding: 16px;
+  /* background: rgba(255, 255, 255, 0.05); */
+  background: var(--dressing-background-main);
+  border-radius: 12px;
+}
+
+.dressing-weather-meta {
+  margin-bottom: 16px;
+}
+
+.dressing-weather-meta .ant-tag {
+  margin-right: 8px;
+  border: none;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-weight: 500;
+}
+
+.dressing-suggestion-text {
+  /* color: rgba(255, 255, 255, 0.8); */
+  color: var(--dressing-color-main);
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+/* 轮播/图片画廊 */
+.dressing-image-gallery {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.dressing-carousel-item .ant-image-img {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+}
+
+.dressing-custom-dots li button {
+  /* background: rgba(255, 255, 255, 0.5); */
+  background: var(--dressing-background-main);
+  border-radius: 50%;
+}
+
+.dressing-custom-dots li.slick-active button {
+  /* background: #fff; */
+  background: var(--dressing-background-main);
+}
+
+.dressing-image-container {
+  position: relative;
+}
+
+.dressing-image-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  /* background: rgba(0, 0, 0, 0.7); */
+  background: #29282865;
+  padding: 12px;
+  /* color: #fff; */
+  color: #ffffffe3;
+}
+
+.dressing-image-info h4 {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+}
+
+.dressing-image-info p {
+  margin: 0;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+/* 图片占位符/空状态 */
+.dressing-no-images-placeholder,
+.dressing-image-placeholder {
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* background: rgba(255, 255, 255, 0.03); */
+  background: var(--dressing-background-main);
+  border-radius: 12px;
+  color: var(--dressing-color-main);
+}
+
+.dressing-loading-container,
+.dressing-no-data-container,
+.dressing-no-results-container {
+  padding: 60px 0;
+  text-align: center;
+  color: var(--dressing-color-main);
+}
+
+.dressing-loading-container p {
+  margin-top: 16px;
+}
+
+.dressing-results-container-out {
+  height: 100%;
+
+  overflow-y: hidden;
+
+
+}
+
+/* 历史查询区域 - 更新样式 */
+.dressing-history-section {
+  padding: 2px 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.dressing-search-controls {
+  margin-bottom: 5px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: #ffffff !important;
+}
+
+.dressing-search-mode-selector {
+  margin-bottom: 2px;
+  width: 110px;
+  margin-right: 2px;
+}
+
+.dressing-mode-select {
+  width: 110px;
+
+}
+/* 选择器 */
+.dressing-mode-select .ant-select-selector {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border: 1px solid #d9d9d9 !important;
+}
+/* 日期选择器 */
+.dressing-search-input-DatePicker .ant-picker-input input {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+.dressing-search-input-DatePicker .ant-picker {
+  background-color: #ffffff !important;
+  border: 1px solid #d9d9d9 !important;
+}
+/* 天气选择器 */
+.dressing-search-input .ant-select-selector {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border: 1px solid #d9d9d9 !important;
+}
+
+/* 温度输入框 */
+.dressing-temp-input .ant-input-number-input {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+.dressing-temp-input .ant-input-number {
+  background-color: #ffffff !important;
+  border: 1px solid #d9d9d9 !important;
+}
+
+/* 关键词输入框 */
+.dressing-search-input .ant-input {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border: 1px solid #d9d9d9 !important;
+}
+
+/* 按钮 */
+.dressing-calendar-button,
+.dressing-search-button {
+  background-color: #1890ff !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+
+.dressing-calendar-button:hover,
+.dressing-search-button:hover {
+  background-color: #40a9ff !important;
+}
+
+/* 下拉菜单背景 */
+.ant-select-dropdown,
+.ant-picker-dropdown {
+  background-color: #ffffff !important;
+}
+
+.ant-select-item {
+  color: #000000 !important;
+}
+
+.ant-select-item-option-selected {
+  background-color: #e6f7ff !important;
+  color: #000000 !important;
+}
+
+/* 温度范围分隔符 */
+.dressing-range-separator,
+.dressing-temp-unit {
+  color: #000000 !important;
+}
+.dressing-search-inputs {
+
+  gap: 2px;
+  /* width: 110px; */
+  flex-wrap: wrap;
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  margin-right: 2px;
+}
+
+.dressing-search-input {
+  width: 120px;
+}
+
+.dressing-temp-input {
+  width: 50px;
+}
+
+.dressing-temp-range-input {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  /* width: 150px; */
+}
+
+.dressing-search-button {
+  height: 30px;
+  width: 30px;
+  background: transparent;
+  color: #020202;
+  border: transparent;
+}
+
+.dressing-calendar-button {
+  height: 30px;
+  width: 70px;
+  background: #ffffff;
+  color: #020202;
+  border: transparent;
+}
+
+/* 搜索结果容器 - 添加滚动支持 */
+.dressing-results-container {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+
+
+/* 自定义滚动条样式 */
+.dressing-results-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dressing-results-container::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+}
+
+.dressing-results-container::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.dressing-results-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* 搜索结果 */
+.dressing-search-results {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.dressing-result-card {
+  /* background: rgba(255, 255, 255, 0.03); */
+  background: var(--dressing-background-main);
+  border-radius: 12px;
+  overflow: hidden;
+   box-sizing: border-box;
+}
+
+.dressing-result-card .ant-card-body {
+  padding: 0px;
+  display: flex;
+  flex-direction: column;
+  /* max-height: 800px; */
+}
+
+.dressing-result-header {
+  margin-bottom: 24px;
+}
+
+.dressing-result-meta {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.dressing-result-date {
+  color: var(--dressing-color-main);
+  font-weight: 500;
+}
+
+.dressing-result-suggestion {
+  color: var(--dressing-color-main);
+  margin: 0;
+  line-height: 1.6;
+}
+
+.dressing-result-content {
+  margin-bottom: 24px;
+  flex: 1;
+  /* overflow: hidden; */
+}
+
+/* 九宫格图片布局 */
+.dressing-image-grid-container {
+  /* max-height: 800px; */
+  overflow-y: auto;
+  padding: 8px;
+  /* background: rgba(255, 255, 255, 0.03); */
+  background: var(--dressing-background-main);
+  border-radius: 8px;
+}
+
+.dressing-image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.dressing-grid-item {
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.dressing-grid-item:hover {
+  transform: scale(1.05);
+}
+
+.dressing-grid-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 120px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.dressing-grid-image-wrapper .ant-image {
+  width: 100%;
+  height: 100%;
+}
+
+.dressing-grid-image-wrapper .ant-image-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.dressing-grid-image-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.342);
+  color: rgba(247, 247, 247, 0.863);
+
+  font-size: 10px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.dressing-grid-image-info span {
+  font-weight: bold;
+  margin: 0;
+}
+
+.dressing-grid-image-info p {
+  margin: 0;
+  opacity: 0.9;
+  font-size: 8px;
+}
+
+/* 评论区 */
+.dressing-comments-section {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 5px;
+  height: 100%;
+  /* height: 400px; */
+  /* overflow-y: auto; */
+  padding-bottom: 20px;
+}
+
+/* 评论区域滚动容器 */
+.dressing-comments-scroll-container {
+  /* height: 400px; */
+  /* overflow-y: auto; */
+  margin-top: 5px;
+  padding-right: 8px;
+}
+
+.dressing-comments-scroll-container::-webkit-scrollbar {
+  width: 4px;
+}
+
+.dressing-comment-header {
+  margin-bottom: 5px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #eee;
+}
+
+.dressing-comment-header h3 {
+  margin: 0;
+  color: var(--dressing-color-main);
+  font-size: 0.8rem;
+}
+
+/* 错误提示 */
+.dressing-comment-error {
+  padding: 10px;
+  background-color: #ffebee;
+  color: #c62828;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  font-size: 0.9rem;
+}
+
+/* 评论列表 */
+.dressing-comment-list {
+  margin-bottom: 5px;
+  /* max-height: 400px; */
+  overflow-y: auto;
+}
+
+.dressing-comment-item {
+  padding: 5px;
+  margin-bottom: 15px;
+  /* background: linear-gradient(135deg, #0f0c29a2, #302b63, #24243e); */
+  background: rgba(240, 240, 240, 0.9);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.dressing-comment-item:hover {
+  background-color: #f0f0f0;
+}
+
+.dressing-comment-user {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+    padding-left: 10px;
+}
+
+.dressing-comment-username {
+  font-weight: 600;
+  color: #3498db;
+  margin-right: 20px;
+}
+
+.dressing-comment-time {
+  color: #888;
+}
+
+/* 评论 */
+.dressing-comment-content {
+  color: #000000;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  font-size: 0.9rem;
+   padding-left: 10px;
+}
+
+/* 加载状态 */
+.dressing-comment-loading,
+.dressing-comment-empty {
+  text-align: center;
+  padding: 20px;
+  color: #888;
+}
+
+/* 评论表单 */
+.dressing-comment-form {
+  margin-top: 20px;
+}
+
+.dressing-comment-input {
+  width: 100%;
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  resize: vertical;
+  min-height: 80px;
+  color: var(--dressing-color-main);
+  font-family: inherit;
+  margin-bottom: 10px;
+  transition: border 0.3s;
+  /* background: linear-gradient(135deg, #3d3580, #423e75, #24243e); */
+  background: var(--dressing-background-main);
+}
+
+.dressing-comment-input:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.dressing-comment-submit {
+  background-color: #e2e2e2;
+  color: #000000;
+  border: none;
+  padding: 10px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.3s;
+}
+
+.dressing-comment-submit:hover {
+  background-color: #2980b9;
+}
+
+.dressing-comment-submit:disabled {
+  /* background-color: #d3d6d84d;
+  color: rgba(255, 255, 255, 0.233); */
+  background-color: #ced2d44d;
+  color: rgba(58, 57, 57, 0.404);
+  cursor: not-allowed;
+}
+
+/* 日历模态框 */
+.dressing-calendar-modal .ant-modal-content {
+  background: #ca1515;
+  border-radius: 16px;
+}
+
+.dressing-calendar-modal .ant-modal-header {
+  background: transparent;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dressing-calendar-modal .ant-modal-title {
+  color: var(--dressing-color-main);
+}
+
+.dressing-calendar-modal .ant-modal-close {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.dressing-calendar-date-indicator {
+  width: 6px;
+  height: 6px;
+  background: #12c46b;
+  border-radius: 50%;
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* 图片预览模态框 */
+.dressing-image-preview-modal .ant-modal-body {
+  padding: 0;
+}
+
+.dressing-image-preview-modal .ant-modal-header {
+  background: transparent;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dressing-image-preview-modal .ant-modal-title {
+  color: var(--dressing-color-main);
+}
+
+.dressing-image-preview-modal .ant-modal-close {
+  color: var(--dressing-color-main);
+}
+
+/* 权限提示 */
+.dressing-permission-denied {
+  height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
+/* 平板手机设备 */
+ 
+    /* 只在屏幕宽度 ≤ 1024px 时生效的样式 */
+  /* 在这里的CSS样式只在屏幕宽度小于等于1024像素时生效 */
+  .dressing-guide-container {
+    height:calc(100dvh - 60px)
+}
+ 
+
+  .dressing-main-card {
+    height: calc(100dvh - 24px);
+  }
+
+  /* .dressing-search-inputs {
+    flex-direction: column;
+    align-items: stretch;
+  } */
+
+  /* .dressing-mode-select, .dressing-search-input, .dressing-temp-input {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .dressing-temp-range-input {
+    width: 100%;
+  } */
+
+  .dressing-carousel-item .ant-image-img {
+    height: 300px;
+  }
+
+  .dressing-result-meta {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .dressing-image-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  }
+
+  .dressing-grid-image-wrapper {
+    height: 100px;
+  }
+
+  .dressing-comment-container {
+    padding: 15px;
+  }
+
+  .dressing-comment-item {
+    padding: 12px;
+  }
+
+  .dressing-comment-user {
+    flex-direction: row;
+  }
+
+  .dressing-comment-time {
+    margin-top: 5px;
+    font-size: 0.8rem;
+  }
+}
+
+
+
+/* 日历选择 */
+/* 自定义日历样式 */
+.dressing-calendar-container .ant-picker-calendar {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.dressing-calendar-container .ant-picker-calendar-header {
+  padding: 0;
+  margin-bottom: 16px;
+}
+
+.dressing-calendar-container select {
+  background: #ffffff;
+  background-color: #ffffff;
+  color: #000000;
+  border: 1px solid #3a3a5a;
+  border-radius: 4px;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.dressing-calendar-container select:focus {
+  outline: none;
+  border-color: #722ed1;
+}
+
+/* 日期单元格样式 */
+.dressing-calendar-date-cell {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  /* 改为圆形 */
+  cursor: pointer;
+  transition: all 0.3s;
+  aspect-ratio: 1/1;
+  /* 确保是正方形才能变成圆形 */
+  margin: 2px auto;
+  /* 居中显示 */
+  max-width: 32px;
+  /* 限制最大宽度 */
+  max-height: 32px;
+  /* 限制最大高度 */
+}
+
+.dressing-calendar-date-cell.has-data {
+  background-color: rgba(114, 46, 209, 0.8);
+  /* 更明显的颜色 */
+  color: var(--dressing-color-main);
+  font-weight: bold;
+  box-shadow: 0 0 8px rgba(114, 46, 209, 0.5);
+  /* 添加阴影效果 */
+  color: #ffffff;
+}
+
+.dressing-calendar-date-cell.has-data:hover {
+  background-color: #722ed1;
+  /* 悬停时更亮 */
+  transform: scale(1.1);
+  /* 悬停时稍微放大 */
+  color: #ffffff;
+}
+
+.dressing-calendar-date-cell.no-data {
+  color: #79787873;
+  cursor: not-allowed;
+}
+
+/* 日历模态框样式 */
+.dressing-calendar-modal .ant-modal-content {
+  /* background: #14142a; */
+  background: #ffffff;
+  border: 1px solid #2a2a4a;
+}
+
+.dressing-calendar-modal .ant-modal-header {
+  /* background: #14142a; */
+  background: #ffffff;
+  border-bottom: 1px solid #2a2a4a;
+  color: #000;
+}
+
+.dressing-calendar-modal .ant-modal-title {
+  color: var(----dressing-color-main);
+}
+
+.dressing-calendar-modal .ant-modal-close {
+  color: #000000;
+}
+
+
+/* 日期选择样式 */
+/* 日期选择器的圆形标记样式 */
+.dressing-search-input .ant-picker-cell-in-view[title*="有数据"]::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 10px;
+  height: 10px;
+  background-color: #722ed1;
+  border-radius: 50%;
+}
+
+.dressing-search-input .ant-picker-cell-in-view[title*="有数据"]:hover::after {
+  background-color: #9254de;
+  transform: translateX(-50%) scale(1.3);
+}
+
+/* 确保日期选择器弹出层使用相同的主题 */
+/* 自定义日期单元格 */
+.custom-date-cell {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  background: #ffffff00;
+
+}
+
+/* 有数据的日期样式 */
+.dressing-has-data {
+  background: linear-gradient(135deg, #722ed1, #eb2f96);
+  color: var(----dressing-color-main);
+  font-weight: bold;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(114, 46, 209, 0.3);
+}
+
+/* 没有数据的日期样式 */
+.dressing-no-data {
+  color: #d9d9d9;
+  cursor: not-allowed;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ffffff4f, #ffffff5d);
+}
+
+/* 鼠标悬停效果 */
+.ant-picker-cell:hover .dressing-has-data {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(114, 46, 209, 0.5);
+}
+
+/* 选中状态 */
+.ant-picker-cell-selected .dressing-has-data {
+  background: linear-gradient(135deg, #eb2f96, #722ed1);
+  box-shadow: 0 4px 16px rgba(114, 46, 209, 0.6);
+  transform: scale(1.05);
+}
+
+/* 禁用状态 */
+.ant-picker-cell-disabled .custom-date-cell {
+  opacity: 0.3;
+}
+
+/* 今天日期的特殊样式 */
+.ant-picker-cell-today .dressing-has-data {
+  border: 2px solid #52c41a;
+  box-shadow: 0 2px 12px rgba(82, 196, 26, 0.4);
+}

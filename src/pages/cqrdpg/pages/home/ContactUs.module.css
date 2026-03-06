@@ -1,0 +1,331 @@
+.contactSection {
+  width: 100%;
+  background-color: #ffffff;
+  color: #131212;
+  padding: 60px 0;
+  /* 【修改】允许垂直滚动，不再隐藏溢出 */
+  min-height: 100dvh;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  gap: 20px;
+  padding: 20px 20px;
+  /* 默认桌面端：左列在后，右列在前？不，HTML里已经调换了，这里保持正常流即可 */
+  /* 因为HTML里 rightCol 在前，leftCol 在后。
+     桌面端我们需要 left(图) 在左，right(表) 在右。
+     所以桌面端需要强制 order 或者 flex-direction row-reverse? 
+     
+     方案：保持 HTML 顺序 (表，图)。
+     桌面端 CSS: .leftCol { order: -1; } -> 图跑到左边。
+     移动端 CSS: 默认顺序 -> 表在上，图在下。
+  */
+  flex-direction: row;
+}
+
+/* 【关键修改】桌面端：让图片列 (leftCol) 显示在左边 */
+.leftCol {
+  order: -1;
+  /* 负值使其排在前面 (视觉上的左边) */
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.rightCol {
+  width: 50%;
+  background-color: #f8f8f8;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* 左侧内部样式保持不变 */
+.imageWrapper {
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.contactImage {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.contactImage:hover {
+  transform: scale(1.02);
+}
+
+.contactInfo {
+  background-color: #f8f8f8;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.infoTitle {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 20px 0;
+  color: #333;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #c9a982;
+}
+
+.infoList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.infoItem {
+  font-size: 15px;
+  margin-bottom: 12px;
+  line-height: 1.5;
+  display: flex;
+  align-items: flex-start;
+}
+
+.label {
+  color: #666;
+  font-weight: 500;
+  min-width: 70px;
+  flex-shrink: 0;
+}
+
+.value {
+  color: #333;
+  flex: 1;
+}
+
+/* 右侧表单样式保持不变 */
+.formTitle {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0 0 1px 0;
+  color: #333;
+  text-align: center;
+  padding-bottom: 0px;
+}
+
+.formTitleprompt {
+  border-bottom: 2px solid #c9a982;
+  padding-bottom: 10px;
+  font-size: small;
+  color: #4e4e4e;
+}
+
+.contactForm {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.formGroup {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+}
+
+.formLabel {
+  width: 60px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #555;
+  line-height: 38px;
+  flex-shrink: 0;
+}
+
+.formInput {
+  flex: 1;
+  height: 50px;
+  padding: 0 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.formInput:focus {
+  outline: none;
+  border-color: #c9a982;
+  box-shadow: 0 0 0 2px rgba(201, 169, 130, 0.2);
+}
+
+.formTextarea {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+  transition: all 0.3s ease;
+}
+
+.formTextarea:focus {
+  outline: none;
+  border-color: #c9a982;
+  box-shadow: 0 0 0 2px rgba(201, 169, 130, 0.2);
+}
+
+.submitBtn {
+  width: 90%;
+  height: 42px;
+  background-color: #c9a982;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+}
+
+.submitBtn:hover {
+  background-color: #b08d6a;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.submitBtn:active {
+  transform: translateY(0);
+}
+
+/* 状态消息样式 (如果JSX里用了类名，这里需要定义) */
+.statusMessage {
+  padding: 10px;
+  border-radius: 4px;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.statusMessage.success {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.statusMessage.error {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+/* 二维码样式 */
+.qrCodeItem {
+  display: flex;
+  gap: 30px;
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px dashed #ddd;
+}
+
+.qrCodeWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.qrLabel {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.qrImage {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.qrImage:hover {
+  transform: scale(1.05);
+}
+
+/* ================= 响应式设计 (仅 1024px 断点) ================= */
+/* ================= 响应式设计 (仅 1024px 断点) ================= */
+@media (max-width: 1024px) {
+  .container {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .leftCol {
+    order: 0;
+    width: 100%;
+  }
+
+  .rightCol {
+    order: 0;
+    width: 100%;
+  }
+
+  .formGroup {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .formLabel {
+    width: auto;
+    line-height: 1.2;
+    margin-bottom: 4px;
+  }
+
+  /* --- 在这里修改手机端输入框高度 --- */
+  .formInput {
+    width: 90%;
+    box-sizing: border-box;
+    min-height: 40px;
+    /* <--- 修改这个数值，默认是 38px，你可以改成 45px, 50px 等 */
+    height: 100%;
+    font-size: 16px;
+    /* 建议字体也稍微调大，方便手机点击 */
+  }
+
+  /* ----------------------------- */
+
+  .formTextarea {
+    width: 90%;
+    box-sizing: border-box;
+    /* 如果需要调整文本域高度，也可以在这里加 min-height */
+    min-height: 120px;
+  }
+
+  .qrCodeItem {
+    flex-direction: row;
+    gap: 5px;
+    align-items: center;
+  }
+
+  .qrCodeWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* 确保内容居中对齐 */
+    width: 100%;         /* 占满宽度以便居中 */
+  }
+  /* --- 在这里修改手机端二维码图片大小 --- */
+  .qrImage {
+    width: 60px;  /* <--- 修改这里的数值，例如 100px, 120px, 150px */
+    height: 60px; /* <--- 保持与 width 一致，确保证方形 */
+    max-width: 100%; /* 防止在小屏幕上溢出 */
+    margin-top: 5px; /* 增加一点与文字的间距 */
+  }
+
+
+  .label {
+    margin-bottom: 4px;
+  }
+}

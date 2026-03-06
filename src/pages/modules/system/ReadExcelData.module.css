@@ -1,0 +1,98 @@
+/* ReadExcelData.module.css */
+.container {
+  padding: 20px;
+  font-family: 'Arial, sans-serif';
+}
+
+.title {
+  margin-bottom: 20px;
+}
+
+.resetBtn {
+  margin-bottom: 20px;
+  padding: 8px 16px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.resetBtn:hover {
+  background-color: #c82333;
+}
+
+.emptyData {
+  color: #666;
+  padding: 20px;
+  border: 1px dashed #ddd;
+  border-radius: 4px;
+}
+
+.sheetCard {
+  margin-bottom: 30px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.sheetTitle {
+  margin-top: 0;
+  color: #007bff;
+  font-size: 18px;
+}
+
+.cellTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.tableHeader {
+  background-color: #f8f9fa;
+  color: #333;
+}
+
+.tableTh {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+  font-weight: 600;
+}
+
+.tableTd {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.formulaText {
+  color: #e67700;
+}
+
+.emptyValue {
+  color: #999;
+}
+
+.rawDataWrapper {
+  margin-top: 30px;
+  padding: 15px;
+  background-color: #dfdfdf;
+  border-radius: 4px;
+
+}
+
+.rawDataTitle {
+  margin-top: 0;
+  color: #666;
+  font-size: 16px;
+}
+
+.rawDataPre {
+  white-space: pre-wrap;
+  word-break: break-all;
+  margin: 0;
+  font-size: 14px;
+  color: #333;
+}

@@ -1,0 +1,100 @@
+/* 基础样式重置 */
+.traveldetailsfifth-container * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* 主容器 - 固定1200px宽度 */
+  .traveldetailsfifth-container {
+    width: 1200px;
+    height: 620px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    /* background-color: #ffffff; */
+    overflow: hidden;
+    border-radius: 10px;
+  }
+  
+  /* 大图展示区域 - 固定高度400px */
+  .traveldetailsfifth-main-image {
+    height: 500px; /* 500px总高-100px预览区 */
+    width: 100%;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* background-color: #dbdbdb7a; */
+    border-radius: 10px;
+  }
+  
+  .traveldetailsfifth-main-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 图片铺满整个区域 */
+    border: 5px solid transparent;
+    border-radius: 10px;
+  }
+  
+  /* 预览区域外层包装 */
+  .traveldetailsfifth-preview-wrapper {
+    height: 100px;
+    width: 100%;
+    position: relative;
+    padding: 0 10px;
+    /* background-color: #dbdbdb7a; */
+  }
+  
+  /* 预览区域容器 */
+  .traveldetailsfifth-preview-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+  
+  /* 预览图片列表 */
+  .traveldetailsfifth-preview-list {
+    display: flex;
+    justify-content: space-between;
+    height: 100%;
+    position: relative;
+    z-index: 1;
+  }
+  
+  /* 单个预览项 - 固定宽度 */
+  .traveldetailsfifth-preview-item {
+    width: 18%; /* 5张图片，留2%间距 */
+    height: 100%;
+    cursor: pointer;
+    border: 3px solid transparent;
+    transition: all 0.3s;
+    position: relative;
+    border-radius: 10px;
+  }
+  
+  .traveldetailsfifth-preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+  
+  .traveldetailsfifth-preview-item.active {
+    border-color: salmon;
+  }
+  
+  /* 三角指示器 - 精确居中 */
+  .traveldetailsfifth-indicator {
+    position: absolute;
+    top: -12px;
+    width: 0;
+    height: 0;
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-bottom: 12px solid salmon;
+    transform: translateX(-50%);
+    transition: left 0.3s ease;
+    z-index: 2;
+    border-radius: 10px;
+  }

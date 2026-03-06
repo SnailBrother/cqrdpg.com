@@ -1,0 +1,89 @@
+/* TextBoxAnimation.css */
+.textboxanimation-content {
+    display: inline-block;
+    overflow: hidden;
+    font-family: "Lato", sans-serif;
+}
+
+.textboxanimation-content_container {
+    font-weight: 600;
+    overflow: hidden;
+    padding: 0 40px;
+    position: relative;
+}
+
+.textboxanimation-content_container:before {
+    content: "[";
+    left: 0;
+}
+
+.textboxanimation-content_container:after {
+    content: "]";
+    position: absolute;
+    right: 0;
+}
+
+.textboxanimation-content_container:before, 
+.textboxanimation-content_container:after {
+    position: absolute;
+    top: 0;
+    color: var(--bracket-color, #a04d16);
+    font-size: 42px;
+    animation-name: textboxanimation-opacity;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+}
+
+.textboxanimation-content_container_text {
+    display: inline;
+    float: left;
+    margin: 0;
+}
+
+.textboxanimation-content_container_list {
+    margin-top: 0;
+    padding-left: 110px;
+    text-align: left;
+    list-style: none;
+    animation-name: textboxanimation-change;
+    animation-duration: 10s;
+    animation-iteration-count: infinite;
+}
+
+.textboxanimation-content_container_list_item {
+    margin: 0;
+    display: flex;
+    align-items: center; /* 垂直居中对齐 */
+    height: 100%; /* 占满容器高度 */
+}
+
+@keyframes textboxanimation-opacity {
+    0%, 100% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+/* 根据新的容器高度调整动画 */
+@keyframes textboxanimation-change {
+    0%, 12.66%, 100% {
+        transform: translate3d(0, 0, 0);
+    }
+    16.66%, 29.32% {
+        transform: translate3d(0, -25%, 0);
+    }
+    33.32%, 45.98% {
+        transform: translate3d(0, -50%, 0);
+    }
+    49.98%, 62.64% {
+        transform: translate3d(0, -75%, 0);
+    }
+    66.64%, 79.3% {
+        transform: translate3d(0, -50%, 0);
+    }
+    83.3%, 95.96% {
+        transform: translate3d(0, -25%, 0);
+    }
+}

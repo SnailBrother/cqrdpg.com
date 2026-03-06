@@ -1,0 +1,82 @@
+/* Drop container */
+.waterwave-drops {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+}
+
+/* Base drop style */
+.waterwave-drop {
+    position: absolute;
+    top: 300px;
+    width: 200px; /* Increased from 150px */
+    height: 200px; /* Increased from 150px */
+    background-color: transparent;
+    border-radius: 35% 65% 69% 31% / 53% 53% 47% 47%;
+    box-shadow: inset 10px 10px 10px rgba(0,0,0,0.05),
+               15px 25px 10px rgba(0,0,0,0.1),
+               15px 20px 20px rgba(0,0,0,0.05),
+               inset -10px -10px 15px rgba(255,255,255,0.9);
+    animation: waterwave-move 3s linear infinite; /* Changed from 5s to 3s for faster animation */
+}
+
+/* Animation */
+@keyframes waterwave-move {
+    0%, 100% {
+        border-radius: 35% 65% 69% 31% / 53% 53% 47% 47%;
+    }
+    25% {
+        border-radius: 36% 64% 52% 48% / 42% 48% 52% 58%;
+    }
+    50% {
+        border-radius: 37% 63% 50% 50% / 53% 54% 46% 47%;
+    }
+    75% {
+        border-radius: 36% 64% 49% 51% / 42% 47% 53% 58%;
+    }
+}
+
+/* Drop highlights */
+.waterwave-drop::before {
+    content: '';
+    position: absolute;
+    top: 35px; /* Adjusted from 25px */
+    left: 45px; /* Adjusted from 35px */
+    background-color: #fff;
+    width: 25px; /* Increased from 20px */
+    height: 25px; /* Increased from 20px */
+    border-radius: 34% 66% 52% 48% / 52% 55% 45% 48%;
+}
+
+.waterwave-drop::after {
+    content: '';
+    position: absolute;
+    top: 35px; /* Adjusted from 25px */
+    left: 85px; /* Adjusted from 65px */
+    background-color: #fff;
+    width: 15px; /* Increased from 10px */
+    height: 15px; /* Increased from 10px */
+    border-radius: 36% 64% 35% 65% / 55% 45% 55% 45%;
+}
+
+/* Individual drop positioning */
+.waterwave-drop:nth-child(2) {
+    transform: scale(0.7) translate(-200px, 180px); /* Changed scale from 0.5 to 0.7 */
+    border-radius: 57% 43% 35% 65% / 52% 44% 56% 48%;
+    animation-delay: 0.5s;
+}
+
+.waterwave-drop:nth-child(3) {
+    transform: scale(0.7) translate(280px, 10px); /* Changed scale from 0.5 to 0.7 */
+    border-radius: 29% 71% 52% 48% / 66% 51% 49% 34%;
+    animation-delay: 1s;
+}
+
+.waterwave-drop:nth-child(4) {
+    transform: scale(0.5) translate(120px, -350px); /* Changed scale from 0.35 to 0.5 */
+    border-radius: 29% 71% 52% 48% / 52% 51% 49% 48%;
+    animation-delay: 1.5s;
+}

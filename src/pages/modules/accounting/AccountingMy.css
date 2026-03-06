@@ -1,0 +1,139 @@
+/* 我的页面样式 */
+.accountingmy-profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    margin-bottom: 15px;
+}
+
+.accountingmy-profile-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+    position: relative;
+    overflow: hidden;
+}
+
+.accountingmy-profile-name {
+    margin: 0;
+    color: #333;
+}
+
+.accountingmy-settings {
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.accountingmy-settings-title {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    color: #333;
+}
+
+.accountingmy-settings-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    color: #000000;
+}
+
+.accountingmy-settings-item {
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+.accountingmy-settings-item:hover {
+    color: #0056b3; /* 鼠标悬停时的颜色 */
+    /* text-decoration: underline;  */
+    /* 悬停时添加下划线 */
+}
+.accountingmy-settings-item:last-child {
+    border-bottom: none;
+}    
+
+/* 添加以下样式到你的CSS文件中 */
+.accountingmy-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.accountingmy-modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.accountingmy-date-picker {
+    margin: 15px 0;
+}
+
+.accountingmy-date-picker label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.accountingmy-date-picker .react-datepicker-wrapper {
+    width: 100%;
+}
+
+.accountingmy-date-picker .react-datepicker__input-container {
+    width: 100%;
+}
+
+.accountingmy-date-picker .react-datepicker__input-container input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.accountingmy-modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.accountingmy-modal-buttons button {
+    padding: 8px 15px;
+    margin-left: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.accountingmy-modal-buttons button:first-child {
+    background-color: #f0f0f0;
+}
+
+.accountingmy-modal-buttons button:last-child {
+    background-color: #1890ff;
+    color: white;
+}    
+.accountingmy-link {
+    color: #000000; /* 链接颜色 */
+    text-decoration: none; /* 去除默认下划线 */
+}
+.accountingmy-link:hover {
+    color: #0056b3; /* 鼠标悬停时的颜色 */
+    /* text-decoration: underline;  */
+    /* 悬停时添加下划线 */
+}

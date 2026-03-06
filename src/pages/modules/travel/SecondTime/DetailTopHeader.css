@@ -1,0 +1,380 @@
+/* TravelHeader.css */
+.detailtravel-header {
+    background: rgba(255, 255, 255, 0.98);
+    /* box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05); */
+    margin-bottom: 30px;
+    
+  }
+  
+  .detailtravel-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 30px;
+  }
+  
+  .detailtravel-logo {
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+  }
+  
+  .detailtravel-logo-main {
+    font-family: 'Georgia', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: #2c3e50;
+    letter-spacing: 1px;
+  }
+  
+  .detailtravel-logo-sub {
+    font-size: 12px;
+    color: #7f8c8d;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  
+  .detailtravel-nav {
+    display: flex;
+    gap: 30px;
+  }
+  
+  .detailtravel-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    padding: 5px 0;
+    position: relative;
+    color: #7f8c8d;
+    transition: all 0.3s ease;
+  }
+  
+  .detailtravel-nav-item.detailtravel-active {
+    color: #3498db;
+  }
+  
+  .detailtravel-nav-item.detailtravel-active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(to right, #3498db, #2ecc71);
+    border-radius: 2px;
+  }
+  
+  .detailtravel-nav-item:hover {
+    color: #3498db;
+    transform: translateY(-2px);
+  }
+  
+  .detailtravel-icon {
+    width: 20px;
+    height: 20px;
+    margin-bottom: 4px;
+    position: relative;
+  }
+  
+  /* 自定义图标设计 */
+  .detailtravel-icon-map::before {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border: 2px solid currentColor;
+    border-radius: 50%;
+  }
+  
+  .detailtravel-icon-map::after {
+    content: "";
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: currentColor;
+    border-radius: 50%;
+    top: 5px;
+    left: 5px;
+  }
+  
+  .detailtravel-icon-camera::before {
+    content: "";
+    position: absolute;
+    width: 18px;
+    height: 14px;
+    border: 2px solid currentColor;
+    border-radius: 3px;
+    top: 3px;
+  }
+  
+  .detailtravel-icon-camera::after {
+    content: "";
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border: 2px solid currentColor;
+    border-radius: 50%;
+    top: -2px;
+    left: 5px;
+  }
+  
+  .detailtravel-icon-bookmark::before {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 14px solid currentColor;
+    top: 3px;
+  }
+  
+  .detailtravel-icon-bookmark::after {
+    content: "";
+    position: absolute;
+    width: 12px;
+    height: 10px;
+    background: white;
+    top: 7px;
+    left: 4px;
+  }
+  
+  .detailtravel-icon-search::before {
+    content: "";
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border: 2px solid currentColor;
+    border-radius: 50%;
+    top: 2px;
+    left: 2px;
+  }
+  
+  .detailtravel-icon-search::after {
+    content: "";
+    position: absolute;
+    width: 2px;
+    height: 8px;
+    background: currentColor;
+    transform: rotate(-45deg);
+    bottom: 1px;
+    right: 0px;
+  }
+  
+  .detailtravel-icon-user::before {
+    content: "";
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border: 2px solid white;
+    border-radius: 50%;
+    top: 2px;
+    left: 2px;
+  }
+  
+  .detailtravel-icon-user::after {
+    content: "";
+    position: absolute;
+    width: 14px;
+    height: 8px;
+    border: 2px solid white;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    bottom: 0;
+    left: 2px;
+  }
+  
+  .detailtravel-nav-item span {
+    font-size: 14px;
+    font-weight: 500;
+  }
+  
+  .detailtravel-search {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .detailtravel-search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  
+  .detailtravel-icon-search {
+    position: absolute;
+    left: 12px;
+    color: #95a5a6;
+  }
+  
+  .detailtravel-search-input {
+    padding: 10px 15px 10px 40px;
+    border: none;
+    background: rgba(236, 240, 241, 0.6);
+    border-radius: 25px;
+    width: 200px;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    color: #2c3e50;
+  }
+  
+  .detailtravel-search-input:focus {
+    outline: none;
+    width: 250px;
+    background: rgba(236, 240, 241, 0.9);
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+  }
+  
+  .detailtravel-user-profile {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #3498db, #2ecc71);
+    border: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .detailtravel-user-profile:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3);
+  }
+  
+  /* 响应式设计 */
+  @media (max-width: 768px) {
+    .detailtravel-container {
+      padding: 15px 20px;
+    }
+    
+    .detailtravel-logo-main {
+      font-size: 22px;
+    }
+    
+    .detailtravel-nav {
+      gap: 15px;
+    }
+    
+    .detailtravel-nav-item span {
+      display: none;
+    }
+    
+    .detailtravel-search-input {
+      width: 150px;
+    }
+    
+    .detailtravel-search-input:focus {
+      width: 180px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .detailtravel-logo-sub {
+      display: none;
+    }
+    
+    .detailtravel-search-input {
+      display: none;
+    }
+    
+    .detailtravel-icon-search {
+      position: static;
+      color: #7f8c8d;
+    }
+  }
+
+  /* 音频播放按钮 */
+  /* Add to DetailTopHeader.css */
+/* 更新音乐播放器按钮样式 */
+.travel-music-player {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #9b59b6, #e74c3c);
+  border: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-right: 10px;
+  position: relative;
+}
+
+/* 播放图标 - 向下微调3px */
+.travel-icon-play::before {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-left: 14px solid white;
+  top: calc(50% + 3px);  /* 向下移动3像素 */
+  left: 50%;
+  transform: translate(-40%, -50%);
+}
+
+/* 暂停图标 - 向下微调3px */
+.travel-icon-pause::before {
+  content: "";
+  position: absolute;
+  width: 4px;
+  height: 16px;
+  background: white;
+  top: calc(50% + 3px);  /* 向下移动3像素 */
+  left: 50%;
+  transform: translate(-150%, -50%);
+}
+
+.travel-icon-pause::after {
+  content: "";
+  position: absolute;
+  width: 4px;
+  height: 16px;
+  background: white;
+  top: calc(50% + 3px);  /* 向下移动3像素 */
+  left: 50%;
+  transform: translate(50%, -50%);
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .travel-icon-play::before {
+    border-top: 7px solid transparent;
+    border-bottom: 7px solid transparent;
+    border-left: 12px solid white;
+    top: calc(50% + 2px);  /* 小屏幕上向下移动2像素 */
+  }
+  
+  .travel-icon-pause::before,
+  .travel-icon-pause::after {
+    width: 3px;
+    height: 14px;
+    top: calc(50% + 2px);  /* 小屏幕上向下移动2像素 */
+  }
+}
+
+@media (max-width: 480px) {
+  .travel-icon-play::before {
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+    border-left: 10px solid white;
+    top: calc(50% + 1px);  /* 更小屏幕上向下移动1像素 */
+  }
+  
+  .travel-icon-pause::before,
+  .travel-icon-pause::after {
+    width: 3px;
+    height: 12px;
+    top: calc(50% + 1px);  /* 更小屏幕上向下移动1像素 */
+  }
+}

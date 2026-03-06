@@ -1,0 +1,71 @@
+/* DynamicTextAnimation.css */
+.dynamictextanimation-container {
+  height: 100px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* background-color: #ffffff; */
+}
+
+.dynamictextanimation-loader {
+  position: relative;
+  width: 100%;
+  height: 60px;
+}
+
+.dynamictextanimation-char,
+.dynamictextanimation-circle {
+  position: absolute;
+  width: 30px;
+  height: 60px;
+  line-height: 60px;
+  margin: 0 10px;
+  color: #df5151;
+  text-align: center;
+  font-size: 30px;
+  transform: rotate(180deg);
+  opacity: 0;
+  animation: dynamictextanimation-move 4s linear infinite; /* 从2.5s改为4s */
+}
+
+.dynamictextanimation-char::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -20px;
+  width: 30px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: rgba(0,0,0,0.15);
+  filter: blur(1.5px);
+}
+
+.dynamictextanimation-circle {
+  bottom: 13px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+
+@keyframes dynamictextanimation-move {
+  0% {
+    right: 0;
+    opacity: 0;
+  }
+  35% {
+    right: 41%;
+    transform: rotate(0deg);
+    opacity: 1;
+  }
+  65% {
+    right: 59%;
+    transform: rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    right: 100%;
+    transform: rotate(-180deg);
+    opacity: 0;
+  }
+}

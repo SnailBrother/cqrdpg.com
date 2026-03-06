@@ -1,0 +1,436 @@
+.examplesSection {
+  width: 100%;
+  background-color: #ffffff;
+  padding: 0;
+  color: #333333;
+  height: 100dvh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  width: 100%;
+  max-width: 100%; /* 移除最大宽度限制 */
+  margin: 0 auto;
+  padding: 40px 0; /* 改为左右0，上下40px */
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 标题区域 - 固定不滚动，设置左右边距与内容对齐 */
+.sectionTitle {
+  font-size: 36px;
+  font-weight: 600;
+  text-align: center;
+  margin: 0 50px 15px 50px; /* 左右边距50px */
+  color: #222222;
+  position: relative;
+  padding-bottom: 20px;
+  flex-shrink: 0;
+}
+
+.sectionTitle::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background-color: #c9a982;
+}
+
+.sectionSubtitle {
+  font-size: 16px;
+  text-align: center;
+  color: #666666;
+  margin: 0 50px 30px 50px; /* 左右边距50px */
+  flex-shrink: 0;
+}
+
+/* 内容包装器 - 可滚动区域 */
+.contentWrapper {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 50px; /* 左右边距50px，与标题对齐 */
+  scrollbar-width: thin;
+  scrollbar-color: #c9a982 #f0f0f0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* 自定义滚动条样式 */
+.contentWrapper::-webkit-scrollbar {
+  width: 6px;
+}
+
+.contentWrapper::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 10px;
+}
+
+.contentWrapper::-webkit-scrollbar-thumb {
+  background: #c9a982;
+  border-radius: 10px;
+}
+
+.contentWrapper::-webkit-scrollbar-thumb:hover {
+  background: #b08d6a;
+}
+
+/* 分类区块 - 占据整个宽度 */
+.categoryBlock {
+  margin-bottom: 20px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #f0f0f0;
+  transition: all 0.3s ease;
+  width: 100%; /* 占据整个父容器宽度 */
+}
+
+.categoryBlock:hover {
+  border-color: #e0e0e0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+/* 分类头部 - 可点击区域 */
+.categoryHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 25px;
+  cursor: pointer;
+  background-color: #ffffff;
+  border-radius: 12px;
+  transition: background-color 0.2s ease;
+  min-height: 76px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.categoryHeader:hover {
+  background-color: #fafafa;
+}
+
+/* 分类标题包装器 - 左对齐 */
+.categoryTitleWrapper {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex: 1;
+}
+
+/* 主分类标题 */
+.categoryTitle {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+  color: #222222;
+  white-space: nowrap;
+}
+
+.categoryNumber {
+  font-size: 20px;
+  font-weight: 700;
+  color: #c9a982;
+  opacity: 0.8;
+  font-family: 'Arial', sans-serif;
+  min-width: 40px;
+  display: inline-block;
+}
+
+/* 展开/折叠图标 */
+.expandIcon {
+  font-size: 14px;
+  color: #999;
+  transition: transform 0.3s ease;
+  display: inline-block;
+  min-width: 20px;
+  text-align: right;
+}
+
+.expandIcon.expanded {
+  transform: rotate(180deg);
+  color: #c9a982;
+}
+
+/* 分类内容区域 - 内部内容保持与头部相同的左右边距 */
+.categoryContent {
+  padding: 0 25px 25px 25px;
+  border-top: 1px solid #f0f0f0;
+  animation: slideDown 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 分类描述 */
+.categoryDesc {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #555555;
+  margin: 20px 0 20px 0;
+  background-color: #f9f9f9;
+  padding: 15px 20px;
+  border-radius: 8px;
+  border-left: 4px solid #c9a982;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* 子分类区块 */
+.subCategoryBlock {
+  margin-bottom: 15px;
+  border-left: 2px solid #f0f0f0;
+  padding-left: 15px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* 子分类头部 */
+.subCategoryHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 15px;
+  cursor: pointer;
+  background-color: #ffffff;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+  margin-bottom: 8px;
+  min-height: 48px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.subCategoryHeader:hover {
+  background-color: #fafafa;
+}
+
+/* 子分类标题 */
+.subCategoryTitle {
+  font-size: 18px;
+  font-weight: 500;
+  margin: 0;
+  color: #444444;
+  position: relative;
+  flex: 1;
+}
+
+/* 子分类展开图标 */
+.subExpandIcon {
+  font-size: 12px;
+  color: #999;
+  transition: transform 0.3s ease;
+  display: inline-block;
+  min-width: 16px;
+  text-align: right;
+}
+
+.subExpandIcon.expanded {
+  transform: rotate(180deg);
+  color: #c9a982;
+}
+
+/* 案例列表 */
+.caseList {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 15px 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 10px;
+  width: 100%;
+}
+
+.caseItem {
+  font-size: 13px;
+  line-height: 1.5;
+  color: #555555;
+  padding: 8px 12px 8px 22px;
+  background-color: #ffffff;
+  border: 1px solid #f0f0f0;
+  border-radius: 6px;
+  position: relative;
+  transition: all 0.2s ease;
+  word-break: break-word; /* 防止长文本溢出 */
+}
+
+.caseItem::before {
+  content: '•';
+  position: absolute;
+  left: 8px;
+  color: #c9a982;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.caseItem:hover {
+  background-color: #fafafa;
+  border-color: #c9a982;
+  transform: translateX(3px);
+}
+
+/* 更多指示符 */
+.moreIndicator {
+  text-align: center;
+  font-size: 16px;
+  color: #c9a982;
+  letter-spacing: 2px;
+  margin-top: 5px;
+  font-weight: 500;
+  width: 100%;
+}
+
+/* 响应式设计 */
+@media (max-width: 992px) {
+  .sectionTitle {
+    font-size: 32px;
+    margin: 0 40px 15px 40px;
+  }
+
+  .sectionSubtitle {
+    margin: 0 40px 30px 40px;
+  }
+
+  .contentWrapper {
+    padding: 0 40px;
+  }
+
+  .categoryTitle {
+    font-size: 22px;
+  }
+
+  .caseList {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 30px 0;
+  }
+
+  .sectionTitle {
+    font-size: 28px;
+    padding-bottom: 15px;
+    margin: 0 30px 15px 30px;
+  }
+
+  .sectionTitle::after {
+    width: 60px;
+  }
+
+  .sectionSubtitle {
+    margin: 0 30px 25px 30px;
+  }
+
+  .contentWrapper {
+    padding: 0 30px;
+  }
+
+  .categoryHeader {
+    padding: 15px 20px;
+    min-height: 68px;
+  }
+
+  .categoryTitleWrapper {
+    gap: 10px;
+  }
+
+  .categoryTitle {
+    font-size: 20px;
+    white-space: normal;
+  }
+
+  .categoryNumber {
+    font-size: 18px;
+    min-width: 35px;
+  }
+
+  .categoryContent {
+    padding: 0 20px 20px 20px;
+  }
+
+  .subCategoryHeader {
+    min-height: 44px;
+    padding: 10px 12px;
+  }
+
+  .subCategoryTitle {
+    font-size: 16px;
+  }
+
+  .caseList {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 20px 0;
+  }
+
+  .sectionTitle {
+    font-size: 24px;
+    margin: 0 20px 15px 20px;
+  }
+
+  .sectionSubtitle {
+    font-size: 14px;
+    margin: 0 20px 20px 20px;
+  }
+
+  .contentWrapper {
+    padding: 0 20px;
+  }
+
+  .categoryHeader {
+    padding: 12px 15px;
+    min-height: 60px;
+  }
+
+  .categoryTitleWrapper {
+    gap: 8px;
+  }
+
+  .categoryTitle {
+    font-size: 18px;
+  }
+
+  .categoryNumber {
+    font-size: 16px;
+    min-width: 30px;
+  }
+
+  .categoryDesc {
+    font-size: 13px;
+    padding: 12px 15px;
+  }
+
+  .subCategoryHeader {
+    min-height: 40px;
+    padding: 8px 10px;
+  }
+
+  .subCategoryTitle {
+    font-size: 15px;
+  }
+
+  .caseItem {
+    font-size: 12px;
+    padding: 6px 10px 6px 20px;
+  }
+}

@@ -1,0 +1,358 @@
+/* TogetherRoomManager.module.css */
+.roomManager {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  font-family: Arial, sans-serif;
+  box-sizing: border-box;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.header h3 {
+  margin: 0;
+  color: var(--font-color);
+  font-size: 24px;
+}
+
+.buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+.primaryButton,
+.secondaryButton {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.primaryButton {
+  background-color: var(--secondary-background-color);
+  color: var(--font-color);
+  max-width: 150px;
+}
+
+.primaryButton:hover:not(:disabled) {
+  background-color: var(--secondary-background-color);
+}
+
+.secondaryButton {
+  background-color: var(--secondary-background-color);
+  color: var(--font-color);
+}
+
+.secondaryButton:hover:not(:disabled) {
+  background-color: var(--secondary-background-color);
+}
+
+.primaryButton:disabled,
+.secondaryButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.error {
+  color: #dc3545;
+  background-color: #f8d7da;
+  padding: 12px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  border: 1px solid #f5c6cb;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modalContent h4 {
+  margin: 0 0 20px 0;
+  color: var(--font-color);
+  font-size: 20px;
+  text-align: center;
+}
+
+.formGroup {
+  margin-bottom: 20px;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #333;
+  font-size: 14px;
+}
+
+.formGroup input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 14px;
+  transition: border-color 0.3s;
+}
+
+.formGroup input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.formGroup input:disabled {
+  background-color: #f8f9fa;
+  cursor: not-allowed;
+}
+
+.modalButtons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 25px;
+  align-items: center;
+}
+
+.modalButtons button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.modalButtons button[type="submit"] {
+  background-color: #007bff;
+  color: white;
+}
+
+.modalButtons button[type="submit"]:hover:not(:disabled) {
+  background-color: #0056b3;
+}
+
+.modalButtons button[type="button"] {
+  background-color: #6c757d;
+  color: white;
+}
+
+.modalButtons button[type="button"]:hover:not(:disabled) {
+  background-color: #545b62;
+}
+
+.modalButtons button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.roomList {
+  margin-top: 30px;
+}
+
+.roomList h4 {
+  margin: 0 0 15px 0;
+  color: var(--font-color);
+  font-size: 18px;
+}
+
+.roomItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  border: 1px solid var(--border_color);
+  border-radius: 8px;
+  margin-bottom: 10px;
+  background: var(--secondary-background-color);
+  transition: box-shadow 0.3s;
+}
+
+.roomItem:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.roomInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+}
+
+.roomName {
+  font-weight: bold;
+  font-size: 16px;
+ color: var(--font-color);
+ 
+}
+
+.roomNameicon {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  margin-right: 5px;
+}
+
+.host,
+.status,
+.users {
+  font-size: 14px;
+  color: var(--font-color);
+}
+
+.locked {
+  color: #ffc107;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+
+.joinButton {
+  padding: 8px 16px;
+  background-color: var(--secondary-background-color);
+  color: var(--font-color);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+  white-space: nowrap;
+}
+
+.joinButton:hover:not(:disabled) {
+  background-color: var(--hover_background-color);
+}
+
+.joinButton:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .roomManager {
+    padding: 15px;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .buttons {
+    width: 100%;
+     
+  }
+
+  .primaryButton,
+  .secondaryButton {
+    flex: 1;
+    text-align: center;
+  }
+
+  .roomItem {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .joinButton {
+    align-self: flex-end;
+  }
+
+  .modalContent {
+    padding: 20px;
+    margin: 20px;
+  }
+
+  .modalButtons {
+    flex-direction: column;
+  }
+
+  .modalButtons button {
+    width: 100%;
+  }
+}
+
+/* TogetherRoomManager.module.css 新增样式 */
+
+.roomActions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+}
+
+.deleteButton {
+  padding: 8px 16px;
+  background-color: var(--secondary-background-color);
+  color:var(--font-color);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+  white-space: nowrap;
+}
+
+.deleteButton:hover:not(:disabled) {
+  background-color: #c82333;
+}
+
+.deleteButton:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.leaveButton {
+  padding: 8px 16px;
+  background-color: #ffc107;
+  color: #212529;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+  white-space: nowrap;
+}
+
+.leaveButton:hover:not(:disabled) {
+  background-color: #e0a800;
+}
+
+.leaveButton:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+

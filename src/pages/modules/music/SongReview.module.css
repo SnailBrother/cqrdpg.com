@@ -1,0 +1,249 @@
+.container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: var(--secondary-background-color);
+  /* min-height: 100vh; */
+   box-sizing: border-box;
+}
+
+.content {
+   
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.currentSong {
+  margin-bottom: 30px;
+  padding: 15px;
+  background-color: var(--secondary-background-color);
+  border-radius: 6px;
+  border-left: 4px solid #007bff;
+}
+
+.songInfo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.songInfo p {
+  margin: 5px 0;
+}
+
+.noSong {
+  color: #6c757d;
+  font-style: italic;
+}
+
+.commentInput {
+  margin-bottom: 30px;
+  padding: 20px;
+  background-color: var(--secondary-background-color);
+  border-radius: 6px;
+}
+
+.commentInput textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  resize: vertical;
+  font-family: inherit;
+  font-size: 14px;
+}
+
+.commentInput textarea:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+.submitBtn {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.submitBtn:hover:not(:disabled) {
+  background: #0056b3;
+}
+
+.submitBtn:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+}
+
+.error {
+  background: #f8d7da;
+  color: #721c24;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  border: 1px solid #f5c6cb;
+}
+
+.commentsSection {
+  margin-top: 30px;
+}
+
+.loading, .noComments {
+  text-align: center;
+  padding: 40px;
+  color: #6c757d;
+  font-style: italic;
+}
+
+.commentsList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.commentItem {
+  padding: 15px;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  background: white;
+}
+
+.commentHeader {
+  display: flex;
+  justify-content: between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.userName {
+  font-weight: bold;
+  color: #495057;
+}
+
+.commentTime {
+  color: #6c757d;
+  font-size: 12px;
+  margin-left: auto;
+}
+
+.commentText {
+  line-height: 1.5;
+  color: #212529;
+  margin-bottom: 10px;
+}
+
+.commentActions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.editBtn, .deleteBtn {
+  padding: 5px 12px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.editBtn {
+  background: #28a745;
+  color: white;
+}
+
+.editBtn:hover {
+  background: #218838;
+}
+
+.deleteBtn {
+  background: #dc3545;
+  color: white;
+}
+
+.deleteBtn:hover {
+  background: #c82333;
+}
+
+.editComment textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  resize: vertical;
+  font-family: inherit;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.editActions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.saveBtn, .cancelBtn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.saveBtn {
+  background: #28a745;
+  color: white;
+}
+
+.saveBtn:hover:not(:disabled) {
+  background: #218838;
+}
+
+.cancelBtn {
+  background: #6c757d;
+  color: white;
+}
+
+.cancelBtn:hover:not(:disabled) {
+  background: #545b62;
+}
+
+.saveBtn:disabled, .cancelBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.notLoggedIn {
+  text-align: center;
+  padding: 40px;
+  color: #6c757d;
+  font-size: 16px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .container {
+    padding: 10px;
+  }
+  
+  .content {
+    padding: 15px;
+  }
+  
+  .songInfo {
+    grid-template-columns: 1fr;
+  }
+  
+  .commentHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+  
+  .commentTime {
+    margin-left: 0;
+  }
+}

@@ -1,0 +1,672 @@
+/* 容器样式 */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+/* 登录验证提示 */
+.alertOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.alertContent {
+  position: relative;
+  text-align: center;
+}
+
+.alertText {
+  position: absolute;
+  top: 70%;
+  width: 100%;
+  text-align: center;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* 标签页样式 */
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 10px;
+}
+
+.tab {
+  padding: 8px 16px;
+  background: none;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s;
+  font-family: inherit;
+}
+
+.tab:hover {
+  background-color: #f5f5f5;
+}
+
+.tab.active {
+  background-color: #1890ff;
+  color: white;
+  border-color: #1890ff;
+}
+
+/* 表单内容区域 */
+.formContent {
+  margin-bottom: 20px;
+}
+
+.tabContent {
+  display: none;
+}
+
+.tabContent.active {
+  display: block;
+}
+
+/* 基本信息表单 */
+.basicInfoFormGroup {
+  margin-bottom: 15px;
+}
+
+.basicInfoLabel {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+  color: var(--font-color);
+  font-size: 14px;
+}
+
+.basicInfoInput,
+.textarea {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  font-size: 14px;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.basicInfoFormRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+/* 图片上传区域 */
+.addImageBtn {
+  background-color: #52c41a;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-bottom: 15px;
+  font-family: inherit;
+}
+
+.addImageBtn:hover {
+  background-color: #389e0d;
+}
+
+.imagesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 15px;
+}
+
+.imageCard {
+  border: 1px solid #e8e8e8;
+  border-radius: 6px;
+  padding: 10px;
+  background: white;
+}
+
+.imageUploadContainer {
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.imageUploadArea {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 120px;
+  border: 2px dashed #d9d9d9;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: border-color 0.3s;
+  background-color: #fafafa;
+  text-decoration: none;
+}
+
+.imageUploadArea:hover {
+  border-color: #1890ff;
+}
+
+.uploadIcon {
+  font-size: 24px;
+  color: #999;
+  margin-bottom: 5px;
+}
+
+.uploadText {
+  font-size: 12px;
+  color: #666;
+  text-align: center;
+}
+
+.imagePreview {
+  position: relative;
+  width: 100%;
+  height: 120px;
+  overflow: hidden;
+}
+
+.imagePreview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.imageOverlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+  padding: 8px;
+}
+
+.overlayTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.enlargeBtn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.enlargeBtn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.changeImageBtn {
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.changeImageBtn:hover {
+  background: white;
+}
+
+.imageSize {
+  color: white;
+  font-size: 11px;
+  font-weight: 500;
+  text-align: right;
+}
+
+.compressedBadge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: rgba(16, 185, 129, 0.9);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.inputFile {
+  display: none;
+}
+
+/* 图片元信息 */
+.imageMeta {
+  margin-top: 10px;
+}
+
+.formGroup {
+  margin-bottom: 8px;
+}
+
+.label {
+  display: block;
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 3px;
+}
+
+.inputText {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #d9d9d9;
+  border-radius: 3px;
+  font-size: 12px;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.removeImageBtn {
+  width: 100%;
+  background-color: #ff4d4f;
+  color: white;
+  border: none;
+  padding: 6px;
+  border-radius: 3px;
+  font-size: 12px;
+  cursor: pointer;
+  margin-top: 5px;
+  font-family: inherit;
+}
+
+.removeImageBtn:hover {
+  background-color: #d9363e;
+}
+
+/* 压缩控制面板样式 */
+.compressionPanel {
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  border: 1px solid #e2e8f0;
+}
+
+.compressionTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #374151;
+  margin: 0 0 16px 0;
+}
+
+.compressionSlider {
+  margin-bottom: 20px;
+}
+
+.compressionSlider label {
+  display: block;
+  font-size: 14px;
+  color: #374151;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.scaleValue {
+  color: #3b82f6;
+  font-weight: 600;
+  margin-left: 8px;
+}
+
+.sliderInput {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: #e2e8f0;
+  outline: none;
+  margin: 10px 0;
+  -webkit-appearance: none;
+}
+
+.sliderInput::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #3b82f6;
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.sliderInput::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #3b82f6;
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.sliderLabels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 4px;
+}
+
+.compressionButtons {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.compressBtn {
+  background-color: #10b981;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  flex: 1;
+  font-family: inherit;
+}
+
+.compressBtn:hover:not(:disabled) {
+  background-color: #059669;
+}
+
+.compressBtn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.skipBtn {
+  background-color: #6b7280;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  flex: 1;
+  font-family: inherit;
+}
+
+.skipBtn:hover {
+  background-color: #4b5563;
+}
+
+.compressionInfo {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 10px;
+  line-height: 1.4;
+}
+
+.compressionInfo p {
+  margin: 4px 0;
+}
+
+/* 压缩结果显示 */
+.compressionResult {
+  background: #e8f5e8;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 20px;
+  border: 1px solid #c8e6c9;
+}
+
+.sizeSummary {
+  text-align: center;
+}
+
+.totalSize {
+  font-weight: 600;
+  color: #3b82f6;
+  font-size: 18px;
+}
+
+.sizeWarning {
+  color: #ef4444;
+  font-weight: 500;
+  margin-left: 8px;
+}
+
+.savings {
+  color: #059669;
+  font-size: 14px;
+  margin: 8px 0 12px 0;
+}
+
+.recompressBtn {
+  background-color: #f59e0b;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.recompressBtn:hover {
+  background-color: #d97706;
+}
+
+/* 文件大小显示 */
+.sizeDisplay {
+  text-align: center;
+  margin-bottom: 15px;
+  padding: 10px;
+  background: #f3f4f6;
+  border-radius: 6px;
+}
+
+.currentSize {
+  font-weight: 600;
+  color: #3b82f6;
+  font-size: 16px;
+}
+
+/* 提交按钮区域 */
+.footer {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.submitBtn {
+  background-color: #1890ff;
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  min-width: 120px;
+  font-family: inherit;
+}
+
+.submitBtn:hover:not(:disabled) {
+  background-color: #40a9ff;
+}
+
+.submitBtn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* 消息提示 */
+.message {
+  text-align: center;
+  padding: 10px;
+  margin-top: 15px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.message.success {
+  background-color: #f6ffed;
+  border: 1px solid #b7eb8f;
+  color: #52c41a;
+}
+
+.message.error {
+  background-color: #fff2f0;
+  border: 1px solid #ffccc7;
+  color: #ff4d4f;
+}
+
+/* 图片预览模态框 */
+.previewModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.previewContent {
+  position: relative;
+  max-width: 90%;
+  max-height: 90%;
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.closeButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  color: #333;
+  font-size: 30px;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.closeButton:hover {
+  color: #ff6b6b;
+}
+
+.previewImage {
+  max-width: 100%;
+  max-height: 70vh;
+  border-radius: 4px;
+  display: block;
+  margin: 0 auto;
+}
+
+.previewInfo {
+  text-align: center;
+  margin-top: 15px;
+  font-size: 14px;
+  color: #666;
+}
+
+.compressedTag {
+  display: inline-block;
+  background: #10b981;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
+  .container {
+    padding: 15px;
+    height: auto;
+    min-height: calc(100dvh - 60px);
+  }
+
+  .imagesGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  .imageUploadArea,
+  .imagePreview {
+    height: 100px;
+  }
+
+  .basicInfoFormRow {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+
+@media (min-width: 1025px) {
+  .imagesGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .compressionButtons {
+    flex-direction: column;
+  }
+  
+  .compressBtn,
+  .skipBtn {
+    width: 100%;
+  }
+  
+  .compressionPanel {
+    padding: 16px;
+  }
+  
+  .imageOverlay {
+    padding: 6px;
+  }
+  
+  .changeImageBtn {
+    font-size: 10px;
+    padding: 3px 6px;
+  }
+  
+  .imageSize {
+    font-size: 10px;
+  }
+}

@@ -1,0 +1,325 @@
+/* UpdateWear.css */
+.update-wear-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* 标题样式 */
+.update-wear-title {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+/* 标签页样式 */
+.update-wear-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 10px;
+}
+
+.update-wear-tab {
+  padding: 8px 16px;
+  background: none;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+.update-wear-tab:hover {
+  background-color: #f5f5f5;
+}
+
+.update-wear-tab.active {
+  background-color: #1890ff;
+  color: white;
+  border-color: #1890ff;
+}
+
+/* 表单内容区域 */
+.update-wear-form-content {
+  margin-bottom: 20px;
+}
+
+.update-wear-tab-content {
+  display: none;
+}
+
+.update-wear-tab-content.active {
+  display: block;
+}
+
+/* 基本信息表单 */
+.update-wear-basic-info-form-group {
+  margin-bottom: 15px;
+}
+
+.update-wear-basic-info-label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+  color: var(--font-color);
+  font-size: 14px;
+}
+
+.update-wear-basic-info-input,
+.update-wear-basic-info-textarea {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.update-wear-basic-info-textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.update-wear-basic-info-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+/* 图片上传区域 */
+.update-wear-add-image-btn {
+  background-color: #52c41a;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+.update-wear-add-image-btn:hover {
+  background-color: #389e0d;
+}
+
+.update-wear-images-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 15px;
+}
+
+.update-wear-image-card {
+  border: 1px solid #e8e8e8;
+  border-radius: 6px;
+  padding: 10px;
+  background: white;
+}
+
+.update-wear-image-upload-container {
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.update-wear-image-upload-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 120px;
+  border: 2px dashed #d9d9d9;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: border-color 0.3s;
+  background-color: #fafafa;
+}
+
+.update-wear-image-upload-area:hover {
+  border-color: #1890ff;
+}
+
+.update-wear-upload-icon {
+  font-size: 24px;
+  color: #999;
+  margin-bottom: 5px;
+}
+
+.update-wear-upload-text {
+  font-size: 12px;
+  color: #666;
+  text-align: center;
+}
+
+.update-wear-image-preview {
+  position: relative;
+  width: 100%;
+  height: 120px;
+}
+
+.update-wear-image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.update-wear-change-image-btn {
+  position: absolute;
+  bottom: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 2px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.update-wear-input-file {
+  display: none;
+}
+
+/* 图片元信息 */
+.update-wear-image-meta {
+  margin-top: 10px;
+}
+
+.update-wear-form-group {
+  margin-bottom: 8px;
+}
+
+.update-wear-label {
+  display: block;
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 3px;
+}
+
+.update-wear-input-text {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #d9d9d9;
+  border-radius: 3px;
+  font-size: 12px;
+  box-sizing: border-box;
+}
+
+.update-wear-remove-image-btn {
+  width: 100%;
+  background-color: #ff4d4f;
+  color: white;
+  border: none;
+  padding: 6px;
+  border-radius: 3px;
+  font-size: 12px;
+  cursor: pointer;
+  margin-top: 5px;
+}
+
+.update-wear-remove-image-btn:hover {
+  background-color: #d9363e;
+}
+
+/* 提交按钮 */
+.update-wear-footer {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.update-wear-submit-btn {
+  background-color: #1890ff;
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  min-width: 120px;
+}
+
+.update-wear-submit-btn:hover {
+  background-color: #40a9ff;
+}
+
+.update-wear-submit-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* 消息提示 */
+.update-wear-message {
+  text-align: center;
+  padding: 10px;
+  margin-top: 15px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.update-wear-message.success {
+  background-color: #f6ffed;
+  border: 1px solid #b7eb8f;
+  color: #52c41a;
+}
+
+.update-wear-message.error {
+  background-color: #fff2f0;
+  border: 1px solid #ffccc7;
+  color: #ff4d4f;
+}
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
+  .update-wear-container {
+    padding: 15px;
+    height: auto;
+    min-height: calc(100dvh - 60px);
+  }
+
+  .update-wear-images-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  .update-wear-image-upload-area,
+  .update-wear-image-preview {
+    height: 100px;
+  }
+
+  .update-wear-basic-info-form-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+
+@media (min-width: 1025px) {
+  .update-wear-images-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* 滚动条样式 */
+.update-wear-images-grid::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.update-wear-images-grid::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.update-wear-images-grid::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.update-wear-images-grid::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}

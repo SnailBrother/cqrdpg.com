@@ -1,0 +1,512 @@
+/* 容器样式 */
+.uphpPicture-container {
+  height: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  position: relative;
+  min-height: 400px;
+}
+
+/* 头部样式 */
+.uphpPicture-header {
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.uphpPicture-header h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 8px 0;
+}
+
+.uphpPicture-instructions {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+/* 压缩控制面板 */
+.uphpPicture-compression-controls {
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 24px;
+  border: 1px solid #e2e8f0;
+}
+
+.uphpPicture-compression-slider {
+  margin-bottom: 20px;
+}
+
+.uphpPicture-compression-slider label {
+  display: block;
+  font-size: 14px;
+  color: #374151;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.uphpPicture-scale-value {
+  color: #3b82f6;
+  font-weight: 600;
+  margin-left: 8px;
+}
+
+.uphpPicture-slider {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: #e2e8f0;
+  outline: none;
+  margin: 10px 0;
+  -webkit-appearance: none;
+}
+
+.uphpPicture-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #3b82f6;
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.uphpPicture-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #3b82f6;
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.uphpPicture-slider-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 4px;
+}
+
+.uphpPicture-compression-buttons {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.uphpPicture-compress-btn {
+  background-color: #10b981 !important;
+}
+
+.uphpPicture-compress-btn:hover:not(:disabled) {
+  background-color: #059669 !important;
+}
+
+.uphpPicture-skip-btn {
+  background-color: #6b7280 !important;
+}
+
+.uphpPicture-skip-btn:hover:not(:disabled) {
+  background-color: #4b5563 !important;
+}
+
+.uphpPicture-compression-hint {
+  font-size: 12px;
+  color: #6b7280;
+  margin: 0;
+  font-style: italic;
+}
+
+/* 文件大小信息 */
+.uphpPicture-size-info {
+  background: #f3f4f6;
+  border-radius: 6px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.uphpPicture-size-info p {
+  margin: 4px 0;
+  font-size: 14px;
+  color: #374151;
+}
+
+.uphpPicture-total-size {
+  font-weight: 600;
+  color: #3b82f6;
+}
+
+.uphpPicture-size-warning {
+  color: #ef4444;
+  font-weight: 500;
+}
+
+.uphpPicture-compression-summary {
+  color: #059669 !important;
+  font-size: 13px !important;
+}
+
+/* 上传区域样式 */
+.uphpPicture-area {
+  margin-bottom: 24px;
+  border: 2px dashed #d1d5db;
+  border-radius: 8px;
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.uphpPicture-area.drag-over {
+  border-color: #3b82f6;
+  background-color: #f0f7ff;
+}
+
+.uphpPicture-prompt {
+  display: block;
+  text-align: center;
+  cursor: pointer;
+  padding: 32px 24px;
+}
+
+.uphpPicture-prompt:hover {
+  opacity: 0.8;
+}
+
+.uphpPicture-icon {
+  margin-bottom: 16px;
+}
+
+.uphpPicture-prompt p {
+  font-size: 18px;
+  font-weight: 500;
+  color: #374151;
+  margin: 0 0 8px 0;
+}
+
+.uphpPicture-hint {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0;
+}
+
+/* 文件列表容器 */
+.uphpPicture-file-list-container {
+  margin-bottom: 16px;
+}
+
+.uphpPicture-add-more-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  margin-bottom: 16px;
+  transition: background-color 0.2s;
+}
+
+.uphpPicture-add-more-button:hover {
+  background-color: #2563eb;
+}
+
+/* 预览网格 */
+.uphpPicture-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 16px;
+}
+
+.uphpPicture-preview-item {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+}
+
+.uphpPicture-preview-item:hover {
+  transform: translateY(-2px);
+}
+
+.uphpPicture-preview-image {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  display: block;
+}
+
+.uphpPicture-preview-actions {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 4px;
+}
+
+.uphpPicture-action-button {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.uphpPicture-enlarge {
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.uphpPicture-delete {
+  background-color: rgba(239, 68, 68, 0.8);
+}
+
+.uphpPicture-action-button:hover {
+  transform: scale(1.1);
+}
+
+/* 压缩标记 */
+.uphpPicture-compression-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: rgba(16, 185, 129, 0.9);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* 文件信息 */
+.uphpPicture-file-info {
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  font-size: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.uphpPicture-file-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  margin-right: 8px;
+}
+
+.uphpPicture-file-size {
+  flex-shrink: 0;
+  color: #d1d5db;
+}
+
+/* 操作按钮区域 */
+.uphpPicture-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.uphpPicture-button {
+  padding: 12px 24px;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.uphpPicture-upload-btn {
+  background-color: #3b82f6;
+}
+
+.uphpPicture-upload-btn:hover:not(:disabled) {
+  background-color: #2563eb;
+}
+
+.uphpPicture-reset-btn {
+  background-color: #6b7280;
+}
+
+.uphpPicture-reset-btn:hover:not(:disabled) {
+  background-color: #4b5563;
+}
+
+.uphpPicture-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.uphpPicture-selected-count {
+  font-size: 14px;
+  color: #666;
+}
+
+/* 消息样式 */
+.uphpPicture-message {
+  padding: 12px 16px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.uphpPicture-message.success {
+  background-color: #e8f5e8;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+}
+
+.uphpPicture-message.error {
+  background-color: #ffebee;
+  color: #c62828;
+  border: 1px solid #ffcdd2;
+}
+
+/* 已存在图片信息 */
+.uphpPicture-existing-info {
+  color: #666;
+  font-size: 14px;
+  margin: 8px 0 0 0;
+}
+
+.uphpPicture-warning-hint {
+  color: #ff9800;
+  font-size: 12px;
+  margin: 8px 0 0 0;
+}
+
+/* 放大预览样式 */
+.uphpPicture-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.uphpPicture-overlay-content {
+  position: relative;
+  max-width: 90%;
+  max-height: 90%;
+}
+
+.uphpPicture-zoomed-image {
+  max-width: 100%;
+  max-height: 90vh;
+  border-radius: 8px;
+}
+
+.uphpPicture-close-button {
+  position: absolute;
+  top: -40px;
+  right: 0;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 30px;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.uphpPicture-close-button:hover {
+  color: #ff6b6b;
+}
+
+/* 加载遮盖层 */
+.uphpPicture-loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  border-radius: 8px;
+}
+
+.uphpPicture-loading-content {
+  text-align: center;
+  color: #3b82f6;
+}
+
+.uphpPicture-loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #3b82f6;
+  border-radius: 50%;
+  animation: uphpPicture-spin 1s linear infinite;
+  margin: 0 auto 16px;
+}
+
+@keyframes uphpPicture-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .uphpPicture-container {
+    padding: 16px;
+    margin: 16px;
+  }
+
+  .uphpPicture-preview-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 12px;
+  }
+
+  .uphpPicture-actions {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .uphpPicture-prompt {
+    padding: 24px 16px;
+  }
+  
+  .uphpPicture-compression-buttons {
+    flex-direction: column;
+  }
+  
+  .uphpPicture-compression-controls {
+    padding: 16px;
+  }
+}

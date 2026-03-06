@@ -1,0 +1,119 @@
+.homecarousel-out {
+  text-align: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 750px;
+  width: 1600px;
+  position: relative;
+  margin: 0 auto;
+  border-radius: 10px;
+}
+.homecarousel-list {
+  position: relative;
+  margin: 0px auto;
+  width: 1200px; /* 调整为1200-1400之间的值 */
+  min-width: 1200px; /* 同步调整 */
+  max-width: 1400px; /* 可选 */
+  height: 709px;
+  transform: scale(0.9);
+  list-style: none;
+  padding: 0;
+  margin: 0 auto;
+  top: -60px;
+  border-radius: 10px;
+}
+/* .homecarousel-list {
+  position: relative;
+  margin: 0px auto;
+  width: 100%;
+ 
+  min-width: 960px;
+  max-width: 1600px;
+  height: 709px;
+  transform: scale(0.6);
+  list-style: none;
+  padding: 0;
+  margin: 0 auto;
+  top: -80px;
+  border-radius: 10px;
+} */
+
+.homecarousel-images {
+  position: absolute;
+  opacity: 0;
+  transition: all 1s;
+}
+
+.homecarousel-images:hover {
+  cursor: pointer;
+}
+
+.homecarousel-images img {
+  width: 100%;
+  height: 100%;
+}
+
+/* 修改后的按钮样式 */
+.homecarousel-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 50px;
+  background-color: rgba(0, 0, 0, 0.3);
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s;
+}
+
+.homecarousel-button:hover {
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.homecarousel-prev {
+  left: 20px;
+}
+
+.homecarousel-next {
+  right: 20px;
+}
+
+/* 修改后的指示器样式 */
+.homecarousel-indicators-container {
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  z-index: 10;
+}
+
+.homecarousel-indicators {
+  display: flex;
+  gap: 10px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.homecarousel-anNius {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.homecarousel-anNius:hover {
+  background-color: white;
+}

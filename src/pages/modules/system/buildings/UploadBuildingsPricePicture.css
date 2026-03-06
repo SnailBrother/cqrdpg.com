@@ -1,0 +1,577 @@
+/* 使用与UploadHousePricePicture相同的CSS类名 */
+.uphpPicture-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+.uphpPicture-header {
+  background-color: white;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  margin-bottom: 25px;
+}
+
+.uphpPicture-header h2 {
+  margin: 0 0 15px 0;
+  color: #2c3e50;
+  font-size: 24px;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 10px;
+}
+
+.uphpPicture-building-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+  margin: 15px 0;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  border-left: 4px solid #3498db;
+}
+
+.uphpPicture-building-info p {
+  margin: 5px 0;
+  color: #555;
+  font-size: 14px;
+}
+
+.uphpPicture-building-info strong {
+  color: #2c3e50;
+  margin-right: 5px;
+}
+
+.uphpPicture-instructions {
+  color: #666;
+  margin: 15px 0 0 0;
+  font-size: 15px;
+  padding: 12px;
+  background-color: #fff9e6;
+  border-radius: 6px;
+  border-left: 4px solid #ffc107;
+}
+
+.uphpPicture-existing-info {
+  color: #28a745;
+  margin: 10px 0 0 0;
+  font-weight: 500;
+  padding: 8px 12px;
+  background-color: #e8f5e9;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+/* 压缩控制面板 */
+.uphpPicture-compression-controls {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  margin-bottom: 20px;
+}
+
+.uphpPicture-compression-slider {
+  margin-bottom: 20px;
+}
+
+.uphpPicture-compression-slider label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 500;
+  color: #333;
+  font-size: 16px;
+}
+
+.uphpPicture-scale-value {
+  color: #3498db;
+  font-weight: bold;
+  margin-left: 5px;
+  font-size: 18px;
+}
+
+.uphpPicture-slider {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: #e0e0e0;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.uphpPicture-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #3498db;
+  cursor: pointer;
+  border: 3px solid white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.uphpPicture-slider-info {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5px;
+  color: #666;
+  font-size: 12px;
+}
+
+.uphpPicture-compression-buttons {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.uphpPicture-compression-hint {
+  color: #666;
+  font-size: 14px;
+  margin: 10px 0 0 0;
+  padding: 10px;
+  background-color: #f0f7ff;
+  border-radius: 6px;
+  border-left: 4px solid #3498db;
+}
+
+/* 文件大小信息 */
+.uphpPicture-size-info {
+  background-color: white;
+  padding: 15px 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  margin-bottom: 20px;
+}
+
+.uphpPicture-total-size {
+  font-weight: bold;
+  color: #2c3e50;
+  font-size: 16px;
+}
+
+.uphpPicture-size-warning {
+  color: #dc3545;
+  margin-left: 10px;
+  font-weight: 500;
+}
+
+.uphpPicture-compression-summary {
+  color: #28a745;
+  margin: 10px 0 0 0;
+  padding: 10px;
+  background-color: #e8f5e9;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+/* 上传区域 */
+.uphpPicture-area {
+  background-color: white;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  margin-bottom: 25px;
+  border: 2px dashed #ddd;
+  transition: border-color 0.3s;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.uphpPicture-area:hover {
+  border-color: #3498db;
+}
+
+.uphpPicture-prompt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  text-align: center;
+  width: 100%;
+}
+
+.uphpPicture-icon {
+  margin-bottom: 20px;
+  color: #888;
+}
+
+.uphpPicture-prompt p {
+  margin: 10px 0;
+  color: #555;
+  font-size: 16px;
+}
+
+.uphpPicture-hint {
+  color: #888;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.uphpPicture-warning-hint {
+  color: #ff9800;
+  font-size: 14px;
+  margin-top: 10px;
+  padding: 8px 12px;
+  background-color: #fff3e0;
+  border-radius: 4px;
+  border-left: 3px solid #ff9800;
+}
+
+/* 文件列表容器 */
+.uphpPicture-file-list-container {
+  width: 100%;
+}
+
+.uphpPicture-add-more-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #3498db;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  font-weight: 500;
+  transition: background-color 0.3s;
+}
+
+.uphpPicture-add-more-button:hover {
+  background-color: #2980b9;
+}
+
+.uphpPicture-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 15px;
+  max-height: 500px;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+.uphpPicture-preview-item {
+  position: relative;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: white;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.uphpPicture-preview-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.uphpPicture-preview-image {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  display: block;
+}
+
+.uphpPicture-preview-actions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 5px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.uphpPicture-preview-item:hover .uphpPicture-preview-actions {
+  opacity: 1;
+}
+
+.uphpPicture-action-button {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.uphpPicture-enlarge {
+  background-color: rgba(52, 152, 219, 0.9);
+}
+
+.uphpPicture-delete {
+  background-color: rgba(231, 76, 60, 0.9);
+}
+
+.uphpPicture-action-button:hover {
+  transform: scale(1.1);
+}
+
+.uphpPicture-file-info {
+  padding: 10px;
+  background-color: #f8f9fa;
+}
+
+.uphpPicture-file-name {
+  display: block;
+  font-size: 12px;
+  color: #333;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-bottom: 4px;
+}
+
+.uphpPicture-file-size {
+  display: block;
+  font-size: 11px;
+  color: #666;
+}
+
+.uphpPicture-compression-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: #10b981;
+  color: white;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* 操作按钮 */
+.uphpPicture-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-top: 25px;
+  padding: 20px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.uphpPicture-button {
+  padding: 12px 28px;
+  border-radius: 6px;
+  border: none;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 140px;
+}
+
+.uphpPicture-upload-btn {
+  background-color: #28a745;
+  color: white;
+}
+
+.uphpPicture-upload-btn:hover:not(:disabled) {
+  background-color: #218838;
+  transform: translateY(-2px);
+}
+
+.uphpPicture-upload-btn:disabled {
+  background-color: #a8dab5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.uphpPicture-compress-btn {
+  background-color: #17a2b8;
+  color: white;
+}
+
+.uphpPicture-compress-btn:hover:not(:disabled) {
+  background-color: #138496;
+}
+
+.uphpPicture-compress-btn:disabled {
+  background-color: #b6e0e7;
+  cursor: not-allowed;
+}
+
+.uphpPicture-reset-btn {
+  background-color: #f8f9fa;
+  color: #495057;
+  border: 1px solid #dee2e6;
+}
+
+.uphpPicture-reset-btn:hover:not(:disabled) {
+  background-color: #e9ecef;
+}
+
+.uphpPicture-reset-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.uphpPicture-selected-count {
+  margin-left: auto;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+/* 消息提示 */
+.uphpPicture-message {
+  padding: 15px 20px;
+  border-radius: 8px;
+  margin: 20px 0;
+  font-weight: 500;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.uphpPicture-message.success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.uphpPicture-message.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+/* 放大预览层 */
+.uphpPicture-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.uphpPicture-overlay-content {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  animation: zoomIn 0.3s ease-out;
+}
+
+@keyframes zoomIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.uphpPicture-zoomed-image {
+  max-width: 100%;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.uphpPicture-close-button {
+  position: absolute;
+  top: -40px;
+  right: 0;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 32px;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.3s;
+}
+
+.uphpPicture-close-button:hover {
+  color: #ff6b6b;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .uphpPicture-container {
+    padding: 10px;
+  }
+  
+  .uphpPicture-preview-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+  }
+  
+  .uphpPicture-actions {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .uphpPicture-selected-count {
+    margin-left: 0;
+    margin-top: 10px;
+  }
+  
+  .uphpPicture-building-info {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .uphpPicture-header {
+    padding: 15px;
+  }
+  
+  .uphpPicture-preview-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .uphpPicture-button {
+    min-width: 100%;
+    padding: 10px 20px;
+  }
+  
+  .uphpPicture-area {
+    padding: 20px;
+  }
+}

@@ -1,0 +1,137 @@
+.heartbeatlove-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+  /* background-color: #ffffff7e; */
+  position: relative;
+}
+
+.heartbeatlove-list {
+  position: relative;
+  display: flex;
+  height: 80px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.heartbeatlove-list::after {
+  /* content: '爱心怦怦跳'; */
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  color: darkturquoise;
+  font-size: 18px;
+  font-weight: 700;
+  transform: translateX(-50%);
+}
+
+.heartbeatlove-item {
+  list-style: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  margin: 0 5px;
+}
+
+.heartbeatlove-item-1 {
+  background-color: red;
+  animation: heartbeatlove1 5s 0s infinite;
+}
+
+.heartbeatlove-item-2 {
+  background-color: darkturquoise;
+  animation: heartbeatlove2 5s 0.2s infinite;
+}
+
+.heartbeatlove-item-3 {
+  background-color: darksalmon;
+  animation: heartbeatlove3 5s 0.4s infinite;
+}
+
+.heartbeatlove-item-4 {
+  background-color: deeppink;
+  animation: heartbeatlove4 5s 0.6s infinite;
+}
+
+.heartbeatlove-item-5 {
+  background-color: yellow;
+  animation: heartbeatlove5 5s 0.8s infinite;
+}
+
+.heartbeatlove-item-6 {
+  background-color: deeppink;
+  animation: heartbeatlove4 5s 1s infinite;
+}
+
+.heartbeatlove-item-7 {
+  background-color: darksalmon;
+  animation: heartbeatlove3 5s 1.2s infinite;
+}
+
+.heartbeatlove-item-8 {
+  background-color: darkturquoise;
+  animation: heartbeatlove2 5s 1.4s infinite;
+}
+
+.heartbeatlove-item-9 {
+  background-color: red;
+  animation: heartbeatlove1 5s 1.6s infinite;
+}
+
+@keyframes heartbeatlove1 {
+  30%, 50% {
+    height: 30px;
+    transform: translateY(-15px);
+  }
+  70%, 100% {
+    height: 10px;
+    transform: translateY(0);
+  }
+}
+
+@keyframes heartbeatlove2 {
+  30%, 50% {
+    height: 62px;
+    transform: translateY(-30px);
+  }
+  70%, 100% {
+    height: 10px;
+    transform: translateY(0);
+  }
+}
+
+@keyframes heartbeatlove3 {
+  30%, 50% {
+    height: 80px;
+    transform: translateY(-37px);
+  }
+  70%, 100% {
+    height: 10px;
+    transform: translateY(0);
+  }
+}
+
+@keyframes heartbeatlove4 {
+  30%, 50% {
+    height: 90px;
+    transform: translateY(-30px);
+  }
+  70%, 100% {
+    height: 10px;
+    transform: translateY(0);
+  }
+}
+
+@keyframes heartbeatlove5 {
+  30%, 50% {
+    height: 100px;
+    transform: translateY(-22px);
+  }
+  70%, 100% {
+    height: 10px;
+    transform: translateY(0);
+  }
+}

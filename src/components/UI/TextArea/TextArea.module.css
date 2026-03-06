@@ -1,0 +1,18 @@
+.container { width: 100%; }
+.label { display: block; margin-bottom: 6px; color: var(--color-text, #111827); font-weight: 600; }
+.textarea {
+  width: 100%;
+  border: 1px solid var(--color-border, #e5e7eb);
+  background: var(--color-bg, #fff);
+  color: var(--color-text, #111827);
+  border-radius: 8px;
+  padding: 10px 12px;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.textarea:focus { border-color: var(--color-primary, #3b82f6); box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
+.inputError { border-color: #ef4444; }
+.disabled { background: #f3f4f6; color: #9ca3af; cursor: not-allowed; }
+.errorMessage { color: #ef4444; font-size: 12px; margin-top: 4px; display: block; }
+
+

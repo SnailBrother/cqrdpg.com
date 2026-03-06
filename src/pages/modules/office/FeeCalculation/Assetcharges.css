@@ -1,0 +1,102 @@
+.charge-calculator-container {
+  width: 90%;
+   height: 600px;
+  margin: 20px auto;
+   
+  background-color: transparent;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  font-family: 'Arial', sans-serif;
+}
+
+.input-container {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.input-container label {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.input-field {
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  outline: none;
+  transition: border 0.3s ease;
+}
+
+.input-field:focus {
+  border-color: #3c80ff;
+}
+
+.result-container {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.result-container h2 {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.result-container p {
+  font-size: 20px;
+  color: #3c80ff;
+}
+
+.charge-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 30px;
+}
+
+.charge-table th,
+.charge-table td {
+  padding: 12px;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+/* 表头 */
+.charge-table th {
+  background-color: transparent;
+  color: #333;
+  font-size: 16px;
+}
+
+.charge-table td {
+  font-size: 14px;
+}
+
+.charge-table .table-header {
+  font-weight: bold;
+}
+/* 隔行杨色 */
+.charge-table .table-row:nth-child(even) {
+  background-color: #ffffff36;
+}
+
+.charge-table .table-row:hover {
+  background-color: #e6f7ff8e;
+  cursor: pointer;
+}
+
+.charge-table .table-row td {
+  color: #555;
+}
+
+.charge-calculator-title-container  {
+  display: flex;
+  justify-content: center; /* 水平居中 */
+  align-items: center; /* 垂直居中 */
+   
+}
+
+.charge-calculator-title-container h3 {
+  text-align: center; /* 确保标题文本居中 */
+}

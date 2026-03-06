@@ -1,0 +1,84 @@
+/* 容器样式 */
+.friendslist-container {
+    min-width: 180px;
+    width: 100%;
+    background-color: transparent;
+    /* background-color: #2c3e50; */
+    /* border: 1px solid #ddd; */
+    border-radius: 4px;
+    /* box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1); */
+}
+
+/* 标题样式 */
+.friendslist-title {
+    font-size: 12px;
+    font-weight: bold;
+    color: #ccc;
+    margin-bottom: 10px;
+    padding-left: 10px;
+    padding-top: 5px;
+}
+
+/* 好友列表样式 */
+.friendslist-list {
+    list-style-type: none;
+    padding: 5px;
+    margin: 0;
+}
+
+/* 好友列表项样式 */
+.friendslist-item {
+    font-size: 14px;
+    color: #ffffff;
+    padding-bottom: 8px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    /* 下面的用来和好友列表分开 */
+    /* border-bottom: 1px solid #2c3e50; */
+}
+
+.friendslist-item:last-child {
+    border-bottom: none;
+}
+
+.friendslist-list li {
+    cursor: pointer;
+}
+
+.friendslist-list li:hover {
+    background-color: rgba(240, 240, 240, 0.459);
+}
+
+.friendslist-item-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+}
+
+.friendslist-item-img {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.friendslist-item-icon {
+    width: 16px;
+    height: 16px;
+    fill: #ecf0f1;
+}
+
+/* 未读消息 badge 样式 */
+.unread-badge {
+    position: absolute;
+    top: -10px;
+    left: 8px;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 10px;
+    margin: 8px;
+}

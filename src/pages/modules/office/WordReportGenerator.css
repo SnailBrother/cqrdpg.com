@@ -1,0 +1,1079 @@
+/* ==================== 全局样式 ==================== */
+ 
+
+/* ==================== 主容器 ==================== */
+/* 整个组件的容器样式 */
+.reportgenerator-container {
+  width: 100%;
+  margin: 5px auto;
+  padding: 20px;
+  /* background-color: #fff; */
+  /* background-color: var(--background-color); */
+  background-color: transparent;
+
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  min-width: 800px;
+  box-sizing: border-box;
+}
+
+/* ==================== 顶部导航栏 ==================== */
+/* 顶部导航栏容器 */
+.reportgenerator-top-navigation {
+  display: flex;
+  justify-content:flex-end;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+  position: relative;
+   
+}
+
+/* 系统标题样式 */
+.reportgenerator-system-title {
+  font-size: 24px;
+  color: #2c3e50;
+  margin: 0;
+}
+
+/* 操作按钮区域 */
+.reportgenerator-action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+}
+
+/* ==================== 搜索框样式 ==================== */
+.reportgenerator-search-box {
+  display: flex;
+  align-items: center;
+  background-color: transparent;
+  border-radius: 20px;
+  padding: 0px 0px;
+  border-width: 1px;
+
+  margin-right: 10px;
+}
+
+.reportgenerator-search-input {
+  border: none;
+  background-color: transparent;
+  padding: 5px;
+  outline: none;
+  width: 200px;
+  font-size: 14px;
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 5px;
+  font-family: var(--font-family);
+  border-color: var(--border_color);
+  color: var(--font-color);
+}
+/* 增加选择器特异性 */
+
+.reportgenerator-search-input:hover {
+border-color:var(--hover_border_color) !important;
+  color: var(--hover_font-color);
+   /* box-shadow: 0 0 0 1px var(--hover_border_color) !important; */
+}
+ 
+.reportgenerator-search-input::placeholder {
+  color: var(--watermark-font-color);
+  /* 这里设置为占位符的颜色 */
+  /* opacity: 1;  */
+  /* 如果想让占位符完全不透明，可以设置为1 */
+}
+
+
+.reportgenerator-search-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px 0px;
+  background-color: #ffffff00;
+  color: white;
+  margin-right: -5px;
+  margin-left: 5px;
+}
+/* #region start */
+
+
+/* ==================== 悬浮菜单样式 ==================== */
+.reportgenerator-menu-box {
+  position: relative;
+  z-index: 100;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+ 
+}
+
+/* 菜单按钮 */
+.reportgenerator-menu-button {
+  width: 40px;
+  height: 40px;
+  background-color: transparent;
+  border-radius: 50%;
+  /* box-shadow: 0 0 0 3px rgba(92, 103, 255, 0.3); */
+   color: #27ae60;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease-in;
+}
+
+.reportgenerator-menu-button:hover {
+  background-color: transparent;
+  /* box-shadow: 0 0 0 6px rgba(92, 103, 255, 0.3); */
+}
+
+.reportgenerator-line-box {
+  width: 18px;
+  height: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+   color: #27ae60;
+  transition: transform 0.3s ease-out;
+}
+
+/* 菜单按钮图标（三条杠） */
+.reportgenerator-line {
+  background-color: var(--font-color);
+  width: 100%;
+  height: 2px;
+  border-radius: 2px;
+ 
+  transition: all 0.3s ease-in-out;
+}
+
+/* 前后两条短，中间的长 */
+.reportgenerator-line:first-child {
+  width: 50%;
+  transform-origin: right;
+}
+
+.reportgenerator-line:last-child {
+  width: 50%;
+  align-self: flex-end;
+  transform-origin: left;
+}
+
+/* 菜单列表 */
+.reportgenerator-menu-list {
+  width: 120px;
+  background-color: #fff;
+  border-radius: 8px;
+  list-style: none;
+  padding: 6px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+  position: absolute;
+  right: 20px;
+
+  top: 20px;
+  opacity: 0;
+  transform: scale(0);
+  transform-origin: bottom right;
+  transition: 0.3s ease;
+  transition-delay: 0.1s;
+}
+
+/* 菜单项 */
+.reportgenerator-menu-list li {
+  display: flex;
+  align-items: center;
+  padding: 8px 10px;
+  color: #2c3e50;
+  cursor: pointer;
+  position: relative;
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: 0.2s ease-in;
+  border-radius: 4px;
+}
+
+.reportgenerator-menu-list li:hover {
+  background-color: #f5f7fa;
+  color: #5c67ff;
+}
+
+/* 菜单项下边框 */
+.reportgenerator-menu-list li::before {
+  content: "";
+  width: calc(100% - 20px);
+  height: 1px;
+  background-color: rgba(92, 103, 255, 0.1);
+  position: absolute;
+  bottom: 0;
+  left: 10px;
+}
+
+/* 最后一项不用下边框 */
+.reportgenerator-menu-list li:last-child::before {
+  display: none;
+}
+
+/* 菜单项图标 */
+.reportgenerator-menu-icon {
+  width: 1.2em;
+  height: 1.2em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
+}
+
+/* 菜单项文本 */
+.reportgenerator-menu-list span {
+  font-size: 14px;
+  margin-left: 8px;
+}
+/* 禁用状态 */
+.reportgenerator-disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+}
+
+.reportgenerator-disabled:hover {
+  background-color: transparent !important;
+  color: #2c3e50 !important;
+}
+
+/* 活动态下的部分样式变化 */
+/* 三条杠的变化 */
+.reportgenerator-active .reportgenerator-line-box {
+  transform: rotate(-45deg);
+}
+
+.reportgenerator-active .reportgenerator-line-box .reportgenerator-line:first-child {
+  transform: rotate(-90deg) translateX(1px);
+}
+
+.reportgenerator-active .reportgenerator-line-box .reportgenerator-line:last-child {
+  transform: rotate(-90deg) translateX(-1px);
+}
+
+/* 菜单列表的变化 */
+.reportgenerator-active .reportgenerator-menu-list {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.reportgenerator-active .reportgenerator-menu-list li {
+  animation: reportgenerator-fade-in-item 0.4s linear forwards;
+}
+
+/* 接下来为每一项设置动画延迟时间 */
+.reportgenerator-active .reportgenerator-menu-list li:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.reportgenerator-active .reportgenerator-menu-list li:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.reportgenerator-active .reportgenerator-menu-list li:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+/* 定义动画 */
+@keyframes reportgenerator-fade-in-item {
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+ 
+
+/* ==================== 按钮样式 ==================== */
+/* 基础按钮样式 */
+.reportgenerator-save-button,
+.reportgenerator-delete-button,
+.reportgenerator-download-button,
+.reportgenerator-baidu-button {
+  padding: 2px 2px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+/* 保存按钮 */
+.reportgenerator-save-button,
+.reportgenerator-delete-button,
+.reportgenerator-download-button,
+.reportgenerator-baidu-button {
+  background-color: #ffffff00;
+  color: white;
+}
+
+.reportgenerator-save-button:hover {
+  background-color: #67a6cf;
+}
+
+.reportgenerator-delete-button:hover {
+  background-color: #e0a7a1;
+}
+
+.reportgenerator-download-button:hover {
+  background-color: #27ae60;
+}
+
+.reportgenerator-baidu-button:hover {
+  background-color: #675bd3;
+}
+
+.reportgenerator-download-button:disabled {
+  background-color: transparent;
+  cursor: not-allowed;
+}
+
+/* 图标 */
+.reportgenerator-search-icon,
+.reportgenerator-save-icon,
+.reportgenerator-delete-icon,
+.reportgenerator-download-icon,
+.reportgenerator-baidu-icon {
+  width: 2em;
+  height: 2em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
+}
+
+
+/*  #endregion end */
+
+
+/* ==================== 主内容区 ==================== */
+.reportgenerator-main-content {
+  margin-top: 20px;
+  background-color: transparent;
+}
+
+/* ==================== Tab导航栏 ==================== */
+.reportgenerator-tab-navigation {
+  display: flex;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 20px;
+  font-family: var(--font-family);
+  background-color: transparent;
+
+}
+
+.reportgenerator-tab-button {
+  padding: 10px 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  /* color: #555; */
+  color: var(--font-color);
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s;
+  font-family: var(--font-family);
+}
+
+.reportgenerator-tab-button:hover {
+  /* color: #2c3e50; */
+  color: var(--hover_font-color);
+  /* background-color: var(--hover_background-color); */
+  border-radius: 5px;
+  /* border-bottom: 3px solid #3498db; */
+  font-weight: bold;
+}
+
+.reportgenerator-tab-button.reportgenerator-active {
+  color: #3498db;
+  border-bottom: 3px solid #3498db;
+  font-weight: bold;
+}
+
+
+/* #region start 表单字段样式*/
+
+/* ==================== 表单字段样式 ==================== */
+/* 表单容器基础样式   Tab内容区*/
+.reportgenerator-tab-content {
+  max-width: 1200px;
+  /* 设置表单最大宽度 */
+  /* margin: 0 auto; */
+  /* 居中显示 */
+  padding: 0 15px;
+  /* 添加内边距 */
+  /* box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); */
+  padding: 20px;
+  /* background-color: #ffffff; */
+  border-radius: 5px;
+  /* 让容器内的内容靠左 */
+  text-align: left;
+  background-color: transparent;
+}
+
+/* 水平表单字段（左右布局） */
+.reportgenerator-form-field-horizontal {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  max-width: 100%;
+  /* 限制最大宽度 */
+}
+
+.reportgenerator-form-field-horizontal .reportgenerator-field-label {
+  margin-right: 15px;
+  width: 120px;
+  /* 稍微增加标签宽度 */
+  font-weight: bold;
+  color: #555;
+  text-align: right;
+  flex-shrink: 0;
+  /* 防止标签被压缩 */
+  background-color: transparent;
+  font-family: var(--font-family);
+  color: var(--font-color);
+}
+
+/* 垂直表单容器（用于一行两列布局） */
+.reportgenerator-form-field-vertical {
+  display: flex;
+  flex-wrap: wrap;
+  /* 允许换行 */
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 10px;
+  gap: 15px;
+  /* 列间距 */
+  margin-bottom: 20px;
+}
+
+/* 垂直表单字段容器（每列的容器） */
+.reportgenerator-form-field-vertical-container {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  /* 平均分配宽度 */
+  min-width: 280px;
+  /* 最小宽度防止过窄 */
+  max-width: calc(50% - 8px);
+  /* 最大宽度为容器一半减去间距的一半 */
+}
+
+.reportgenerator-form-field-vertical-container .reportgenerator-field-label {
+  margin-right: 15px;
+  width: 120px;
+  /* 与水平布局一致 */
+  font-weight: bold;
+  color: #555;
+  text-align: right;
+  flex-shrink: 0;
+  background-color: transparent;
+  font-family: var(--font-family);
+  color: var(--font-color);
+}
+
+/* 输入控件通用样式 */
+.reportgenerator-form-input-inline,
+.reportgenerator-form-select-inline {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  font-weight: normal;
+  /* 确保字体不加粗（覆盖可能的继承样式） */
+  font-weight: normal !important;
+  min-width: 180px;
+  /* 稍微减小最小宽度 */
+  max-width: 100%;
+  /* 防止超出容器 */
+  font-family: var(--font-family);
+  background-color: var(--background-color);
+  color: var(--font-color);
+  border-color: var(--border_color);
+}
+
+.reportgenerator-form-input-inline-textarea {
+  resize: vertical;
+  font-weight: bold;
+  background-color: var(--background-color);
+  color: var(--font-color);
+}
+
+.reportgenerator-form-input-inline:hover,
+.reportgenerator-form-select-inline:hover {
+  box-shadow: 0 0 0 2px rgba(76, 76, 77, 0.2);
+  border-color: var(--hover_border_color);
+  background-color: var(--hover_background-color) !important;
+}
+
+.reportgenerator-form-input-inline:focus,
+.reportgenerator-form-select-inline:focus {
+  border-color: #3498db;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+
+}
+
+
+.reportgenerator-form-select-inline:invalid {
+  color: var(--watermark-font-color) !important;
+  /* color: #888888 !important; */
+  background-color: var(--background-color) !important;
+
+}
+/* 无效状态的悬浮效果 */
+.reportgenerator-form-select-inline:invalid:hover {
+   background-color: var(--hover_background-color) !important;
+}
+
+.reportgenerator-form-select-inline {
+  color: var(--font-color) !important;
+  background-color: var(--background-color) !important;
+}
+
+.reportgenerator-form-input-inline::placeholder {
+  color: var(--watermark-font-color);
+  /* 这里设置为占位符的颜色 */
+
+  /* opacity: 1;  */
+  /* 如果想让占位符完全不透明，可以设置为1 */
+}
+
+
+
+/* #region start */
+
+/* ant的水印文字颜色 */
+/* 也可以设置成
+<ConfigProvider
+  theme={{
+    components: {
+      DatePicker: {
+        colorTextPlaceholder: watermarkForeground, // 使用您的状态变量
+      },
+    },
+  }}
+> */
+.reportgenerator-form-input-inline .ant-picker-input>input::placeholder {
+  color: var(--watermark-font-color) !important;
+}
+
+/* 设置DatePicker悬浮背景色 */
+.reportgenerator-form-input-inline .ant-picker-input>input:hover,
+.reportgenerator-form-input-inline .ant-picker-focused {
+  border-color: var(--hover_border_color);
+  
+}
+
+
+.reportgenerator-form-input-inline.ant-picker:hover {
+    background-color:var(--hover_background-color) !important;
+    border-color: var(--hover_border_color) !important;
+    cursor: pointer;
+}
+
+/* 输入框内部的背景色 */
+.reportgenerator-form-input-inline.ant-picker .ant-picker-input input:hover {
+    background-color: transparent !important;
+    cursor: pointer;
+}
+
+/* 输入框文本颜色 */
+.reportgenerator-form-input-inline.ant-picker:hover .ant-picker-input input {
+    color: var(--font-color) !important;
+}
+
+/* 下拉图标颜色 */
+.reportgenerator-form-input-inline.ant-picker:hover .ant-picker-suffix {
+    color: var(--font-color) !important;
+}
+
+/* 占位符文本颜色 */
+.reportgenerator-form-input-inline.ant-picker:hover .ant-picker-input input::placeholder {
+    /* color: rgba(255, 255, 255, 0.8) !important; */
+      color: var(--watermark-font-color) !important;
+}
+
+/* 清除按钮样式 */
+.reportgenerator-form-input-inline.ant-picker:hover .ant-picker-clear {
+    color: rgba(255, 255, 255, 0.8) !important;
+    background-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* 清除按钮悬浮效果 */
+.reportgenerator-form-input-inline.ant-picker:hover .ant-picker-clear:hover {
+    color: #ffffff !important;
+    background-color: rgba(255, 255, 255, 0.3) !important;
+}
+/*  #endregion end */
+
+
+
+
+/* 选择框特殊样式 */
+.reportgenerator-form-select-inline {
+  background-color: white;
+  color: #000;
+  appearance: none;
+  /* 移除默认样式 */
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px;
+  padding-right: 30px;
+}
+
+.reportgenerator-form-select-inline.placeholder-style:not(:focus) {
+  color: #999;
+}
+
+/* 单选按钮组样式 */
+.reportgenerator-radio-group {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.reportgenerator-radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .reportgenerator-form-field-vertical-container {
+    min-width: 100%;
+    /* 小屏幕下每列占满整行 */
+    max-width: 100%;
+  }
+
+  .reportgenerator-form-field-horizontal {
+    flex-direction: row;
+    align-items: flex-end;
+  }
+
+  .reportgenerator-form-field-horizontal .reportgenerator-field-label {
+    text-align: left;
+    margin-bottom: 5px;
+  }
+}
+
+/* #region start 电梯、通气单选样式 */
+/* 紧凑型开关样式 */
+.reportgenerator-toggle-switch {
+  position: relative;
+  display: inline-flex;
+  border-radius: 15px;
+  /* 减小圆角 */
+  /* background-color: #f0f0f0; */
+  background-color: var(--background-color);
+  padding: 1px;
+  /* 减小内边距 */
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  height: 30px;
+  /* 固定高度 */
+}
+
+.reportgenerator-toggle-input {
+  position: absolute;
+  /* opacity: 0; */
+  width: 0;
+  height: 0;
+}
+
+.reportgenerator-toggle-option {
+  position: relative;
+  z-index: 1;
+  padding: 4px 12px;
+  /* 减小内边距 */
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  color: #555;
+  font-size: 14px;
+  /* 减小字体 */
+  line-height: 18px;
+  /* 调整行高 */
+}
+
+.reportgenerator-toggle-option-left {
+  border-radius: 15px 0 0 15px;
+}
+
+.reportgenerator-toggle-option-right {
+  border-radius: 0 15px 15px 0;
+}
+
+.reportgenerator-toggle-selection {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: 50%;
+  height: calc(100% - 2px);
+  background-color: #3498db;
+  border-radius: 15px;
+  transition: all 0.2s ease;
+  z-index: 0;
+}
+
+/* 选中状态 ，滑动指示器向右移动 左右切换效果 */
+#isLeaseConsidered-no:checked~.reportgenerator-toggle-selection,
+#seizureStatus-no:checked~.reportgenerator-toggle-selection,
+#mortgageStatus-no:checked~.reportgenerator-toggle-selection,
+#elevator-no:checked~.reportgenerator-toggle-selection,
+#ventilation-no:checked~.reportgenerator-toggle-selection {
+  transform: translateX(100%);
+}
+
+/* 选中状态下的文字颜色变化 左右切换效果 */
+#isLeaseConsidered-no:checked~.reportgenerator-toggle-selection,
+#seizureStatus-yes:checked~.reportgenerator-toggle-option-left,
+#mortgageStatus-yes:checked~.reportgenerator-toggle-option-left,
+#elevator-yes:checked~.reportgenerator-toggle-option-left,
+#elevator-no:checked~.reportgenerator-toggle-option-right,
+#ventilation-yes:checked~.reportgenerator-toggle-option-left,
+#ventilation-no:checked~.reportgenerator-toggle-option-right {
+  color: white;
+}
+
+/* 悬停效果 */
+.reportgenerator-toggle-option:hover {
+  color: #333;
+}
+
+/*  #endregion end */
+
+/* #endregion end */
+
+/* ==================== 估价师卡片样式 ==================== */
+.reportgenerator-appraiser-container {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.reportgenerator-appraiser-card {
+  flex: 1;
+  padding: 15px;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+  border: 1px solid #eee;
+}
+
+.reportgenerator-appraiser-title {
+  font-size: 18px;
+  color: #2c3e50;
+  margin-top: 0;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+/* #region start 在CSS中添加模态框样式*/
+
+/* ==================== 搜索结果模态框 ==================== */
+/* 搜索结果模态框样式 */
+.reportgenerator-search-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.reportgenerator-search-modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  width: 700px;
+  /* 稍微加宽以适应更多内容 */
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+.reportgenerator-search-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.reportgenerator-search-modal-title {
+  margin: 0;
+  font-size: 18px;
+  color: #2c3e50;
+}
+
+.reportgenerator-search-modal-close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #7f8c8d;
+}
+
+.reportgenerator-search-modal-close:hover {
+  color: #e74c3c;
+}
+
+.reportgenerator-search-results-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.reportgenerator-search-result-item {
+  display: flex;
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  align-items: center;
+  /* 修改为center使所有子元素垂直居中 */
+}
+
+.reportgenerator-search-result-item:hover {
+  background-color: #f8f9fa;
+}
+
+.reportgenerator-search-result-item.reportgenerator-result-active {
+  background-color: #e3f2fd;
+}
+
+
+
+.reportgenerator-search-result-index {
+  margin-right: 15px;
+  font-weight: bold;
+  color: #2c3e50;
+  min-width: 30px;
+  font-size: 16px;
+  line-height: 1;
+  /* 确保行高一致 */
+  display: flex;
+  align-items: center;
+  /* 确保内容垂直居中 */
+  justify-content: center;
+  /* 确保内容水平居中 */
+  height: 100%;
+  /* 确保高度填满父容器 */
+}
+
+.reportgenerator-search-result-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.reportgenerator-search-result-row {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  font-size: 14px;
+
+  justify-content: space-between;
+}
+
+.reportgenerator-search-result-location {
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.reportgenerator-search-result-community {
+  color: #7f8c8d;
+}
+
+.reportgenerator-search-result-project,
+.reportgenerator-search-result-reportid,
+.reportgenerator-search-result-date,
+.reportgenerator-search-result-documentNo,
+.reportgenerator-search-result-entrust-date {
+  color: #555;
+}
+
+
+/*  #endregion end */
+
+
+/* #region start 百度数据采集按钮样式 */
+
+/* 百度数据采集按钮样式 */
+.reportgenerator-baidu-button {
+  background-color: #f5f5f5;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  padding: 8px 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  margin-left: 8px;
+}
+
+.reportgenerator-baidu-button:hover {
+  background-color: #e6f7ff;
+  border-color: #91d5ff;
+}
+
+.reportgenerator-baidu-icon {
+  width: 16px;
+  height: 16px;
+  fill: #1890ff;
+}
+
+/*  #endregion end */
+
+
+
+/* #region start 家具开关选中状态 */
+
+
+/* 家具开关选中状态 */
+#hasFurnitureElectronics-yes:checked~.reportgenerator-toggle-selection {
+  left: 0;
+  background-color: #4CAF50;
+  /* 绿色表示选中"有" */
+}
+
+#hasFurnitureElectronics-no:checked~.reportgenerator-toggle-selection {
+  left: 50%;
+  background-color: #f44336;
+  /* 红色表示选中"无" */
+}
+
+#hasFurnitureElectronics-yes:checked~.reportgenerator-toggle-option-left,
+#hasFurnitureElectronics-no:checked~.reportgenerator-toggle-option-right {
+  color: white;
+}
+
+/* 价格输入框过渡效果 */
+.reportgenerator-form-field-vertical-container {
+  transition: all 0.3s ease;
+}
+
+/*  #endregion end */
+
+/* #region start 分页样式 */
+/* 分页样式 */
+.reportgenerator-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+
+.reportgenerator-pagination-controls {
+  display: flex;
+  gap: 5px;
+}
+
+.reportgenerator-pagination-controls button {
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  background: white;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.reportgenerator-pagination-controls button:hover {
+  background: #f0f0f0;
+}
+
+.reportgenerator-pagination-controls button.active {
+  background: #3498db;
+  color: white;
+  border-color: #3498db;
+}
+
+.reportgenerator-pagination-controls button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.reportgenerator-page-size-selector select {
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+}
+
+.reportgenerator-page-jump {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.reportgenerator-page-jump input {
+  width: 50px;
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  text-align: center;
+}
+
+/*  #endregion end */
+
+/* 点击方位  显示手动获取定位信息 */
+.reportgenerator-field-label-showHandBaiduDataGrabber {
+
+  user-select: none;
+  /* 防止双击时选中文本 */
+}
+
+/* 点击方位  显示手动获取定位信息 */
+.reportgenerator-field-label-showHandBaiduDataGrabber:hover {
+  cursor: pointer;
+  /* text-decoration: underline;  */
+  /* 鼠标悬停时显示下划线提示可点击 */
+} 
+
+
+
+
+ /* 为整个DatePicker组件添加悬浮效果 */
+
+ /* #region start 报告模拟框*/
+
+ .report-preview-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.report-preview-modal {
+  width: 100%;
+  height: 100%;
+  /* max-width: 1400px;
+  max-height: 900px; */
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+ 
+}
+/*  #endregion end */

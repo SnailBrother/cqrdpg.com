@@ -1,0 +1,124 @@
+/* 基础样式 */
+.site-app {
+  font-family: 'Helvetica Neue', Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  /* max-width: 1200px; */
+  width: 100%;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+}
+
+/* 头部样式 */
+.site-header {
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+  padding: 0 20px;
+  border-radius: 8px 8px 0 0;
+  border-bottom: 1px solid #e1e5e9;
+}
+
+.site-tabs {
+  display: flex;
+  overflow-x: auto;
+  justify-content: space-around;
+  -webkit-overflow-scrolling: touch;
+}
+
+.site-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.site-tab {
+  padding: 16px 24px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #4a5568;
+  cursor: pointer;
+  white-space: nowrap;
+  position: relative;
+  transition: all 0.2s ease;
+  border-bottom: 3px solid transparent;
+}
+
+.site-tab:hover {
+  color: #2d3748;
+  background: rgba(237, 242, 247, 0.5);
+}
+
+.site-tab.active {
+  color: #3182ce;
+  font-weight: 600;
+  border-bottom-color: #3182ce;
+}
+
+/* 内容区域 */
+.site-content {
+  padding: 24px;
+}
+
+.site-links-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.site-link-card {
+  padding: 16px;
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border: 1px solid #edf2f7;
+  transition: all 0.2s ease;
+}
+
+.site-link-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-color: #cbd5e0;
+}
+
+.site-link-card a {
+  color: #2d3748;
+  text-decoration: none;
+  display: block;
+  font-size: 15px;
+  transition: color 0.2s;
+}
+
+.site-link-card a:hover {
+  color: #3182ce;
+}
+
+/* 状态提示 */
+.site-loading,
+.site-error,
+.site-empty {
+  text-align: center;
+  padding: 40px;
+  color: #718096;
+  font-size: 16px;
+}
+
+.site-error {
+  color: #e53e3e;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .site-header {
+    padding: 0 12px;
+  }
+  
+  .site-tab {
+    padding: 14px 18px;
+    font-size: 14px;
+  }
+  
+  .site-content {
+    padding: 16px;
+  }
+  
+  .site-links-grid {
+    grid-template-columns: 1fr;
+  }
+}

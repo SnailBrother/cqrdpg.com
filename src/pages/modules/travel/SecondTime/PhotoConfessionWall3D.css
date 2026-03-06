@@ -1,0 +1,73 @@
+.photoconfessionwall-container * {
+  margin: 0;
+  padding: 0;
+}
+
+.photoconfessionwall-container {
+  height: 100%;
+  min-height: 1000px;
+  min-width: 1200px;
+  width: 100%;
+  touch-action: none;
+  overflow: hidden;
+  display: flex;
+  perspective: 1000px;
+  border-radius: 10px;
+  /* background: #ffffff; */
+}
+
+.photoconfessionwall-drag-box,
+.photoconfessionwall-spin-box {
+  position: relative;
+  display: flex;
+  margin: auto;
+  transform-style: preserve-3d;
+  transform: rotateX(-10deg);
+}
+
+.photoconfessionwall-drag-box {
+  transform: rotateX(-30deg);
+}
+
+.photoconfessionwall-spin-box {
+  width: 120px;
+  height: 140px;
+  animation: photoconfessionwall-spin 200s infinite linear;
+}
+
+#photoconfessionwall-spin-box2 {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+#photoconfessionwall-spin-box3 {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.photoconfessionwall-drag-box img {
+  transform-style: preserve-3d;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  box-shadow: 0 0 8px #fff;
+  -webkit-box-reflect: below 10px linear-gradient(transparent, transparent, #0005);
+}
+
+.photoconfessionwall-drag-box img:hover {
+  box-shadow: 0 0 15px #fff;
+}
+
+@keyframes photoconfessionwall-spin {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(360deg);
+  }
+}

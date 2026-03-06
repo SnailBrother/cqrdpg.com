@@ -1,0 +1,467 @@
+/* RdSetting.module.css */
+
+/* =================全局容器样式================= */
+.settingContainer {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  /* 背景：柔和的灰白渐变，衬托白色磨砂 */
+  background: linear-gradient(135deg, #f0f0f1 0%, #bbbabd 100%);
+  color: #333333;
+  font-family: 'Microsoft Yahei', sans-serif;
+  overflow: hidden;
+  position: relative;
+}
+
+/* 背景装饰光斑（增加磨砂透视感） */
+.settingContainer::before {
+  content: '';
+  position: absolute;
+  top: -10%;
+  left: -10%;
+  width: 50vw;
+  height: 50vw;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, transparent 70%);
+  border-radius: 50%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.settingContainer::after {
+  content: '';
+  position: absolute;
+  bottom: -10%;
+  right: -10%;
+  width: 60vw;
+  height: 60vw;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+  border-radius: 50%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* =================左侧侧边栏样式================= */
+.sidebar {
+  width: 280px;
+  height: 100%;
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 1;
+  
+  /* 白色磨砂核心 */
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border-right: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 5px 0 15px rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+  color: #444;
+  position: relative;
+  /* 修改：去掉 overflow: hidden，防止菜单按钮显示不全 */
+  /* overflow: hidden;  <-- 删除或注释掉这一行 */
+  gap: 20px; /* 增加子元素间距 */
+}
+/* =================旋转文字与头像区域================= */
+/* 1. 最外层包装器：定位整个圆形结构 */
+.rotateWrapper {
+  position: relative;
+  width: 220px;  /* 圆圈直径 */
+  height: 220px;
+  margin-bottom: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 2. 旋转容器：执行整体旋转动画 */
+.textCircle {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  /* 动画：名称 时长 线性 无限循环 */
+  animation: spinRotate 20s linear infinite;
+  pointer-events: none; /* 让鼠标事件穿透到头像（如果需要） */
+}
+
+/* 3. 单个字符样式 */
+.circleChar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  font-size: 16px;       /* 字体大小 */
+  font-weight: 700;
+  color: #2c3e50;        /* 文字颜色 */
+  user-select: none;     /* 禁止选中 */
+  display: block;
+  line-height: 220px;    /* 辅助垂直居中参考 */
+  text-transform: uppercase;
+  /* 注意：具体的 transform (rotate + translateY) 由 React JSX 中的 style 属性控制 */
+}
+
+/* 4. 头像区域 (位于圆心，层级最高) */
+.avatarWrapper {
+  position: relative;
+  z-index: 2;            /* 确保在文字上方 */
+  border: 4px solid rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  overflow: hidden;
+  width: 90px;           /* 头像大小 */
+  height: 90px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  background: #fff;
+  margin: 0;
+}
+
+.avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 个人信息样式 (如果后续需要添加) */
+.profileInfo {
+  text-align: center;
+  margin-bottom: 30px;
+  width: 100%;
+}
+
+.userName {
+  font-size: 18px;
+  margin: 0 0 8px 0;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #222;
+}
+
+.signature {
+  font-size: 14px;
+  margin: 0;
+  color: #666;
+  font-style: italic;
+}
+
+/* 标签容器样式 */
+.tagsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  width: 100%;
+}
+
+.tag {
+  padding: 4px 12px;
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 16px;
+  font-size: 12px;
+  color: #555;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  cursor: default;
+}
+
+.tag:hover {
+  background: rgba(255, 255, 255, 0.7);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* =================右侧主内容区样式================= */
+.mainContent {
+  flex: 1;
+  height: 100%;
+  padding: 30px 40px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  z-index: 1;
+  color: #333;
+}
+
+/* 搜索栏样式 */
+.searchBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.searchInputWrapper {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 0 15px;
+  height: 45px;
+  width: 450px;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.searchInputWrapper:focus-within {
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  border-color: #fff;
+}
+
+.searchPrefix {
+  font-size: 14px;
+  margin-right: 10px;
+  color: #666;
+  font-weight: 600;
+}
+
+.searchInput {
+  flex: 1;
+  height: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #333;
+  font-size: 14px;
+}
+
+.searchInput::placeholder {
+  color: #999;
+}
+
+.searchBtn {
+  background: transparent;
+  border: none;
+  color: #555;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.searchBtn:hover {
+  color: #4a90e2;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.timeInfo {
+  font-size: 14px;
+  color: #555;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(5px);
+  padding: 8px 15px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+/* 表格容器样式 - 主面板 */
+.tableContainer {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-top: 1px solid rgba(255, 255, 255, 0.9);
+  border-left: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  color: #333;
+  /* 确保内容溢出时可以滚动 */
+  overflow: auto; 
+  min-height: 0; /* Flexbox 嵌套滚动关键属性 */
+}
+
+.tableHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.tableHeader h4 {
+  font-size: 18px;
+  margin: 0;
+  font-weight: 700;
+  color: #222;
+}
+
+.tableHeader p {
+  font-size: 13px;
+  margin: 0;
+  color: #666;
+}
+
+.emptyTable {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  color: #777;
+}
+
+.emptyIcon {
+  font-size: 50px;
+  opacity: 0.6;
+  filter: grayscale(0.2);
+}
+
+.emptyText {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* =================动画定义================= */
+@keyframes spinRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* =================响应式适配================= */
+@media (max-width: 1200px) {
+  .searchInputWrapper {
+    width: 350px;
+  }
+}
+
+@media (max-width: 768px) {
+  .settingContainer {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+  }
+
+  .rotateWrapper {
+    width: 150px;
+    height: 150px;
+    margin-bottom: 0;
+    margin-right: 20px;
+  }
+  
+  /* 小屏幕上稍微缩小字体和半径 */
+  .circleChar {
+    font-size: 14px;
+    /* 这里的 translateY 需要在 JS 中动态计算或者用 CSS 变量，
+       为了简单，小屏幕下可能文字会重叠，建议在小屏幕隐藏旋转文字或调整 JS 逻辑 */
+  }
+
+  .avatarWrapper {
+    width: 60px;
+    height: 60px;
+  }
+
+  .profileInfo {
+    margin-bottom: 0;
+    text-align: left;
+  }
+
+  .userName {
+    font-size: 16px;
+  }
+
+  .signature {
+    display: none;
+  }
+
+  .tagsContainer {
+    display: none;
+  }
+
+  .mainContent {
+    padding: 20px 15px;
+  }
+
+  .searchInputWrapper {
+    width: 250px;
+  }
+
+  .timeInfo {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+}
+/* =================新增：左侧导航菜单样式================= */
+.navMenu {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px; /* 按钮之间的间距 */
+  margin-top: 10px;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 12px 15px;
+  border: none;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.3); /* 默认半透明白 */
+  color: #555;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+  backdrop-filter: blur(5px);
+  border: 1px solid transparent;
+}
+
+/* 鼠标悬停效果 */
+.navItem:hover {
+  background: rgba(255, 255, 255, 0.5);
+  transform: translateX(5px); /* 轻微右移 */
+  color: #333;
+}
+
+/* 选中状态效果 */
+.navItem.active {
+  background: rgba(255, 255, 255, 0.8); /* 更不透明，突出显示 */
+  color: #4a90e2; /* 主题蓝色 */
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: rgba(255, 255, 255, 0.9);
+  transform: translateX(5px);
+}
+
+.navIcon {
+  margin-right: 10px;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+}
+
+.navText {
+  white-space: nowrap; /* 防止文字换行 */
+}

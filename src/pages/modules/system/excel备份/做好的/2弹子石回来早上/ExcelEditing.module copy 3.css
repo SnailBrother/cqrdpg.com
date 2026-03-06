@@ -1,0 +1,617 @@
+/* ExcelEditing.module.css */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100dvh - 110px);
+  background: #f8fafc;
+  font-family: var(--font-family);
+  box-sizing: border-box;
+}
+
+/* 工具栏样式 */
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 24px;
+  background: white;
+  /* border-bottom: 1px solid #e2e8f0; */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+  z-index: 100;
+}
+
+.toolbarLeft {
+  display: flex;
+  align-items: center;
+}
+
+ 
+
+.toolbarRight {
+  display: flex;
+  gap: 5px;
+}
+
+.toolbarBtn {
+  padding: 0px 5px;
+  /* background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); */
+  background-color: transparent;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.toolbarBtn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+.toolbarBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 主内容区 */
+.mainContent {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  padding: 0;
+  background: #f8fafc;
+}
+
+/* 左侧：参数面板 */
+.inputPanel {
+  width: 320px;
+  background: white;
+  border-right: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex-shrink: 0;
+  z-index: 50;
+}
+
+.inputPanelHeader {
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 2px solid #e2e8f0;
+  flex-shrink: 0;
+}
+
+.inputPanelHeader h3 {
+  margin: 0;
+  color: #1e293b;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 600;
+}
+
+.sheetName {
+  background: #e2e8f0;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #475569;
+}
+
+.namedRangesInfo {
+  padding: 12px 20px;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.namedRangesCount {
+  color: #4f46e5;
+  font-weight: 500;
+  background: #e0e7ff;
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+
+.formContainer {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+/* 表单样式 */
+.formGroup {
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.formGroup:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.formGroup label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.formLabel {
+  color: #334155;
+  font-weight: 600;
+  font-size: 1rem;
+  background: #f8fafc;
+  padding: 4px 8px;
+  border-radius: 4px;
+  border-left: 3px solid #4f46e5;
+}
+
+.cellRef {
+  color: #64748b;
+  font-size: 0.85rem;
+  font-family: 'Monaco', 'Consolas', monospace;
+  background: #f1f5f9;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.formGroup input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 2px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.formGroup input:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.formulaHint {
+  position: absolute;
+  right: 10px;
+  background: #fef3c7;
+  color: #92400e;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: help;
+}
+
+.formulaPreview {
+  margin-top: 8px;
+  padding: 8px;
+  background: #f8fafc;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  border-left: 3px solid #f59e0b;
+}
+
+.formulaPreview code {
+  font-family: 'Monaco', 'Consolas', monospace;
+  color: #dc2626;
+  background: #fee2e2;
+  padding: 2px 4px;
+  border-radius: 2px;
+  margin-left: 4px;
+}
+
+.noNamedRanges {
+  text-align: center;
+  padding: 40px 20px;
+  color: #64748b;
+  font-size: 0.95rem;
+}
+
+.noNamedRanges small {
+  color: #94a3b8;
+  font-size: 0.85rem;
+  margin-top: 8px;
+  display: block;
+}
+
+/* 右侧：表格区域 */
+.previewPanel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.previewPanel.fullWidth {
+  width: 100%;
+}
+
+/* 调整单元格信息栏样式 */
+/* 单元格信息栏 - 放在顶部 */
+.cellInfoBar {
+  padding: 8px 20px;
+  background: #f1f5f9;
+  border-bottom: 1px solid #cbd5e1;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+  /* 确保始终显示 */
+  display: block !important;
+  box-sizing: border-box;
+}
+
+
+.cellInfoRow {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.cellLabel {
+  color: #64748b;
+  font-weight: 500;
+  width: 40px;
+}
+
+.cellAddress {
+  background: #e2e8f0;
+  padding: 4px 0px;
+  border-radius: 4px;
+  font-family: 'Monaco', 'Consolas', monospace;
+  font-weight: bold;
+  color: #1e293b;
+  width: 50px;
+  text-align: center;
+}
+
+.cellName {
+  background: linear-gradient(135deg, #f0abfc 0%, #c084fc 100%);
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: white;
+  font-weight: 500;
+  min-width: 80px;
+  text-align: center;
+}
+
+.cellValue {
+  background: #dbeafe;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: 'Monaco', 'Consolas', monospace;
+  color: #1e40af;
+  min-width: 400px;
+  text-align: center;
+}
+
+.cellFormula {
+  background: #fef3c7;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: 'Monaco', 'Consolas', monospace;
+  color: #92400e;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 工作表标签区域 - 放在底部 */
+.sheetTabsSection {
+  padding: 1px 5px;
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 10;
+}
+
+.sheetTabsContainer {
+  display: flex;
+  gap: 1px;
+  overflow-x: auto;
+  padding-bottom: 1px;
+}
+
+.sheetTab {
+  padding: 5px 5px;
+  background: #e2e8f0;
+  border: 1px solid #cbd5e1;
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+  color: #475569;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.sheetTab:hover {
+  background: #cbd5e1;
+}
+
+.sheetTab.activeSheet {
+  background: rgb(173, 235, 171);
+  color: #4f46e5;
+  border-color: #cbd5e1;
+  border-bottom: 1px solid white;
+  font-weight: 700;
+  position: relative;
+  z-index: 1;
+}
+
+/* 电子表格容器 */
+/* Excel表格主体 - 中间 */
+.spreadsheetWrapper {
+  flex: 1;
+  overflow: auto;
+  padding: 2px;
+  position: relative;
+  background: #f8fafc;
+}
+
+.spreadsheetContainer {
+  overflow: auto;
+  max-width: 100%;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.spreadsheet {
+  border-collapse: collapse;
+  border-spacing: 0;
+  min-width: 800px;
+  font-size: 14px;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.spreadsheet th,
+.spreadsheet td {
+  border: 1px solid #cbd5e1;
+  min-width: 100px;
+  height: 32px;
+  padding: 4px 8px;
+  position: relative;
+  user-select: none;
+  box-sizing: border-box;
+}
+
+.columnHeader {
+  background: #f1f5f9 !important;
+  color: #64748b;
+  font-weight: 600;
+  text-align: center;
+  border-color: #94a3b8 !important;
+  min-width: 40px !important;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  box-shadow: 0 1px 0 #cbd5e1;
+}
+
+.rowHeader {
+  background: #f1f5f9 !important;
+  color: #64748b;
+  font-weight: 600;
+  text-align: center;
+  border-color: #94a3b8 !important;
+  min-width: 40px !important;
+  position: sticky;
+  left: 0;
+  z-index: 9;
+  box-shadow: 1px 0 0 #cbd5e1;
+}
+
+.cell {
+  background: white;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.cell:hover {
+  background: #f0f9ff !important;
+}
+
+.selectedCell {
+  background: #dbeafe !important;
+  box-shadow: inset 0 0 0 2px #3b82f6;
+  z-index: 2;
+  position: relative;
+}
+
+.namedCell {
+  border: 2px solid #3b82f6 !important;
+  background: #f0f9ff !important;
+}
+
+/* 单元格编辑器样式 */
+.cellEditor {
+  width: 100%;
+  height: 100%;
+  border: 2px solid #3b82f6;
+  background: white;
+  padding: 0 4px;
+  font-size: 14px;
+  box-sizing: border-box;
+  outline: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+}
+
+
+/* 加载状态 */
+.loading {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  color: #64748b;
+  font-size: 1rem;
+  gap: 16px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #e2e8f0;
+  border-top-color: #4f46e5;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.noData {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+  color: #64748b;
+  font-size: 1.1rem;
+  text-align: center;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 状态栏 */
+.statusBar {
+  padding: 8px 24px;
+  background: white;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  color: #64748b;
+  flex-shrink: 0;
+  z-index: 100;
+}
+
+.statusInfo {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.statusInfo strong {
+  color: #4f46e5;
+}
+
+.statusActions .hint {
+  color: #94a3b8;
+  font-style: italic;
+  font-size: 0.85rem;
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* 信息栏编辑器 */
+ 
+.infoBarEditor {
+  background: #dbeafe;
+  border: 2px solid #3b82f6;
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-family: 'Monaco', 'Consolas', monospace;
+  color: #1e40af;
+ 
+  font-size: 0.9rem;
+  outline: none;
+  width: 400px;
+    outline: none;
+  box-sizing: border-box;
+    transition: border-color 0.2s;
+}
+
+ 
+
+/* 单元格值点击区域 */
+.cellValue {
+  background: #dbeafe;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: 'Monaco', 'Consolas', monospace;
+  color: #1e40af;
+  min-width: 400px;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  border: 1px solid transparent;
+}
+
+.cellValue:hover {
+  background: #bfdbfe;
+  border-color: #3b82f6;
+}
+/* #region start 图标*/
+.titleicon {
+   width: 2.5em;
+  height: 2.5em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
+  margin-left: 10px;
+}
+.buttonicon {
+    width: 2.5em;
+  height: 2.5em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
+   
+}
+/*  #endregion end */

@@ -1,0 +1,205 @@
+.updatewardrobe-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.updatewardrobe-title {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+.updatewardrobe-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.updatewardrobe-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.updatewardrobe-label {
+  font-weight: 600;
+  color: #555;
+}
+
+.updatewardrobe-input,
+.updatewardrobe-select {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+.updatewardrobe-input:focus,
+.updatewardrobe-select:focus {
+  border-color: #4a90e2;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+.updatewardrobe-button {
+  padding: 12px;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 10px;
+}
+
+.updatewardrobe-button:hover {
+  background-color: #3a7bc8;
+}
+
+.updatewardrobe-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.updatewardrobe-alert {
+  padding: 10px 15px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+.updatewardrobe-alert-success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.updatewardrobe-alert-error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+/* 图片上传样式 */
+.updatewardrobe-image-upload {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.updatewardrobe-image-upload-placeholder {
+  width: 100%;
+  height: 150px;
+  border: 2px dashed #ccc;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color 0.3s;
+}
+
+.updatewardrobe-image-upload-placeholder:hover {
+  border-color: #4a90e2;
+}
+
+.updatewardrobe-image-upload-placeholder span {
+  font-size: 40px;
+  color: #4a90e2;
+}
+
+.updatewardrobe-image-upload-placeholder p {
+  margin-top: 10px;
+  color: #666;
+}
+
+.updatewardrobe-image-preview {
+  position: relative;
+  width: 100%;
+  height: 150px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.updatewardrobe-image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  cursor: pointer;
+}
+
+.updatewardrobe-remove-image {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 25px;
+  height: 25px;
+  background-color: rgba(255, 0, 0, 0.7);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.updatewardrobe-remove-image:hover {
+  background-color: rgba(255, 0, 0, 0.9);
+}
+
+/* 图片预览模态框 */
+.updatewardrobe-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.updatewardrobe-modal-content {
+  max-width: 90%;
+  max-height: 90%;
+}
+
+.updatewardrobe-modal-content img {
+  max-width: 100%;
+  max-height: 90vh;
+  object-fit: contain;
+}
+
+@media (max-width: 768px) {
+  .updatewardrobe-container {
+      padding: 15px;
+  }
+  
+  .updatewardrobe-title {
+      font-size: 20px;
+  }
+  
+  .updatewardrobe-input,
+  .updatewardrobe-select,
+  .updatewardrobe-button {
+      font-size: 14px;
+      padding: 8px;
+  }
+  
+  .updatewardrobe-image-upload-placeholder,
+  .updatewardrobe-image-preview {
+      height: 120px;
+  }
+}

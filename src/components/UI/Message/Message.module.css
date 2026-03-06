@@ -1,0 +1,172 @@
+/* Message.module.css */
+
+/* #region 消息容器 */
+.messageContainer {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 400px;
+  width: 90%;
+  pointer-events: none; /* 防止容器本身阻塞点击 */
+}
+
+/* 确保消息项可以接收点击事件 */
+.messageContainer > * {
+  pointer-events: auto;
+}
+/* #endregion */
+
+/* #region 消息项基础样式 */
+.message {
+  padding: 12px 16px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  animation: slideDown 0.3s ease;
+  border-left: 4px solid transparent;
+  min-height: 50px;
+  backdrop-filter: blur(10px);
+}
+
+.messageContent {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: inherit;
+  opacity: 0.7;
+  padding: 4px;
+  border-radius: 4px;
+  line-height: 1;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.closeButton:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.1);
+}
+/* #endregion */
+
+/* #region 消息类型样式 */
+.info {
+  background: rgba(230, 247, 255, 0.95);
+  border-left-color: #1890ff;
+  color: #0050b3;
+}
+
+.success {
+  background: rgba(246, 255, 237, 0.95);
+  border-left-color: #52c41a;
+  color: #135200;
+}
+
+.warning {
+  background: rgba(255, 251, 230, 0.95);
+  border-left-color: #faad14;
+  color: #613400;
+}
+
+.error {
+  background: rgba(255, 242, 240, 0.95);
+  border-left-color: #ff4d4f;
+  color: #a8071a;
+}
+/* #endregion */
+
+/* #region 动画效果 */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.9);
+  }
+}
+
+.leaving {
+  animation: slideUp 0.3s ease forwards;
+}
+
+/* 为每个消息项添加轻微的延迟，避免同时出现 */
+.message:nth-child(1) { animation-delay: 0s; }
+.message:nth-child(2) { animation-delay: 0.05s; }
+.message:nth-child(3) { animation-delay: 0.1s; }
+.message:nth-child(4) { animation-delay: 0.15s; }
+/* #endregion */
+
+/* #region 无障碍和性能优化 */
+/* 减少动画支持 */
+@media (prefers-reduced-motion: reduce) {
+  .message {
+    animation: none;
+  }
+  
+  .leaving {
+    animation: none;
+  }
+}
+
+/* 高对比度模式支持 */
+@media (prefers-contrast: high) {
+  .message {
+    border: 2px solid;
+  }
+}
+
+/* 移动端适配 */
+@media (max-width: 480px) {
+  .messageContainer {
+    top: 10px;
+    max-width: 90%;
+    width: calc(100% - 20px);
+  }
+  
+  .message {
+    padding: 10px 12px;
+    min-height: 44px;
+  }
+  
+  .messageContent {
+    font-size: 13px;
+  }
+  
+  .closeButton {
+    width: 20px;
+    height: 20px;
+    font-size: 16px;
+  }
+}
+/* #endregion */

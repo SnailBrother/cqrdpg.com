@@ -1,0 +1,293 @@
+.auntflo-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  position: relative;
+  height: 100vh; /* 确保容器占据整个视口高度 */
+  display: flex;
+  flex-direction: column;
+}
+.auntflo-content-wrapper {
+  flex: 1;
+  overflow-y: auto; /* 允许内容滚动 */
+  padding-bottom: 20px; /* 为底部留出空间 */
+}
+.auntflo-title {
+  text-align: center;
+  color: #333;
+  font-size: 20px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+.auntflo-calendar {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 20px;
+  min-height: 300px; /* 确保日历有最小高度 */
+}
+
+.auntflo-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.auntflo-month-title {
+  margin: 0;
+  color: #333;
+}
+
+.auntflo-nav-button {
+  background: #f0f0f0;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.auntflo-nav-button:hover {
+  background: #e0e0e0;
+}
+
+.auntflo-nav-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.auntflo-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.auntflo-week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 5px;
+}
+
+.auntflo-day {
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 4px;
+  position: relative;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.auntflo-day:hover {
+  background: #f5f5f5;
+}
+
+.auntflo-day.empty {
+  background: transparent;
+  cursor: default;
+}
+
+.auntflo-day.today {
+  font-weight: bold;
+  color: #0066cc;
+}
+
+.auntflo-day.period {
+  background: #ffebee;
+  color: #d32f2f;
+}
+
+.auntflo-day.loading {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.auntflo-period-indicator {
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #d32f2f;
+}
+
+.auntflo-has-details {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  color: #d32f2f;
+  font-weight: bold;
+}
+
+.auntflo-legend {
+  display: flex;
+  justify-content: center;
+  margin-top: auto; /* 将图例固定在底部 */
+  padding-top: 20px;
+  gap: 15px;
+  flex-shrink: 0; /* 防止图例被压缩 */
+}
+
+.auntflo-legend-item {
+  display: flex;
+  align-items: center;
+}
+
+.auntflo-legend-color {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  margin-right: 5px;
+}
+
+.auntflo-legend-color.period {
+  background: #ffebee;
+}
+
+.auntflo-legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #d32f2f;
+  margin-right: 5px;
+}
+
+.auntflo-error {
+  color: #d32f2f;
+  background: #ffebee;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.auntflo-loading {
+  text-align: center;
+  padding: 10px;
+  color: #666;
+}
+
+/* 内联表单样式 */
+.auntflo-form-inline {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 10px rgba(0, 0, 0, 0.1);
+  max-height: 400px; /* 限制表单最大高度 */
+  overflow-y: auto; /* 表单内容过多时可滚动 */
+}
+
+.auntflo-form-header {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 15px;
+  
+}
+
+.auntflo-form-header h3 {
+  margin: 0;
+  color: #333;
+}
+
+.auntflo-close-form {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #999;
+  padding: 0;
+  line-height: 1;
+}
+
+.auntflo-close-form:hover {
+  color: #666;
+}
+
+.auntflo-form-group {
+  margin-bottom: 15px;
+}
+
+.auntflo-form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.auntflo-form-group input[type="text"] {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.auntflo-range-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.auntflo-form-group input[type="range"] {
+  flex-grow: 1;
+}
+
+.auntflo-range-value {
+  min-width: 20px;
+  text-align: center;
+}
+
+.auntflo-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.auntflo-save-btn {
+  background: #4caf50;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.auntflo-save-btn:hover {
+  background: #3d8b40;
+}
+
+.auntflo-save-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: #4caf50;
+}
+
+.auntflo-delete-btn {
+  background: #f44336;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: auto;
+}
+
+.auntflo-delete-btn:hover {
+  background: #d32f2f;
+}
+
+.auntflo-delete-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: #f44336;
+}

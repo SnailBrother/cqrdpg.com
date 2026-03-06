@@ -1,0 +1,317 @@
+/* 基础样式 */
+/* .carouseltypesecond-box * {
+    font-size: 12px;
+    box-sizing: border-box;
+} */
+
+/* 主容器 */
+.carouseltypesecond-box {
+  width: 1900px;
+  height: 1200px;
+  position: relative;
+  /* border: 1px red solid; */
+  overflow: hidden;
+  border-radius: 10px;
+}
+/* #region start 标题 */
+/* 标题区域样式 */
+.carouseltypesecond-header {
+  width: 100%;
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 20px 0;
+  margin-left: 50px;
+  position: relative;
+}
+
+/* 标题容器 - 添加花纹背景 */
+.carouseltypesecond-title-container {
+  position: relative;
+  padding: 15px 80px;
+  background-image: 
+    radial-gradient(circle at 10% 50%, rgba(214, 214, 214, 0.2) 0%, transparent 20%),
+    radial-gradient(circle at 90% 50%, rgba(214, 214, 214, 0.2) 0%, transparent 20%),
+    linear-gradient(to right, transparent 10%, rgba(255, 255, 255, 0.7) 30%, rgba(255, 255, 255, 0.7) 70%, transparent 90%);
+  background-repeat: no-repeat;
+  background-size: 200% auto;
+  border-radius: 8px;
+  /* 移除 box-shadow，改用流动光效 */
+  overflow: hidden; /* 防止伪元素溢出 */
+  z-index: 1; /* 确保层级正确 */
+}
+
+/* 流动光效 - 使用伪元素模拟边框动画 */
+.carouseltypesecond-title-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 218, 121, 0.8),
+      rgba(255, 165, 0, 0.8),
+      rgba(255, 218, 121, 0.8),
+      transparent
+  );
+  background-size: 200% 100%;
+  animation: flowLight 3s linear infinite;
+  z-index: -1;
+  opacity: 0.8;
+  pointer-events: none; /* 防止点击事件被拦截 */
+}
+
+/* 光效动画 */
+@keyframes flowLight {
+  0% {
+      background-position: -100% 0;
+  }
+  100% {
+      background-position: 100% 0;
+  }
+}
+
+.carouseltypesecond-title {
+  font-family: 'Georgia', serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #4a4a4a;
+  position: relative;
+  text-align: center;
+  letter-spacing: 2px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+  margin: 0;
+  padding: 0 60px;
+}
+
+.carouseltypesecond-title::before,
+.carouseltypesecond-title::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 50px;
+  height: 3px;
+  background: linear-gradient(to right, #c9a982, #8b6b4a);
+  transform: translateY(-50%);
+  border-radius: 3px;
+}
+
+.carouseltypesecond-title::before {
+  left: 0;
+  background: linear-gradient(to right, #8b6b4a, #c9a982);
+}
+
+.carouseltypesecond-title::after {
+  right: 0;
+  background: linear-gradient(to right, #c9a982, #8b6b4a);
+}
+
+/* 添加装饰性花纹元素 */
+.carouseltypesecond-title-container::before,
+.carouseltypesecond-title-container::after {
+  content: '❀';
+  position: absolute;
+  color: #c9a982;
+  font-size: 1.2rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.carouseltypesecond-title-container::before {
+  left: 30px;
+}
+
+.carouseltypesecond-title-container::after {
+  right: 30px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .carouseltypesecond-header {
+    margin-bottom: 20px;
+    margin-left: 20px;
+    padding: 15px 0;
+  }
+  
+  .carouseltypesecond-title {
+    font-size: 1.8rem;
+    padding: 0 40px;
+  }
+  
+  .carouseltypesecond-title-container {
+    padding: 12px 60px;
+  }
+  
+  .carouseltypesecond-title::before,
+  .carouseltypesecond-title::after {
+    width: 30px;
+  }
+  
+  .carouseltypesecond-title-container::before,
+  .carouseltypesecond-title-container::after {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .carouseltypesecond-title {
+    font-size: 1.5rem;
+    padding: 0 30px;
+  }
+  
+  .carouseltypesecond-title-container {
+    padding: 10px 50px;
+  }
+  
+  .carouseltypesecond-title::before,
+  .carouseltypesecond-title::after {
+    width: 20px;
+    height: 2px;
+  }
+}
+/*  #endregion end */
+
+
+/* 轮播图片列表 */
+.carouseltypesecond-ul1 {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+/* 单个轮播项 */
+.carouseltypesecond-slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.8s ease, opacity 0.8s ease;
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+.carouseltypesecond-slide.carouseltypesecond-active {
+  transform: translateX(0);
+  opacity: 1;
+  z-index: 100;
+}
+
+.carouseltypesecond-slide.carouseltypesecond-prev {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+.carouseltypesecond-slide.carouseltypesecond-next {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+.carouseltypesecond-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 左右按钮 */
+.carouseltypesecond-left-button,
+.carouseltypesecond-right-button {
+  width: 35px;
+  height: 70px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  text-align: center;
+  line-height: 70px;
+  position: absolute;
+  font-size: 27px;
+  top: 50%;
+  border-radius: 0 5px 5px 0;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.3s ease;
+}
+
+.carouseltypesecond-left-button {
+  left: 0;
+  border-radius: 0 5px 5px 0;
+}
+
+.carouseltypesecond-right-button {
+  right: 0;
+  border-radius: 5px 0 0 5px;
+}
+
+.carouseltypesecond-left-button:hover,
+.carouseltypesecond-right-button:hover {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* 指示器 */
+.carouseltypesecond-ul2 {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  position: absolute;
+  bottom: 20px;
+  right: 100px;
+  display: flex;
+  gap: 10px;
+}
+
+.carouseltypesecond-indicator {
+  width: 20px;
+  height: 20px;
+  background-color: #fff;
+  text-align: center;
+  line-height: 20px;
+  border-radius: 100%;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.3s ease;
+}
+
+.carouseltypesecond-indicator:hover {
+  background-color: red;
+  color: #fff;
+}
+
+.carouseltypesecond-active-indicator {
+  background-color: red;
+  color: #fff;
+}
+
+/* 层级控制 */
+.carouseltypesecond-indexs {
+  z-index: 1000;
+}
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
+  .carouseltypesecond-box {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 1000/460;
+  }
+
+  .carouseltypesecond-left-button,
+  .carouseltypesecond-right-button {
+      height: 50px;
+      line-height: 50px;
+      top: 50%;
+      transform: translateY(-50%);
+  }
+
+  .carouseltypesecond-ul2 {
+      right: 50%;
+      transform: translateX(50%);
+      bottom: 10px;
+  }
+}

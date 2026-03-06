@@ -1,0 +1,218 @@
+/* BaiduDataGrabber.css */
+/* 全屏覆盖层样式 */
+.app-container.baidu-data-grabber-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 模态框内容样式调整 */
+.baidu-data-grabber-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.baidu-data-grabber-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  border-bottom: 1px solid #eaeaea;
+  background: #f6faff;
+}
+
+.baidu-data-grabber-header h3 {
+  margin: 0;
+  font-size: 20px;
+  color: #174a8e;
+}
+
+.baidu-data-grabber-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #888;
+  cursor: pointer;
+  padding: 0 8px;
+}
+
+.baidu-data-grabber-main {
+  display: flex;
+  flex: 1;
+  overflow: auto;
+}
+
+.map-container {
+  position: relative;
+  flex: 1;
+  min-width: 70%;
+  height: 100%;
+  padding: 10px;
+  margin-right: 10px;
+}
+
+.baidu-data-grabber-form-container {
+  width: 30%;
+  min-width: 600px;
+  max-width: 600px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.baidu-data-grabber-form {
+  flex: 1;
+  padding: 5px;
+
+}
+
+.baidu-data-grabber-field {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.baidu-data-grabber-field label {
+  width: 80px;
+  font-weight: 500;
+  color: #1e90ff;
+  flex-shrink: 0;
+  text-align: end;
+  padding-right: 10px;
+}
+
+.baidu-data-grabber-field input,
+.baidu-data-grabber-field textarea {
+  flex: 1;
+ 
+  font-size: 14px;
+  padding: 6px 8px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  background: #fafafa;
+}
+
+.baidu-data-grabber-field input {
+  height: 50px;
+}
+
+.baidu-data-grabber-field textarea {
+  min-height: 50px;
+  resize: vertical;
+}
+
+.baidu-data-grabber-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px 8px;
+  gap: 16px;
+  border-top: 1px solid #eee;
+  margin-bottom: 20px;
+}
+
+.baidu-data-grabber-cancel,
+.baidu-data-grabber-save {
+  padding: 8px 24px;
+  font-size: 16px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+}
+
+.baidu-data-grabber-cancel {
+  background: #eee;
+  color: #333;
+}
+
+.baidu-data-grabber-save {
+  background: #1e90ff;
+  color: white;
+}
+
+.baidu-data-grabber-save:hover {
+  background: #187bcd;
+}
+
+.baidu-data-grabber-loading {
+  color: #1e90ff;
+  font-size: 16px;
+  padding: 8px;
+  text-align: center;
+}
+
+.baidu-data-grabber-error {
+  color: #d8000c;
+  background: #ffeeee;
+  padding: 8px;
+  font-size: 15px;
+  margin-bottom: 4px;
+  text-align: center;
+}
+/* #region start 方位指示器样式*/
+
+
+/* 方位指示器样式 */
+.baidu-map-directions {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 999;
+}
+
+.direction {
+  position: absolute;
+  color: #333;
+  font-size: 24px;
+  font-weight: bold;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.direction-north {
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.direction-east {
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+}
+
+.direction-south {
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.direction-west {
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+}
+
+ /*  #endregion end */

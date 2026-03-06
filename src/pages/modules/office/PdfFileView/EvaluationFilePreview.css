@@ -1,0 +1,221 @@
+/* 主容器样式 */
+.evaluationfilepreview-container {
+  display: flex;
+  height: calc(100dvh - 125px);
+ color: #000;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* 加载和错误状态 */
+.evaluationfilepreview-loading,
+.evaluationfilepreview-error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  font-size: 18px;
+}
+
+.evaluationfilepreview-error {
+  color: #ff0000;
+}
+
+/* 侧边栏样式 */
+.evaluationfilepreview-sidebar {
+  width: 250px;
+  background-color: #f5f5f5;
+  border-right: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s ease;
+  overflow: hidden;
+}
+
+.evaluationfilepreview-sidebar-collapsed {
+  width: 40px;
+}
+
+.evaluationfilepreview-sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #e0e0e0;
+  border-bottom: 1px solid #ddd;
+  padding: 0 8px;
+  height: 48px;
+  box-sizing: border-box;
+}
+
+.evaluationfilepreview-title {
+  padding: 15px;
+  font-weight: bold;
+  white-space: nowrap;
+  flex-grow: 1;
+}
+
+.evaluationfilepreview-collapse-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 8px;
+  margin-left: 5px;
+  z-index: 10;
+  flex-shrink: 0;
+}
+
+.evaluationfilepreview-collapse-btn:hover {
+  background-color: #d0d0d0;
+  border-radius: 3px;
+}
+
+/* 侧边栏折叠时的样式调整 */
+.evaluationfilepreview-sidebar-collapsed .evaluationfilepreview-sidebar-header {
+  justify-content: center;
+  padding: 0;
+}
+
+.evaluationfilepreview-sidebar-collapsed .evaluationfilepreview-collapse-btn {
+  margin: 0;
+  padding: 12px;
+}
+
+/* 搜索框样式 */
+.evaluationfilepreview-search {
+  padding: 10px;
+  position: sticky;
+  top: 0;
+  background-color: #f5f5f5;
+  z-index: 10;
+  border-bottom: 1px solid #ddd;
+}
+
+.evaluationfilepreview-search input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  outline: none;
+}
+
+.evaluationfilepreview-search input:focus {
+  border-color: #aaa;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+/* 树状目录样式 */
+.evaluationfilepreview-tree {
+  padding: 10px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.evaluationfilepreview-category {
+  margin-bottom: 5px;
+}
+
+.evaluationfilepreview-category-header {
+  padding: 8px 10px;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+}
+
+.evaluationfilepreview-category-header:hover {
+  background-color: #e9e9e9;
+}
+
+.evaluationfilepreview-caret {
+  margin-right: 6px;
+  font-size: 12px;
+  width: 12px;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.evaluationfilepreview-files {
+  margin-left: 20px;
+  padding-left: 10px;
+  border-left: 1px dashed #ccc;
+
+}
+
+/* 文件项样式 */
+.evaluationfilepreview-file {
+  padding: 6px 10px;
+  cursor: pointer;
+  border-radius: 4px;
+  display: flex;
+  align-items: flex-start;
+}
+
+.evaluationfilepreview-file:hover {
+  background-color: #e9e9e9;
+}
+
+.evaluationfilepreview-file-index {
+  font-size: 12px;
+  color: #999;
+  margin-right: 8px;
+  min-width: 20px;
+  text-align: right;
+}
+
+.evaluationfilepreview-file-content {
+  flex: 1;
+}
+
+.evaluationfilepreview-file-name {
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.evaluationfilepreview-file-remarks {
+  font-size: 11px;
+  color: #666;
+  margin-top: 2px;
+  line-height: 1.3;
+}
+
+/* 文件选中状态 */
+.evaluationfilepreview-file-selected {
+  background-color: #e0e0e0 !important;
+}
+
+.evaluationfilepreview-file-selected .evaluationfilepreview-file-index {
+  color: #333;
+  font-weight: bold;
+}
+
+/* 文件预览区域样式 */
+.evaluationfilepreview-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.evaluationfilepreview-file-preview {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.evaluationfilepreview-preview-placeholder {
+  min-height: 100%;
+  padding: 20px;
+  color: #888;
+  font-size: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.evaluationfilepreview-preview-hint {
+  margin: 10px 0;
+  font-size: 14px;
+  color: #aaa;
+}

@@ -1,0 +1,644 @@
+/* 聊天窗口容器 */
+.chat-friendmanagement-chatwindow-container {
+    display: flex;
+    flex-direction: column;
+    /* height: 100dvh; */
+   height: 100%;
+    border-radius: 0px;
+    padding: 0;
+    /* background-image: url('http://121.4.22.55:8888/backend/images/ChatApp/李中敬/headpicture/avatar.jpg'); */
+}
+
+/* 聊天窗口头部 */
+.chat-friendmanagement-chatwindow-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0px;
+    flex-direction: row;
+    background-color: #fdfdfd;
+    height: 45px;
+    /* #fdfdfd */
+}
+
+/* 好友名称 */
+.chat-friendmanagement-chatwindow-friend-name {
+    font-size: 20px;
+    margin: 0;
+    margin-top: 5px;
+    margin-left: 10px;
+}
+/* 未读消息 */
+.chat-friendmanagement-chatwindow-unread-count {
+    display: inline-block; /* 使 span 元素像块级元素一样显示，可以控制宽度和高度 */
+    background-color: #ff4d4d; /* 设置背景色为红色，表示未读消息 */
+    color: white; /* 文字颜色为白色 */
+    font-size: 12px; /* 设置字体大小 */
+    font-weight: bold; /* 设置加粗字体 */
+    border-radius: 50%; /* 使其成为圆形 */
+    width: 20px; /* 设置宽度 */
+    height: 20px; /* 设置高度 */
+    text-align: center; /* 文字居中 */
+    line-height: 20px; /* 设置行高，使文本垂直居中 */
+    margin-left: 5px; /* 添加左边距，避免与昵称重叠 */
+    vertical-align: top; /* 使其垂直对齐到同一行的顶部 */
+}
+
+.chat-friendmanagement-chatwindow-friend-name-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    /* 水平居中 */
+    align-items: center;
+    /* 垂直居中 */
+    height: 100%;
+
+}
+
+.chat-friend-chatwindow-list-usename-icon {
+    width: 1.5em;
+    height: 1.5em;
+    vertical-align: -0.15em;
+    fill: currentColor;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+/* 设置按钮图标 */
+.chat-friend-chatwindow-setting-button-icon {
+    width: 1.5em;
+    height: 1.5em;
+    vertical-align: -0.15em;
+    fill: currentColor;
+    overflow: hidden;
+
+}
+
+.chat-friendmanagement-chatwindow-setting-button {
+    padding: 10px;
+    background-color: #ffffff00;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    padding-top: 20px;
+}
+
+.chat-friendmanagement-chatwindow-setting-button:hover {
+    background-color: #0056b3;
+}
+
+/* 全选区域 */
+.chat-friendmanagement-chatwindow-select-all {
+    display: flex;
+    align-items: center;
+    margin-right: 8px;
+}
+
+/* 删除按钮 */
+.chat-friendmanagement-chatwindow-delete-button {
+    padding: 5px 10px;
+    background-color: #ffffff;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+/* 设置按钮和删除按钮悬停效果 */
+.chat-friendmanagement-chatwindow-delete-button:hover {
+    background-color: #0056b3;
+}
+
+/* 消息列表 */
+.chat-friendmanagement-chatwindow-message-list {
+    border-top: 1px solid #ccc;
+    /* border-bottom: 1px solid #ccc; */
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 0px;
+    display: flex;
+    flex-direction: column;
+    /* 添加滚动条样式 */
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: #c1c1c1 #f0f0f0; /* Firefox */
+ 
+}
+
+/* 消息包裹器 */
+.chat-message-wrapper {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 2px;
+
+}
+
+/* 对方消息包裹器 */
+.chat-message-wrapper.left {
+    justify-content: flex-start;
+}
+
+/* 自己消息包裹器 */
+.chat-message-wrapper.right {
+    justify-content: flex-end;
+}
+
+/* 头像样式 */
+.chat-friendmanagement-chatwindow-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin: 0 10px;
+    cursor: pointer;
+}
+
+/* 消息容器样式 */
+.chat-friendmanagement-chatwindow-message {
+    position: relative;
+    /* padding: 10px; */
+    border-radius: 5px;
+    max-width: 70%;
+    word-wrap: break-word;
+    display: flex;
+    /* 使用 flex 布局 */
+    flex-direction: column;
+    /* 子元素垂直排列 */
+    align-items: flex-start;
+    /* 根据需要调整对齐方式 */
+}
+
+/* 消息容器内包含消息文本和箭头的 div */
+.chat-message-content {
+    position: relative;
+}
+
+/* 自己消息的时间戳样式 */
+.chat-message-timestamp-right {
+    position: absolute;
+    right: 0px;
+    bottom: -25px;
+    font-size: 12px;
+    color: #999;
+}
+
+/* 对方消息的时间戳样式 */
+.chat-message-timestamp-left {
+    position: absolute;
+    left: 0px;
+    bottom: -25px;
+    font-size: 12px;
+    color: #999;
+}
+
+/* 对方消息容器样式 */
+.chat-friendmanagement-chatwindow-message-left {
+    background-color: var(--their-bubble-color);
+    align-self: flex-start;
+    
+}
+
+/* 自己消息容器样式 */
+.chat-friendmanagement-chatwindow-message-right {
+    background-color: var(--my-bubble-color);
+    align-self: flex-end;
+}
+
+/* 向左的三角符号 */
+.chat-friendmanagement-chatwindow-message-left::before {
+    content: '';
+    position: absolute;
+    left: -14px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-width: 8px;
+    border-style: solid;
+    border-color: transparent var(--their-bubble-color) transparent transparent;
+}
+
+/* 向右的三角符号 */
+.chat-friendmanagement-chatwindow-message-right::after {
+    content: '';
+    position: absolute;
+    right: -14px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-width: 8px;
+    border-style: solid;
+    border-color: transparent transparent transparent var(--my-bubble-color);
+}
+
+/* 输入容器 */
+.chat-friendmanagement-chatwindow-input-container {
+    display: flex;
+    margin-top: 2px;
+    gap: 0px;
+    align-items: center; /* 使子元素基线对齐 */
+    padding-bottom: 5px;
+    background-color: #fdfdfd;
+    padding-top: 5px;
+}
+
+/* 输入框 */
+.chat-friendmanagement-chatwindow-input {
+    max-height: 100px;
+    padding-left: 15px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    flex: 1;
+    margin-left: 2px;
+    margin-bottom: 0px;
+    padding-top: 10px; /* 调整上边距 */
+    padding-bottom: 10px; /* 调整下边距 */
+    line-height: 1.5; /* 设置行高，使文本垂直居中 */
+    
+    resize: none; /* 禁止手动调整大小 */
+    overflow: hidden;
+    box-sizing: border-box; /* 确保 padding 不会影响宽度 */
+    font-size: 15px; /* 设置字体大小 */
+    resize: none; /* 禁止手动调整大小 */
+    /* font-weight: bold;  */
+    /* 设置字体加粗 */
+}
+.chat-friendmanagement-chatwindow-input:focus {
+    border-color:  #5eff00; /* 设置获得焦点时的边框颜色，例如蓝色 */
+    outline: none; /* 去掉默认的焦点轮廓 */
+}
+.chat-friendmanagement-chatwindow-input:hover {
+    border-color:  #5ae200; /* 设置获得焦点时的边框颜色，例如蓝色 */
+    outline: none; /* 去掉默认的焦点轮廓 */
+}
+/* 消息阅读状态 */
+.chat-friendmanagement-chatwindow-read-status {
+    font-size: 12px;
+    /* margin-left: 5px; */
+
+width: 25px;
+
+}
+
+/* 已读状态颜色 */
+.chat-friendmanagement-chatwindow-read-status.read {
+    color: green;
+
+}
+
+ 
+
+/* 未读状态颜色 */
+.chat-friendmanagement-chatwindow-read-status.unread {
+    color: red;
+    position: absolute;
+    right: -20px;
+    bottom: -15px;
+    font-size: 12px;
+}
+
+/* 定义颜色变量 */
+:root {
+    --their-bubble-color: #D3D3D3;
+    --my-bubble-color: #90EE90;
+}
+
+/* 时间 */
+/* 消息时间样式 */
+
+.chat-friendmanagement-chatwindow-empty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    color: #888;
+    font-size: 16px;
+}
+
+.chat-friendmanagement-chatwindow-avatar-icon {
+    width: 1em;
+    height: 1em;
+}
+
+/* 发送按钮 */
+.chat-friendmanagement-chatwindow-button {
+    padding: 0px;
+    background-color: #ffffff;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+}
+
+/* 发送按钮悬停效果 */
+.chat-friendmanagement-chatwindow-button:hover {
+    background-color: #e9e9e9;
+}
+
+.chat-friend-send-message-icon {
+    width: 2em;
+    height: 2em;
+}
+ .chat-friendmanagement-chatwindow-message-checkbox {
+  
+    margin-right: 5px; /* 可选：添加一些右边距以分隔复选框和消息内容 */
+    position: absolute;
+    /* 根据需要添加定位属性，例如 */
+    left: -13px;
+    top: 50%;
+    transform: translateY(-50%);
+ }
+
+.chat-friendmanagement-chatwindow-message-list {
+    border-top: 1px solid #ccc;
+    flex: 1;
+    margin-bottom: 0px;
+}
+
+/* #region start 聊天图片 */
+/* 增强版本 - 包含缩放和导航功能 */
+.chat-friendmanagement-chatwindow-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.411);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(8px);
+    animation: modalFadeIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.chat-friendmanagement-chatwindow-modal-content {
+    position: relative;
+    /* background: linear-gradient(145deg, #2c2c2c, #1a1a1a); */
+    background-color: transparent;
+    border-radius: 16px;
+    padding: 0px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    max-width: 100vw;
+    max-height: 100vh;
+    box-shadow: 
+        0 25px 50px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    animation: contentSlideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    border: 0px solid rgba(255, 255, 255, 0.1);
+}
+
+.chat-friendmanagement-chatwindow-modal-image {
+    width: auto;
+    height: auto;
+    max-width: 95vw;
+    max-height: 95vh;
+    object-fit: contain;
+    border-radius: 8px;
+    object-fit: contain;
+    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+}
+
+.chat-friendmanagement-chatwindow-modal-image:hover {
+    transform: scale(1.02);
+}
+
+.chat-friendmanagement-chatwindow-modal-close-button {
+    position: absolute;
+    top: -20px;
+    right: -12px;
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(135deg, #8a97db 0%, #605b64 100%);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 26px;
+    font-weight: 300;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 
+        0 0px 0px rgba(102, 126, 234, 0.4),
+        0 0 0 0px rgba(255, 255, 255, 0.1);
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    z-index: 1001;
+}
+
+.chat-friendmanagement-chatwindow-modal-close-button:hover {
+    background: linear-gradient(135deg, #4c4355 0%, #2b2e3a 100%);
+    transform: scale(1.15) rotate(90deg);
+    box-shadow: 
+        0 0px 0px rgba(102, 126, 234, 0.6),
+        0 0 0 0px rgba(255, 255, 255, 0.15);
+}
+
+.chat-friendmanagement-chatwindow-modal-close-button:active {
+    transform: scale(0.9);
+}
+
+/* 动画效果 */
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        backdrop-filter: blur(0px);
+    }
+    to {
+        opacity: 1;
+        backdrop-filter: blur(8px);
+    }
+}
+
+@keyframes contentSlideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.7) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* 加载状态 */
+.chat-friendmanagement-chatwindow-modal-image.loading {
+    opacity: 0.7;
+    filter: blur(2px);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    /* .chat-friendmanagement-chatwindow-modal-content {
+        max-width: 92vw;
+        max-height: 92vh;
+        padding: 15px;
+        border-radius: 12px;
+    } */
+    
+    .chat-friendmanagement-chatwindow-modal-close-button {
+        top: -8px;
+        right: -8px;
+        width: 38px;
+        height: 38px;
+        font-size: 22px;
+    }
+    
+    .chat-friendmanagement-chatwindow-modal-image {
+        max-height: 75vh;
+    }
+}
+
+ 
+@media (min-width: 1440px) {
+    .chat-friendmanagement-chatwindow-modal-content {
+        max-width: 70vw;
+    }
+}
+/*  #endregion end */
+
+
+/* #region start 聊天内容滚动条样式*/
+/* 消息列表容器 - 确保有明确的滚动设置 */
+.chat-friendmanagement-chatwindow-message-list {
+    /* 滚动条整体样式 */
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: rgba(32, 231, 49, 0) transparent; /* Firefox - 默认半透明 */
+    
+    /* 确保容器有明确的高度 */
+    height: calc(100vh - 120px); /* 根据你的布局调整 */
+    overflow-y: auto;
+    position: relative;
+}
+
+/* Webkit浏览器滚动条样式 (Chrome, Safari, Edge) */
+.chat-friendmanagement-chatwindow-message-list::-webkit-scrollbar {
+    width: 8px; /* 滚动条宽度 - 始终显示空间 */
+    display: block; /* 始终显示 */
+}
+
+.chat-friendmanagement-chatwindow-message-list::-webkit-scrollbar-track {
+    background: rgba(8, 207, 51, 0.1); /* 轨道背景 - 默认半透明 */
+    border-radius: 4px;
+}
+
+.chat-friendmanagement-chatwindow-message-list::-webkit-scrollbar-thumb {
+    background-color: rgba(18, 211, 92, 0.3); /* 滑块颜色 - 默认半透明 */
+    border-radius: 4px;
+    border: 2px solid transparent; /* 透明边框 */
+    background-clip: padding-box; /* 确保边框透明 */
+}
+
+.chat-friendmanagement-chatwindow-message-list::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(13, 196, 37, 0.8); /* 悬停时更明显 */
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Firefox 滚动条悬停效果 */
+.chat-friendmanagement-chatwindow-message-list:hover {
+    scrollbar-color: #0ada60 rgba(0, 0, 0, 0.1); /* Firefox - 悬停时更明显 */
+}
+
+/* 确保消息列表有内容时可以滚动 */
+.chat-message-wrapper {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    padding-bottom: 2px;
+}
+
+/*  #endregion end */
+
+
+/* #region start 新消息提示*/
+/* 新消息提示样式 */
+.chat-new-message-indicator {
+    position: absolute;
+    bottom: 80px; /* 在输入框上方 */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #07c160;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    font-size: 14px;
+    font-weight: 500;
+    animation: pulse 2s infinite;
+}
+
+.chat-new-message-indicator:hover {
+    background-color: #06ae56;
+}
+
+@keyframes pulse {
+    0% { transform: translateX(-50%) scale(1); }
+    50% { transform: translateX(-50%) scale(1.05); }
+    100% { transform: translateX(-50%) scale(1); }
+}
+
+/* 确保消息列表容器有相对定位 */
+.chat-friendmanagement-chatwindow-message-list {
+    position: relative;
+    overflow-y: auto;
+    /* 其他原有样式保持不变 */
+}
+/*  #endregion end */
+
+
+.chat-no-more-messages {
+     text-align: center;
+     color: #c1c1c1;
+     font-size: 10px;
+}
+/* 图片消息样式 */
+.chat-image-message {
+  max-width: 300px;
+  max-height: 300px;
+  margin: 0; /* 移除外边距 */
+  padding: 0; /* 移除内边距 */
+  display: flex; /* 使用 flex 布局 */
+  align-items: center; /* 垂直居中 */
+  justify-content: center; /* 水平居中 */
+  border-radius: 5px; /* 圆角统一在容器上设置 */
+  overflow: hidden; /* 隐藏溢出部分 */
+}
+
+.chat-message-image {
+  width: 100%; /* 宽度填充容器 */
+  height: 100%; /* 高度填充容器 */
+  max-width: 100%; /* 最大宽度限制 */
+  max-height: 300px; /* 最大高度限制 */
+  object-fit: cover; /* 保持宽高比，填充容器 */
+  border-radius: 5px; /* 圆角与容器一致 */
+  cursor: pointer;
+  transition: transform 0.2s;
+  display: block; /* 确保图片是块级元素 */
+}
+
+.chat-message-image:hover {
+    transform: scale(1.02);
+}
+/* 确保消息容器对图片消息没有额外间距 */
+.chat-friendmanagement-chatwindow-message {
+  /* 其他样式保持不变 */
+  margin: 2px 0; /* 减少消息之间的间距 */
+}
+
+/* 特别为图片消息调整消息气泡的padding */
+.chat-friendmanagement-chatwindow-message:has(.chat-image-message) {
+  padding: 0 !important; /* 图片消息的气泡不需要内边距 */
+}
+/* 图片上传加载状态 */
+.chat-friendmanagement-chatwindow-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+/* 聊天页面用户字体颜色 */
+.chat-friendmanagement-chatwindow-friend-nickname {
+    color: #000000;
+}
