@@ -30,12 +30,10 @@ const Footer = () => {
           <div className={styles.footerColumn}>
             <h3 className={styles.columnTitle}>快速链接</h3>
             <ul className={styles.linkList}>
-              <li><a href="#" className={styles.link}>公司首页</a></li>
-              <li><a href="#" className={styles.link}>公司简介</a></li>
-              <li><a href="#" className={styles.link}>合作伙伴</a></li>
+             
               <li><a href="#" className={styles.link}>报告验证</a></li>
               <li><a href="#" className={styles.link}>人才招聘</a></li>
-              <li><a href="#" className={styles.link}>数据库</a></li>
+              <li><a href="#" className={styles.link}>意见反馈</a></li>
             </ul>
           </div>
 
@@ -66,7 +64,7 @@ const Footer = () => {
               </p>
               <p className={styles.contactItem}>
                 <span className={styles.contactIcon}>📧</span>
-                office@ruida.com
+                644260249@qq.com
               </p>
               <p className={styles.contactItem}>
                 <span className={styles.contactIcon}>🕒</span>

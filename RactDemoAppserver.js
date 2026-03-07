@@ -7866,7 +7866,7 @@ app.post('/api/generateEncodedReportUrl', async (req, res) => {
         // 1. 获取所有映射关系 (0-9)
         const mappingResult = await pool.request()
             .query('SELECT OriginalValue, DecodedText FROM WebWordReports.dbo.ReportqrCodepageDecodeMapping WHERE OriginalValue BETWEEN 0 AND 9');
-        
+
         const map = {};
         mappingResult.recordset.forEach(row => {
             map[row.OriginalValue] = row.DecodedText;
@@ -7883,7 +7883,7 @@ app.post('/api/generateEncodedReportUrl', async (req, res) => {
         }
 
         // 【关键】使用 '|' 连接每个部分 (例如: "Alpha|Beta")
-        const encodedId = encodedParts.join('|'); 
+        const encodedId = encodedParts.join('|');
 
         // 【修改点】不再构建 fullUrl，直接返回 encodedId
         res.json({
@@ -7937,7 +7937,7 @@ app.get('/api/ReportqrCodepageDecodeMapping/:encodedValue', async (req, res) => 
         for (let part of parts) {
             // 去除可能的空白字符
             const cleanPart = part.trim();
-            
+
             if (!cleanPart) continue; // 跳过空项
 
             if (reverseMap.hasOwnProperty(cleanPart)) {
@@ -7952,7 +7952,7 @@ app.get('/api/ReportqrCodepageDecodeMapping/:encodedValue', async (req, res) => 
         }
 
         if (!originalIdString) {
-             return res.status(400).json({ success: false, message: '解码结果为空' });
+            return res.status(400).json({ success: false, message: '解码结果为空' });
         }
 
         const originalValue = parseInt(originalIdString, 10);
@@ -8142,13 +8142,13 @@ app.get('/cyywork/api/searchHousePrice', async (req, res) => {
         });
     }
 });
- /**
- * @route GET /api/searchBoxHouseItemsSource
- * @desc 获取搜索框联想词（修复ORDER BY问题）
- */
+/**
+* @route GET /api/searchBoxHouseItemsSource
+* @desc 获取搜索框联想词（修复ORDER BY问题）
+*/
 app.get('/api/searchBoxHouseItemsSource', async (req, res) => {
     const { searchTerm, limit = 10 } = req.query;
-    
+
     // 如果没有搜索词，返回空数组
     if (!searchTerm || searchTerm.trim() === '') {
         return res.json({
@@ -8158,11 +8158,11 @@ app.get('/api/searchBoxHouseItemsSource', async (req, res) => {
     }
 
     const searchTermClean = searchTerm.trim();
-    
+
     try {
         // 确保数据库连接已就绪
         await poolConnect;
-        
+
         // 修复版本：使用子查询来避免DISTINCT和ORDER BY冲突
         const query = `
             SELECT TOP (@limit) 
@@ -8202,17 +8202,17 @@ app.get('/api/searchBoxHouseItemsSource', async (req, res) => {
         const request = pool.request();
         const exactPattern = `${searchTermClean}%`;  // 开头匹配
         const fuzzyPattern = `%${searchTermClean}%`; // 模糊匹配
-        
+
         request.input('exactPattern', sql.NVarChar, exactPattern);
         request.input('fuzzyPattern', sql.NVarChar, fuzzyPattern);
         request.input('limit', sql.Int, parseInt(limit) || 10);
-        
+
         const result = await request.query(query);
 
         // 提取建议词并去重
         const suggestions = [];
         const seen = new Set();
-        
+
         result.recordset.forEach(row => {
             if (row.suggestion && !seen.has(row.suggestion)) {
                 seen.add(row.suggestion);
@@ -8229,7 +8229,7 @@ app.get('/api/searchBoxHouseItemsSource', async (req, res) => {
 
     } catch (error) {
         console.error('获取搜索联想词失败:', error);
-        
+
         return res.status(500).json({
             success: false,
             message: '获取联想词失败',
@@ -12862,380 +12862,380 @@ ORDER BY
 
 
 {//智能管家回复
-{//智能回复
-   // /api/ai-query 接口实现
-   app.post('/api/ai-query', async (req, res) => {
-    try {
-        const { question, history } = req.body;
-        
-        if (!question || !question.trim()) {
-            return res.status(400).json({ error: '问题不能为空' });
-        }
+    {//智能回复
+        // /api/ai-query 接口实现
+        app.post('/api/ai-query', async (req, res) => {
+            try {
+                const { question, history } = req.body;
 
-        console.log('收到查询:', question);
+                if (!question || !question.trim()) {
+                    return res.status(400).json({ error: '问题不能为空' });
+                }
 
-        // 1. 识别问题类型
-        const questionType = await identifyQuestionType(question);
-        console.log('识别到问题类型:', questionType);
+                console.log('收到查询:', question);
 
-        // 2. 提取关键词
-        const keywords = await extractKeywords(question);
-        console.log('提取的关键词:', keywords);
+                // 1. 识别问题类型
+                const questionType = await identifyQuestionType(question);
+                console.log('识别到问题类型:', questionType);
 
-        // 3. 根据问题类型生成SQL查询
-        let sqlQuery = '';
-        let queryData = [];
-        let analysis = '';
+                // 2. 提取关键词
+                const keywords = await extractKeywords(question);
+                console.log('提取的关键词:', keywords);
 
-        switch (questionType) {
-            case 'comparison':
-                const comparisonResult = await handleComparisonQuery(keywords, question);
-                sqlQuery = comparisonResult.sql;
-                queryData = comparisonResult.data;
-                analysis = comparisonResult.analysis;
-                break;
-            
-            case 'statistics':
-                const statisticsResult = await handleStatisticsQuery(keywords, question);
-                sqlQuery = statisticsResult.sql;
-                queryData = statisticsResult.data;
-                analysis = statisticsResult.analysis;
-                break;
-            
-            case 'trend':
-                const trendResult = await handleTrendQuery(keywords, question);
-                sqlQuery = trendResult.sql;
-                queryData = trendResult.data;
-                analysis = trendResult.analysis;
-                break;
-            
-            case 'valuation':
-                const valuationResult = await handleValuationQuery(keywords, question);
-                sqlQuery = valuationResult.sql;
-                queryData = valuationResult.data;
-                analysis = valuationResult.analysis;
-                break;
-            
-            default:
-                const defaultResult = await handleDefaultQuery(keywords, question);
-                sqlQuery = defaultResult.sql;
-                queryData = defaultResult.data;
-                analysis = defaultResult.analysis;
-        }
+                // 3. 根据问题类型生成SQL查询
+                let sqlQuery = '';
+                let queryData = [];
+                let analysis = '';
 
-        // 4. 生成AI回答
-        const aiResponse = await generateAIResponse(questionType, queryData, keywords, question);
+                switch (questionType) {
+                    case 'comparison':
+                        const comparisonResult = await handleComparisonQuery(keywords, question);
+                        sqlQuery = comparisonResult.sql;
+                        queryData = comparisonResult.data;
+                        analysis = comparisonResult.analysis;
+                        break;
 
-        // 5. 返回结果
-        res.json({
-            response: aiResponse,
-            sql: sqlQuery,
-            data: queryData,
-            analysis: analysis,
-            questionType: questionType,
-            keywords: keywords
+                    case 'statistics':
+                        const statisticsResult = await handleStatisticsQuery(keywords, question);
+                        sqlQuery = statisticsResult.sql;
+                        queryData = statisticsResult.data;
+                        analysis = statisticsResult.analysis;
+                        break;
+
+                    case 'trend':
+                        const trendResult = await handleTrendQuery(keywords, question);
+                        sqlQuery = trendResult.sql;
+                        queryData = trendResult.data;
+                        analysis = trendResult.analysis;
+                        break;
+
+                    case 'valuation':
+                        const valuationResult = await handleValuationQuery(keywords, question);
+                        sqlQuery = valuationResult.sql;
+                        queryData = valuationResult.data;
+                        analysis = valuationResult.analysis;
+                        break;
+
+                    default:
+                        const defaultResult = await handleDefaultQuery(keywords, question);
+                        sqlQuery = defaultResult.sql;
+                        queryData = defaultResult.data;
+                        analysis = defaultResult.analysis;
+                }
+
+                // 4. 生成AI回答
+                const aiResponse = await generateAIResponse(questionType, queryData, keywords, question);
+
+                // 5. 返回结果
+                res.json({
+                    response: aiResponse,
+                    sql: sqlQuery,
+                    data: queryData,
+                    analysis: analysis,
+                    questionType: questionType,
+                    keywords: keywords
+                });
+
+            } catch (error) {
+                console.error('处理AI查询时出错:', error);
+                res.status(500).json({
+                    response: '抱歉，处理查询时出现错误。请稍后重试。',
+                    sql: '',
+                    data: [],
+                    analysis: '',
+                    error: error.message
+                });
+            }
         });
 
-    } catch (error) {
-        console.error('处理AI查询时出错:', error);
-        res.status(500).json({ 
-            response: '抱歉，处理查询时出现错误。请稍后重试。',
-            sql: '',
-            data: [],
-            analysis: '',
-            error: error.message 
-        });
-    }
-});
+        // 辅助函数：识别问题类型
+        async function identifyQuestionType(question) {
+            try {
+                await poolConnect;
 
-// 辅助函数：识别问题类型
-async function identifyQuestionType(question) {
-    try {
-        await poolConnect;
-        
-        const query = `
+                const query = `
             SELECT comparison, triggerKeyword 
             FROM RealEstateAISearch.dbo.QuestionType
         `;
-        
-        const result = await pool.request().query(query);
-        
-        if (result.recordset.length === 0) {
-            return 'statistics';
-        }
-        
-        for (const row of result.recordset) {
-            const keywords = row.triggerKeyword.split('、');
-            for (const keyword of keywords) {
-                if (keyword && question.includes(keyword.trim())) {
-                    return row.comparison;
+
+                const result = await pool.request().query(query);
+
+                if (result.recordset.length === 0) {
+                    return 'statistics';
                 }
+
+                for (const row of result.recordset) {
+                    const keywords = row.triggerKeyword.split('、');
+                    for (const keyword of keywords) {
+                        if (keyword && question.includes(keyword.trim())) {
+                            return row.comparison;
+                        }
+                    }
+                }
+
+                return 'statistics';
+
+            } catch (error) {
+                console.error('识别问题类型时出错:', error);
+                return 'statistics';
             }
         }
-        
-        return 'statistics';
-        
-    } catch (error) {
-        console.error('识别问题类型时出错:', error);
-        return 'statistics';
-    }
-}
 
-// 辅助函数：获取住宅用途关键词
-async function getResidentialPurposeKeywords() {
-    try {
-        await poolConnect;
-        
-        const query = `
+        // 辅助函数：获取住宅用途关键词
+        async function getResidentialPurposeKeywords() {
+            try {
+                await poolConnect;
+
+                const query = `
             SELECT SearchKeyword 
             FROM RealEstateAISearch.dbo.SearchKeywords 
             WHERE searchType = 'housePurpose' AND SearchKeyword IS NOT NULL
         `;
-        
-        const result = await pool.request().query(query);
-        
-        if (result.recordset.length > 0) {
-            const purposes = result.recordset[0].SearchKeyword.split('、');
-            // 优先查找住宅相关的关键词
-            for (const purpose of purposes) {
-                if (purpose.includes('住宅') || purpose.includes('住房') || purpose.includes('居住')) {
-                    return purpose.trim();
-                }
-            }
-            // 如果没有明确找到住宅，返回第一个
-            return purposes[0].trim();
-        }
-        
-        return '住宅'; // 默认值
-        
-    } catch (error) {
-        console.error('获取住宅用途关键词时出错:', error);
-        return '住宅';
-    }
-}
 
-// 辅助函数：提取关键词
-async function extractKeywords(question) {
-    try {
-        await poolConnect;
-        
-        // 1. 先从数据库获取所有小区名
-        const communityQuery = `
+                const result = await pool.request().query(query);
+
+                if (result.recordset.length > 0) {
+                    const purposes = result.recordset[0].SearchKeyword.split('、');
+                    // 优先查找住宅相关的关键词
+                    for (const purpose of purposes) {
+                        if (purpose.includes('住宅') || purpose.includes('住房') || purpose.includes('居住')) {
+                            return purpose.trim();
+                        }
+                    }
+                    // 如果没有明确找到住宅，返回第一个
+                    return purposes[0].trim();
+                }
+
+                return '住宅'; // 默认值
+
+            } catch (error) {
+                console.error('获取住宅用途关键词时出错:', error);
+                return '住宅';
+            }
+        }
+
+        // 辅助函数：提取关键词
+        async function extractKeywords(question) {
+            try {
+                await poolConnect;
+
+                // 1. 先从数据库获取所有小区名
+                const communityQuery = `
             SELECT DISTINCT communityName 
             FROM WebWordReports.dbo.WordReportsInformation 
             WHERE communityName IS NOT NULL AND communityName != ''
         `;
-        
-        const communityResult = await pool.request().query(communityQuery);
-        const allCommunityNames = communityResult.recordset.map(row => row.communityName.trim());
-        
-        console.log('数据库中的所有小区名:', allCommunityNames);
-        
-        // 2. 获取关键词配置
-        const query = `
+
+                const communityResult = await pool.request().query(communityQuery);
+                const allCommunityNames = communityResult.recordset.map(row => row.communityName.trim());
+
+                console.log('数据库中的所有小区名:', allCommunityNames);
+
+                // 2. 获取关键词配置
+                const query = `
             SELECT searchType, triggerKeyword, SearchKeyword
             FROM RealEstateAISearch.dbo.SearchKeywords
         `;
-        
-        const result = await pool.request().query(query);
-        
-        const extractedKeywords = {};
-        
-        for (const row of result.recordset) {
-            const searchType = row.searchType;
-            
-            // 检查问题是否包含触发关键词
-            const triggerKeywords = row.triggerKeyword.split('、');
-            let hasTriggerKeyword = false;
-            
-            for (const keyword of triggerKeywords) {
-                if (keyword && question.includes(keyword.trim())) {
-                    hasTriggerKeyword = true;
-                    break;
-                }
-            }
-            
-            if (hasTriggerKeyword && row.SearchKeyword) {
-                // 检查问题是否包含搜索关键词
-                const searchKeywords = row.SearchKeyword.split('、');
-                for (const keyword of searchKeywords) {
-                    if (keyword && question.includes(keyword.trim())) {
-                        if (!extractedKeywords[searchType]) {
-                            extractedKeywords[searchType] = [];
-                        }
-                        if (!extractedKeywords[searchType].includes(keyword.trim())) {
-                            extractedKeywords[searchType].push(keyword.trim());
+
+                const result = await pool.request().query(query);
+
+                const extractedKeywords = {};
+
+                for (const row of result.recordset) {
+                    const searchType = row.searchType;
+
+                    // 检查问题是否包含触发关键词
+                    const triggerKeywords = row.triggerKeyword.split('、');
+                    let hasTriggerKeyword = false;
+
+                    for (const keyword of triggerKeywords) {
+                        if (keyword && question.includes(keyword.trim())) {
+                            hasTriggerKeyword = true;
+                            break;
                         }
                     }
-                }
-            } else if (hasTriggerKeyword && searchType === 'communityName') {
-                // 对于小区名称，从所有小区名中查找匹配
-                let matchedCommunity = null;
-                
-                // 首先检查完整匹配
-                for (const communityName of allCommunityNames) {
-                    if (communityName && question.includes(communityName)) {
-                        matchedCommunity = communityName;
-                        console.log('完整匹配到小区名:', communityName);
-                        break;
-                    }
-                }
-                
-                // 如果没有完整匹配，尝试部分匹配
-                if (!matchedCommunity) {
-                    for (const communityName of allCommunityNames) {
-                        // 检查小区名是否在问题中以任何形式出现
-                        // 例如：凰城御府 -> 检查是否包含"凰城"或"御府"
-                        const parts = communityName.split('');
-                        let isMatched = false;
-                        
-                        for (let i = 0; i < parts.length - 1; i++) {
-                            // 创建所有可能的2-4字组合
-                            for (let len = 2; len <= Math.min(4, parts.length - i); len++) {
-                                const part = parts.slice(i, i + len).join('');
-                                if (part && question.includes(part)) {
-                                    matchedCommunity = communityName;
-                                    console.log('部分匹配到小区名:', communityName, '匹配部分:', part);
-                                    isMatched = true;
-                                    break;
+
+                    if (hasTriggerKeyword && row.SearchKeyword) {
+                        // 检查问题是否包含搜索关键词
+                        const searchKeywords = row.SearchKeyword.split('、');
+                        for (const keyword of searchKeywords) {
+                            if (keyword && question.includes(keyword.trim())) {
+                                if (!extractedKeywords[searchType]) {
+                                    extractedKeywords[searchType] = [];
+                                }
+                                if (!extractedKeywords[searchType].includes(keyword.trim())) {
+                                    extractedKeywords[searchType].push(keyword.trim());
                                 }
                             }
-                            if (isMatched) break;
                         }
-                        if (isMatched) break;
-                    }
-                }
-                
-                // 如果还没有匹配到，尝试模糊匹配（针对小区名称包含特殊后缀的情况）
-                if (!matchedCommunity) {
-                    const questionParts = question.match(/[\u4e00-\u9fa5]{2,4}/g) || [];
-                    for (const questionPart of questionParts) {
+                    } else if (hasTriggerKeyword && searchType === 'communityName') {
+                        // 对于小区名称，从所有小区名中查找匹配
+                        let matchedCommunity = null;
+
+                        // 首先检查完整匹配
                         for (const communityName of allCommunityNames) {
-                            if (communityName && communityName.includes(questionPart)) {
+                            if (communityName && question.includes(communityName)) {
                                 matchedCommunity = communityName;
-                                console.log('模糊匹配到小区名:', communityName, '问题部分:', questionPart);
+                                console.log('完整匹配到小区名:', communityName);
                                 break;
                             }
                         }
-                        if (matchedCommunity) break;
-                    }
-                }
-                
-                if (matchedCommunity) {
-                    if (!extractedKeywords[searchType]) {
-                        extractedKeywords[searchType] = [];
-                    }
-                    if (!extractedKeywords[searchType].includes(matchedCommunity)) {
-                        extractedKeywords[searchType].push(matchedCommunity);
-                        console.log('最终匹配到小区名:', matchedCommunity);
-                    }
-                }
-            } else if (hasTriggerKeyword && searchType === 'location') {
-                // 对于位置，需要先匹配
-                const locationKeywords = row.SearchKeyword ? row.SearchKeyword.split('、') : [];
-                for (const keyword of locationKeywords) {
-                    if (keyword && question.includes(keyword.trim())) {
-                        if (!extractedKeywords[searchType]) {
-                            extractedKeywords[searchType] = [];
-                        }
-                        if (!extractedKeywords[searchType].includes(keyword.trim())) {
-                            extractedKeywords[searchType].push(keyword.trim());
-                        }
-                    }
-                }
-            }
-        }
-        
-        // 特殊处理：如果问题中有区名，也添加到location中
-        const districtMatch = question.match(/([\u4e00-\u9fa5]{2,3})区/);
-        if (districtMatch && districtMatch[1]) {
-            if (!extractedKeywords['location']) {
-                extractedKeywords['location'] = [];
-            }
-            if (!extractedKeywords['location'].includes(districtMatch[1])) {
-                extractedKeywords['location'].push(districtMatch[1]);
-                console.log('提取到区名:', districtMatch[1]);
-            }
-        }
-        
-        console.log('最终提取的关键词:', extractedKeywords);
-        return extractedKeywords;
-        
-    } catch (error) {
-        console.error('提取关键词时出错:', error);
-        return {};
-    }
-}
 
-// 辅助函数：获取所有区域
-async function getAllRegions() {
-    try {
-        await poolConnect;
-        
-        const query = `
+                        // 如果没有完整匹配，尝试部分匹配
+                        if (!matchedCommunity) {
+                            for (const communityName of allCommunityNames) {
+                                // 检查小区名是否在问题中以任何形式出现
+                                // 例如：凰城御府 -> 检查是否包含"凰城"或"御府"
+                                const parts = communityName.split('');
+                                let isMatched = false;
+
+                                for (let i = 0; i < parts.length - 1; i++) {
+                                    // 创建所有可能的2-4字组合
+                                    for (let len = 2; len <= Math.min(4, parts.length - i); len++) {
+                                        const part = parts.slice(i, i + len).join('');
+                                        if (part && question.includes(part)) {
+                                            matchedCommunity = communityName;
+                                            console.log('部分匹配到小区名:', communityName, '匹配部分:', part);
+                                            isMatched = true;
+                                            break;
+                                        }
+                                    }
+                                    if (isMatched) break;
+                                }
+                                if (isMatched) break;
+                            }
+                        }
+
+                        // 如果还没有匹配到，尝试模糊匹配（针对小区名称包含特殊后缀的情况）
+                        if (!matchedCommunity) {
+                            const questionParts = question.match(/[\u4e00-\u9fa5]{2,4}/g) || [];
+                            for (const questionPart of questionParts) {
+                                for (const communityName of allCommunityNames) {
+                                    if (communityName && communityName.includes(questionPart)) {
+                                        matchedCommunity = communityName;
+                                        console.log('模糊匹配到小区名:', communityName, '问题部分:', questionPart);
+                                        break;
+                                    }
+                                }
+                                if (matchedCommunity) break;
+                            }
+                        }
+
+                        if (matchedCommunity) {
+                            if (!extractedKeywords[searchType]) {
+                                extractedKeywords[searchType] = [];
+                            }
+                            if (!extractedKeywords[searchType].includes(matchedCommunity)) {
+                                extractedKeywords[searchType].push(matchedCommunity);
+                                console.log('最终匹配到小区名:', matchedCommunity);
+                            }
+                        }
+                    } else if (hasTriggerKeyword && searchType === 'location') {
+                        // 对于位置，需要先匹配
+                        const locationKeywords = row.SearchKeyword ? row.SearchKeyword.split('、') : [];
+                        for (const keyword of locationKeywords) {
+                            if (keyword && question.includes(keyword.trim())) {
+                                if (!extractedKeywords[searchType]) {
+                                    extractedKeywords[searchType] = [];
+                                }
+                                if (!extractedKeywords[searchType].includes(keyword.trim())) {
+                                    extractedKeywords[searchType].push(keyword.trim());
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // 特殊处理：如果问题中有区名，也添加到location中
+                const districtMatch = question.match(/([\u4e00-\u9fa5]{2,3})区/);
+                if (districtMatch && districtMatch[1]) {
+                    if (!extractedKeywords['location']) {
+                        extractedKeywords['location'] = [];
+                    }
+                    if (!extractedKeywords['location'].includes(districtMatch[1])) {
+                        extractedKeywords['location'].push(districtMatch[1]);
+                        console.log('提取到区名:', districtMatch[1]);
+                    }
+                }
+
+                console.log('最终提取的关键词:', extractedKeywords);
+                return extractedKeywords;
+
+            } catch (error) {
+                console.error('提取关键词时出错:', error);
+                return {};
+            }
+        }
+
+        // 辅助函数：获取所有区域
+        async function getAllRegions() {
+            try {
+                await poolConnect;
+
+                const query = `
             SELECT SearchKeyword 
             FROM RealEstateAISearch.dbo.SearchKeywords 
             WHERE searchType = 'location' AND SearchKeyword IS NOT NULL
         `;
-        
-        const result = await pool.request().query(query);
-        
-        let regions = [];
-        for (const row of result.recordset) {
-            const regionList = row.SearchKeyword.split('、');
-            regions.push(...regionList.map(r => r.trim()));
-        }
-        
-        return regions;
-        
-    } catch (error) {
-        console.error('获取区域列表时出错:', error);
-        return [];
-    }
-}
 
-// 处理对比查询
-async function handleComparisonQuery(keywords, question) {
-    try {
-        await poolConnect;
-        
-        let whereConditions = [];
-        
-        // 构建位置条件
-        if (keywords.location && keywords.location.length > 0) {
-            const locationConditions = keywords.location.map(loc => `location LIKE '%${loc}%'`).join(' OR ');
-            whereConditions.push(`(${locationConditions})`);
+                const result = await pool.request().query(query);
+
+                let regions = [];
+                for (const row of result.recordset) {
+                    const regionList = row.SearchKeyword.split('、');
+                    regions.push(...regionList.map(r => r.trim()));
+                }
+
+                return regions;
+
+            } catch (error) {
+                console.error('获取区域列表时出错:', error);
+                return [];
+            }
         }
-        
-        // 构建其他条件
-        if (keywords.housePurpose && keywords.housePurpose.length > 0) {
-            const purposeConditions = keywords.housePurpose.map(p => `housePurpose LIKE '%${p}%'`).join(' OR ');
-            whereConditions.push(`(${purposeConditions})`);
-        } else {
-            // 默认添加住宅条件
-            const residentialPurpose = await getResidentialPurposeKeywords();
-            whereConditions.push(`housePurpose LIKE '%${residentialPurpose}%'`);
-        }
-        
-        // 时间条件：最近2年
-        const currentYear = new Date().getFullYear();
-        whereConditions.push(`YEAR(valueDate) >= ${currentYear - 2}`);
-        
-        const whereClause = whereConditions.length > 0 ? `WHERE ${whereConditions.join(' AND ')}` : '';
-        
-        // 获取所有区域
-        const regions = await getAllRegions();
-        
-        if (regions.length === 0) {
-            throw new Error('未找到区域配置数据');
-        }
-        
-        // 构建动态的CASE WHEN语句
-        let caseWhenClauses = regions.map(region => 
-            `WHEN location LIKE '%${region}%' THEN '${region}'`
-        ).join('\n                    ');
-        
-        const sql = `
+
+        // 处理对比查询
+        async function handleComparisonQuery(keywords, question) {
+            try {
+                await poolConnect;
+
+                let whereConditions = [];
+
+                // 构建位置条件
+                if (keywords.location && keywords.location.length > 0) {
+                    const locationConditions = keywords.location.map(loc => `location LIKE '%${loc}%'`).join(' OR ');
+                    whereConditions.push(`(${locationConditions})`);
+                }
+
+                // 构建其他条件
+                if (keywords.housePurpose && keywords.housePurpose.length > 0) {
+                    const purposeConditions = keywords.housePurpose.map(p => `housePurpose LIKE '%${p}%'`).join(' OR ');
+                    whereConditions.push(`(${purposeConditions})`);
+                } else {
+                    // 默认添加住宅条件
+                    const residentialPurpose = await getResidentialPurposeKeywords();
+                    whereConditions.push(`housePurpose LIKE '%${residentialPurpose}%'`);
+                }
+
+                // 时间条件：最近2年
+                const currentYear = new Date().getFullYear();
+                whereConditions.push(`YEAR(valueDate) >= ${currentYear - 2}`);
+
+                const whereClause = whereConditions.length > 0 ? `WHERE ${whereConditions.join(' AND ')}` : '';
+
+                // 获取所有区域
+                const regions = await getAllRegions();
+
+                if (regions.length === 0) {
+                    throw new Error('未找到区域配置数据');
+                }
+
+                // 构建动态的CASE WHEN语句
+                let caseWhenClauses = regions.map(region =>
+                    `WHEN location LIKE '%${region}%' THEN '${region}'`
+                ).join('\n                    ');
+
+                const sql = `
             SELECT 
                 CASE 
                     ${caseWhenClauses}
@@ -13258,72 +13258,72 @@ async function handleComparisonQuery(keywords, question) {
             HAVING COUNT(*) > 0
             ORDER BY 平均评估单价 DESC
         `;
-        
-        const result = await pool.request().query(sql);
-        
-        // 过滤掉"其他"区域
-        const filteredData = result.recordset.filter(item => item.对比区域 !== '其他');
-        
-        const analysis = `共分析了${filteredData.length}个区域的房价数据。`;
-        
-        return {
-            sql: sql,
-            data: filteredData,
-            analysis: analysis
-        };
-        
-    } catch (error) {
-        console.error('处理对比查询时出错:', error);
-        throw error;
-    }
-}
 
-// 处理统计查询
-async function handleStatisticsQuery(keywords, question) {
-    try {
-        await poolConnect;
-        
-        let whereConditions = [];
-        
-        // 构建位置条件
-        if (keywords.location && keywords.location.length > 0) {
-            const locationConditions = keywords.location.map(loc => `location LIKE '%${loc}%'`).join(' OR ');
-            whereConditions.push(`(${locationConditions})`);
+                const result = await pool.request().query(sql);
+
+                // 过滤掉"其他"区域
+                const filteredData = result.recordset.filter(item => item.对比区域 !== '其他');
+
+                const analysis = `共分析了${filteredData.length}个区域的房价数据。`;
+
+                return {
+                    sql: sql,
+                    data: filteredData,
+                    analysis: analysis
+                };
+
+            } catch (error) {
+                console.error('处理对比查询时出错:', error);
+                throw error;
+            }
         }
-        
-        if (keywords.housePurpose && keywords.housePurpose.length > 0) {
-            const purposeConditions = keywords.housePurpose.map(p => `housePurpose LIKE '%${p}%'`).join(' OR ');
-            whereConditions.push(`(${purposeConditions})`);
-        } else {
-            // 默认添加住宅条件
-            const residentialPurpose = await getResidentialPurposeKeywords();
-            whereConditions.push(`housePurpose LIKE '%${residentialPurpose}%'`);
-        }
-        
-        if (keywords.communityName && keywords.communityName.length > 0) {
-            const communityConditions = keywords.communityName.map(c => `communityName LIKE '%${c}%'`).join(' OR ');
-            whereConditions.push(`(${communityConditions})`);
-        }
-        
-        if (keywords.buildingArea && keywords.buildingArea.length > 0) {
-            const areaConditions = keywords.buildingArea.map(area => {
-                const numArea = parseInt(area);
-                return `buildingArea BETWEEN ${numArea - 10} AND ${numArea + 10}`;
-            }).join(' OR ');
-            whereConditions.push(`(${areaConditions})`);
-        }
-        
-        if (keywords.elevator && keywords.elevator.length > 0) {
-            const elevatorValue = keywords.elevator[0] === 'True' ? 1 : 0;
-            whereConditions.push(`elevator = ${elevatorValue}`);
-        }
-        
-        const currentYear = new Date().getFullYear();
-        whereConditions.push(`YEAR(valueDate) >= ${currentYear - 2}`);
-        
-        const whereClause = whereConditions.length > 0 ? `WHERE ${whereConditions.join(' AND ')}` : '';
-        
-        const sql = `
+
+        // 处理统计查询
+        async function handleStatisticsQuery(keywords, question) {
+            try {
+                await poolConnect;
+
+                let whereConditions = [];
+
+                // 构建位置条件
+                if (keywords.location && keywords.location.length > 0) {
+                    const locationConditions = keywords.location.map(loc => `location LIKE '%${loc}%'`).join(' OR ');
+                    whereConditions.push(`(${locationConditions})`);
+                }
+
+                if (keywords.housePurpose && keywords.housePurpose.length > 0) {
+                    const purposeConditions = keywords.housePurpose.map(p => `housePurpose LIKE '%${p}%'`).join(' OR ');
+                    whereConditions.push(`(${purposeConditions})`);
+                } else {
+                    // 默认添加住宅条件
+                    const residentialPurpose = await getResidentialPurposeKeywords();
+                    whereConditions.push(`housePurpose LIKE '%${residentialPurpose}%'`);
+                }
+
+                if (keywords.communityName && keywords.communityName.length > 0) {
+                    const communityConditions = keywords.communityName.map(c => `communityName LIKE '%${c}%'`).join(' OR ');
+                    whereConditions.push(`(${communityConditions})`);
+                }
+
+                if (keywords.buildingArea && keywords.buildingArea.length > 0) {
+                    const areaConditions = keywords.buildingArea.map(area => {
+                        const numArea = parseInt(area);
+                        return `buildingArea BETWEEN ${numArea - 10} AND ${numArea + 10}`;
+                    }).join(' OR ');
+                    whereConditions.push(`(${areaConditions})`);
+                }
+
+                if (keywords.elevator && keywords.elevator.length > 0) {
+                    const elevatorValue = keywords.elevator[0] === 'True' ? 1 : 0;
+                    whereConditions.push(`elevator = ${elevatorValue}`);
+                }
+
+                const currentYear = new Date().getFullYear();
+                whereConditions.push(`YEAR(valueDate) >= ${currentYear - 2}`);
+
+                const whereClause = whereConditions.length > 0 ? `WHERE ${whereConditions.join(' AND ')}` : '';
+
+                const sql = `
             SELECT TOP 100
                 location AS 房产坐落,
                 buildingArea AS 建筑面积,
@@ -13342,50 +13342,50 @@ async function handleStatisticsQuery(keywords, question) {
             ${whereClause}
             ORDER BY valueDate DESC
         `;
-        
-        const result = await pool.request().query(sql);
-        
-        const analysis = `共找到${result.recordset.length}条房源记录。`;
-        
-        return {
-            sql: sql,
-            data: result.recordset,
-            analysis: analysis
-        };
-        
-    } catch (error) {
-        console.error('处理统计查询时出错:', error);
-        throw error;
-    }
-}
 
-// 处理趋势查询
-async function handleTrendQuery(keywords, question) {
-    try {
-        await poolConnect;
-        
-        let whereConditions = [];
-        
-        if (keywords.location && keywords.location.length > 0) {
-            const locationConditions = keywords.location.map(loc => `location LIKE '%${loc}%'`).join(' OR ');
-            whereConditions.push(`(${locationConditions})`);
+                const result = await pool.request().query(sql);
+
+                const analysis = `共找到${result.recordset.length}条房源记录。`;
+
+                return {
+                    sql: sql,
+                    data: result.recordset,
+                    analysis: analysis
+                };
+
+            } catch (error) {
+                console.error('处理统计查询时出错:', error);
+                throw error;
+            }
         }
-        
-        if (keywords.housePurpose && keywords.housePurpose.length > 0) {
-            const purposeConditions = keywords.housePurpose.map(p => `housePurpose LIKE '%${p}%'`).join(' OR ');
-            whereConditions.push(`(${purposeConditions})`);
-        } else {
-            // 默认添加住宅条件
-            const residentialPurpose = await getResidentialPurposeKeywords();
-            whereConditions.push(`housePurpose LIKE '%${residentialPurpose}%'`);
-        }
-        
-        const currentYear = new Date().getFullYear();
-        whereConditions.push(`YEAR(valueDate) >= ${currentYear - 2}`);
-        
-        const whereClause = whereConditions.length > 0 ? `WHERE ${whereConditions.join(' AND ')}` : '';
-        
-        const sql = `
+
+        // 处理趋势查询
+        async function handleTrendQuery(keywords, question) {
+            try {
+                await poolConnect;
+
+                let whereConditions = [];
+
+                if (keywords.location && keywords.location.length > 0) {
+                    const locationConditions = keywords.location.map(loc => `location LIKE '%${loc}%'`).join(' OR ');
+                    whereConditions.push(`(${locationConditions})`);
+                }
+
+                if (keywords.housePurpose && keywords.housePurpose.length > 0) {
+                    const purposeConditions = keywords.housePurpose.map(p => `housePurpose LIKE '%${p}%'`).join(' OR ');
+                    whereConditions.push(`(${purposeConditions})`);
+                } else {
+                    // 默认添加住宅条件
+                    const residentialPurpose = await getResidentialPurposeKeywords();
+                    whereConditions.push(`housePurpose LIKE '%${residentialPurpose}%'`);
+                }
+
+                const currentYear = new Date().getFullYear();
+                whereConditions.push(`YEAR(valueDate) >= ${currentYear - 2}`);
+
+                const whereClause = whereConditions.length > 0 ? `WHERE ${whereConditions.join(' AND ')}` : '';
+
+                const sql = `
             SELECT 
                 FORMAT(valueDate, 'yyyy-MM') AS 年月,
                 COUNT(*) AS 委托数量,
@@ -13398,78 +13398,78 @@ async function handleTrendQuery(keywords, question) {
             GROUP BY FORMAT(valueDate, 'yyyy-MM')
             ORDER BY FORMAT(valueDate, 'yyyy-MM') DESC
         `;
-        
-        const result = await pool.request().query(sql);
-        
-        const analysis = `分析了最近${result.recordset.length}个月的房价趋势。`;
-        
-        return {
-            sql: sql,
-            data: result.recordset,
-            analysis: analysis
-        };
-        
-    } catch (error) {
-        console.error('处理趋势查询时出错:', error);
-        throw error;
-    }
-}
 
-// 处理估值查询 - 优化版本
-async function handleValuationQuery(keywords, question) {
-    try {
-        await poolConnect;
-        
-        let whereConditions = [];
-        let searchType = '';
-        let searchTarget = '';
-        
-        // 1. 优先搜索小区
-        if (keywords.communityName && keywords.communityName.length > 0) {
-            const communityConditions = keywords.communityName.map(c => `communityName = '${c}'`).join(' OR ');
-            whereConditions.push(`(${communityConditions})`);
-            searchType = '小区';
-            searchTarget = keywords.communityName[0];
-            console.log('小区查询条件:', whereConditions);
-        } else {
-            console.log('未提取到小区名关键词');
+                const result = await pool.request().query(sql);
+
+                const analysis = `分析了最近${result.recordset.length}个月的房价趋势。`;
+
+                return {
+                    sql: sql,
+                    data: result.recordset,
+                    analysis: analysis
+                };
+
+            } catch (error) {
+                console.error('处理趋势查询时出错:', error);
+                throw error;
+            }
         }
-        
-        // 2. 如果没有小区，搜索区域
-        if (!searchType && keywords.location && keywords.location.length > 0) {
-            const locationConditions = keywords.location.map(loc => `location LIKE '%${loc}%'`).join(' OR ');
-            whereConditions.push(`(${locationConditions})`);
-            searchType = '区域';
-            searchTarget = keywords.location[0];
-            console.log('区域查询条件:', whereConditions);
-        }
-        
-        // 3. 处理房屋用途
-        let purposeWhereCondition = '';
-        if (keywords.housePurpose && keywords.housePurpose.length > 0) {
-            const purposeConditions = keywords.housePurpose.map(p => `housePurpose LIKE '%${p}%'`).join(' OR ');
-            purposeWhereCondition = `(${purposeConditions})`;
-        } else {
-            // 默认添加住宅条件
-            const residentialPurpose = await getResidentialPurposeKeywords();
-            purposeWhereCondition = `housePurpose LIKE '%${residentialPurpose}%'`;
-        }
-        
-        if (purposeWhereCondition) {
-            whereConditions.push(purposeWhereCondition);
-            console.log('房屋用途条件:', purposeWhereCondition);
-        }
-        
-        // 4. 时间条件：最近2年
-        const currentYear = new Date().getFullYear();
-        whereConditions.push(`YEAR(valueDate) >= ${currentYear - 2}`);
-        
-        const whereClause = whereConditions.length > 0 ? `WHERE ${whereConditions.join(' AND ')}` : '';
-        
-        console.log('生成的SQL WHERE条件:', whereClause);
-        
-        // 5. 执行主查询
-        const sql = `
+
+        // 处理估值查询 - 优化版本
+        async function handleValuationQuery(keywords, question) {
+            try {
+                await poolConnect;
+
+                let whereConditions = [];
+                let searchType = '';
+                let searchTarget = '';
+
+                // 1. 优先搜索小区
+                if (keywords.communityName && keywords.communityName.length > 0) {
+                    const communityConditions = keywords.communityName.map(c => `communityName = '${c}'`).join(' OR ');
+                    whereConditions.push(`(${communityConditions})`);
+                    searchType = '小区';
+                    searchTarget = keywords.communityName[0];
+                    console.log('小区查询条件:', whereConditions);
+                } else {
+                    console.log('未提取到小区名关键词');
+                }
+
+                // 2. 如果没有小区，搜索区域
+                if (!searchType && keywords.location && keywords.location.length > 0) {
+                    const locationConditions = keywords.location.map(loc => `location LIKE '%${loc}%'`).join(' OR ');
+                    whereConditions.push(`(${locationConditions})`);
+                    searchType = '区域';
+                    searchTarget = keywords.location[0];
+                    console.log('区域查询条件:', whereConditions);
+                }
+
+                // 3. 处理房屋用途
+                let purposeWhereCondition = '';
+                if (keywords.housePurpose && keywords.housePurpose.length > 0) {
+                    const purposeConditions = keywords.housePurpose.map(p => `housePurpose LIKE '%${p}%'`).join(' OR ');
+                    purposeWhereCondition = `(${purposeConditions})`;
+                } else {
+                    // 默认添加住宅条件
+                    const residentialPurpose = await getResidentialPurposeKeywords();
+                    purposeWhereCondition = `housePurpose LIKE '%${residentialPurpose}%'`;
+                }
+
+                if (purposeWhereCondition) {
+                    whereConditions.push(purposeWhereCondition);
+                    console.log('房屋用途条件:', purposeWhereCondition);
+                }
+
+                // 4. 时间条件：最近2年
+                const currentYear = new Date().getFullYear();
+                whereConditions.push(`YEAR(valueDate) >= ${currentYear - 2}`);
+
+                const whereClause = whereConditions.length > 0 ? `WHERE ${whereConditions.join(' AND ')}` : '';
+
+                console.log('生成的SQL WHERE条件:', whereClause);
+
+                // 5. 执行主查询
+                const sql = `
             SELECT 
                 COUNT(*) AS 记录数量,
                 MIN(valuationPrice) AS 最低单价,
@@ -13484,45 +13484,45 @@ async function handleValuationQuery(keywords, question) {
             FROM WebWordReports.dbo.WordReportsInformation
             ${whereClause}
         `;
-        
-        console.log('执行的SQL:', sql);
-        const result = await pool.request().query(sql);
-        console.log('查询结果:', result.recordset);
-        
-        let analysis = '';
-        if (result.recordset.length > 0 && result.recordset[0].记录数量 > 0) {
-            const data = result.recordset[0];
-            const purposeDesc = keywords.housePurpose && keywords.housePurpose.length > 0 ? 
-                keywords.housePurpose[0] : '住宅';
-            
-            analysis = `基于${data.记录数量}条${searchType}历史数据（${searchTarget}，${purposeDesc}，最近2年）：\n` +
-                      `• 价格范围：${data.最低单价 || 0} - ${data.最高单价 || 0} 元/平米\n` +
-                      `• 平均价格：${data.平均单价 || 0} 元/平米\n` +
-                      `• 平均面积：${data.平均面积 || 0} 平米\n` +
-                      `• 平均建成年份：${data.平均建成年份 || '未知'} 年\n` +
-                      `• 电梯比例：${Math.round(data.电梯比例 || 0)}%`;
-        } else {
-            // 如果没有找到数据，尝试更宽泛的搜索
-            console.log('主查询无结果，尝试降级查询...');
-            
-            // 移除小区条件，只保留区域和用途
-            const fallbackConditions = [];
-            
-            if (keywords.location && keywords.location.length > 0) {
-                const locationConditions = keywords.location.map(loc => `location LIKE '%${loc}%'`).join(' OR ');
-                fallbackConditions.push(`(${locationConditions})`);
-            }
-            
-            if (purposeWhereCondition) {
-                fallbackConditions.push(purposeWhereCondition);
-            }
-            
-            fallbackConditions.push(`YEAR(valueDate) >= ${currentYear - 2}`);
-            
-            const fallbackWhereClause = fallbackConditions.length > 0 ? `WHERE ${fallbackConditions.join(' AND ')}` : '';
-            
-            if (fallbackWhereClause) {
-                const fallbackSql = `
+
+                console.log('执行的SQL:', sql);
+                const result = await pool.request().query(sql);
+                console.log('查询结果:', result.recordset);
+
+                let analysis = '';
+                if (result.recordset.length > 0 && result.recordset[0].记录数量 > 0) {
+                    const data = result.recordset[0];
+                    const purposeDesc = keywords.housePurpose && keywords.housePurpose.length > 0 ?
+                        keywords.housePurpose[0] : '住宅';
+
+                    analysis = `基于${data.记录数量}条${searchType}历史数据（${searchTarget}，${purposeDesc}，最近2年）：\n` +
+                        `• 价格范围：${data.最低单价 || 0} - ${data.最高单价 || 0} 元/平米\n` +
+                        `• 平均价格：${data.平均单价 || 0} 元/平米\n` +
+                        `• 平均面积：${data.平均面积 || 0} 平米\n` +
+                        `• 平均建成年份：${data.平均建成年份 || '未知'} 年\n` +
+                        `• 电梯比例：${Math.round(data.电梯比例 || 0)}%`;
+                } else {
+                    // 如果没有找到数据，尝试更宽泛的搜索
+                    console.log('主查询无结果，尝试降级查询...');
+
+                    // 移除小区条件，只保留区域和用途
+                    const fallbackConditions = [];
+
+                    if (keywords.location && keywords.location.length > 0) {
+                        const locationConditions = keywords.location.map(loc => `location LIKE '%${loc}%'`).join(' OR ');
+                        fallbackConditions.push(`(${locationConditions})`);
+                    }
+
+                    if (purposeWhereCondition) {
+                        fallbackConditions.push(purposeWhereCondition);
+                    }
+
+                    fallbackConditions.push(`YEAR(valueDate) >= ${currentYear - 2}`);
+
+                    const fallbackWhereClause = fallbackConditions.length > 0 ? `WHERE ${fallbackConditions.join(' AND ')}` : '';
+
+                    if (fallbackWhereClause) {
+                        const fallbackSql = `
                     SELECT 
                         COUNT(*) AS 记录数量,
                         MIN(valuationPrice) AS 最低单价,
@@ -13532,63 +13532,63 @@ async function handleValuationQuery(keywords, question) {
                     FROM WebWordReports.dbo.WordReportsInformation
                     ${fallbackWhereClause}
                 `;
-                
-                console.log('降级查询SQL:', fallbackSql);
-                const fallbackResult = await pool.request().query(fallbackSql);
-                console.log('降级查询结果:', fallbackResult.recordset);
-                
-                if (fallbackResult.recordset.length > 0 && fallbackResult.recordset[0].记录数量 > 0) {
-                    const fallbackData = fallbackResult.recordset[0];
-                    const locationDesc = keywords.location && keywords.location.length > 0 ? 
-                        keywords.location[0] : '该区域';
-                    
-                    if (keywords.communityName && keywords.communityName.length > 0) {
-                        analysis = `未找到"${keywords.communityName[0]}"小区的具体数据，为您提供${locationDesc}的参考均价：\n` +
-                                  `• 平均价格：${fallbackData.平均单价 || 0} 元/平米\n` +
-                                  `• 基于 ${fallbackData.记录数量} 条区域住宅数据`;
+
+                        console.log('降级查询SQL:', fallbackSql);
+                        const fallbackResult = await pool.request().query(fallbackSql);
+                        console.log('降级查询结果:', fallbackResult.recordset);
+
+                        if (fallbackResult.recordset.length > 0 && fallbackResult.recordset[0].记录数量 > 0) {
+                            const fallbackData = fallbackResult.recordset[0];
+                            const locationDesc = keywords.location && keywords.location.length > 0 ?
+                                keywords.location[0] : '该区域';
+
+                            if (keywords.communityName && keywords.communityName.length > 0) {
+                                analysis = `未找到"${keywords.communityName[0]}"小区的具体数据，为您提供${locationDesc}的参考均价：\n` +
+                                    `• 平均价格：${fallbackData.平均单价 || 0} 元/平米\n` +
+                                    `• 基于 ${fallbackData.记录数量} 条区域住宅数据`;
+                            } else {
+                                analysis = `为您提供${locationDesc}的住宅参考均价：\n` +
+                                    `• 平均价格：${fallbackData.平均单价 || 0} 元/平米\n` +
+                                    `• 基于 ${fallbackData.记录数量} 条区域住宅数据`;
+                            }
+                        } else {
+                            analysis = `抱歉，没有找到"${searchTarget}"相关的历史数据。`;
+                        }
                     } else {
-                        analysis = `为您提供${locationDesc}的住宅参考均价：\n` +
-                                  `• 平均价格：${fallbackData.平均单价 || 0} 元/平米\n` +
-                                  `• 基于 ${fallbackData.记录数量} 条区域住宅数据`;
+                        analysis = `抱歉，没有找到"${searchTarget}"相关的历史数据。`;
                     }
-                } else {
-                    analysis = `抱歉，没有找到"${searchTarget}"相关的历史数据。`;
                 }
-            } else {
-                analysis = `抱歉，没有找到"${searchTarget}"相关的历史数据。`;
+
+                return {
+                    sql: sql,
+                    data: result.recordset,
+                    analysis: analysis
+                };
+
+            } catch (error) {
+                console.error('处理估值查询时出错:', error);
+                throw error;
             }
         }
-        
-        return {
-            sql: sql,
-            data: result.recordset,
-            analysis: analysis
-        };
-        
-    } catch (error) {
-        console.error('处理估值查询时出错:', error);
-        throw error;
-    }
-}
 
-// 处理默认查询
-async function handleDefaultQuery(keywords, question) {
-    try {
-        await poolConnect;
-        
-        let whereConditions = [];
-        
-        // 默认添加住宅条件
-        const residentialPurpose = await getResidentialPurposeKeywords();
-        whereConditions.push(`housePurpose LIKE '%${residentialPurpose}%'`);
-        
-        // 时间条件：最近2年
-        const currentYear = new Date().getFullYear();
-        whereConditions.push(`YEAR(valueDate) >= ${currentYear - 2}`);
-        
-        const whereClause = whereConditions.length > 0 ? `WHERE ${whereConditions.join(' AND ')}` : '';
-        
-        const sql = `
+        // 处理默认查询
+        async function handleDefaultQuery(keywords, question) {
+            try {
+                await poolConnect;
+
+                let whereConditions = [];
+
+                // 默认添加住宅条件
+                const residentialPurpose = await getResidentialPurposeKeywords();
+                whereConditions.push(`housePurpose LIKE '%${residentialPurpose}%'`);
+
+                // 时间条件：最近2年
+                const currentYear = new Date().getFullYear();
+                whereConditions.push(`YEAR(valueDate) >= ${currentYear - 2}`);
+
+                const whereClause = whereConditions.length > 0 ? `WHERE ${whereConditions.join(' AND ')}` : '';
+
+                const sql = `
             SELECT TOP 10
                 location AS 房产坐落,
                 buildingArea AS 建筑面积,
@@ -13607,158 +13607,158 @@ async function handleDefaultQuery(keywords, question) {
             ${whereClause}
             ORDER BY valueDate DESC
         `;
-        
-        const result = await pool.request().query(sql);
-        
-        const analysis = `为您展示了最近的${result.recordset.length}条住宅房源信息。`;
-        
-        return {
-            sql: sql,
-            data: result.recordset,
-            analysis: analysis
-        };
-        
-    } catch (error) {
-        console.error('处理默认查询时出错:', error);
-        throw error;
-    }
-}
 
-// 生成AI回答
-async function generateAIResponse(questionType, data, keywords, originalQuestion) {
-    try {
-        let response = '';
-        
-        switch (questionType) {
-            case 'comparison':
-                if (data && data.length > 0) {
-                    response = `根据您的问题"${originalQuestion}"，我分析了相关区域的房价数据：\n\n`;
-                    data.forEach((item, index) => {
-                        response += `${index + 1}. ${item.对比区域}：平均单价 ${item.平均评估单价} 元/㎡，共 ${item.房源数量} 套房源\n`;
-                    });
-                    response += `\n数据来源：最近2年的历史评估记录。`;
-                } else {
-                    response = `抱歉，没有找到您要对比的区域数据。`;
-                }
-                break;
-                
-            case 'statistics':
-                if (data && data.length > 0) {
-                    response = `根据您的查询"${originalQuestion}"，找到了 ${data.length} 条符合条件的房源：\n\n`;
-                    const sampleCount = Math.min(3, data.length);
-                    for (let i = 0; i < sampleCount; i++) {
-                        const item = data[i];
-                        response += `${i + 1}. ${item.小区名称}，${item.建筑面积}㎡，单价 ${item.评估单价} 元/㎡\n`;
-                    }
-                    if (data.length > sampleCount) {
-                        response += `\n... 还有 ${data.length - sampleCount} 条记录，请在表格中查看完整列表。`;
-                    }
-                } else {
-                    response = `抱歉，没有找到符合您条件的房源。`;
-                }
-                break;
-                
-            case 'trend':
-                if (data && data.length > 0) {
-                    response = `根据您的问题"${originalQuestion}"，这是最近的价格趋势：\n\n`;
-                    data.forEach((item, index) => {
-                        response += `${item.年月}：均价 ${item.月均评估单价} 元/㎡，成交 ${item.委托数量} 套\n`;
-                    });
-                    response += `\n数据统计周期：最近2年。`;
-                } else {
-                    response = `抱歉，没有找到相关的价格趋势数据。`;
-                }
-                break;
-                
-            case 'valuation':
-                if (data && data.length > 0 && data[0].记录数量 > 0) {
-                    const item = data[0];
-                    response = `根据您的问题"${originalQuestion}"，估值分析如下：\n\n`;
-                    response += `• 价格范围：${item.最低单价 || 0} - ${item.最高单价 || 0} 元/平米\n`;
-                    response += `• 平均价格：${item.平均单价 || 0} 元/平米\n`;
-                    response += `• 平均面积：${item.平均面积 || 0} 平米\n`;
-                    if (item.平均建成年份) {
-                        response += `• 平均建成年份：${item.平均建成年份} 年\n`;
-                    }
-                    if (item.电梯比例) {
-                        response += `• 电梯比例：${Math.round(item.电梯比例)}%\n`;
-                    }
-                    response += `\n基于最近2年 ${item.记录数量} 条历史评估数据。`;
-                } else {
-                    // 从analysis中获取备用数据
-                    if (data && data.analysis) {
-                        response = `根据您的问题"${originalQuestion}"，分析结果如下：\n\n${data.analysis}`;
-                    } else {
-                        response = `抱歉，没有找到"${originalQuestion}"相关的估值数据。`;
-                    }
-                }
-                break;
-                
-            default:
-                if (data && data.length > 0) {
-                    response = `根据您的问题"${originalQuestion}"，为您展示最近的房源信息：\n\n`;
-                    const sampleCount = Math.min(3, data.length);
-                    for (let i = 0; i < sampleCount; i++) {
-                        const item = data[i];
-                        response += `${i + 1}. ${item.小区名称}，${item.建筑面积}㎡，${item.评估单价} 元/㎡\n`;
-                    }
-                } else {
-                    response = `抱歉，我暂时无法回答这个问题。您可以尝试询问具体的房源信息、区域对比或价格趋势。`;
-                }
+                const result = await pool.request().query(sql);
+
+                const analysis = `为您展示了最近的${result.recordset.length}条住宅房源信息。`;
+
+                return {
+                    sql: sql,
+                    data: result.recordset,
+                    analysis: analysis
+                };
+
+            } catch (error) {
+                console.error('处理默认查询时出错:', error);
+                throw error;
+            }
         }
-        
-        return response;
-        
-    } catch (error) {
-        console.error('生成AI回答时出错:', error);
-        return '抱歉，生成回答时出现错误。';
-    }
-} 
 
- }
+        // 生成AI回答
+        async function generateAIResponse(questionType, data, keywords, originalQuestion) {
+            try {
+                let response = '';
+
+                switch (questionType) {
+                    case 'comparison':
+                        if (data && data.length > 0) {
+                            response = `根据您的问题"${originalQuestion}"，我分析了相关区域的房价数据：\n\n`;
+                            data.forEach((item, index) => {
+                                response += `${index + 1}. ${item.对比区域}：平均单价 ${item.平均评估单价} 元/㎡，共 ${item.房源数量} 套房源\n`;
+                            });
+                            response += `\n数据来源：最近2年的历史评估记录。`;
+                        } else {
+                            response = `抱歉，没有找到您要对比的区域数据。`;
+                        }
+                        break;
+
+                    case 'statistics':
+                        if (data && data.length > 0) {
+                            response = `根据您的查询"${originalQuestion}"，找到了 ${data.length} 条符合条件的房源：\n\n`;
+                            const sampleCount = Math.min(3, data.length);
+                            for (let i = 0; i < sampleCount; i++) {
+                                const item = data[i];
+                                response += `${i + 1}. ${item.小区名称}，${item.建筑面积}㎡，单价 ${item.评估单价} 元/㎡\n`;
+                            }
+                            if (data.length > sampleCount) {
+                                response += `\n... 还有 ${data.length - sampleCount} 条记录，请在表格中查看完整列表。`;
+                            }
+                        } else {
+                            response = `抱歉，没有找到符合您条件的房源。`;
+                        }
+                        break;
+
+                    case 'trend':
+                        if (data && data.length > 0) {
+                            response = `根据您的问题"${originalQuestion}"，这是最近的价格趋势：\n\n`;
+                            data.forEach((item, index) => {
+                                response += `${item.年月}：均价 ${item.月均评估单价} 元/㎡，成交 ${item.委托数量} 套\n`;
+                            });
+                            response += `\n数据统计周期：最近2年。`;
+                        } else {
+                            response = `抱歉，没有找到相关的价格趋势数据。`;
+                        }
+                        break;
+
+                    case 'valuation':
+                        if (data && data.length > 0 && data[0].记录数量 > 0) {
+                            const item = data[0];
+                            response = `根据您的问题"${originalQuestion}"，估值分析如下：\n\n`;
+                            response += `• 价格范围：${item.最低单价 || 0} - ${item.最高单价 || 0} 元/平米\n`;
+                            response += `• 平均价格：${item.平均单价 || 0} 元/平米\n`;
+                            response += `• 平均面积：${item.平均面积 || 0} 平米\n`;
+                            if (item.平均建成年份) {
+                                response += `• 平均建成年份：${item.平均建成年份} 年\n`;
+                            }
+                            if (item.电梯比例) {
+                                response += `• 电梯比例：${Math.round(item.电梯比例)}%\n`;
+                            }
+                            response += `\n基于最近2年 ${item.记录数量} 条历史评估数据。`;
+                        } else {
+                            // 从analysis中获取备用数据
+                            if (data && data.analysis) {
+                                response = `根据您的问题"${originalQuestion}"，分析结果如下：\n\n${data.analysis}`;
+                            } else {
+                                response = `抱歉，没有找到"${originalQuestion}"相关的估值数据。`;
+                            }
+                        }
+                        break;
+
+                    default:
+                        if (data && data.length > 0) {
+                            response = `根据您的问题"${originalQuestion}"，为您展示最近的房源信息：\n\n`;
+                            const sampleCount = Math.min(3, data.length);
+                            for (let i = 0; i < sampleCount; i++) {
+                                const item = data[i];
+                                response += `${i + 1}. ${item.小区名称}，${item.建筑面积}㎡，${item.评估单价} 元/㎡\n`;
+                            }
+                        } else {
+                            response = `抱歉，我暂时无法回答这个问题。您可以尝试询问具体的房源信息、区域对比或价格趋势。`;
+                        }
+                }
+
+                return response;
+
+            } catch (error) {
+                console.error('生成AI回答时出错:', error);
+                return '抱歉，生成回答时出现错误。';
+            }
+        }
+
+    }
 }
 
 
 {  //项目收费统计
-    
 
- // 获取字段定义
-app.get('/api/getProjectFields', async (req, res) => {
-  try {
-    const request = pool.request();
-    const result = await request.query(`
+
+    // 获取字段定义
+    app.get('/api/getProjectFields', async (req, res) => {
+        try {
+            const request = pool.request();
+            const result = await request.query(`
       SELECT EnglishName, ChineseName, DataType, 
              IsRequired, IsVisible, IsEditable, DisplayOrder
       FROM ProjectDatabase.dbo.ProjectOption
       WHERE IsVisible = 1
       ORDER BY DisplayOrder ASC
     `);
-    
-    res.json(result.recordset);
-  } catch (error) {
-    console.error('获取字段定义失败:', error);
-    res.status(500).json({ success: false, message: '获取字段定义失败' });
-  }
-});
 
-// 获取项目数据 - 直接查询现有表
-app.get('/api/getProject', async (req, res) => {
-  try {
-    // 获取可见字段
-    const fieldRequest = pool.request();
-    const fieldResult = await fieldRequest.query(`
+            res.json(result.recordset);
+        } catch (error) {
+            console.error('获取字段定义失败:', error);
+            res.status(500).json({ success: false, message: '获取字段定义失败' });
+        }
+    });
+
+    // 获取项目数据 - 直接查询现有表
+    app.get('/api/getProject', async (req, res) => {
+        try {
+            // 获取可见字段
+            const fieldRequest = pool.request();
+            const fieldResult = await fieldRequest.query(`
       SELECT EnglishName 
       FROM ProjectDatabase.dbo.ProjectOption 
       WHERE IsVisible = 1 
       ORDER BY DisplayOrder ASC
     `);
-    
-    const visibleFields = fieldResult.recordset.map(f => f.EnglishName);
-    
-    // 如果ProjectData表中实际存在的字段与ProjectOption中定义的不完全一致，
-    // 我们可以先获取ProjectData表的所有列
-    const tableColumnsRequest = pool.request();
-    const tableColumnsResult = await tableColumnsRequest.query(`
+
+            const visibleFields = fieldResult.recordset.map(f => f.EnglishName);
+
+            // 如果ProjectData表中实际存在的字段与ProjectOption中定义的不完全一致，
+            // 我们可以先获取ProjectData表的所有列
+            const tableColumnsRequest = pool.request();
+            const tableColumnsResult = await tableColumnsRequest.query(`
       SELECT COLUMN_NAME
       FROM INFORMATION_SCHEMA.COLUMNS 
       WHERE TABLE_SCHEMA = 'dbo' 
@@ -13766,357 +13766,357 @@ app.get('/api/getProject', async (req, res) => {
       AND COLUMN_NAME NOT IN ('ProjectID') -- 排除ID列，如果需要的话
       ORDER BY ORDINAL_POSITION
     `);
-    
-    const actualColumns = tableColumnsResult.recordset.map(col => col.COLUMN_NAME);
-    
-    // 取交集：既在ProjectOption中定义可见，又实际存在于ProjectData表中的字段
-    const validFields = visibleFields.filter(field => actualColumns.includes(field));
-    
-    // 如果没有匹配的字段，使用所有实际存在的字段（排除ProjectID）
-    const selectFields = validFields.length > 0 ? validFields.join(', ') : 
-      actualColumns.filter(col => col !== 'ProjectID').join(', ');
-    
-    console.log('查询字段:', selectFields);
-    
-    const request = pool.request();
-    let query = `
+
+            const actualColumns = tableColumnsResult.recordset.map(col => col.COLUMN_NAME);
+
+            // 取交集：既在ProjectOption中定义可见，又实际存在于ProjectData表中的字段
+            const validFields = visibleFields.filter(field => actualColumns.includes(field));
+
+            // 如果没有匹配的字段，使用所有实际存在的字段（排除ProjectID）
+            const selectFields = validFields.length > 0 ? validFields.join(', ') :
+                actualColumns.filter(col => col !== 'ProjectID').join(', ');
+
+            console.log('查询字段:', selectFields);
+
+            const request = pool.request();
+            let query = `
       SELECT ${selectFields}
       FROM ProjectDatabase.dbo.ProjectData
     `;
-    
-    // 如果selectFields为空，使用SELECT * 但排除不想要的列
-    if (!selectFields || selectFields.trim() === '') {
-      query = `
+
+            // 如果selectFields为空，使用SELECT * 但排除不想要的列
+            if (!selectFields || selectFields.trim() === '') {
+                query = `
         SELECT * 
         FROM ProjectDatabase.dbo.ProjectData
       `;
-    }
-    
-    query += ' ORDER BY ProjectID DESC';
-    
-    const result = await request.query(query);
-    
-    res.json(result.recordset);
-  } catch (error) {
-    console.error('获取项目数据失败:', error);
-    res.status(500).json({ success: false, message: '获取数据失败: ' + error.message });
-  }
-});
+            }
 
-// 添加项目 - 动态构建INSERT语句
-app.post('/api/addProject', async (req, res) => {
-  try {
-    const data = req.body;
-    
-    // 获取字段定义和实际表结构
-    const [fieldResult, tableColumnsResult] = await Promise.all([
-      pool.request().query(`
+            query += ' ORDER BY ProjectID DESC';
+
+            const result = await request.query(query);
+
+            res.json(result.recordset);
+        } catch (error) {
+            console.error('获取项目数据失败:', error);
+            res.status(500).json({ success: false, message: '获取数据失败: ' + error.message });
+        }
+    });
+
+    // 添加项目 - 动态构建INSERT语句
+    app.post('/api/addProject', async (req, res) => {
+        try {
+            const data = req.body;
+
+            // 获取字段定义和实际表结构
+            const [fieldResult, tableColumnsResult] = await Promise.all([
+                pool.request().query(`
         SELECT EnglishName, DataType, IsRequired, DefaultValue
         FROM ProjectDatabase.dbo.ProjectOption
         WHERE IsVisible = 1
       `),
-      pool.request().query(`
+                pool.request().query(`
         SELECT COLUMN_NAME, DATA_TYPE, IS_NULLABLE
         FROM INFORMATION_SCHEMA.COLUMNS 
         WHERE TABLE_SCHEMA = 'dbo' 
         AND TABLE_NAME = 'ProjectData'
         AND COLUMN_NAME != 'ProjectID'
       `)
-    ]);
-    
-    const fields = fieldResult.recordset;
-    const actualColumns = tableColumnsResult.recordset;
-    const actualColumnNames = actualColumns.map(col => col.COLUMN_NAME);
-    
-    // 构建插入语句
-    const columns = [];
-    const values = [];
-    const params = [];
-    
-    fields.forEach((field, index) => {
-      // 只插入实际存在的字段
-      if (field.EnglishName !== 'ProjectID' && actualColumnNames.includes(field.EnglishName)) {
-        columns.push(field.EnglishName);
-        
-        let value = data[field.EnglishName];
-        
-        // 处理必填字段
-        if (field.IsRequired && (value === undefined || value === null || value === '')) {
-          if (field.DefaultValue !== null) {
-            value = field.DefaultValue;
-          } else {
-            throw new Error(`字段 ${field.ChineseName || field.EnglishName} 是必填项`);
-          }
-        }
-        
-        // 数据类型转换
-        if (value === undefined || value === null || value === '') {
-          const columnInfo = actualColumns.find(col => col.COLUMN_NAME === field.EnglishName);
-          if (columnInfo.IS_NULLABLE === 'NO') {
-            throw new Error(`字段 ${field.EnglishName} 不能为空`);
-          }
-          values.push('NULL');
-        } else {
-          const paramName = `@p${index}`;
-          params.push({ name: paramName, value: value });
-          values.push(paramName);
-        }
-      }
-    });
-    
-    if (columns.length === 0) {
-      return res.status(400).json({ success: false, message: '没有有效的字段可以插入' });
-    }
-    
-    const sql = `
+            ]);
+
+            const fields = fieldResult.recordset;
+            const actualColumns = tableColumnsResult.recordset;
+            const actualColumnNames = actualColumns.map(col => col.COLUMN_NAME);
+
+            // 构建插入语句
+            const columns = [];
+            const values = [];
+            const params = [];
+
+            fields.forEach((field, index) => {
+                // 只插入实际存在的字段
+                if (field.EnglishName !== 'ProjectID' && actualColumnNames.includes(field.EnglishName)) {
+                    columns.push(field.EnglishName);
+
+                    let value = data[field.EnglishName];
+
+                    // 处理必填字段
+                    if (field.IsRequired && (value === undefined || value === null || value === '')) {
+                        if (field.DefaultValue !== null) {
+                            value = field.DefaultValue;
+                        } else {
+                            throw new Error(`字段 ${field.ChineseName || field.EnglishName} 是必填项`);
+                        }
+                    }
+
+                    // 数据类型转换
+                    if (value === undefined || value === null || value === '') {
+                        const columnInfo = actualColumns.find(col => col.COLUMN_NAME === field.EnglishName);
+                        if (columnInfo.IS_NULLABLE === 'NO') {
+                            throw new Error(`字段 ${field.EnglishName} 不能为空`);
+                        }
+                        values.push('NULL');
+                    } else {
+                        const paramName = `@p${index}`;
+                        params.push({ name: paramName, value: value });
+                        values.push(paramName);
+                    }
+                }
+            });
+
+            if (columns.length === 0) {
+                return res.status(400).json({ success: false, message: '没有有效的字段可以插入' });
+            }
+
+            const sql = `
       INSERT INTO Project.dbo.ProjectData (${columns.join(', ')})
       OUTPUT INSERTED.ProjectID
       VALUES (${values.join(', ')})
     `;
-    
-    console.log('插入SQL:', sql);
-    console.log('参数:', params);
-    
-    const request = pool.request();
-    
-    // 添加参数
-    params.forEach(param => {
-      request.input(param.name, param.value);
-    });
-    
-    const result = await request.query(sql);
-    
-    res.json({ 
-      success: true, 
-      message: '添加成功',
-      id: result.recordset[0].ProjectID 
-    });
-  } catch (error) {
-    console.error('添加项目失败:', error);
-    res.status(500).json({ success: false, message: error.message });
-  }
-});
 
-// 更新项目
-app.put('/api/updateProject', async (req, res) => {
-  try {
-    const { id, ...data } = req.body;
-    
-    if (!id) {
-      return res.status(400).json({ success: false, message: '项目ID不能为空' });
-    }
-    
-    // 获取可编辑字段和实际表结构
-    const [fieldResult, tableColumnsResult] = await Promise.all([
-      pool.request().query(`
+            console.log('插入SQL:', sql);
+            console.log('参数:', params);
+
+            const request = pool.request();
+
+            // 添加参数
+            params.forEach(param => {
+                request.input(param.name, param.value);
+            });
+
+            const result = await request.query(sql);
+
+            res.json({
+                success: true,
+                message: '添加成功',
+                id: result.recordset[0].ProjectID
+            });
+        } catch (error) {
+            console.error('添加项目失败:', error);
+            res.status(500).json({ success: false, message: error.message });
+        }
+    });
+
+    // 更新项目
+    app.put('/api/updateProject', async (req, res) => {
+        try {
+            const { id, ...data } = req.body;
+
+            if (!id) {
+                return res.status(400).json({ success: false, message: '项目ID不能为空' });
+            }
+
+            // 获取可编辑字段和实际表结构
+            const [fieldResult, tableColumnsResult] = await Promise.all([
+                pool.request().query(`
         SELECT EnglishName, DataType, IsEditable
         FROM ProjectDatabase.dbo.ProjectOption
         WHERE IsVisible = 1 AND IsEditable = 1
       `),
-      pool.request().query(`
+                pool.request().query(`
         SELECT COLUMN_NAME
         FROM INFORMATION_SCHEMA.COLUMNS 
         WHERE TABLE_SCHEMA = 'dbo' 
         AND TABLE_NAME = 'ProjectData'
         AND COLUMN_NAME != 'ProjectID'
       `)
-    ]);
-    
-    const editableFields = fieldResult.recordset;
-    const actualColumnNames = tableColumnsResult.recordset.map(col => col.COLUMN_NAME);
-    
-    // 构建更新语句
-    const updates = [];
-    const params = [];
-    let paramIndex = 0;
-    
-    editableFields.forEach((field) => {
-      // 只更新实际存在的字段
-      if (data[field.EnglishName] !== undefined && 
-          field.EnglishName !== 'ProjectID' && 
-          actualColumnNames.includes(field.EnglishName)) {
-        const paramName = `@p${paramIndex++}`;
-        updates.push(`${field.EnglishName} = ${paramName}`);
-        params.push({ name: paramName, value: data[field.EnglishName] });
-      }
-    });
-    
-    if (updates.length === 0) {
-      return res.status(400).json({ success: false, message: '没有要更新的字段' });
-    }
-    
-    const sql = `
+            ]);
+
+            const editableFields = fieldResult.recordset;
+            const actualColumnNames = tableColumnsResult.recordset.map(col => col.COLUMN_NAME);
+
+            // 构建更新语句
+            const updates = [];
+            const params = [];
+            let paramIndex = 0;
+
+            editableFields.forEach((field) => {
+                // 只更新实际存在的字段
+                if (data[field.EnglishName] !== undefined &&
+                    field.EnglishName !== 'ProjectID' &&
+                    actualColumnNames.includes(field.EnglishName)) {
+                    const paramName = `@p${paramIndex++}`;
+                    updates.push(`${field.EnglishName} = ${paramName}`);
+                    params.push({ name: paramName, value: data[field.EnglishName] });
+                }
+            });
+
+            if (updates.length === 0) {
+                return res.status(400).json({ success: false, message: '没有要更新的字段' });
+            }
+
+            const sql = `
       UPDATE Project.dbo.ProjectData
       SET ${updates.join(', ')}
       WHERE ProjectID = @id
     `;
-    
-    const request = pool.request();
-    request.input('id', sql.Int, id);
-    
-    // 添加参数
-    params.forEach(param => {
-      request.input(param.name, param.value);
-    });
-    
-    const result = await request.query(sql);
-    
-    if (result.rowsAffected[0] > 0) {
-      res.json({ success: true, message: '更新成功' });
-    } else {
-      res.status(404).json({ success: false, message: '项目不存在' });
-    }
-  } catch (error) {
-    console.error('更新项目失败:', error);
-    res.status(500).json({ success: false, message: error.message });
-  }
-});
 
-// 删除项目
-app.delete('/api/deleteProject', async (req, res) => {
-  try {
-    const { id } = req.body;
-    
-    if (!id) {
-      return res.status(400).json({ success: false, message: '项目ID不能为空' });
-    }
-    
-    const request = pool.request();
-    request.input('id', sql.Int, id);
-    
-    const result = await request.query(`
+            const request = pool.request();
+            request.input('id', sql.Int, id);
+
+            // 添加参数
+            params.forEach(param => {
+                request.input(param.name, param.value);
+            });
+
+            const result = await request.query(sql);
+
+            if (result.rowsAffected[0] > 0) {
+                res.json({ success: true, message: '更新成功' });
+            } else {
+                res.status(404).json({ success: false, message: '项目不存在' });
+            }
+        } catch (error) {
+            console.error('更新项目失败:', error);
+            res.status(500).json({ success: false, message: error.message });
+        }
+    });
+
+    // 删除项目
+    app.delete('/api/deleteProject', async (req, res) => {
+        try {
+            const { id } = req.body;
+
+            if (!id) {
+                return res.status(400).json({ success: false, message: '项目ID不能为空' });
+            }
+
+            const request = pool.request();
+            request.input('id', sql.Int, id);
+
+            const result = await request.query(`
       DELETE FROM ProjectDatabase.dbo.ProjectData
       WHERE ProjectID = @id
     `);
-    
-    if (result.rowsAffected[0] > 0) {
-      res.json({ success: true, message: '删除成功' });
-    } else {
-      res.status(404).json({ success: false, message: '项目不存在' });
-    }
-  } catch (error) {
-    console.error('删除项目失败:', error);
-    res.status(500).json({ success: false, message: error.message });
-  }
-});
 
-// 批量上传项目
-app.post('/api/batchUploadProject', async (req, res) => {
-  try {
-    const batchData = req.body;
-    
-    if (!Array.isArray(batchData) || batchData.length === 0) {
-      return res.status(400).json({ success: false, message: '数据格式错误' });
-    }
-    
-    // 获取字段定义和实际表结构
-    const [fieldResult, tableColumnsResult] = await Promise.all([
-      pool.request().query(`
+            if (result.rowsAffected[0] > 0) {
+                res.json({ success: true, message: '删除成功' });
+            } else {
+                res.status(404).json({ success: false, message: '项目不存在' });
+            }
+        } catch (error) {
+            console.error('删除项目失败:', error);
+            res.status(500).json({ success: false, message: error.message });
+        }
+    });
+
+    // 批量上传项目
+    app.post('/api/batchUploadProject', async (req, res) => {
+        try {
+            const batchData = req.body;
+
+            if (!Array.isArray(batchData) || batchData.length === 0) {
+                return res.status(400).json({ success: false, message: '数据格式错误' });
+            }
+
+            // 获取字段定义和实际表结构
+            const [fieldResult, tableColumnsResult] = await Promise.all([
+                pool.request().query(`
         SELECT EnglishName, DataType, IsRequired, DefaultValue
         FROM ProjectDatabase.dbo.ProjectOption
         WHERE IsVisible = 1
       `),
-      pool.request().query(`
+                pool.request().query(`
         SELECT COLUMN_NAME, DATA_TYPE, IS_NULLABLE
         FROM INFORMATION_SCHEMA.COLUMNS 
         WHERE TABLE_SCHEMA = 'dbo' 
         AND TABLE_NAME = 'ProjectData'
         AND COLUMN_NAME != 'ProjectID'
       `)
-    ]);
-    
-    const fields = fieldResult.recordset;
-    const actualColumns = tableColumnsResult.recordset;
-    const actualColumnNames = actualColumns.map(col => col.COLUMN_NAME);
-    
-    // 过滤出实际存在的字段
-    const validFields = fields.filter(field => 
-      field.EnglishName !== 'ProjectID' && actualColumnNames.includes(field.EnglishName)
-    );
-    
-    if (validFields.length === 0) {
-      return res.status(400).json({ success: false, message: '没有有效的字段可以插入' });
-    }
-    
-    // 开始事务
-    const transaction = new sql.Transaction(pool);
-    await transaction.begin();
-    
-    try {
-      let insertedCount = 0;
-      
-      for (const data of batchData) {
-        // 构建插入语句
-        const columns = [];
-        const values = [];
-        const params = [];
-        
-        validFields.forEach((field, index) => {
-          columns.push(field.EnglishName);
-          
-          let value = data[field.EnglishName];
-          
-          // 处理必填字段
-          if (field.IsRequired && (value === undefined || value === null || value === '')) {
-            if (field.DefaultValue !== null) {
-              value = field.DefaultValue;
-            } else {
-              throw new Error(`字段 ${field.ChineseName || field.EnglishName} 是必填项`);
+            ]);
+
+            const fields = fieldResult.recordset;
+            const actualColumns = tableColumnsResult.recordset;
+            const actualColumnNames = actualColumns.map(col => col.COLUMN_NAME);
+
+            // 过滤出实际存在的字段
+            const validFields = fields.filter(field =>
+                field.EnglishName !== 'ProjectID' && actualColumnNames.includes(field.EnglishName)
+            );
+
+            if (validFields.length === 0) {
+                return res.status(400).json({ success: false, message: '没有有效的字段可以插入' });
             }
-          }
-          
-          // 处理空值
-          if (value === undefined || value === null || value === '') {
-            const columnInfo = actualColumns.find(col => col.COLUMN_NAME === field.EnglishName);
-            if (columnInfo.IS_NULLABLE === 'NO') {
-              throw new Error(`字段 ${field.EnglishName} 不能为空`);
-            }
-            values.push('NULL');
-          } else {
-            const paramName = `@p${index}_${insertedCount}`;
-            params.push({ name: paramName, value: value });
-            values.push(paramName);
-          }
-        });
-        
-        const sql = `
+
+            // 开始事务
+            const transaction = new sql.Transaction(pool);
+            await transaction.begin();
+
+            try {
+                let insertedCount = 0;
+
+                for (const data of batchData) {
+                    // 构建插入语句
+                    const columns = [];
+                    const values = [];
+                    const params = [];
+
+                    validFields.forEach((field, index) => {
+                        columns.push(field.EnglishName);
+
+                        let value = data[field.EnglishName];
+
+                        // 处理必填字段
+                        if (field.IsRequired && (value === undefined || value === null || value === '')) {
+                            if (field.DefaultValue !== null) {
+                                value = field.DefaultValue;
+                            } else {
+                                throw new Error(`字段 ${field.ChineseName || field.EnglishName} 是必填项`);
+                            }
+                        }
+
+                        // 处理空值
+                        if (value === undefined || value === null || value === '') {
+                            const columnInfo = actualColumns.find(col => col.COLUMN_NAME === field.EnglishName);
+                            if (columnInfo.IS_NULLABLE === 'NO') {
+                                throw new Error(`字段 ${field.EnglishName} 不能为空`);
+                            }
+                            values.push('NULL');
+                        } else {
+                            const paramName = `@p${index}_${insertedCount}`;
+                            params.push({ name: paramName, value: value });
+                            values.push(paramName);
+                        }
+                    });
+
+                    const sql = `
           INSERT INTO Project.dbo.ProjectData (${columns.join(', ')})
           VALUES (${values.join(', ')})
         `;
-        
-        const request = new sql.Request(transaction);
-        
-        // 添加参数
-        params.forEach(param => {
-          request.input(param.name, param.value);
-        });
-        
-        await request.query(sql);
-        insertedCount++;
-      }
-      
-      await transaction.commit();
-      
-      res.json({ 
-        success: true, 
-        message: `批量上传成功，共插入 ${insertedCount} 条数据`,
-        insertedCount 
-      });
-    } catch (error) {
-      await transaction.rollback();
-      throw error;
-    }
-  } catch (error) {
-    console.error('批量上传失败:', error);
-    res.status(500).json({ success: false, message: error.message });
-  }
-});
 
-// 获取表结构信息（调试用）
-app.get('/api/debug/tables', async (req, res) => {
-  try {
-    const request = pool.request();
-    const result = await request.query(`
+                    const request = new sql.Request(transaction);
+
+                    // 添加参数
+                    params.forEach(param => {
+                        request.input(param.name, param.value);
+                    });
+
+                    await request.query(sql);
+                    insertedCount++;
+                }
+
+                await transaction.commit();
+
+                res.json({
+                    success: true,
+                    message: `批量上传成功，共插入 ${insertedCount} 条数据`,
+                    insertedCount
+                });
+            } catch (error) {
+                await transaction.rollback();
+                throw error;
+            }
+        } catch (error) {
+            console.error('批量上传失败:', error);
+            res.status(500).json({ success: false, message: error.message });
+        }
+    });
+
+    // 获取表结构信息（调试用）
+    app.get('/api/debug/tables', async (req, res) => {
+        try {
+            const request = pool.request();
+            const result = await request.query(`
       SELECT 
         TABLE_NAME,
         COLUMN_NAME,
@@ -14128,151 +14128,151 @@ app.get('/api/debug/tables', async (req, res) => {
       AND TABLE_NAME IN ('ProjectOption', 'ProjectData')
       ORDER BY TABLE_NAME, ORDINAL_POSITION
     `);
-    
-    res.json(result.recordset);
-  } catch (error) {
-    console.error('获取表结构失败:', error);
-    res.status(500).json({ success: false, message: error.message });
-  }
-});
 
-// 简单的连接测试
-app.get('/api/test', async (req, res) => {
-  try {
-    const request = pool.request();
-    const result = await request.query('SELECT 1 as test');
-    res.json({ success: true, message: '数据库连接正常', data: result.recordset });
-  } catch (error) {
-    res.status(500).json({ success: false, message: '数据库连接失败: ' + error.message });
-  }
-});
- 
+            res.json(result.recordset);
+        } catch (error) {
+            console.error('获取表结构失败:', error);
+            res.status(500).json({ success: false, message: error.message });
+        }
+    });
+
+    // 简单的连接测试
+    app.get('/api/test', async (req, res) => {
+        try {
+            const request = pool.request();
+            const result = await request.query('SELECT 1 as test');
+            res.json({ success: true, message: '数据库连接正常', data: result.recordset });
+        } catch (error) {
+            res.status(500).json({ success: false, message: '数据库连接失败: ' + error.message });
+        }
+    });
+
 
 }
 
 
 {//cqrdpg.com api
 
-// 监听连接事件
-poolConnect.then(() => {
-    console.log('✅ 成功连接到 SQL Server (RdpgCode)');
-}).catch(err => {
-    console.error('❌ 数据库连接失败:', err);
-    console.error('请检查：1. 服务器防火墙/安全组是否开放 1433 端口; 2. SQL Server 是否启用 TCP/IP; 3. 账号密码是否正确');
-    // 不要 process.exit(1)，让服务器继续运行，也许稍后网络恢复能连上，或者至少能响应健康检查
-});
+    // 监听连接事件
+    poolConnect.then(() => {
+        console.log('✅ 成功连接到 SQL Server (RdpgCode)');
+    }).catch(err => {
+        console.error('❌ 数据库连接失败:', err);
+        console.error('请检查：1. 服务器防火墙/安全组是否开放 1433 端口; 2. SQL Server 是否启用 TCP/IP; 3. 账号密码是否正确');
+        // 不要 process.exit(1)，让服务器继续运行，也许稍后网络恢复能连上，或者至少能响应健康检查
+    });
 
-// 初始化 HTTP 服务器和 Socket.io
-//const server = http.createServer(app);  // 这一行是缺失的！
-//const http = require('http').Server(app);
+    // 初始化 HTTP 服务器和 Socket.io
+    //const server = http.createServer(app);  // 这一行是缺失的！
+    //const http = require('http').Server(app);
 
 
 
-// --- Socket.io 逻辑 ---
-io.on('connection', (socket) => {
-    console.log('🔌 客户端连接成功:', socket.id);
+    // --- Socket.io 逻辑 ---
+    io.on('connection', (socket) => {
+        console.log('🔌 客户端连接成功:', socket.id);
 
-    // 当管理页面加载时，可以主动请求一次最新数据（可选）
-    socket.on('request_latest_messages', async () => {
+        // 当管理页面加载时，可以主动请求一次最新数据（可选）
+        socket.on('request_latest_messages', async () => {
+            try {
+                await poolConnect;
+                const result = await pool.request()
+                    .query('SELECT TOP 50 * FROM RdpgCode.dbo.CqrdpgBusiness ORDER BY submitted DESC');
+
+                socket.emit('initial_messages', result.recordset);
+            } catch (err) {
+                console.error('获取初始消息失败:', err);
+                socket.emit('error', '获取消息失败');
+            }
+        });
+
+        socket.on('disconnect', () => {
+            console.log('🔌 客户端断开连接:', socket.id);
+        });
+    });
+
+
+
+    // 辅助函数：获取已连接的池
+    async function getPool() {
         try {
-            await poolConnect;
-            const result = await pool.request()
-                .query('SELECT TOP 50 * FROM RdpgCode.dbo.CqrdpgBusiness ORDER BY submitted DESC');
-
-            socket.emit('initial_messages', result.recordset);
+            await poolConnect; // 确保连接已完成
+            return pool;
         } catch (err) {
-            console.error('获取初始消息失败:', err);
-            socket.emit('error', '获取消息失败');
+            console.error("获取连接池失败:", err);
+            throw err;
         }
-    });
-
-    socket.on('disconnect', () => {
-        console.log('🔌 客户端断开连接:', socket.id);
-    });
-});
-
-
-
-// 辅助函数：获取已连接的池
-async function getPool() {
-    try {
-        await poolConnect; // 确保连接已完成
-        return pool;
-    } catch (err) {
-        console.error("获取连接池失败:", err);
-        throw err;
-    }
-}
-
-// --- API 路由 ---
-
- 
-
-// --- 新增：混淆码映射逻辑工具函数 ---
-async function generateSafeCodeFromId(originalId, pool) {
-    const idStr = originalId.toString();
-    const parts = [];
-
-    // 遍历 ID 的每一位数字
-    for (let char of idStr) {
-        const digit = parseInt(char, 10);
-
-        // 查询映射表
-        const request = pool.request();
-        const result = await request
-            .input('val', sql.Int, digit)
-            .query(`SELECT DecodedText FROM RdpgCode.dbo.CqrdpgCodepageDecodeMapping WHERE OriginalValue = @val`);
-
-        if (result.recordset.length === 0) {
-            throw new Error(`映射表缺少数字 ${digit} 的配置`);
-        }
-        parts.push(result.recordset[0].DecodedText);
     }
 
-    // 用 & 连接
-    return parts.join('&');
-}
+    // --- API 路由 ---
 
-// 新增：反向解析工具函数 (将混淆码解析回 ID)
-async function getIdFromSafeCode(safeCode, pool) {
-    if (!safeCode) return null;
 
-    const parts = safeCode.split('&');
-    let originalIdStr = '';
 
-    const requestTemplate = pool.request();
+    // --- 新增：混淆码映射逻辑工具函数 ---
+    async function generateSafeCodeFromId(originalId, pool) {
+        const idStr = originalId.toString();
+        const parts = [];
 
-    for (let part of parts) {
-        const result = await requestTemplate
-            .input('text', sql.NVarChar, part)
-            .query(`SELECT OriginalValue FROM RdpgCode.dbo.CqrdpgCodepageDecodeMapping WHERE DecodedText = @text`);
+        // 遍历 ID 的每一位数字
+        for (let char of idStr) {
+            const digit = parseInt(char, 10);
 
-        if (result.recordset.length === 0) {
-            return null; // 无效的混淆码
+            // 查询映射表
+            const request = pool.request();
+            const result = await request
+                .input('val', sql.Int, digit)
+                .query(`SELECT DecodedText FROM RdpgCode.dbo.CqrdpgCodepageDecodeMapping WHERE OriginalValue = @val`);
+
+            if (result.recordset.length === 0) {
+                throw new Error(`映射表缺少数字 ${digit} 的配置`);
+            }
+            parts.push(result.recordset[0].DecodedText);
         }
-        originalIdStr += result.recordset[0].OriginalValue.toString();
+
+        // 用 & 连接
+        return parts.join('&');
     }
 
-    return parseInt(originalIdStr, 10);
-}
+    // 新增：反向解析工具函数 (将混淆码解析回 ID)
+    async function getIdFromSafeCode(safeCode, pool) {
+        if (!safeCode) return null;
 
-// --- 修改后的 API 路由 ---
+        const parts = safeCode.split('&');
+        let originalIdStr = '';
 
-// 1. 查询列表 (增加 safeCode 字段)
-app.get('/api/CodeDatabase/List', async (req, res) => {
-    try {
-        const pool = await getPool();
-        const page = parseInt(req.query.page) || 1;
-        const pageSize = parseInt(req.query.pageSize) || 10;
-        const keyword = req.query.keyword || '';
-        const offset = (page - 1) * pageSize;
+        const requestTemplate = pool.request();
 
-        const request = pool.request();
-        request.input('keyword', sql.NVarChar, `%${keyword}%`);
-        request.input('offset', sql.Int, offset);
-        request.input('pageSize', sql.Int, pageSize);
+        for (let part of parts) {
+            const result = await requestTemplate
+                .input('text', sql.NVarChar, part)
+                .query(`SELECT OriginalValue FROM RdpgCode.dbo.CqrdpgCodepageDecodeMapping WHERE DecodedText = @text`);
 
-        const query = `
+            if (result.recordset.length === 0) {
+                return null; // 无效的混淆码
+            }
+            originalIdStr += result.recordset[0].OriginalValue.toString();
+        }
+
+        return parseInt(originalIdStr, 10);
+    }
+
+    // --- 修改后的 API 路由 ---
+
+    // 1. 查询列表 (增加 safeCode 字段)
+    app.get('/api/CodeDatabase/List', async (req, res) => {
+        try {
+            const pool = await getPool();
+            const page = parseInt(req.query.page) || 1;
+            const pageSize = parseInt(req.query.pageSize) || 10;
+            const keyword = req.query.keyword || '';
+            const offset = (page - 1) * pageSize;
+
+            const request = pool.request();
+            request.input('keyword', sql.NVarChar, `%${keyword}%`);
+            request.input('offset', sql.Int, offset);
+            request.input('pageSize', sql.Int, pageSize);
+
+            const query = `
             SELECT * FROM RdpgCode.dbo.CodeDatabase 
             WHERE ProjectName LIKE @keyword OR ReportNumber LIKE @keyword
             ORDER BY Id DESC
@@ -14280,96 +14280,96 @@ app.get('/api/CodeDatabase/List', async (req, res) => {
             FETCH NEXT @pageSize ROWS ONLY
         `;
 
-        const countQuery = `
+            const countQuery = `
             SELECT COUNT(*) as total FROM RdpgCode.dbo.CodeDatabase 
             WHERE ProjectName LIKE @keyword OR ReportNumber LIKE @keyword
         `;
 
-        const [result, countResult] = await Promise.all([
-            request.query(query),
-            pool.request().input('keyword', sql.NVarChar, `%${keyword}%`).query(countQuery)
-        ]);
+            const [result, countResult] = await Promise.all([
+                request.query(query),
+                pool.request().input('keyword', sql.NVarChar, `%${keyword}%`).query(countQuery)
+            ]);
 
-        // 【关键修改】为每一条数据生成 safeCode
-        const enrichedData = await Promise.all(result.recordset.map(async (row) => {
-            const safeCode = await generateSafeCodeFromId(row.Id, pool);
-            return { ...row, safeCode };
-        }));
+            // 【关键修改】为每一条数据生成 safeCode
+            const enrichedData = await Promise.all(result.recordset.map(async (row) => {
+                const safeCode = await generateSafeCodeFromId(row.Id, pool);
+                return { ...row, safeCode };
+            }));
 
-        res.json({
-            data: enrichedData,
-            total: countResult.recordset[0].total,
-            page,
-            pageSize
-        });
+            res.json({
+                data: enrichedData,
+                total: countResult.recordset[0].total,
+                page,
+                pageSize
+            });
 
-    } catch (err) {
-        console.error('查询错误:', err);
-        res.status(500).json({ error: '查询失败', details: err.message });
-    }
-});
-
-// 2. 新增 (保持不变，但为了严谨，这里略过，逻辑同原代码)
-app.post('/api/CodeDatabase/Add', async (req, res) => {
-    // ... (保持你原有的添加逻辑不变) ...
-    // 注意：添加成功后，前端如果需要立即跳转，需要重新获取该条数据的 safeCode
-    try {
-        const pool = await getPool();
-        const { ProjectName, EvaluationAmount, ReportTime, ReportNumber, SignerA_Name, SignerA_Number, SignerB_Name, SignerB_Number } = req.body;
-
-        if (!ProjectName || !ReportNumber) {
-            return res.status(400).json({ error: '项目名称和报告号为必填项' });
+        } catch (err) {
+            console.error('查询错误:', err);
+            res.status(500).json({ error: '查询失败', details: err.message });
         }
+    });
 
-        const request = pool.request();
-        request.input('ProjectName', sql.NVarChar, ProjectName);
-        request.input('EvaluationAmount', sql.Decimal, EvaluationAmount || 0);
-        request.input('ReportTime', sql.DateTime, ReportTime ? new Date(ReportTime) : new Date());
-        request.input('ReportNumber', sql.NVarChar, ReportNumber);
-        request.input('SignerA_Name', sql.NVarChar, SignerA_Name || '');
-        request.input('SignerA_Number', sql.NVarChar, SignerA_Number || '');
-        request.input('SignerB_Name', sql.NVarChar, SignerB_Name || '');
-        request.input('SignerB_Number', sql.NVarChar, SignerB_Number || '');
+    // 2. 新增 (保持不变，但为了严谨，这里略过，逻辑同原代码)
+    app.post('/api/CodeDatabase/Add', async (req, res) => {
+        // ... (保持你原有的添加逻辑不变) ...
+        // 注意：添加成功后，前端如果需要立即跳转，需要重新获取该条数据的 safeCode
+        try {
+            const pool = await getPool();
+            const { ProjectName, EvaluationAmount, ReportTime, ReportNumber, SignerA_Name, SignerA_Number, SignerB_Name, SignerB_Number } = req.body;
 
-        await request.query(`
+            if (!ProjectName || !ReportNumber) {
+                return res.status(400).json({ error: '项目名称和报告号为必填项' });
+            }
+
+            const request = pool.request();
+            request.input('ProjectName', sql.NVarChar, ProjectName);
+            request.input('EvaluationAmount', sql.Decimal, EvaluationAmount || 0);
+            request.input('ReportTime', sql.DateTime, ReportTime ? new Date(ReportTime) : new Date());
+            request.input('ReportNumber', sql.NVarChar, ReportNumber);
+            request.input('SignerA_Name', sql.NVarChar, SignerA_Name || '');
+            request.input('SignerA_Number', sql.NVarChar, SignerA_Number || '');
+            request.input('SignerB_Name', sql.NVarChar, SignerB_Name || '');
+            request.input('SignerB_Number', sql.NVarChar, SignerB_Number || '');
+
+            await request.query(`
             INSERT INTO RdpgCode.dbo.CodeDatabase 
             (ProjectName, EvaluationAmount, ReportTime, ReportNumber, SignerA_Name, SignerA_Number, SignerB_Name, SignerB_Number)
             VALUES 
             (@ProjectName, @EvaluationAmount, @ReportTime, @ReportNumber, @SignerA_Name, @SignerA_Number, @SignerB_Name, @SignerB_Number)
         `);
 
-        // 获取刚插入的 ID (可选，方便直接返回 safeCode)
-        const idResult = await request.query(`SELECT SCOPE_IDENTITY() as newId`);
-        const newId = Math.floor(idResult.recordset[0].newId);
-        const newSafeCode = await generateSafeCodeFromId(newId, pool);
+            // 获取刚插入的 ID (可选，方便直接返回 safeCode)
+            const idResult = await request.query(`SELECT SCOPE_IDENTITY() as newId`);
+            const newId = Math.floor(idResult.recordset[0].newId);
+            const newSafeCode = await generateSafeCodeFromId(newId, pool);
 
-        res.json({ success: true, message: '添加成功', newId, newSafeCode });
-    } catch (err) {
-        console.error('添加错误:', err);
-        res.status(500).json({ error: '添加失败', details: err.message });
-    }
-});
+            res.json({ success: true, message: '添加成功', newId, newSafeCode });
+        } catch (err) {
+            console.error('添加错误:', err);
+            res.status(500).json({ error: '添加失败', details: err.message });
+        }
+    });
 
-// 3. 修改 (保持不变)
-app.put('/api/CodeDatabase/Update/:id', async (req, res) => {
-    // ... (保持你原有的更新逻辑不变) ...
-    try {
-        const pool = await getPool();
-        const id = req.params.id;
-        const data = req.body;
+    // 3. 修改 (保持不变)
+    app.put('/api/CodeDatabase/Update/:id', async (req, res) => {
+        // ... (保持你原有的更新逻辑不变) ...
+        try {
+            const pool = await getPool();
+            const id = req.params.id;
+            const data = req.body;
 
-        const request = pool.request();
-        request.input('Id', sql.Int, id);
-        request.input('ProjectName', sql.NVarChar, data.ProjectName);
-        request.input('EvaluationAmount', sql.Decimal, data.EvaluationAmount);
-        request.input('ReportTime', sql.DateTime, data.ReportTime ? new Date(data.ReportTime) : null);
-        request.input('ReportNumber', sql.NVarChar, data.ReportNumber);
-        request.input('SignerA_Name', sql.NVarChar, data.SignerA_Name);
-        request.input('SignerA_Number', sql.NVarChar, data.SignerA_Number);
-        request.input('SignerB_Name', sql.NVarChar, data.SignerB_Name);
-        request.input('SignerB_Number', sql.NVarChar, data.SignerB_Number);
+            const request = pool.request();
+            request.input('Id', sql.Int, id);
+            request.input('ProjectName', sql.NVarChar, data.ProjectName);
+            request.input('EvaluationAmount', sql.Decimal, data.EvaluationAmount);
+            request.input('ReportTime', sql.DateTime, data.ReportTime ? new Date(data.ReportTime) : null);
+            request.input('ReportNumber', sql.NVarChar, data.ReportNumber);
+            request.input('SignerA_Name', sql.NVarChar, data.SignerA_Name);
+            request.input('SignerA_Number', sql.NVarChar, data.SignerA_Number);
+            request.input('SignerB_Name', sql.NVarChar, data.SignerB_Name);
+            request.input('SignerB_Number', sql.NVarChar, data.SignerB_Number);
 
-        await request.query(`
+            await request.query(`
             UPDATE RdpgCode.dbo.CodeDatabase 
             SET ProjectName = @ProjectName,
                 EvaluationAmount = @EvaluationAmount,
@@ -14382,306 +14382,306 @@ app.put('/api/CodeDatabase/Update/:id', async (req, res) => {
             WHERE Id = @Id
         `);
 
-        res.json({ success: true, message: '更新成功' });
-    } catch (err) {
-        console.error('更新错误:', err);
-        res.status(500).json({ error: '更新失败', details: err.message });
-    }
-});
+            res.json({ success: true, message: '更新成功' });
+        } catch (err) {
+            console.error('更新错误:', err);
+            res.status(500).json({ error: '更新失败', details: err.message });
+        }
+    });
 
-// 4. 删除 (保持不变)
-app.delete('/api/CodeDatabase/Delete/:id', async (req, res) => {
-    // ... (保持你原有的删除逻辑不变) ...
-    try {
-        const pool = await getPool();
-        const id = req.params.id;
-        await pool.request()
-            .input('Id', sql.Int, id)
-            .query(`DELETE FROM RdpgCode.dbo.CodeDatabase WHERE Id = @Id`);
-        res.json({ success: true, message: '删除成功' });
-    } catch (err) {
-        console.error('删除错误:', err);
-        res.status(500).json({ error: '删除失败', details: err.message });
-    }
-});
+    // 4. 删除 (保持不变)
+    app.delete('/api/CodeDatabase/Delete/:id', async (req, res) => {
+        // ... (保持你原有的删除逻辑不变) ...
+        try {
+            const pool = await getPool();
+            const id = req.params.id;
+            await pool.request()
+                .input('Id', sql.Int, id)
+                .query(`DELETE FROM RdpgCode.dbo.CodeDatabase WHERE Id = @Id`);
+            res.json({ success: true, message: '删除成功' });
+        } catch (err) {
+            console.error('删除错误:', err);
+            res.status(500).json({ error: '删除失败', details: err.message });
+        }
+    });
 
-// --- 新增：根据混淆码获取真实数据的接口 (用于 CodeCheck 页面) ---
-app.get('/api/CodeDatabase/VerifyAndFetch', async (req, res) => {
-    try {
-        const { code } = req.query; // 前端传入类似 "p2G2&x9Lm" 的字符串
-        if (!code) {
-            return res.status(400).json({ error: '缺少校验码参数' });
+    // --- 新增：根据混淆码获取真实数据的接口 (用于 CodeCheck 页面) ---
+    app.get('/api/CodeDatabase/VerifyAndFetch', async (req, res) => {
+        try {
+            const { code } = req.query; // 前端传入类似 "p2G2&x9Lm" 的字符串
+            if (!code) {
+                return res.status(400).json({ error: '缺少校验码参数' });
+            }
+
+            const pool = await getPool();
+
+            // 1. 解析混淆码得到真实 ID
+            const realId = await getIdFromSafeCode(code, pool);
+
+            if (!realId) {
+                return res.status(404).json({ error: '无效的校验码或数据不存在' });
+            }
+
+            // 2. 根据真实 ID 查询数据
+            const request = pool.request();
+            const result = await request
+                .input('Id', sql.Int, realId)
+                .query(`SELECT * FROM RdpgCode.dbo.CodeDatabase WHERE Id = @Id`);
+
+            if (result.recordset.length === 0) {
+                return res.status(404).json({ error: '数据不存在' });
+            }
+
+            // 3. 返回数据 (同时也返回当前的 safeCode 供前端确认)
+            const row = result.recordset[0];
+            const safeCode = await generateSafeCodeFromId(row.Id, pool);
+
+            res.json({
+                success: true,
+                data: { ...row, safeCode },
+                message: '验证通过'
+            });
+
+        } catch (err) {
+            console.error('验证查询错误:', err);
+            res.status(500).json({ error: '验证失败', details: err.message });
+        }
+    });
+
+
+
+
+    // 1. 提交联系表单 (ContactUs 使用) 用户留言
+    app.post('/api/CodeDatabase/submitContact', async (req, res) => {
+        const { requestername, contact, description } = req.body;
+
+        if (!requestername || !description) {
+            return res.status(400).json({ success: false, message: '姓名和描述不能为空' });
         }
 
-        const pool = await getPool();
+        try {
+            await poolConnect;
+            const request = new sql.Request(pool);
 
-        // 1. 解析混淆码得到真实 ID
-        const realId = await getIdFromSafeCode(code, pool);
-
-        if (!realId) {
-            return res.status(404).json({ error: '无效的校验码或数据不存在' });
-        }
-
-        // 2. 根据真实 ID 查询数据
-        const request = pool.request();
-        const result = await request
-            .input('Id', sql.Int, realId)
-            .query(`SELECT * FROM RdpgCode.dbo.CodeDatabase WHERE Id = @Id`);
-
-        if (result.recordset.length === 0) {
-            return res.status(404).json({ error: '数据不存在' });
-        }
-
-        // 3. 返回数据 (同时也返回当前的 safeCode 供前端确认)
-        const row = result.recordset[0];
-        const safeCode = await generateSafeCodeFromId(row.Id, pool);
-
-        res.json({
-            success: true,
-            data: { ...row, safeCode },
-            message: '验证通过'
-        });
-
-    } catch (err) {
-        console.error('验证查询错误:', err);
-        res.status(500).json({ error: '验证失败', details: err.message });
-    }
-});
-
-
-
-
-// 1. 提交联系表单 (ContactUs 使用) 用户留言
-app.post('/api/CodeDatabase/submitContact', async (req, res) => {
-    const { requestername, contact, description } = req.body;
-
-    if (!requestername || !description) {
-        return res.status(400).json({ success: false, message: '姓名和描述不能为空' });
-    }
-
-    try {
-        await poolConnect;
-        const request = new sql.Request(pool);
-
-        // 插入数据
-        const result = await request
-            .input('requestername', sql.NVarChar(50), requestername)
-            .input('contact', sql.NVarChar(50), contact || null)
-            .input('description', sql.NVarChar(sql.MAX), description)
-            .query(`
+            // 插入数据
+            const result = await request
+                .input('requestername', sql.NVarChar(50), requestername)
+                .input('contact', sql.NVarChar(50), contact || null)
+                .input('description', sql.NVarChar(sql.MAX), description)
+                .query(`
                 INSERT INTO RdpgCode.dbo.CqrdpgBusiness (requestername, contact, description, isread, submitted)
                 VALUES (@requestername, @contact, @description, 0, GETDATE());
                 SELECT SCOPE_IDENTITY() as newId;
             `);
 
-        const newId = result.recordset[0].newId;
+            const newId = result.recordset[0].newId;
 
-        // 🔥 实时通知所有连接的管理端用户
-        const newMessage = {
-            id: parseInt(newId),
-            requestername,
-            contact: contact || '未提供',
-            description,
-            isread: 0,
-            submitted: new Date().toISOString(),
-            responded: null
-        };
+            // 🔥 实时通知所有连接的管理端用户
+            const newMessage = {
+                id: parseInt(newId),
+                requestername,
+                contact: contact || '未提供',
+                description,
+                isread: 0,
+                submitted: new Date().toISOString(),
+                responded: null
+            };
 
-        io.emit('new_message_received', newMessage);
+            io.emit('new_message_received', newMessage);
 
-        res.json({ success: true, message: '提交成功', id: newId });
-    } catch (err) {
-        console.error('数据库插入错误:', err);
-        res.status(500).json({ success: false, message: '服务器内部错误', error: err.message });
-    }
-});
+            res.json({ success: true, message: '提交成功', id: newId });
+        } catch (err) {
+            console.error('数据库插入错误:', err);
+            res.status(500).json({ success: false, message: '服务器内部错误', error: err.message });
+        }
+    });
 
-// 2. 获取消息列表 (MessageManagement 初始化使用，作为 Socket 的备用或初始加载) 管理员查看列表。
-app.get('/api/CodeDatabase/getMessages', async (req, res) => {
-    try {
-        await poolConnect;
-        const result = await pool.request()
-            .query('SELECT * FROM RdpgCode.dbo.CqrdpgBusiness ORDER BY submitted DESC');
+    // 2. 获取消息列表 (MessageManagement 初始化使用，作为 Socket 的备用或初始加载) 管理员查看列表。
+    app.get('/api/CodeDatabase/getMessages', async (req, res) => {
+        try {
+            await poolConnect;
+            const result = await pool.request()
+                .query('SELECT * FROM RdpgCode.dbo.CqrdpgBusiness ORDER BY submitted DESC');
 
-        res.json({ success: true, data: result.recordset });
-    } catch (err) {
-        console.error('获取消息列表错误:', err);
-        res.status(500).json({ success: false, message: '获取数据失败' });
-    }
-});
+            res.json({ success: true, data: result.recordset });
+        } catch (err) {
+            console.error('获取消息列表错误:', err);
+            res.status(500).json({ success: false, message: '获取数据失败' });
+        }
+    });
 
-// 3. 标记为已读 (可选功能) 管理员修改状态。
-app.put('/api/CodeDatabase/markAsRead/:id', async (req, res) => {
-    const { id } = req.params;
-    try {
-        await poolConnect;
-        await pool.request()
-            .input('id', sql.Int, id)
-            .query('UPDATE RdpgCode.dbo.CqrdpgBusiness SET isread = 1, responded = GETDATE() WHERE id = @id');
+    // 3. 标记为已读 (可选功能) 管理员修改状态。
+    app.put('/api/CodeDatabase/markAsRead/:id', async (req, res) => {
+        const { id } = req.params;
+        try {
+            await poolConnect;
+            await pool.request()
+                .input('id', sql.Int, id)
+                .query('UPDATE RdpgCode.dbo.CqrdpgBusiness SET isread = 1, responded = GETDATE() WHERE id = @id');
 
-        // 通知前端列表更新
-        io.emit('message_updated', { id: parseInt(id), isread: 1, responded: new Date().toISOString() });
+            // 通知前端列表更新
+            io.emit('message_updated', { id: parseInt(id), isread: 1, responded: new Date().toISOString() });
 
-        res.json({ success: true });
-    } catch (err) {
-        res.status(500).json({ success: false, error: err.message });
-    }
-});
- 
+            res.json({ success: true });
+        } catch (err) {
+            res.status(500).json({ success: false, error: err.message });
+        }
+    });
 
-// 4. 删除留言 (新增代码)
-app.delete('/api/CodeDatabase/deleteMessage/:id', async (req, res) => {
-    const { id } = req.params;
-    
-    if (!id) {
-        return res.status(400).json({ success: false, message: 'ID 不能为空' });
-    }
 
-    try {
-        await poolConnect;
-        const request = new sql.Request(pool);
-        
-        // 执行删除操作
-        const result = await request
-            .input('id', sql.Int, parseInt(id))
-            .query('DELETE FROM RdpgCode.dbo.CqrdpgBusiness WHERE id = @id');
+    // 4. 删除留言 (新增代码)
+    app.delete('/api/CodeDatabase/deleteMessage/:id', async (req, res) => {
+        const { id } = req.params;
 
-        // 如果影响行数为 0，说明没找到该 ID
-        if (result.rowsAffected[0] === 0) {
-            return res.status(404).json({ success: false, message: '未找到该留言' });
+        if (!id) {
+            return res.status(400).json({ success: false, message: 'ID 不能为空' });
         }
 
-        // 🔥 实时通知所有前端：这条消息被删除了，需要从列表中移除
-        io.emit('message_deleted', { id: parseInt(id) });
+        try {
+            await poolConnect;
+            const request = new sql.Request(pool);
 
-        res.json({ success: true, message: '删除成功' });
-    } catch (err) {
-        console.error('删除消息错误:', err);
-        res.status(500).json({ success: false, message: '服务器内部错误', error: err.message });
-    }
-});
- 
+            // 执行删除操作
+            const result = await request
+                .input('id', sql.Int, parseInt(id))
+                .query('DELETE FROM RdpgCode.dbo.CqrdpgBusiness WHERE id = @id');
 
+            // 如果影响行数为 0，说明没找到该 ID
+            if (result.rowsAffected[0] === 0) {
+                return res.status(404).json({ success: false, message: '未找到该留言' });
+            }
 
-{ //监控 www.cqrdpg.com 用户访问网站数据
-// ==========================================
-// 1. 接收监控数据的 API
-// ==========================================
-app.post('/api/website/record', async (req, res) => {
-    try {
-        const { visitor_id, session_id, current_url, referrer_url, entry_url, user_agent } = req.body;
-        
-        // 获取 IP
-        const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() || 
-                   req.headers['x-real-ip'] || 
-                   req.connection.remoteAddress || 
-                   req.socket.remoteAddress ||
-                   '127.0.0.1';
+            // 🔥 实时通知所有前端：这条消息被删除了，需要从列表中移除
+            io.emit('message_deleted', { id: parseInt(id) });
 
-        if (!visitor_id || !session_id || !current_url) {
-            return res.status(400).json({ error: 'Missing required fields' });
+            res.json({ success: true, message: '删除成功' });
+        } catch (err) {
+            console.error('删除消息错误:', err);
+            res.status(500).json({ success: false, message: '服务器内部错误', error: err.message });
         }
+    });
 
-        // 创建新的 Request 对象
-        const request = new sql.Request(pool);
-        
-        // ⚠️ 关键修复：使用 .input() 显式声明每个参数的类型
-        request.input('visitorid', sql.NVarChar(64), visitor_id);
-        request.input('sessionid', sql.NVarChar(64), session_id);
-        request.input('ipaddress', sql.NVarChar(45), ip);
-        request.input('currenturl', sql.NVarChar(2048), current_url);
-        request.input('referrerurl', sql.NVarChar(2048), referrer_url || null);
-        request.input('entryurl', sql.NVarChar(2048), entry_url || current_url);
-        request.input('useragent', sql.NVarChar(1024), user_agent);
 
-        // 执行插入
-        const query = `
+
+    { //监控 www.cqrdpg.com 用户访问网站数据
+        // ==========================================
+        // 1. 接收监控数据的 API
+        // ==========================================
+        app.post('/api/website/record', async (req, res) => {
+            try {
+                const { visitor_id, session_id, current_url, referrer_url, entry_url, user_agent } = req.body;
+
+                // 获取 IP
+                const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() ||
+                    req.headers['x-real-ip'] ||
+                    req.connection.remoteAddress ||
+                    req.socket.remoteAddress ||
+                    '127.0.0.1';
+
+                if (!visitor_id || !session_id || !current_url) {
+                    return res.status(400).json({ error: 'Missing required fields' });
+                }
+
+                // 创建新的 Request 对象
+                const request = new sql.Request(pool);
+
+                // ⚠️ 关键修复：使用 .input() 显式声明每个参数的类型
+                request.input('visitorid', sql.NVarChar(64), visitor_id);
+                request.input('sessionid', sql.NVarChar(64), session_id);
+                request.input('ipaddress', sql.NVarChar(45), ip);
+                request.input('currenturl', sql.NVarChar(2048), current_url);
+                request.input('referrerurl', sql.NVarChar(2048), referrer_url || null);
+                request.input('entryurl', sql.NVarChar(2048), entry_url || current_url);
+                request.input('useragent', sql.NVarChar(1024), user_agent);
+
+                // 执行插入
+                const query = `
             INSERT INTO RdpgCode.dbo.WebsiteRecord 
             (visitorid, sessionid, ipaddress, currenturl, referrerurl, entryurl, useragent, visittime, isbounce, stayduration)
             VALUES 
             (@visitorid, @sessionid, @ipaddress, @currenturl, @referrerurl, @entryurl, @useragent, GETDATE(), 1, 0)
         `;
 
-        await request.query(query);
+                await request.query(query);
 
-        res.status(200).json({ success: true });
+                res.status(200).json({ success: true });
 
-        // 触发实时广播
-        broadcastStats();
+                // 触发实时广播
+                broadcastStats();
 
-    } catch (err) {
-        console.error('❌ Error recording visit:', err);
-        res.status(500).json({ error: 'Database error', details: err.message });
-    }
-});
+            } catch (err) {
+                console.error('❌ Error recording visit:', err);
+                res.status(500).json({ error: 'Database error', details: err.message });
+            }
+        });
 
-// ==========================================
-// 2. 获取初始历史数据的 API
-// ==========================================
-app.get('/api/website/stats', async (req, res) => {
-    try {
-        const stats = await calculateStats();
-        res.json(stats);
-    } catch (err) {
-        console.error('Error fetching stats:', err);
-        res.status(500).json({ error: 'Failed to fetch stats' });
-    }
-});
-// ==========================================
-// 3. 核心统计逻辑 (SQL 聚合查询)
-// ==========================================
-async function calculateStats() {
-    const now = new Date();
-    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const yesterdayStart = new Date(todayStart);
-    yesterdayStart.setDate(yesterdayStart.getDate() - 1);
-    const fifteenMinsAgo = new Date(now.getTime() - 15 * 60 * 1000);
+        // ==========================================
+        // 2. 获取初始历史数据的 API
+        // ==========================================
+        app.get('/api/website/stats', async (req, res) => {
+            try {
+                const stats = await calculateStats();
+                res.json(stats);
+            } catch (err) {
+                console.error('Error fetching stats:', err);
+                res.status(500).json({ error: 'Failed to fetch stats' });
+            }
+        });
+        // ==========================================
+        // 3. 核心统计逻辑 (SQL 聚合查询)
+        // ==========================================
+        async function calculateStats() {
+            const now = new Date();
+            const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const yesterdayStart = new Date(todayStart);
+            yesterdayStart.setDate(yesterdayStart.getDate() - 1);
+            const fifteenMinsAgo = new Date(now.getTime() - 15 * 60 * 1000);
 
-    try {
-        // --- 1. 最近 15 分钟活跃访客 ---
-        const req1 = new sql.Request(pool);
-        req1.input('fifteenMinsAgo', sql.DateTime2, fifteenMinsAgo);
-        const recentActiveRes = await req1.query(`SELECT COUNT(DISTINCT visitorid) as count FROM RdpgCode.dbo.WebsiteRecord WHERE visittime > @fifteenMinsAgo`);
+            try {
+                // --- 1. 最近 15 分钟活跃访客 ---
+                const req1 = new sql.Request(pool);
+                req1.input('fifteenMinsAgo', sql.DateTime2, fifteenMinsAgo);
+                const recentActiveRes = await req1.query(`SELECT COUNT(DISTINCT visitorid) as count FROM RdpgCode.dbo.WebsiteRecord WHERE visittime > @fifteenMinsAgo`);
 
-        // --- 2. 今日数据 ---
-        const req2 = new sql.Request(pool);
-        req2.input('todayStart', sql.DateTime2, todayStart);
-        const todayRes = await req2.query(`SELECT COUNT(DISTINCT ipaddress) as ip, COUNT(*) as pv, COUNT(DISTINCT visitorid) as uv, COUNT(DISTINCT sessionid) as sessions FROM RdpgCode.dbo.WebsiteRecord WHERE visittime >= @todayStart`);
+                // --- 2. 今日数据 ---
+                const req2 = new sql.Request(pool);
+                req2.input('todayStart', sql.DateTime2, todayStart);
+                const todayRes = await req2.query(`SELECT COUNT(DISTINCT ipaddress) as ip, COUNT(*) as pv, COUNT(DISTINCT visitorid) as uv, COUNT(DISTINCT sessionid) as sessions FROM RdpgCode.dbo.WebsiteRecord WHERE visittime >= @todayStart`);
 
-        // --- 3. 昨日数据 ---
-        const req3 = new sql.Request(pool);
-        req3.input('yesterdayStart', sql.DateTime2, yesterdayStart);
-        req3.input('todayStart', sql.DateTime2, todayStart);
-        const yesterdayRes = await req3.query(`SELECT COUNT(DISTINCT ipaddress) as ip, COUNT(*) as pv, COUNT(DISTINCT visitorid) as uv, COUNT(DISTINCT sessionid) as sessions FROM RdpgCode.dbo.WebsiteRecord WHERE visittime >= @yesterdayStart AND visittime < @todayStart`);
+                // --- 3. 昨日数据 ---
+                const req3 = new sql.Request(pool);
+                req3.input('yesterdayStart', sql.DateTime2, yesterdayStart);
+                req3.input('todayStart', sql.DateTime2, todayStart);
+                const yesterdayRes = await req3.query(`SELECT COUNT(DISTINCT ipaddress) as ip, COUNT(*) as pv, COUNT(DISTINCT visitorid) as uv, COUNT(DISTINCT sessionid) as sessions FROM RdpgCode.dbo.WebsiteRecord WHERE visittime >= @yesterdayStart AND visittime < @todayStart`);
 
-        // --- 4. 跳出率 ---
-        const req4 = new sql.Request(pool);
-        req4.input('todayStart', sql.DateTime2, todayStart);
-        const bounceRes = await req4.query(`WITH SessionCounts AS (SELECT sessionid, COUNT(*) as cnt FROM RdpgCode.dbo.WebsiteRecord WHERE visittime >= @todayStart GROUP BY sessionid) SELECT SUM(CASE WHEN cnt = 1 THEN 1 ELSE 0 END) * 1.0 / COUNT(*) as rate FROM SessionCounts`);
-        
-        const bounceRateVal = bounceRes.recordset[0].rate;
-        const bounceRate = bounceRateVal ? (bounceRateVal * 100).toFixed(2) + '%' : '0.00%';
+                // --- 4. 跳出率 ---
+                const req4 = new sql.Request(pool);
+                req4.input('todayStart', sql.DateTime2, todayStart);
+                const bounceRes = await req4.query(`WITH SessionCounts AS (SELECT sessionid, COUNT(*) as cnt FROM RdpgCode.dbo.WebsiteRecord WHERE visittime >= @todayStart GROUP BY sessionid) SELECT SUM(CASE WHEN cnt = 1 THEN 1 ELSE 0 END) * 1.0 / COUNT(*) as rate FROM SessionCounts`);
 
-        // --- 5. 来路 Top 5 ---
-        const req5 = new sql.Request(pool);
-        req5.input('todayStart', sql.DateTime2, todayStart);
-        const referrersRes = await req5.query(`SELECT TOP 5 ISNULL(NULLIF(referrerurl, ''), '直接输入网址访问') as name, COUNT(DISTINCT visitorid) as count FROM RdpgCode.dbo.WebsiteRecord WHERE visittime >= @todayStart GROUP BY referrerurl ORDER BY count DESC`);
+                const bounceRateVal = bounceRes.recordset[0].rate;
+                const bounceRate = bounceRateVal ? (bounceRateVal * 100).toFixed(2) + '%' : '0.00%';
 
-        // --- 6. 受访页 Top 7 ---
-        const req6 = new sql.Request(pool);
-        req6.input('todayStart', sql.DateTime2, todayStart);
-        const landingRes = await req6.query(`SELECT TOP 7 currenturl as url, COUNT(*) as count FROM RdpgCode.dbo.WebsiteRecord WHERE visittime >= @todayStart GROUP BY currenturl ORDER BY count DESC`);
+                // --- 5. 来路 Top 5 ---
+                const req5 = new sql.Request(pool);
+                req5.input('todayStart', sql.DateTime2, todayStart);
+                const referrersRes = await req5.query(`SELECT TOP 5 ISNULL(NULLIF(referrerurl, ''), '直接输入网址访问') as name, COUNT(DISTINCT visitorid) as count FROM RdpgCode.dbo.WebsiteRecord WHERE visittime >= @todayStart GROUP BY referrerurl ORDER BY count DESC`);
 
-        // --- 7. 入口页 Top 7 ---
-        const req7 = new sql.Request(pool);
-        req7.input('todayStart', sql.DateTime2, todayStart);
-        const entryRes = await req7.query(`WITH RankedEntries AS (SELECT sessionid, currenturl, ROW_NUMBER() OVER (PARTITION BY sessionid ORDER BY visittime ASC) as rn FROM RdpgCode.dbo.WebsiteRecord WHERE visittime >= @todayStart) SELECT TOP 7 currenturl as url, COUNT(*) as count FROM RankedEntries WHERE rn = 1 GROUP BY currenturl ORDER BY count DESC`);
- // --- 新增：今日新老访客统计 ---
-        // 逻辑：如果一个 visitorid 在今天之前 (visittime < @todayStart) 出现过，则是老用户，否则是新用户
-        const reqNewToday = new sql.Request(pool);
-        reqNewToday.input('todayStart', sql.DateTime2, todayStart);
-        
-        const sqlNewToday = `
+                // --- 6. 受访页 Top 7 ---
+                const req6 = new sql.Request(pool);
+                req6.input('todayStart', sql.DateTime2, todayStart);
+                const landingRes = await req6.query(`SELECT TOP 7 currenturl as url, COUNT(*) as count FROM RdpgCode.dbo.WebsiteRecord WHERE visittime >= @todayStart GROUP BY currenturl ORDER BY count DESC`);
+
+                // --- 7. 入口页 Top 7 ---
+                const req7 = new sql.Request(pool);
+                req7.input('todayStart', sql.DateTime2, todayStart);
+                const entryRes = await req7.query(`WITH RankedEntries AS (SELECT sessionid, currenturl, ROW_NUMBER() OVER (PARTITION BY sessionid ORDER BY visittime ASC) as rn FROM RdpgCode.dbo.WebsiteRecord WHERE visittime >= @todayStart) SELECT TOP 7 currenturl as url, COUNT(*) as count FROM RankedEntries WHERE rn = 1 GROUP BY currenturl ORDER BY count DESC`);
+                // --- 新增：今日新老访客统计 ---
+                // 逻辑：如果一个 visitorid 在今天之前 (visittime < @todayStart) 出现过，则是老用户，否则是新用户
+                const reqNewToday = new sql.Request(pool);
+                reqNewToday.input('todayStart', sql.DateTime2, todayStart);
+
+                const sqlNewToday = `
             SELECT 
                 SUM(CASE WHEN HasHistory = 1 THEN 1 ELSE 0 END) as returning,
                 SUM(CASE WHEN HasHistory = 0 THEN 1 ELSE 0 END) as new
@@ -14693,9 +14693,9 @@ async function calculateStats() {
                 GROUP BY visitorid
             ) as UserStatus
         `;
-        // 注意：上面的子查询逻辑可能在大表上较慢，优化版逻辑如下（使用 LEFT JOIN 思想）：
-        // 更高效的写法：先找出今日所有 UV，再左连接历史数据
-        const sqlNewTodayOptimized = `
+                // 注意：上面的子查询逻辑可能在大表上较慢，优化版逻辑如下（使用 LEFT JOIN 思想）：
+                // 更高效的写法：先找出今日所有 UV，再左连接历史数据
+                const sqlNewTodayOptimized = `
             WITH TodayUsers AS (
                 SELECT DISTINCT visitorid FROM RdpgCode.dbo.WebsiteRecord WHERE visittime >= @todayStart
             ),
@@ -14715,16 +14715,16 @@ async function calculateStats() {
             FROM HistoryCheck
         `;
 
-        const todayUserRes = await reqNewToday.query(sqlNewTodayOptimized);
-        const todayNewUsers = todayUserRes.recordset[0].new || 0;
-        const todayReturningUsers = todayUserRes.recordset[0].returning || 0;
+                const todayUserRes = await reqNewToday.query(sqlNewTodayOptimized);
+                const todayNewUsers = todayUserRes.recordset[0].new || 0;
+                const todayReturningUsers = todayUserRes.recordset[0].returning || 0;
 
-        // --- 新增：昨日新老访客统计 ---
-        const reqNewYesterday = new sql.Request(pool);
-        reqNewYesterday.input('yesterdayStart', sql.DateTime2, yesterdayStart);
-        reqNewYesterday.input('todayStart', sql.DateTime2, todayStart);
+                // --- 新增：昨日新老访客统计 ---
+                const reqNewYesterday = new sql.Request(pool);
+                reqNewYesterday.input('yesterdayStart', sql.DateTime2, yesterdayStart);
+                reqNewYesterday.input('todayStart', sql.DateTime2, todayStart);
 
-        const sqlNewYesterdayOptimized = `
+                const sqlNewYesterdayOptimized = `
             WITH YesterdayUsers AS (
                 SELECT DISTINCT visitorid FROM RdpgCode.dbo.WebsiteRecord 
                 WHERE visittime >= @yesterdayStart AND visittime < @todayStart
@@ -14745,86 +14745,256 @@ async function calculateStats() {
             FROM HistoryCheck
         `;
 
-        const yesterdayUserRes = await reqNewYesterday.query(sqlNewYesterdayOptimized);
-        const yesterdayNewUsers = yesterdayUserRes.recordset[0].new || 0;
-        const yesterdayReturningUsers = yesterdayUserRes.recordset[0].returning || 0;
-        // --- 8. 趋势分析 ---
-        const req8 = new sql.Request(pool);
-        req8.input('todayStart', sql.DateTime2, todayStart);
-        const trendRes = await req8.query(`SELECT DATEPART(HOUR, visittime) as hour, COUNT(*) as pv FROM RdpgCode.dbo.WebsiteRecord WHERE visittime >= @todayStart GROUP BY DATEPART(HOUR, visittime) ORDER BY hour`);
-        
-        const trendData = Array(24).fill(0);
-        if (trendRes.recordset) {
-            trendRes.recordset.forEach(row => {
-                if(row.hour >= 0 && row.hour < 24) trendData[row.hour] = row.pv;
-            });
-        }
+                const yesterdayUserRes = await reqNewYesterday.query(sqlNewYesterdayOptimized);
+                const yesterdayNewUsers = yesterdayUserRes.recordset[0].new || 0;
+                const yesterdayReturningUsers = yesterdayUserRes.recordset[0].returning || 0;
+                // --- 8. 趋势分析 ---
+                const req8 = new sql.Request(pool);
+                req8.input('todayStart', sql.DateTime2, todayStart);
+                const trendRes = await req8.query(`SELECT DATEPART(HOUR, visittime) as hour, COUNT(*) as pv FROM RdpgCode.dbo.WebsiteRecord WHERE visittime >= @todayStart GROUP BY DATEPART(HOUR, visittime) ORDER BY hour`);
+
+                const trendData = Array(24).fill(0);
+                if (trendRes.recordset) {
+                    trendRes.recordset.forEach(row => {
+                        if (row.hour >= 0 && row.hour < 24) trendData[row.hour] = row.pv;
+                    });
+                }
 
                 return {
-            recentActive: recentActiveRes.recordset[0].count || 0,
-            today: {
-                ip: todayRes.recordset[0].ip || 0,
-                pv: todayRes.recordset[0].pv || 0,
-                uv: todayRes.recordset[0].uv || 0,
-                sessions: todayRes.recordset[0].sessions || 0,
-                bounceRate: bounceRate,
-                avgTime: "00:02:37",
-                // 新增字段
-                newUsers: todayNewUsers,
-                returningUsers: todayReturningUsers
-            },
-            yesterday: {
-                ip: yesterdayRes.recordset[0].ip || 0,
-                pv: yesterdayRes.recordset[0].pv || 0,
-                uv: yesterdayRes.recordset[0].uv || 0,
-                sessions: yesterdayRes.recordset[0].sessions || 0,
-                bounceRate: "0.00%",
-                avgTime: "00:00:00",
-                // 新增字段
-                newUsers: yesterdayNewUsers,
-                returningUsers: yesterdayReturningUsers
-            },
-            // 新增：总计方便前端直接显示
-            totals: {
-                newUsers: todayNewUsers + yesterdayNewUsers, // 或者你只想显示今日的？这里暂且相加，前端可改
-                returningUsers: todayReturningUsers + yesterdayReturningUsers
-            },
-            referrers: referrersRes.recordset || [],
-            landingPages: landingRes.recordset || [],
-            entryPages: entryRes.recordset || [],
-            trend: trendData
-        };
+                    recentActive: recentActiveRes.recordset[0].count || 0,
+                    today: {
+                        ip: todayRes.recordset[0].ip || 0,
+                        pv: todayRes.recordset[0].pv || 0,
+                        uv: todayRes.recordset[0].uv || 0,
+                        sessions: todayRes.recordset[0].sessions || 0,
+                        bounceRate: bounceRate,
+                        avgTime: "00:02:37",
+                        // 新增字段
+                        newUsers: todayNewUsers,
+                        returningUsers: todayReturningUsers
+                    },
+                    yesterday: {
+                        ip: yesterdayRes.recordset[0].ip || 0,
+                        pv: yesterdayRes.recordset[0].pv || 0,
+                        uv: yesterdayRes.recordset[0].uv || 0,
+                        sessions: yesterdayRes.recordset[0].sessions || 0,
+                        bounceRate: "0.00%",
+                        avgTime: "00:00:00",
+                        // 新增字段
+                        newUsers: yesterdayNewUsers,
+                        returningUsers: yesterdayReturningUsers
+                    },
+                    // 新增：总计方便前端直接显示
+                    totals: {
+                        newUsers: todayNewUsers + yesterdayNewUsers, // 或者你只想显示今日的？这里暂且相加，前端可改
+                        returningUsers: todayReturningUsers + yesterdayReturningUsers
+                    },
+                    referrers: referrersRes.recordset || [],
+                    landingPages: landingRes.recordset || [],
+                    entryPages: entryRes.recordset || [],
+                    trend: trendData
+                };
 
-    } catch (err) {
-        console.error("❌ Detailed SQL Error in calculateStats:", err);
-        throw err;
-    }
-}
+            } catch (err) {
+                console.error("❌ Detailed SQL Error in calculateStats:", err);
+                throw err;
+            }
+        }
 
-// ==========================================
-// 4. Socket.io 实时广播逻辑
-// ==========================================
-async function broadcastStats() {
+        // ==========================================
+        // 4. Socket.io 实时广播逻辑
+        // ==========================================
+        async function broadcastStats() {
+            try {
+                const stats = await calculateStats();
+                io.emit('stats-update', stats);
+            } catch (err) {
+                console.error('Error broadcasting stats:', err);
+            }
+        }
+
+
+        //网站建议 //www.cqrdpg.com网站建议 意见反馈
+
+
+// 辅助函数：格式化日期
+const formatDate = (dateObj) => {
+    if (!dateObj) return '';
+    const d = new Date(dateObj);
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+};
+
+// 辅助函数：解析 UA
+const parseUserAgent = (ua) => {
+    if (!ua) return 'Unknown';
+    let browser = 'Other';
+    let os = 'Unknown';
+    if (ua.includes('Edg/')) browser = `Edge${ua.match(/Edg\/([\d.]+)/)?.[1]?.split('.')[0] || ''}`;
+    else if (ua.includes('Chrome/')) browser = 'Chrome';
+    else if (ua.includes('Huawei')) browser = 'Huawei Browser';
+    
+    if (ua.includes('Windows NT 10')) os = 'Windows 10';
+    else if (ua.includes('Windows NT 11')) os = 'Windows 11';
+    else if (ua.includes('iOS')) os = 'iOS';
+    else if (ua.includes('OpenHarmony')) os = 'OpenHarmony';
+    
+    return `${browser} | ${os}`;
+};
+
+// 【核心修改】获取评论列表并组装成树形结构
+app.get('/api/suggestion/list', async (req, res) => {
     try {
-        const stats = await calculateStats();
-        io.emit('stats-update', stats);
+        await poolConnect;
+        const request = new sql.Request(pool);
+        
+        // 获取所有评论，按时间正序排列（方便组装树，或者倒序也行，看需求）
+        // 这里为了展示“最新在前”，我们先查出来，组装好树后再排序根节点
+        const result = await request.query(`
+            SELECT id, content, authorname, authoremail, authortelephone, useragent, ipaddress, parentid, likes, createdat 
+            FROM RdpgCode.dbo.Suggestion 
+            ORDER BY createdat ASC 
+        `);
+
+        const rows = result.recordset;
+        const commentMap = new Map();
+        const rootComments = [];
+
+        // 1. 初始化所有节点，建立映射
+        rows.forEach(row => {
+            const node = {
+                id: row.id,
+                author: row.authorname || '匿名',
+                date: formatDate(row.createdat),
+                browser: parseUserAgent(row.useragent),
+                content: row.content,
+                likes: row.likes || 0,
+                parentId: row.parentid,
+                replies: [] // 初始化为空数组
+            };
+            commentMap.set(node.id, node);
+        });
+
+        // 2. 组装树形结构
+        rows.forEach(row => {
+            const node = commentMap.get(row.id);
+            if (row.parentid === null || row.parentid === undefined) {
+                // 根节点
+                rootComments.push(node);
+            } else {
+                // 子节点：找到父节点并加入其 replies 数组
+                const parent = commentMap.get(row.parentid);
+                if (parent) {
+                    parent.replies.push(node);
+                } else {
+                    // 如果父节点不存在（可能被删除了），暂时提升为根节点或忽略
+                    rootComments.push(node);
+                }
+            }
+        });
+
+        // 3. 对根节点进行排序（默认最新在前）
+        rootComments.sort((a, b) => new Date(b.date) - new Date(a.date));
+        
+        // 注意：子节点 (replies) 目前是按插入顺序 (createdat ASC) 排列的。
+        // 如果你希望子评论也是最新的在最上面，可以在 push 之前对 rows 排序，或者在这里对每个 node.replies 排序。
+        // 这里我们对每个节点的回复也按时间倒序排序
+        const sortRepliesRecursive = (nodes) => {
+            nodes.sort((a, b) => new Date(b.date) - new Date(a.date));
+            nodes.forEach(node => {
+                if (node.replies && node.replies.length > 0) {
+                    sortRepliesRecursive(node.replies);
+                }
+            });
+        };
+        sortRepliesRecursive(rootComments);
+
+        res.json(rootComments);
     } catch (err) {
-        console.error('Error broadcasting stats:', err);
+        console.error('Error fetching suggestions tree:', err);
+        res.status(500).json({ error: 'Failed to fetch comments' });
     }
-}
-
-io.on('connection', (socket) => {
-    console.log('Client connected:', socket.id);
-    calculateStats().then(stats => {
-        socket.emit('stats-update', stats);
-    }).catch(err => console.error('Initial stats fetch failed:', err));
-
-    socket.on('disconnect', () => {
-        console.log('Client disconnected:', socket.id);
-    });
 });
 
-}
+// 提交评论 API (保持不变，支持 parentid 即可)
+app.post('/api/suggestion', async (req, res) => {
+    const { content, authorname, authoremail, authortelephone, parentid } = req.body;
+
+    if (!content || content.trim() === '') {
+        return res.status(400).json({ error: '评论内容不能为空' });
+    }
+
+    try {
+        await poolConnect;
+        const request = new sql.Request(pool);
+
+        const realIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress || '0.0.0.0';
+        const realUa = req.headers['user-agent'] || 'Unknown';
+        const finalAuthor = authorname && authorname.trim() !== '' ? authorname.trim() : '匿名';
+
+        const insertQuery = `
+            INSERT INTO RdpgCode.dbo.Suggestion 
+            (content, authorname, authoremail, authortelephone, useragent, ipaddress, parentid, likes, createdat)
+            VALUES 
+            (@content, @authorname, @authoremail, @authortelephone, @useragent, @ipaddress, @parentid, 0, GETDATE())
+        `;
+
+        request.input('content', sql.NVarChar, content);
+        request.input('authorname', sql.NVarChar, finalAuthor);
+        request.input('authoremail', sql.NVarChar, authoremail || null);
+        request.input('authortelephone', sql.NVarChar, authortelephone || null);
+        request.input('useragent', sql.NVarChar, realUa);
+        request.input('ipaddress', sql.VarChar, realIp);
+        request.input('parentid', sql.Int, parentid || null);
+
+        await request.query(insertQuery);
+
+        // 广播刷新信号
+        io.emit('refresh_comments'); 
+
+        res.json({ success: true });
+    } catch (err) {
+        console.error('Error posting suggestion:', err);
+        res.status(500).json({ error: 'Failed to post comment' });
+    }
+});
+
+// 点赞 API
+app.post('/api/suggestion/like', async (req, res) => {
+    const { id } = req.body;
+    if (!id) return res.status(400).json({ error: 'ID required' });
+    try {
+        await poolConnect;
+        const request = new sql.Request(pool);
+        await request.query(`UPDATE RdpgCode.dbo.Suggestion SET likes = likes + 1 WHERE id = @id`, {
+            input: 'id', value: id
+        });
+        io.emit('refresh_comments'); // 简单起见，点赞也触发刷新，或者可以单独优化
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: 'Like failed' });
+    }
+});
+
+
+
+        io.on('connection', (socket) => {
+            // 1. 客户端连接成功时，打印连接的客户端ID（用于调试）
+            // console.log('Client connected:', socket.id);
+
+            // 2. 客户端刚连接时，立即计算并推送最新的统计数据给该客户端
+            calculateStats().then(stats => {
+                socket.emit('stats-update', stats); // 向当前连接的客户端发送统计数据
+            }).catch(err => console.error('Initial stats fetch failed:', err));
+
+            // 3. 客户端断开连接时，打印断开的客户端ID（用于调试）
+            socket.on('disconnect', () => {
+                //     console.log('Client disconnected:', socket.id);
+            });
+        });
+
+
+
+    }
 
 }
 

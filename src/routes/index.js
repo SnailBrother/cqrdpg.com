@@ -8,6 +8,7 @@ import ProtectedRoute from './ProtectedRoute';
 // 导入基础页面组件
 //import Home from '../pages/home';
 import Home from '../pages/cqrdpg/pages/Home';
+import Suggestion from '../pages/cqrdpg/pages/Suggestion';
 import ModuleSelect from '../pages/modules/Select';
 import ModuleLayout from '../pages/modules/ModuleLayout';
 //import Login from '../pages/user/login';
@@ -88,7 +89,7 @@ const AppRoutes = () => {
 
   return (
     <Routes>
-      {/* 公开路由 */}  
+      {/* 公开路由 */}
 
       <Route
         path="/login"
@@ -103,11 +104,15 @@ const AppRoutes = () => {
         }
       />
       <Route
+        path="/suggestion"
+        element={<Suggestion />}
+      />
+      <Route
         path="/home"
         element={<Home />}
-        // element={
-        //   isAuthenticated ? <Home /> : <Navigate to="/login" replace />
-        // }
+      // element={
+      //   isAuthenticated ? <Home /> : <Navigate to="/login" replace />
+      // }
       />
       <Route
         path="/app/office/reportqrcodepage"
@@ -119,9 +124,10 @@ const AppRoutes = () => {
         path="/app/office/LookHousePricePicture"
         element={<OfficeLookHousePricePicture />}
       />
-      
-        {/* 二维码查验页面 (通常不需要登录也能看，或者根据需要调整) */}
-        <Route path="/codecheck/:code" element={<CodeCheck />} />
+
+      {/* 二维码查验页面 (通常不需要登录也能看，或者根据需要调整) */}
+      <Route path="/codecheck/:code" element={<CodeCheck />} />
+
 
 
 
