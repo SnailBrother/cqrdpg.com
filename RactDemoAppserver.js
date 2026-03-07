@@ -14676,7 +14676,78 @@ async function calculateStats() {
         const req7 = new sql.Request(pool);
         req7.input('todayStart', sql.DateTime2, todayStart);
         const entryRes = await req7.query(`WITH RankedEntries AS (SELECT sessionid, currenturl, ROW_NUMBER() OVER (PARTITION BY sessionid ORDER BY visittime ASC) as rn FROM RdpgCode.dbo.WebsiteRecord WHERE visittime >= @todayStart) SELECT TOP 7 currenturl as url, COUNT(*) as count FROM RankedEntries WHERE rn = 1 GROUP BY currenturl ORDER BY count DESC`);
+ // --- 新增：今日新老访客统计 ---
+        // 逻辑：如果一个 visitorid 在今天之前 (visittime < @todayStart) 出现过，则是老用户，否则是新用户
+        const reqNewToday = new sql.Request(pool);
+        reqNewToday.input('todayStart', sql.DateTime2, todayStart);
+        
+        const sqlNewToday = `
+            SELECT 
+                SUM(CASE WHEN HasHistory = 1 THEN 1 ELSE 0 END) as returning,
+                SUM(CASE WHEN HasHistory = 0 THEN 1 ELSE 0 END) as new
+            FROM (
+                SELECT DISTINCT visitorid, 
+                    CASE WHEN MIN(visittime) < @todayStart THEN 1 ELSE 0 END as HasHistory
+                FROM RdpgCode.dbo.WebsiteRecord
+                WHERE visitorid IN (SELECT DISTINCT visitorid FROM RdpgCode.dbo.WebsiteRecord WHERE visittime >= @todayStart)
+                GROUP BY visitorid
+            ) as UserStatus
+        `;
+        // 注意：上面的子查询逻辑可能在大表上较慢，优化版逻辑如下（使用 LEFT JOIN 思想）：
+        // 更高效的写法：先找出今日所有 UV，再左连接历史数据
+        const sqlNewTodayOptimized = `
+            WITH TodayUsers AS (
+                SELECT DISTINCT visitorid FROM RdpgCode.dbo.WebsiteRecord WHERE visittime >= @todayStart
+            ),
+            HistoryCheck AS (
+                SELECT T.visitorid, 
+                       CASE WHEN H.visitorid IS NOT NULL THEN 1 ELSE 0 END as IsReturning
+                FROM TodayUsers T
+                LEFT JOIN (
+                    SELECT DISTINCT visitorid 
+                    FROM RdpgCode.dbo.WebsiteRecord 
+                    WHERE visittime < @todayStart
+                ) H ON T.visitorid = H.visitorid
+            )
+            SELECT 
+                SUM(CASE WHEN IsReturning = 1 THEN 1 ELSE 0 END) as returning,
+                SUM(CASE WHEN IsReturning = 0 THEN 1 ELSE 0 END) as new
+            FROM HistoryCheck
+        `;
 
+        const todayUserRes = await reqNewToday.query(sqlNewTodayOptimized);
+        const todayNewUsers = todayUserRes.recordset[0].new || 0;
+        const todayReturningUsers = todayUserRes.recordset[0].returning || 0;
+
+        // --- 新增：昨日新老访客统计 ---
+        const reqNewYesterday = new sql.Request(pool);
+        reqNewYesterday.input('yesterdayStart', sql.DateTime2, yesterdayStart);
+        reqNewYesterday.input('todayStart', sql.DateTime2, todayStart);
+
+        const sqlNewYesterdayOptimized = `
+            WITH YesterdayUsers AS (
+                SELECT DISTINCT visitorid FROM RdpgCode.dbo.WebsiteRecord 
+                WHERE visittime >= @yesterdayStart AND visittime < @todayStart
+            ),
+            HistoryCheck AS (
+                SELECT Y.visitorid, 
+                       CASE WHEN H.visitorid IS NOT NULL THEN 1 ELSE 0 END as IsReturning
+                FROM YesterdayUsers Y
+                LEFT JOIN (
+                    SELECT DISTINCT visitorid 
+                    FROM RdpgCode.dbo.WebsiteRecord 
+                    WHERE visittime < @yesterdayStart
+                ) H ON Y.visitorid = H.visitorid
+            )
+            SELECT 
+                SUM(CASE WHEN IsReturning = 1 THEN 1 ELSE 0 END) as returning,
+                SUM(CASE WHEN IsReturning = 0 THEN 1 ELSE 0 END) as new
+            FROM HistoryCheck
+        `;
+
+        const yesterdayUserRes = await reqNewYesterday.query(sqlNewYesterdayOptimized);
+        const yesterdayNewUsers = yesterdayUserRes.recordset[0].new || 0;
+        const yesterdayReturningUsers = yesterdayUserRes.recordset[0].returning || 0;
         // --- 8. 趋势分析 ---
         const req8 = new sql.Request(pool);
         req8.input('todayStart', sql.DateTime2, todayStart);
@@ -14689,7 +14760,7 @@ async function calculateStats() {
             });
         }
 
-        return {
+                return {
             recentActive: recentActiveRes.recordset[0].count || 0,
             today: {
                 ip: todayRes.recordset[0].ip || 0,
@@ -14697,7 +14768,10 @@ async function calculateStats() {
                 uv: todayRes.recordset[0].uv || 0,
                 sessions: todayRes.recordset[0].sessions || 0,
                 bounceRate: bounceRate,
-                avgTime: "00:02:37"
+                avgTime: "00:02:37",
+                // 新增字段
+                newUsers: todayNewUsers,
+                returningUsers: todayReturningUsers
             },
             yesterday: {
                 ip: yesterdayRes.recordset[0].ip || 0,
@@ -14705,7 +14779,15 @@ async function calculateStats() {
                 uv: yesterdayRes.recordset[0].uv || 0,
                 sessions: yesterdayRes.recordset[0].sessions || 0,
                 bounceRate: "0.00%",
-                avgTime: "00:00:00"
+                avgTime: "00:00:00",
+                // 新增字段
+                newUsers: yesterdayNewUsers,
+                returningUsers: yesterdayReturningUsers
+            },
+            // 新增：总计方便前端直接显示
+            totals: {
+                newUsers: todayNewUsers + yesterdayNewUsers, // 或者你只想显示今日的？这里暂且相加，前端可改
+                returningUsers: todayReturningUsers + yesterdayReturningUsers
             },
             referrers: referrersRes.recordset || [],
             landingPages: landingRes.recordset || [],

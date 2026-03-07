@@ -4,8 +4,6 @@
   height: 100vh;
   display: flex;
   overflow: hidden;
-  /* 深色背景图，模拟参考代码的山脉背景，这里用渐变代替以防图片缺失 */
-  /* background: linear-gradient(135deg, #1a1a1e 0%, #16213e 50%, #0f3460 100%); */
   background-size: cover;
   position: relative;
   font-family: 'Microsoft YaHei', sans-serif;
@@ -16,29 +14,27 @@
 .leftBox {
   width: 250px;
   height: 100%;
-  /* 核心：深色半透明 + 毛玻璃模糊 */
   background-color: rgba(0, 0, 0, 0.075); 
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
   display: flex;
   flex-direction: column;
-  transition: width 0.5s ease;
+  transition: width 0.3s ease; /* 稍微加快过渡 */
   white-space: nowrap;
   position: relative;
   z-index: 10;
   box-shadow: 2px 0 10px rgba(0,0,0,0.3);
 }
 
-/* 折叠状态 */
 .leftBox.collapsed {
-  width: 70px; /* 只保留图标宽度 */
+  width: 70px;
 }
 
 .navList {
   list-style: none;
   width: 90%;
   margin: 25px auto;
-  flex: 1; /* 占据剩余空间，把用户信息挤到底部 */
+  flex: 1;
   padding: 0;
 }
 
@@ -55,24 +51,26 @@
   margin-bottom: 4px;
 }
 
-/* 图标样式 */
+/* 图标样式 - 适配 SVG */
 .navIcon {
-  font-size: 20px;
+  min-width: 24px; /* 防止 SVG 缩放 */
+  width: 24px;
+  height: 24px;
   margin-right: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
   color: #fff;
+  fill: currentColor; /* 继承文字颜色 */
 }
 
-/* 隐藏文字时的处理 */
+/* 折叠时的样式处理 */
 .leftBox.collapsed .navText,
 .leftBox.collapsed .userName,
 .leftBox.collapsed .userIcon {
   opacity: 0;
   pointer-events: none;
-  display: none; /* 彻底隐藏防止占位 */
+  display: none;
 }
 
 .leftBox.collapsed .navIcon {
@@ -86,22 +84,20 @@
   padding-left: 0;
 }
 
-/* 悬停效果 */
 .navItem:hover {
   background-color: rgba(255, 255, 255, 0.1);
   color: #fff;
 }
 
-/* 选中状态 */
 .navItem.active,
 .navItem.active:hover {
   background-color: rgba(255, 255, 255, 0.2);
   color: #fff;
-  font-weight: 600;
+ 
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
-/* 分割线 */
+
 .divider {
   width: 90%;
   margin: 18px auto;
@@ -109,11 +105,9 @@
   border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* 底部用户信息 */
 .userInfo {
   border-top: 1px solid rgba(255, 255, 255, 0.2);
   display: flex;
-  
   align-items: center;
   padding: 24px;
   transition: all 0.3s;
@@ -144,15 +138,16 @@
 }
 
 .userIcon {
-  font-size: 18px;
   color: rgba(255,255,255,0.6);
   cursor: pointer;
+  display: flex;
+  align-items: center;
 }
 
 /* ================= 右侧主内容区 (Right Box) ================= */
 .rightBox {
   flex: 1;
-  background-color: rgba(15, 15, 17, 0.171); /* 稍微透一点背景 */
+  background-color: rgba(15, 15, 17, 0.171);
   backdrop-filter: blur(3px);
   position: relative;
   display: flex;
@@ -160,16 +155,11 @@
   overflow: hidden;
 }
 
-/* 顶部栏 */
 .topBar {
   margin: 25px 35px;
   display: flex;
   align-items: center;
   height: 46px;
-  /* 可选：给顶部栏加一点背景区分 */
-  /* background: rgba(255,255,255,0.05); */
-  /* border-radius: 12px; */
-  /* padding: 0 20px; */
 }
 
 .currentTag {
@@ -178,6 +168,12 @@
   font-weight: 600;
   font-size: 18px;
   letter-spacing: 1px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;  /* 垂直居中 */
+  justify-content: flex-start; /* 水平左对齐 */
+  gap: 1px; /* 图片和文字之间的间距 */
+  text-align: left;
 }
 
 .actionBtns {
@@ -195,7 +191,6 @@
   cursor: pointer;
   transition: all 0.3s;
   color: #fff;
-  font-size: 18px;
 }
 
 .btn:hover {
@@ -203,17 +198,24 @@
 }
 
 .btnAdd {
-  background-color: #446dff;
+ background-color: transparent;
   margin-left: 20px;
-  box-shadow: 0 4px 10px rgba(68, 109, 255, 0.4);
+   
 }
 
 .btnAdd:hover {
-  background-color: #567dff;
+ background-color: rgba(241, 241, 239, 0.226);
   transform: scale(1.05);
 }
 
-/* 内容区域容器 */
+/* 按钮内的 SVG 图标 */
+.btnIcon {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+/* ================= 内容区域与 Tab 切换逻辑 (核心修改) ================= */
 .contentArea {
   flex: 1;
   margin: 0 0px 0px 0px;
@@ -222,7 +224,7 @@
   border: 1px solid rgba(255, 255, 255, 0.08);
   overflow: auto;
   padding: 20px;
-  /* 滚动条美化 */
+  position: relative; /* 为绝对定位的子元素提供参考 */
   scrollbar-width: thin;
   scrollbar-color: rgba(255,255,255,0.3) transparent;
 }
@@ -235,6 +237,26 @@
   border-radius: 3px;
 }
 
+/* Tab 面板样式 */
+.tabPane {
+  width: 100%;
+  height: 100%;
+  /* 关键：默认隐藏，但不移除 DOM */
+  display: none; 
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* 激活状态：显示 */
+.tabPane.activePane {
+  display: block;
+}
+
+/* 简单的淡入动画 */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 /* ================= 折叠控制器 (Handler) ================= */
 .handler {
   width: 5px;
@@ -245,19 +267,17 @@
   transform: translateY(-50%);
   z-index: 20;
   cursor: pointer;
-  opacity: 0; /* 默认隐藏，hover rightBox 时显示 */
+  opacity: 0;
   transition: opacity 0.3s;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* 当鼠标悬停在右侧区域时显示控制器 */
 .rightBox:hover .handler {
   opacity: 1;
 }
 
-/* 使用伪元素绘制双箭头形状 */
 .handler::before,
 .handler::after {
   content: "";
@@ -280,8 +300,6 @@
   border-radius: 0 0 4px 4px;
 }
 
-/* 箭头动画逻辑 */
-/* 默认状态 (展开 -> 收起) 箭头向左 */
 .handler::before {
   transform: skewX(-15deg); 
 }
@@ -289,7 +307,6 @@
   transform: skewX(15deg);
 }
 
-/* 闭合状态 (收起 -> 展开) 箭头向右 */
 .handler.closed::before {
   transform: skewX(15deg);
 }
@@ -300,30 +317,4 @@
 .handler:hover::before,
 .handler:hover::after {
   background-color: rgba(255, 255, 255, 0.8);
-}
-
-/* ================= 响应式适配 ================= */
-@media (max-width: 768px) {
-  .leftBox {
-    position: absolute;
-    z-index: 100;
-    transform: translateX(-100%);
-    width: 250px;
-  }
-  
-  .leftBox.mobileOpen {
-    transform: translateX(0);
-  }
-
-  .handler {
-    display: none; /* 移动端通常用汉堡菜单，这里暂时隐藏折叠器 */
-  }
-  
-  .topBar {
-    margin: 15px;
-  }
-  
-  .contentArea {
-    margin: 0 15px 15px 15px;
-  }
 }
