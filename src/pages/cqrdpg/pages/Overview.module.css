@@ -1,0 +1,488 @@
+/* Overview.module.css - 更新折线图相关样式 */
+.overviewContainer {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background-color: #f8fafc;
+  padding: 24px;
+  min-height: 100vh;
+  color: #1e293b;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400px;
+  font-size: 16px;
+  color: #64748b;
+}
+
+/* 头部区域 - 保持不变 */
+.headerSection {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.activeVisitorsCard {
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  border-radius: 16px;
+  padding: 24px;
+  min-width: 200px;
+  color: white;
+  box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.2);
+}
+
+.activeVisitorsCard h3 {
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0 0 12px 0;
+  opacity: 0.9;
+}
+
+.activeNumber {
+  font-size: 42px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  flex: 1;
+}
+
+.statItem {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s;
+}
+
+.statItem:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.statLabel {
+  font-size: 13px;
+  color: #64748b;
+  margin-bottom: 8px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.statValue {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 8px;
+}
+
+.statSub {
+  font-size: 12px;
+  color: #94a3b8;
+  margin: 2px 0;
+}
+
+/* 时间标签 */
+.timeTabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  background: white;
+  padding: 4px;
+  border-radius: 12px;
+  display: inline-flex;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.timeTabs span {
+  padding: 8px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  color: #64748b;
+  transition: all 0.2s;
+}
+
+.timeTabs span:hover {
+  color: #3b82f6;
+  background: #f1f5f9;
+}
+
+.timeTabs .activeTab {
+  background: #3b82f6;
+  color: white;
+}
+
+.timeTabs .activeTab:hover {
+  background: #2563eb;
+  color: white;
+}
+
+/* 趋势分析 - 折线图 */
+.trendSection {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.trendHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.sectionTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.trendSubtitle {
+  font-size: 13px;
+  font-weight: 400;
+  color: #64748b;
+  background: #f1f5f9;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.trendStats {
+  display: flex;
+  gap: 20px;
+  background: #f8fafc;
+  padding: 8px 16px;
+  border-radius: 12px;
+}
+
+.trendStat {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.trendStatLabel {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.trendStatValue {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+/* 图表容器 */
+.chartContainer {
+  position: relative;
+  height: 300px;
+  margin: 20px 0 40px 0;
+  width: 100%;
+}
+
+.lineChart {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* 网格线 */
+.gridLines line {
+  stroke: #e2e8f0;
+  stroke-dasharray: 4 4;
+}
+
+/* 面积填充 */
+.areaFill {
+  transition: opacity 0.2s;
+}
+
+/* 折线 */
+.linePath {
+  filter: drop-shadow(0 4px 3px rgba(59, 130, 246, 0.1));
+  transition: all 0.3s;
+}
+
+/* 数据点 */
+.dataPoint {
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dataPoint:hover .pointCircle {
+  r: 8;
+  stroke-width: 3;
+}
+
+.dataPoint:hover .pointDot {
+  r: 4;
+}
+
+.pointCircle {
+  transition: all 0.2s;
+}
+
+.pointDot {
+  transition: all 0.2s;
+}
+
+/* 坐标轴标签 */
+.chartXAxis {
+  position: absolute;
+  bottom: -30px;
+  left: 40px;
+  right: 20px;
+  display: flex;
+  justify-content: space-between;
+  color: #64748b;
+  font-size: 11px;
+}
+
+.chartYAxis {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: #64748b;
+  font-size: 11px;
+  padding: 10px 0;
+}
+
+.axisLabel {
+  transform: translateX(-100%);
+  white-space: nowrap;
+}
+
+/* 图例 */
+.chartLegend {
+  display: flex;
+  justify-content: flex-end;
+  gap: 20px;
+  margin-top: 10px;
+  padding-top: 16px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.legendDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #3b82f6;
+}
+
+.legendLine {
+  width: 20px;
+  height: 2px;
+  background: #94a3b8;
+  position: relative;
+}
+
+.legendLine::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #94a3b8;
+  transform: translateY(3px);
+}
+
+/* 底部三列表格 - 优化样式 */
+.bottomSections {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.dataTable {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s;
+}
+
+.dataTable:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.tableTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 16px 0;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #f1f5f9;
+}
+
+.tableHeader {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  margin-bottom: 12px;
+  padding: 0 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tableBody {
+  max-height: 320px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f1f5f9;
+}
+
+.tableBody::-webkit-scrollbar {
+  width: 4px;
+}
+
+.tableBody::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.tableBody::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.tableRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 4px;
+  font-size: 13px;
+  border-bottom: 1px solid #f1f5f9;
+  transition: background 0.2s;
+}
+
+.tableRow:hover {
+  background: #f8fafc;
+}
+
+.tableCell {
+  color: #1e293b;
+}
+
+.tableCell:last-child {
+  font-weight: 600;
+  color: #3b82f6;
+  background: #eff6ff;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+.tableCellUrl {
+  composes: tableCell;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #3b82f6;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.tableCellUrl:hover {
+  text-decoration: underline;
+  color: #2563eb;
+}
+
+.emptyRow {
+  padding: 24px;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 13px;
+  background: #f8fafc;
+  border-radius: 8px;
+}
+
+/* 响应式设计 */
+@media (max-width: 1200px) {
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .bottomSections {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .trendStats {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 768px) {
+  .overviewContainer {
+    padding: 16px;
+  }
+  
+  .headerSection {
+    flex-direction: column;
+  }
+  
+  .activeVisitorsCard {
+    min-width: auto;
+  }
+  
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .timeTabs {
+    flex-wrap: wrap;
+    width: 100%;
+  }
+  
+  .timeTabs span {
+    flex: 1;
+    text-align: center;
+  }
+  
+  .trendHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .trendStats {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .chartContainer {
+    height: 250px;
+  }
+  
+  .chartXAxis {
+    font-size: 9px;
+  }
+}

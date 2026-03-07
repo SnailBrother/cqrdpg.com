@@ -64,7 +64,7 @@ const JSZip = require('jszip');  // 添加这行 JSZip 但没有正确导
 
 app.use(cors());
 app.use(express.json()); // 解析 JSON 请求体
-
+app.use(express.json({ limit: '1mb' })); // 增加负载限制以防长 URL
 
 
 // 根路径处理
@@ -14562,6 +14562,187 @@ app.delete('/api/CodeDatabase/deleteMessage/:id', async (req, res) => {
 });
  
 
+
+{ //监控 www.cqrdpg.com 用户访问网站数据
+// ==========================================
+// 1. 接收监控数据的 API
+// ==========================================
+app.post('/api/website/record', async (req, res) => {
+    try {
+        const { visitor_id, session_id, current_url, referrer_url, entry_url, user_agent } = req.body;
+        
+        // 获取 IP
+        const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() || 
+                   req.headers['x-real-ip'] || 
+                   req.connection.remoteAddress || 
+                   req.socket.remoteAddress ||
+                   '127.0.0.1';
+
+        if (!visitor_id || !session_id || !current_url) {
+            return res.status(400).json({ error: 'Missing required fields' });
+        }
+
+        // 创建新的 Request 对象
+        const request = new sql.Request(pool);
+        
+        // ⚠️ 关键修复：使用 .input() 显式声明每个参数的类型
+        request.input('visitorid', sql.NVarChar(64), visitor_id);
+        request.input('sessionid', sql.NVarChar(64), session_id);
+        request.input('ipaddress', sql.NVarChar(45), ip);
+        request.input('currenturl', sql.NVarChar(2048), current_url);
+        request.input('referrerurl', sql.NVarChar(2048), referrer_url || null);
+        request.input('entryurl', sql.NVarChar(2048), entry_url || current_url);
+        request.input('useragent', sql.NVarChar(1024), user_agent);
+
+        // 执行插入
+        const query = `
+            INSERT INTO RdpgCode.dbo.WebsiteRecord 
+            (visitorid, sessionid, ipaddress, currenturl, referrerurl, entryurl, useragent, visittime, isbounce, stayduration)
+            VALUES 
+            (@visitorid, @sessionid, @ipaddress, @currenturl, @referrerurl, @entryurl, @useragent, GETDATE(), 1, 0)
+        `;
+
+        await request.query(query);
+
+        res.status(200).json({ success: true });
+
+        // 触发实时广播
+        broadcastStats();
+
+    } catch (err) {
+        console.error('❌ Error recording visit:', err);
+        res.status(500).json({ error: 'Database error', details: err.message });
+    }
+});
+
+// ==========================================
+// 2. 获取初始历史数据的 API
+// ==========================================
+app.get('/api/website/stats', async (req, res) => {
+    try {
+        const stats = await calculateStats();
+        res.json(stats);
+    } catch (err) {
+        console.error('Error fetching stats:', err);
+        res.status(500).json({ error: 'Failed to fetch stats' });
+    }
+});
+// ==========================================
+// 3. 核心统计逻辑 (SQL 聚合查询)
+// ==========================================
+async function calculateStats() {
+    const now = new Date();
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const yesterdayStart = new Date(todayStart);
+    yesterdayStart.setDate(yesterdayStart.getDate() - 1);
+    const fifteenMinsAgo = new Date(now.getTime() - 15 * 60 * 1000);
+
+    try {
+        // --- 1. 最近 15 分钟活跃访客 ---
+        const req1 = new sql.Request(pool);
+        req1.input('fifteenMinsAgo', sql.DateTime2, fifteenMinsAgo);
+        const recentActiveRes = await req1.query(`SELECT COUNT(DISTINCT visitorid) as count FROM RdpgCode.dbo.WebsiteRecord WHERE visittime > @fifteenMinsAgo`);
+
+        // --- 2. 今日数据 ---
+        const req2 = new sql.Request(pool);
+        req2.input('todayStart', sql.DateTime2, todayStart);
+        const todayRes = await req2.query(`SELECT COUNT(DISTINCT ipaddress) as ip, COUNT(*) as pv, COUNT(DISTINCT visitorid) as uv, COUNT(DISTINCT sessionid) as sessions FROM RdpgCode.dbo.WebsiteRecord WHERE visittime >= @todayStart`);
+
+        // --- 3. 昨日数据 ---
+        const req3 = new sql.Request(pool);
+        req3.input('yesterdayStart', sql.DateTime2, yesterdayStart);
+        req3.input('todayStart', sql.DateTime2, todayStart);
+        const yesterdayRes = await req3.query(`SELECT COUNT(DISTINCT ipaddress) as ip, COUNT(*) as pv, COUNT(DISTINCT visitorid) as uv, COUNT(DISTINCT sessionid) as sessions FROM RdpgCode.dbo.WebsiteRecord WHERE visittime >= @yesterdayStart AND visittime < @todayStart`);
+
+        // --- 4. 跳出率 ---
+        const req4 = new sql.Request(pool);
+        req4.input('todayStart', sql.DateTime2, todayStart);
+        const bounceRes = await req4.query(`WITH SessionCounts AS (SELECT sessionid, COUNT(*) as cnt FROM RdpgCode.dbo.WebsiteRecord WHERE visittime >= @todayStart GROUP BY sessionid) SELECT SUM(CASE WHEN cnt = 1 THEN 1 ELSE 0 END) * 1.0 / COUNT(*) as rate FROM SessionCounts`);
+        
+        const bounceRateVal = bounceRes.recordset[0].rate;
+        const bounceRate = bounceRateVal ? (bounceRateVal * 100).toFixed(2) + '%' : '0.00%';
+
+        // --- 5. 来路 Top 5 ---
+        const req5 = new sql.Request(pool);
+        req5.input('todayStart', sql.DateTime2, todayStart);
+        const referrersRes = await req5.query(`SELECT TOP 5 ISNULL(NULLIF(referrerurl, ''), '直接输入网址访问') as name, COUNT(DISTINCT visitorid) as count FROM RdpgCode.dbo.WebsiteRecord WHERE visittime >= @todayStart GROUP BY referrerurl ORDER BY count DESC`);
+
+        // --- 6. 受访页 Top 7 ---
+        const req6 = new sql.Request(pool);
+        req6.input('todayStart', sql.DateTime2, todayStart);
+        const landingRes = await req6.query(`SELECT TOP 7 currenturl as url, COUNT(*) as count FROM RdpgCode.dbo.WebsiteRecord WHERE visittime >= @todayStart GROUP BY currenturl ORDER BY count DESC`);
+
+        // --- 7. 入口页 Top 7 ---
+        const req7 = new sql.Request(pool);
+        req7.input('todayStart', sql.DateTime2, todayStart);
+        const entryRes = await req7.query(`WITH RankedEntries AS (SELECT sessionid, currenturl, ROW_NUMBER() OVER (PARTITION BY sessionid ORDER BY visittime ASC) as rn FROM RdpgCode.dbo.WebsiteRecord WHERE visittime >= @todayStart) SELECT TOP 7 currenturl as url, COUNT(*) as count FROM RankedEntries WHERE rn = 1 GROUP BY currenturl ORDER BY count DESC`);
+
+        // --- 8. 趋势分析 ---
+        const req8 = new sql.Request(pool);
+        req8.input('todayStart', sql.DateTime2, todayStart);
+        const trendRes = await req8.query(`SELECT DATEPART(HOUR, visittime) as hour, COUNT(*) as pv FROM RdpgCode.dbo.WebsiteRecord WHERE visittime >= @todayStart GROUP BY DATEPART(HOUR, visittime) ORDER BY hour`);
+        
+        const trendData = Array(24).fill(0);
+        if (trendRes.recordset) {
+            trendRes.recordset.forEach(row => {
+                if(row.hour >= 0 && row.hour < 24) trendData[row.hour] = row.pv;
+            });
+        }
+
+        return {
+            recentActive: recentActiveRes.recordset[0].count || 0,
+            today: {
+                ip: todayRes.recordset[0].ip || 0,
+                pv: todayRes.recordset[0].pv || 0,
+                uv: todayRes.recordset[0].uv || 0,
+                sessions: todayRes.recordset[0].sessions || 0,
+                bounceRate: bounceRate,
+                avgTime: "00:02:37"
+            },
+            yesterday: {
+                ip: yesterdayRes.recordset[0].ip || 0,
+                pv: yesterdayRes.recordset[0].pv || 0,
+                uv: yesterdayRes.recordset[0].uv || 0,
+                sessions: yesterdayRes.recordset[0].sessions || 0,
+                bounceRate: "0.00%",
+                avgTime: "00:00:00"
+            },
+            referrers: referrersRes.recordset || [],
+            landingPages: landingRes.recordset || [],
+            entryPages: entryRes.recordset || [],
+            trend: trendData
+        };
+
+    } catch (err) {
+        console.error("❌ Detailed SQL Error in calculateStats:", err);
+        throw err;
+    }
+}
+
+// ==========================================
+// 4. Socket.io 实时广播逻辑
+// ==========================================
+async function broadcastStats() {
+    try {
+        const stats = await calculateStats();
+        io.emit('stats-update', stats);
+    } catch (err) {
+        console.error('Error broadcasting stats:', err);
+    }
+}
+
+io.on('connection', (socket) => {
+    console.log('Client connected:', socket.id);
+    calculateStats().then(stats => {
+        socket.emit('stats-update', stats);
+    }).catch(err => console.error('Initial stats fetch failed:', err));
+
+    socket.on('disconnect', () => {
+        console.log('Client disconnected:', socket.id);
+    });
+});
+
+}
 
 }
 

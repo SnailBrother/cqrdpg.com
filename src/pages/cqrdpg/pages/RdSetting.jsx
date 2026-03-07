@@ -3,6 +3,7 @@ import styles from './RdSetting.module.css';
 // 引入两个子组件
 import MessageManagement from './MessageManagement';
 import QrcodeManagementSettings from './QrcodeManagementSettings';
+import Overview from './Overview';
 
 // 模拟图标组件 (实际项目中建议使用 react-icons 或 svg)
 const Icon = ({ name, className }) => {
@@ -24,6 +25,7 @@ const USER_NAME = "瑞达管理员";
 const MENU_ITEMS = [
   { id: 'message', label: '留言管理', icon: 'message' },
   { id: 'qrcode', label: '二维码设置', icon: 'qrcode' },
+  { id: 'overview', label: '概况', icon: 'overview' },
 ];
 
 const RdSetting = () => {
@@ -50,7 +52,7 @@ const RdSetting = () => {
         backgroundImage: `url(${bgImageUrl})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat'
+        backgroundRepeat: 'no-repeat',
       }}
       >
       {/* 左侧导航栏 */}
@@ -108,6 +110,7 @@ const RdSetting = () => {
         <div className={styles.contentArea}>
           {activeTab === 'message' && <MessageManagement />}
           {activeTab === 'qrcode' && <QrcodeManagementSettings />}
+          {activeTab === 'overview' && <Overview />}
         </div>
 
         {/* 侧边栏折叠控制器 (悬浮在右侧区域左边缘) */}
