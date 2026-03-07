@@ -12657,7 +12657,7 @@ ORDER BY
                 }
                 delete userFileMap[socket.id];
             }
-            console.log('🔌 用户断开:', socket.id);
+          //  console.log('🔌 用户断开:', socket.id);
         });
     });
 
@@ -14190,7 +14190,7 @@ ORDER BY
             });
 
             socket.on('disconnect', () => {
-                console.log('🔌 客户端断开连接:', socket.id);
+              //  console.log('🔌 客户端断开连接:', socket.id);
             });
         });
 
