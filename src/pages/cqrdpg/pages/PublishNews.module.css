@@ -1,0 +1,235 @@
+.container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: 'Microsoft YaHei', sans-serif;
+}
+
+/* 列表视图 */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.addBtn {
+  background: #1890ff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.filterBar {
+  margin-bottom: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.catBtn {
+  padding: 8px 16px;
+  border: 1px solid #d9d9d9;
+  background: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.catBtn.active {
+  background: #1890ff;
+  color: white;
+  border-color: #1890ff;
+}
+
+.newsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  border: 1px solid #eee;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+}
+
+.cardImgBox {
+  position: relative;
+  height: 180px;
+  background: #f5f5f5;
+}
+
+.cardImgBox img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tag {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(0,0,0,0.6);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.cardBody {
+  padding: 15px;
+}
+
+.cardBody h3 {
+  margin: 0 0 10px;
+  font-size: 16px;
+  color: #333;
+}
+
+.date {
+  font-size: 12px;
+  color: #999;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.summary {
+  font-size: 13px;
+  color: #666;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 15px;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.actions button {
+  flex: 1;
+  padding: 6px;
+  border: 1px solid #d9d9d9;
+  background: white;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.delBtn {
+  color: #ff4d4f;
+  border-color: #ffccc7 !important;
+}
+
+/* 表单视图 */
+.formView {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+}
+
+.formHeader {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 15px;
+}
+
+.backBtn {
+  background: transparent;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.row {
+  display: flex;
+  gap: 20px;
+}
+
+.formGroup {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.formGroup label {
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.formGroup input, 
+.formGroup select, 
+.formGroup textarea {
+  padding: 10px;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.formGroup textarea {
+  resize: vertical;
+}
+
+.uploadBox {
+  border: 2px dashed #d9d9d9;
+  padding: 20px;
+  text-align: center;
+  border-radius: 4px;
+  position: relative;
+}
+
+.previewImg {
+  max-width: 200px;
+  max-height: 200px;
+  margin-bottom: 10px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.placeholder {
+  color: #999;
+  margin-bottom: 10px;
+}
+
+.submitBar {
+  display: flex;
+  gap: 15px;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.submitBtn {
+  background: #1890ff;
+  color: white;
+  border: none;
+  padding: 10px 30px;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.submitBtn:hover {
+  background: #40a9ff;
+}

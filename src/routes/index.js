@@ -8,7 +8,10 @@ import ProtectedRoute from './ProtectedRoute';
 // 导入基础页面组件
 //import Home from '../pages/home';
 import Home from '../pages/cqrdpg/pages/Home';
+import NewsDetails from '../pages/cqrdpg/pages/home/NewsDetails';
 import Suggestion from '../pages/cqrdpg/pages/Suggestion';
+import QrcodeRealCheck from '../pages/cqrdpg/pages/home/QrcodeRealCheck';
+
 import ModuleSelect from '../pages/modules/Select';
 import ModuleLayout from '../pages/modules/ModuleLayout';
 //import Login from '../pages/user/login';
@@ -127,8 +130,9 @@ const AppRoutes = () => {
 
       {/* 二维码查验页面 (通常不需要登录也能看，或者根据需要调整) */}
       <Route path="/codecheck/:code" element={<CodeCheck />} />
-
-
+      {/* 消息详细页面 */}
+ <Route path="/newsdetails/:id" element={<NewsDetails />} />
+<Route path="/qrcodeRealcheck" element={<QrcodeRealCheck />} />
 
 
       {/* 登录后选择模块的入口 */}

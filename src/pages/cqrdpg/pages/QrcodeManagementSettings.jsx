@@ -438,5 +438,4 @@ function QrcodeManagementSettings({ onLogout }) {
   );
 }
 
-
 export default QrcodeManagementSettings;

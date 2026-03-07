@@ -1,6 +1,7 @@
 // Footer.jsx
 import React from 'react';
 import styles from './Footer.module.css';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -14,8 +15,8 @@ const Footer = () => {
           <div className={styles.footerColumn}>
             <h3 className={styles.columnTitle}>关于我们</h3>
             <p className={styles.companyDesc}>
-              重庆瑞达资产评估房地产土地估价有限公司成立于2003年， 
-              专业从事资产评估、房地产评估、土地评估等业务， 
+              重庆瑞达资产评估房地产土地估价有限公司成立于2003年，
+              专业从事资产评估、房地产评估、土地评估等业务，
               致力于为客户提供专业、高效的服务。
             </p>
             {/* <div className={styles.socialLinks}>
@@ -30,10 +31,18 @@ const Footer = () => {
           <div className={styles.footerColumn}>
             <h3 className={styles.columnTitle}>快速链接</h3>
             <ul className={styles.linkList}>
-             
-              <li><a href="#" className={styles.link}>报告验证</a></li>
+              <li>
+                <Link to="/qrcodeRealcheck" className={styles.link}>
+                  报告验证
+                </Link>
+              </li>
+
               <li><a href="#" className={styles.link}>人才招聘</a></li>
-              <li><a href="#" className={styles.link}>意见反馈</a></li>
+              <li>
+                <Link to="/suggestion" className={styles.link}>
+                  意见反馈
+                </Link>
+              </li>
             </ul>
           </div>
 

@@ -4,6 +4,7 @@ import styles from './RdSetting.module.css';
 import MessageManagement from './MessageManagement';
 import QrcodeManagementSettings from './QrcodeManagementSettings';
 import Overview from './Overview';
+import PublishNews from './PublishNews';
 
 // ================= 通用 SVG 图标组件 =================
 const SvgIcon = ({ href, className, size = "24px" }) => {
@@ -30,17 +31,22 @@ const MENU_ITEMS = [
   { 
     id: 'message', 
     label: '留言管理', 
-    iconHref: '#icon-liaotian12' // 替换为你实际的 SVG symbol ID
+    iconHref: '#icon-liaotian12' 
   },
   { 
     id: 'qrcode', 
     label: '二维码设置', 
-    iconHref: '#icon-erweima2' // 替换为你实际的 SVG symbol ID
+    iconHref: '#icon-erweima2' 
   },
   { 
     id: 'overview', 
     label: '概况', 
-    iconHref: '#icon-yongtuguanzhishishijiancepingguxitong' // 替换为你实际的 SVG symbol ID
+    iconHref: '#icon-yongtuguanzhishishijiancepingguxitong' 
+  },
+  { 
+    id: 'publishnews', 
+    label: '消息新闻', 
+    iconHref: '#icon-yongtuguanzhishishijiancepingguxitong' 
   },
 ];
 
@@ -148,6 +154,10 @@ const RdSetting = () => {
           <div className={`${styles.tabPane} ${activeTab === 'overview' ? styles.activePane : ''}`}>
             <Overview />
           </div>
+           <div className={`${styles.tabPane} ${activeTab === 'publishnews' ? styles.activePane : ''}`}>
+            <PublishNews />
+          </div>
+          
         </div>
 
         {/* 侧边栏折叠控制器 */}

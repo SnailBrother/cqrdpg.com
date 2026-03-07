@@ -429,3 +429,10 @@
     font-size: 14px;
   }
 }
+.loadingState, .emptyState {
+  text-align: center;
+  padding: 40px;
+  font-size: 16px;
+  color: #666;
+  grid-column: 1 / -1; /* 让提示占满整行 */
+}

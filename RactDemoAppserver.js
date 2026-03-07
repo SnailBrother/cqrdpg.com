@@ -12621,7 +12621,7 @@ ORDER BY
 
     // ===== Socket.IO 事件 =====
     io.on('connection', (socket) => {
-        console.log('✅ 用户连接:', socket.id);
+      //  console.log('✅ 用户连接:', socket.id);
 
         socket.on('useFile', ({ filename }) => {
             // 如果之前是 pending 状态，取消兜底删除
@@ -14153,126 +14153,128 @@ ORDER BY
 
 {//cqrdpg.com api
 
-    // 监听连接事件
-    poolConnect.then(() => {
-        console.log('✅ 成功连接到 SQL Server (RdpgCode)');
-    }).catch(err => {
-        console.error('❌ 数据库连接失败:', err);
-        console.error('请检查：1. 服务器防火墙/安全组是否开放 1433 端口; 2. SQL Server 是否启用 TCP/IP; 3. 账号密码是否正确');
+    {// www.cqwrdpg.com 二维码验证服务
+
+
+        // 监听连接事件
+        // poolConnect.then(() => {
+        //     console.log('✅ 成功连接到 SQL Server (RdpgCode)');
+        // }).catch(err => {
+        //     console.error('❌ 数据库连接失败:', err);
+        //     console.error('请检查：1. 服务器防火墙/安全组是否开放 1433 端口; 2. SQL Server 是否启用 TCP/IP; 3. 账号密码是否正确');
+
+        // });
         // 不要 process.exit(1)，让服务器继续运行，也许稍后网络恢复能连上，或者至少能响应健康检查
-    });
-
-    // 初始化 HTTP 服务器和 Socket.io
-    //const server = http.createServer(app);  // 这一行是缺失的！
-    //const http = require('http').Server(app);
+        // 初始化 HTTP 服务器和 Socket.io
+        //const server = http.createServer(app);  // 这一行是缺失的！
+        //const http = require('http').Server(app);
 
 
 
-    // --- Socket.io 逻辑 ---
-    io.on('connection', (socket) => {
-        console.log('🔌 客户端连接成功:', socket.id);
+        // --- Socket.io 逻辑 ---
+        io.on('connection', (socket) => {
+          //  console.log('🔌 客户端连接成功:', socket.id);
 
-        // 当管理页面加载时，可以主动请求一次最新数据（可选）
-        socket.on('request_latest_messages', async () => {
+            // 当管理页面加载时，可以主动请求一次最新数据（可选）
+            socket.on('request_latest_messages', async () => {
+                try {
+                    await poolConnect;
+                    const result = await pool.request()
+                        .query('SELECT TOP 50 * FROM RdpgCode.dbo.CqrdpgBusiness ORDER BY submitted DESC');
+
+                    socket.emit('initial_messages', result.recordset);
+                } catch (err) {
+                    console.error('获取初始消息失败:', err);
+                    socket.emit('error', '获取消息失败');
+                }
+            });
+
+            socket.on('disconnect', () => {
+                console.log('🔌 客户端断开连接:', socket.id);
+            });
+        });
+
+
+
+        // 辅助函数：获取已连接的池
+        async function getPool() {
             try {
-                await poolConnect;
-                const result = await pool.request()
-                    .query('SELECT TOP 50 * FROM RdpgCode.dbo.CqrdpgBusiness ORDER BY submitted DESC');
-
-                socket.emit('initial_messages', result.recordset);
+                await poolConnect; // 确保连接已完成
+                return pool;
             } catch (err) {
-                console.error('获取初始消息失败:', err);
-                socket.emit('error', '获取消息失败');
+                console.error("获取连接池失败:", err);
+                throw err;
             }
-        });
-
-        socket.on('disconnect', () => {
-            console.log('🔌 客户端断开连接:', socket.id);
-        });
-    });
-
-
-
-    // 辅助函数：获取已连接的池
-    async function getPool() {
-        try {
-            await poolConnect; // 确保连接已完成
-            return pool;
-        } catch (err) {
-            console.error("获取连接池失败:", err);
-            throw err;
-        }
-    }
-
-    // --- API 路由 ---
-
-
-
-    // --- 新增：混淆码映射逻辑工具函数 ---
-    async function generateSafeCodeFromId(originalId, pool) {
-        const idStr = originalId.toString();
-        const parts = [];
-
-        // 遍历 ID 的每一位数字
-        for (let char of idStr) {
-            const digit = parseInt(char, 10);
-
-            // 查询映射表
-            const request = pool.request();
-            const result = await request
-                .input('val', sql.Int, digit)
-                .query(`SELECT DecodedText FROM RdpgCode.dbo.CqrdpgCodepageDecodeMapping WHERE OriginalValue = @val`);
-
-            if (result.recordset.length === 0) {
-                throw new Error(`映射表缺少数字 ${digit} 的配置`);
-            }
-            parts.push(result.recordset[0].DecodedText);
         }
 
-        // 用 & 连接
-        return parts.join('&');
-    }
 
-    // 新增：反向解析工具函数 (将混淆码解析回 ID)
-    async function getIdFromSafeCode(safeCode, pool) {
-        if (!safeCode) return null;
 
-        const parts = safeCode.split('&');
-        let originalIdStr = '';
+        // --- 1. 生成混淆码 (输出直接用 L 连接) ---
+        async function generateSafeCodeFromId(originalId, pool) {
+            const idStr = originalId.toString();
+            const parts = [];
 
-        const requestTemplate = pool.request();
+            for (let char of idStr) {
+                const digit = parseInt(char, 10);
+                const request = pool.request();
+                const result = await request
+                    .input('val', sql.Int, digit)
+                    .query(`SELECT DecodedText FROM RdpgCode.dbo.CqrdpgCodepageDecodeMapping WHERE OriginalValue = @val`);
 
-        for (let part of parts) {
-            const result = await requestTemplate
-                .input('text', sql.NVarChar, part)
-                .query(`SELECT OriginalValue FROM RdpgCode.dbo.CqrdpgCodepageDecodeMapping WHERE DecodedText = @text`);
-
-            if (result.recordset.length === 0) {
-                return null; // 无效的混淆码
+                if (result.recordset.length === 0) {
+                    throw new Error(`映射表缺少数字 ${digit} 的配置`);
+                }
+                parts.push(result.recordset[0].DecodedText);
             }
-            originalIdStr += result.recordset[0].OriginalValue.toString();
+
+            // 【修改】直接用 'L' 连接，生成 "p2G2Lp2G2"
+            return parts.join('L');
         }
 
-        return parseInt(originalIdStr, 10);
-    }
+        // --- 2. 解析混淆码 (直接按 L 分割) ---
+        // 新增：反向解析工具函数 (将混淆码解析回 ID)
+        async function getIdFromSafeCode(safeCode, pool) {
+            if (!safeCode) return null;
 
-    // --- 修改后的 API 路由 ---
+            // 直接按 'L' 分割
+            const parts = safeCode.split('L');
+            let originalIdStr = '';
 
-    // 1. 查询列表 (增加 safeCode 字段)
-    app.get('/api/CodeDatabase/List', async (req, res) => {
-        try {
-            const pool = await getPool();
-            const page = parseInt(req.query.page) || 1;
-            const pageSize = parseInt(req.query.pageSize) || 10;
-            const keyword = req.query.keyword || '';
-            const offset = (page - 1) * pageSize;
+            // 【修改点】不要在循环外创建 request，要在循环内每次创建新的
+            for (let part of parts) {
+                // 每次循环都创建一个新的 request 对象
+                const request = pool.request();
 
-            const request = pool.request();
-            request.input('keyword', sql.NVarChar, `%${keyword}%`);
-            request.input('offset', sql.Int, offset);
-            request.input('pageSize', sql.Int, pageSize);
+                const result = await request
+                    .input('text', sql.NVarChar, part) // 这样每次都是新的 request，参数名不会冲突
+                    .query(`SELECT OriginalValue FROM RdpgCode.dbo.CqrdpgCodepageDecodeMapping WHERE DecodedText = @text`);
 
-            const query = `
+                if (result.recordset.length === 0) {
+                    return null; // 无效的混淆码
+                }
+                originalIdStr += result.recordset[0].OriginalValue.toString();
+            }
+
+            return parseInt(originalIdStr, 10);
+        }
+
+        // --- 修改后的 API 路由 ---
+
+        // 1. 查询列表 (增加 safeCode 字段)
+        app.get('/api/CodeDatabase/List', async (req, res) => {
+            try {
+                const pool = await getPool();
+                const page = parseInt(req.query.page) || 1;
+                const pageSize = parseInt(req.query.pageSize) || 10;
+                const keyword = req.query.keyword || '';
+                const offset = (page - 1) * pageSize;
+
+                const request = pool.request();
+                request.input('keyword', sql.NVarChar, `%${keyword}%`);
+                request.input('offset', sql.Int, offset);
+                request.input('pageSize', sql.Int, pageSize);
+
+                const query = `
             SELECT * FROM RdpgCode.dbo.CodeDatabase 
             WHERE ProjectName LIKE @keyword OR ReportNumber LIKE @keyword
             ORDER BY Id DESC
@@ -14280,96 +14282,98 @@ ORDER BY
             FETCH NEXT @pageSize ROWS ONLY
         `;
 
-            const countQuery = `
+                const countQuery = `
             SELECT COUNT(*) as total FROM RdpgCode.dbo.CodeDatabase 
             WHERE ProjectName LIKE @keyword OR ReportNumber LIKE @keyword
         `;
 
-            const [result, countResult] = await Promise.all([
-                request.query(query),
-                pool.request().input('keyword', sql.NVarChar, `%${keyword}%`).query(countQuery)
-            ]);
+                const [result, countResult] = await Promise.all([
+                    request.query(query),
+                    pool.request().input('keyword', sql.NVarChar, `%${keyword}%`).query(countQuery)
+                ]);
 
-            // 【关键修改】为每一条数据生成 safeCode
-            const enrichedData = await Promise.all(result.recordset.map(async (row) => {
-                const safeCode = await generateSafeCodeFromId(row.Id, pool);
-                return { ...row, safeCode };
-            }));
 
-            res.json({
-                data: enrichedData,
-                total: countResult.recordset[0].total,
-                page,
-                pageSize
-            });
+                const enrichedData = await Promise.all(result.recordset.map(async (row) => {
+                    // 直接生成带 L 的码，例如 "p2G2Lp2G2"
+                    const safeCode = await generateSafeCodeFromId(row.Id, pool);
+                    return { ...row, safeCode };
+                }));
 
-        } catch (err) {
-            console.error('查询错误:', err);
-            res.status(500).json({ error: '查询失败', details: err.message });
-        }
-    });
+                res.json({
+                    data: enrichedData,
+                    total: countResult.recordset[0].total,
+                    page,
+                    pageSize
+                });
 
-    // 2. 新增 (保持不变，但为了严谨，这里略过，逻辑同原代码)
-    app.post('/api/CodeDatabase/Add', async (req, res) => {
-        // ... (保持你原有的添加逻辑不变) ...
-        // 注意：添加成功后，前端如果需要立即跳转，需要重新获取该条数据的 safeCode
-        try {
-            const pool = await getPool();
-            const { ProjectName, EvaluationAmount, ReportTime, ReportNumber, SignerA_Name, SignerA_Number, SignerB_Name, SignerB_Number } = req.body;
-
-            if (!ProjectName || !ReportNumber) {
-                return res.status(400).json({ error: '项目名称和报告号为必填项' });
+            } catch (err) {
+                console.error('查询错误:', err);
+                res.status(500).json({ error: '查询失败', details: err.message });
             }
+        });
 
-            const request = pool.request();
-            request.input('ProjectName', sql.NVarChar, ProjectName);
-            request.input('EvaluationAmount', sql.Decimal, EvaluationAmount || 0);
-            request.input('ReportTime', sql.DateTime, ReportTime ? new Date(ReportTime) : new Date());
-            request.input('ReportNumber', sql.NVarChar, ReportNumber);
-            request.input('SignerA_Name', sql.NVarChar, SignerA_Name || '');
-            request.input('SignerA_Number', sql.NVarChar, SignerA_Number || '');
-            request.input('SignerB_Name', sql.NVarChar, SignerB_Name || '');
-            request.input('SignerB_Number', sql.NVarChar, SignerB_Number || '');
+        // 2. 新增  
+        app.post('/api/CodeDatabase/Add', async (req, res) => {
 
-            await request.query(`
+            // 注意：添加成功后，前端如果需要立即跳转，需要重新获取该条数据的 safeCode
+            try {
+                const pool = await getPool();
+                const { ProjectName, EvaluationAmount, ReportTime, ReportNumber, SignerA_Name, SignerA_Number, SignerB_Name, SignerB_Number } = req.body;
+
+                if (!ProjectName || !ReportNumber) {
+                    return res.status(400).json({ error: '项目名称和报告号为必填项' });
+                }
+
+                const request = pool.request();
+                request.input('ProjectName', sql.NVarChar, ProjectName);
+                request.input('EvaluationAmount', sql.Decimal, EvaluationAmount || 0);
+                request.input('ReportTime', sql.DateTime, ReportTime ? new Date(ReportTime) : new Date());
+                request.input('ReportNumber', sql.NVarChar, ReportNumber);
+                request.input('SignerA_Name', sql.NVarChar, SignerA_Name || '');
+                request.input('SignerA_Number', sql.NVarChar, SignerA_Number || '');
+                request.input('SignerB_Name', sql.NVarChar, SignerB_Name || '');
+                request.input('SignerB_Number', sql.NVarChar, SignerB_Number || '');
+
+                await request.query(`
             INSERT INTO RdpgCode.dbo.CodeDatabase 
             (ProjectName, EvaluationAmount, ReportTime, ReportNumber, SignerA_Name, SignerA_Number, SignerB_Name, SignerB_Number)
             VALUES 
             (@ProjectName, @EvaluationAmount, @ReportTime, @ReportNumber, @SignerA_Name, @SignerA_Number, @SignerB_Name, @SignerB_Number)
         `);
 
-            // 获取刚插入的 ID (可选，方便直接返回 safeCode)
-            const idResult = await request.query(`SELECT SCOPE_IDENTITY() as newId`);
-            const newId = Math.floor(idResult.recordset[0].newId);
-            const newSafeCode = await generateSafeCodeFromId(newId, pool);
+                // 获取刚插入的 ID (可选，方便直接返回 safeCode)
+                const idResult = await request.query(`SELECT SCOPE_IDENTITY() as newId`);
+                const newId = Math.floor(idResult.recordset[0].newId);
+                // 直接生成带 L 的码
+                const newSafeCode = await generateSafeCodeFromId(newId, pool);
 
-            res.json({ success: true, message: '添加成功', newId, newSafeCode });
-        } catch (err) {
-            console.error('添加错误:', err);
-            res.status(500).json({ error: '添加失败', details: err.message });
-        }
-    });
+                res.json({ success: true, message: '添加成功', newId, newSafeCode });
+            } catch (err) {
+                console.error('添加错误:', err);
+                res.status(500).json({ error: '添加失败', details: err.message });
+            }
+        });
 
-    // 3. 修改 (保持不变)
-    app.put('/api/CodeDatabase/Update/:id', async (req, res) => {
-        // ... (保持你原有的更新逻辑不变) ...
-        try {
-            const pool = await getPool();
-            const id = req.params.id;
-            const data = req.body;
+        // 3. 修改  
+        app.put('/api/CodeDatabase/Update/:id', async (req, res) => {
+            // ... (保持你原有的更新逻辑不变) ...
+            try {
+                const pool = await getPool();
+                const id = req.params.id;
+                const data = req.body;
 
-            const request = pool.request();
-            request.input('Id', sql.Int, id);
-            request.input('ProjectName', sql.NVarChar, data.ProjectName);
-            request.input('EvaluationAmount', sql.Decimal, data.EvaluationAmount);
-            request.input('ReportTime', sql.DateTime, data.ReportTime ? new Date(data.ReportTime) : null);
-            request.input('ReportNumber', sql.NVarChar, data.ReportNumber);
-            request.input('SignerA_Name', sql.NVarChar, data.SignerA_Name);
-            request.input('SignerA_Number', sql.NVarChar, data.SignerA_Number);
-            request.input('SignerB_Name', sql.NVarChar, data.SignerB_Name);
-            request.input('SignerB_Number', sql.NVarChar, data.SignerB_Number);
+                const request = pool.request();
+                request.input('Id', sql.Int, id);
+                request.input('ProjectName', sql.NVarChar, data.ProjectName);
+                request.input('EvaluationAmount', sql.Decimal, data.EvaluationAmount);
+                request.input('ReportTime', sql.DateTime, data.ReportTime ? new Date(data.ReportTime) : null);
+                request.input('ReportNumber', sql.NVarChar, data.ReportNumber);
+                request.input('SignerA_Name', sql.NVarChar, data.SignerA_Name);
+                request.input('SignerA_Number', sql.NVarChar, data.SignerA_Number);
+                request.input('SignerB_Name', sql.NVarChar, data.SignerB_Name);
+                request.input('SignerB_Number', sql.NVarChar, data.SignerB_Number);
 
-            await request.query(`
+                await request.query(`
             UPDATE RdpgCode.dbo.CodeDatabase 
             SET ProjectName = @ProjectName,
                 EvaluationAmount = @EvaluationAmount,
@@ -14382,186 +14386,188 @@ ORDER BY
             WHERE Id = @Id
         `);
 
-            res.json({ success: true, message: '更新成功' });
-        } catch (err) {
-            console.error('更新错误:', err);
-            res.status(500).json({ error: '更新失败', details: err.message });
-        }
-    });
+                res.json({ success: true, message: '更新成功' });
+            } catch (err) {
+                console.error('更新错误:', err);
+                res.status(500).json({ error: '更新失败', details: err.message });
+            }
+        });
 
-    // 4. 删除 (保持不变)
-    app.delete('/api/CodeDatabase/Delete/:id', async (req, res) => {
-        // ... (保持你原有的删除逻辑不变) ...
-        try {
-            const pool = await getPool();
-            const id = req.params.id;
-            await pool.request()
-                .input('Id', sql.Int, id)
-                .query(`DELETE FROM RdpgCode.dbo.CodeDatabase WHERE Id = @Id`);
-            res.json({ success: true, message: '删除成功' });
-        } catch (err) {
-            console.error('删除错误:', err);
-            res.status(500).json({ error: '删除失败', details: err.message });
-        }
-    });
+        // 4. 删除  
+        app.delete('/api/CodeDatabase/Delete/:id', async (req, res) => {
+            // ... (保持你原有的删除逻辑不变) ...
+            try {
+                const pool = await getPool();
+                const id = req.params.id;
+                await pool.request()
+                    .input('Id', sql.Int, id)
+                    .query(`DELETE FROM RdpgCode.dbo.CodeDatabase WHERE Id = @Id`);
+                res.json({ success: true, message: '删除成功' });
+            } catch (err) {
+                console.error('删除错误:', err);
+                res.status(500).json({ error: '删除失败', details: err.message });
+            }
+        });
 
-    // --- 新增：根据混淆码获取真实数据的接口 (用于 CodeCheck 页面) ---
-    app.get('/api/CodeDatabase/VerifyAndFetch', async (req, res) => {
-        try {
-            const { code } = req.query; // 前端传入类似 "p2G2&x9Lm" 的字符串
-            if (!code) {
-                return res.status(400).json({ error: '缺少校验码参数' });
+        // --- 新增：根据混淆码获取真实数据的接口 (用于 CodeCheck 页面) ---
+        app.get('/api/CodeDatabase/VerifyAndFetch', async (req, res) => {
+            try {
+                const { code } = req.query; // 前端传入类似 "p2G2&x9Lm" 的字符串
+                if (!code) {
+                    return res.status(400).json({ error: '缺少校验码参数' });
+                }
+
+                const pool = await getPool();
+
+                const realId = await getIdFromSafeCode(code, pool);
+
+                if (!realId) {
+                    return res.status(404).json({ error: '无效的校验码或数据不存在' });
+                }
+
+                // 2. 根据真实 ID 查询数据
+                const request = pool.request();
+                const result = await request
+                    .input('Id', sql.Int, realId)
+                    .query(`SELECT * FROM RdpgCode.dbo.CodeDatabase WHERE Id = @Id`);
+
+                if (result.recordset.length === 0) {
+                    return res.status(404).json({ error: '数据不存在' });
+                }
+
+                // 3. 返回数据 (同时也返回当前的 safeCode 供前端确认)
+                const row = result.recordset[0];
+                const rawSafeCode = await generateSafeCodeFromId(row.Id, pool);
+
+                res.json({
+                    success: true,
+                    data: { ...row, safeCode: rawSafeCode.replace(/&/g, '-') },
+                    message: '验证通过'
+                });
+
+            } catch (err) {
+                console.error('验证查询错误:', err);
+                res.status(500).json({ error: '验证失败', details: err.message });
+            }
+        });
+
+    }
+
+    { //www.cqwrdpg.com 客户业务需要留言 联系我们
+
+
+
+        // 1. 提交联系表单 (ContactUs 使用) 用户留言
+        app.post('/api/CodeDatabase/submitContact', async (req, res) => {
+            const { requestername, contact, description } = req.body;
+
+            if (!requestername || !description) {
+                return res.status(400).json({ success: false, message: '姓名和描述不能为空' });
             }
 
-            const pool = await getPool();
+            try {
+                await poolConnect;
+                const request = new sql.Request(pool);
 
-            // 1. 解析混淆码得到真实 ID
-            const realId = await getIdFromSafeCode(code, pool);
-
-            if (!realId) {
-                return res.status(404).json({ error: '无效的校验码或数据不存在' });
-            }
-
-            // 2. 根据真实 ID 查询数据
-            const request = pool.request();
-            const result = await request
-                .input('Id', sql.Int, realId)
-                .query(`SELECT * FROM RdpgCode.dbo.CodeDatabase WHERE Id = @Id`);
-
-            if (result.recordset.length === 0) {
-                return res.status(404).json({ error: '数据不存在' });
-            }
-
-            // 3. 返回数据 (同时也返回当前的 safeCode 供前端确认)
-            const row = result.recordset[0];
-            const safeCode = await generateSafeCodeFromId(row.Id, pool);
-
-            res.json({
-                success: true,
-                data: { ...row, safeCode },
-                message: '验证通过'
-            });
-
-        } catch (err) {
-            console.error('验证查询错误:', err);
-            res.status(500).json({ error: '验证失败', details: err.message });
-        }
-    });
-
-
-
-
-    // 1. 提交联系表单 (ContactUs 使用) 用户留言
-    app.post('/api/CodeDatabase/submitContact', async (req, res) => {
-        const { requestername, contact, description } = req.body;
-
-        if (!requestername || !description) {
-            return res.status(400).json({ success: false, message: '姓名和描述不能为空' });
-        }
-
-        try {
-            await poolConnect;
-            const request = new sql.Request(pool);
-
-            // 插入数据
-            const result = await request
-                .input('requestername', sql.NVarChar(50), requestername)
-                .input('contact', sql.NVarChar(50), contact || null)
-                .input('description', sql.NVarChar(sql.MAX), description)
-                .query(`
+                // 插入数据
+                const result = await request
+                    .input('requestername', sql.NVarChar(50), requestername)
+                    .input('contact', sql.NVarChar(50), contact || null)
+                    .input('description', sql.NVarChar(sql.MAX), description)
+                    .query(`
                 INSERT INTO RdpgCode.dbo.CqrdpgBusiness (requestername, contact, description, isread, submitted)
                 VALUES (@requestername, @contact, @description, 0, GETDATE());
                 SELECT SCOPE_IDENTITY() as newId;
             `);
 
-            const newId = result.recordset[0].newId;
+                const newId = result.recordset[0].newId;
 
-            // 🔥 实时通知所有连接的管理端用户
-            const newMessage = {
-                id: parseInt(newId),
-                requestername,
-                contact: contact || '未提供',
-                description,
-                isread: 0,
-                submitted: new Date().toISOString(),
-                responded: null
-            };
+                // 🔥 实时通知所有连接的管理端用户
+                const newMessage = {
+                    id: parseInt(newId),
+                    requestername,
+                    contact: contact || '未提供',
+                    description,
+                    isread: 0,
+                    submitted: new Date().toISOString(),
+                    responded: null
+                };
 
-            io.emit('new_message_received', newMessage);
+                io.emit('new_message_received', newMessage);
 
-            res.json({ success: true, message: '提交成功', id: newId });
-        } catch (err) {
-            console.error('数据库插入错误:', err);
-            res.status(500).json({ success: false, message: '服务器内部错误', error: err.message });
-        }
-    });
+                res.json({ success: true, message: '提交成功', id: newId });
+            } catch (err) {
+                console.error('数据库插入错误:', err);
+                res.status(500).json({ success: false, message: '服务器内部错误', error: err.message });
+            }
+        });
 
-    // 2. 获取消息列表 (MessageManagement 初始化使用，作为 Socket 的备用或初始加载) 管理员查看列表。
-    app.get('/api/CodeDatabase/getMessages', async (req, res) => {
-        try {
-            await poolConnect;
-            const result = await pool.request()
-                .query('SELECT * FROM RdpgCode.dbo.CqrdpgBusiness ORDER BY submitted DESC');
+        // 2. 获取消息列表 (MessageManagement 初始化使用，作为 Socket 的备用或初始加载) 管理员查看列表。
+        app.get('/api/CodeDatabase/getMessages', async (req, res) => {
+            try {
+                await poolConnect;
+                const result = await pool.request()
+                    .query('SELECT * FROM RdpgCode.dbo.CqrdpgBusiness ORDER BY submitted DESC');
 
-            res.json({ success: true, data: result.recordset });
-        } catch (err) {
-            console.error('获取消息列表错误:', err);
-            res.status(500).json({ success: false, message: '获取数据失败' });
-        }
-    });
+                res.json({ success: true, data: result.recordset });
+            } catch (err) {
+                console.error('获取消息列表错误:', err);
+                res.status(500).json({ success: false, message: '获取数据失败' });
+            }
+        });
 
-    // 3. 标记为已读 (可选功能) 管理员修改状态。
-    app.put('/api/CodeDatabase/markAsRead/:id', async (req, res) => {
-        const { id } = req.params;
-        try {
-            await poolConnect;
-            await pool.request()
-                .input('id', sql.Int, id)
-                .query('UPDATE RdpgCode.dbo.CqrdpgBusiness SET isread = 1, responded = GETDATE() WHERE id = @id');
+        // 3. 标记为已读 (可选功能) 管理员修改状态。
+        app.put('/api/CodeDatabase/markAsRead/:id', async (req, res) => {
+            const { id } = req.params;
+            try {
+                await poolConnect;
+                await pool.request()
+                    .input('id', sql.Int, id)
+                    .query('UPDATE RdpgCode.dbo.CqrdpgBusiness SET isread = 1, responded = GETDATE() WHERE id = @id');
 
-            // 通知前端列表更新
-            io.emit('message_updated', { id: parseInt(id), isread: 1, responded: new Date().toISOString() });
+                // 通知前端列表更新
+                io.emit('message_updated', { id: parseInt(id), isread: 1, responded: new Date().toISOString() });
 
-            res.json({ success: true });
-        } catch (err) {
-            res.status(500).json({ success: false, error: err.message });
-        }
-    });
+                res.json({ success: true });
+            } catch (err) {
+                res.status(500).json({ success: false, error: err.message });
+            }
+        });
 
 
-    // 4. 删除留言 (新增代码)
-    app.delete('/api/CodeDatabase/deleteMessage/:id', async (req, res) => {
-        const { id } = req.params;
+        // 4. 删除留言 (新增代码)
+        app.delete('/api/CodeDatabase/deleteMessage/:id', async (req, res) => {
+            const { id } = req.params;
 
-        if (!id) {
-            return res.status(400).json({ success: false, message: 'ID 不能为空' });
-        }
-
-        try {
-            await poolConnect;
-            const request = new sql.Request(pool);
-
-            // 执行删除操作
-            const result = await request
-                .input('id', sql.Int, parseInt(id))
-                .query('DELETE FROM RdpgCode.dbo.CqrdpgBusiness WHERE id = @id');
-
-            // 如果影响行数为 0，说明没找到该 ID
-            if (result.rowsAffected[0] === 0) {
-                return res.status(404).json({ success: false, message: '未找到该留言' });
+            if (!id) {
+                return res.status(400).json({ success: false, message: 'ID 不能为空' });
             }
 
-            // 🔥 实时通知所有前端：这条消息被删除了，需要从列表中移除
-            io.emit('message_deleted', { id: parseInt(id) });
+            try {
+                await poolConnect;
+                const request = new sql.Request(pool);
 
-            res.json({ success: true, message: '删除成功' });
-        } catch (err) {
-            console.error('删除消息错误:', err);
-            res.status(500).json({ success: false, message: '服务器内部错误', error: err.message });
-        }
-    });
+                // 执行删除操作
+                const result = await request
+                    .input('id', sql.Int, parseInt(id))
+                    .query('DELETE FROM RdpgCode.dbo.CqrdpgBusiness WHERE id = @id');
 
+                // 如果影响行数为 0，说明没找到该 ID
+                if (result.rowsAffected[0] === 0) {
+                    return res.status(404).json({ success: false, message: '未找到该留言' });
+                }
 
+                // 🔥 实时通知所有前端：这条消息被删除了，需要从列表中移除
+                io.emit('message_deleted', { id: parseInt(id) });
+
+                res.json({ success: true, message: '删除成功' });
+            } catch (err) {
+                console.error('删除消息错误:', err);
+                res.status(500).json({ success: false, message: '服务器内部错误', error: err.message });
+            }
+        });
+
+    }
 
     { //监控 www.cqrdpg.com 用户访问网站数据
         // ==========================================
@@ -14813,170 +14819,6 @@ ORDER BY
             }
         }
 
-
-        //网站建议 //www.cqrdpg.com网站建议 意见反馈
-
-
-// 辅助函数：格式化日期
-const formatDate = (dateObj) => {
-    if (!dateObj) return '';
-    const d = new Date(dateObj);
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-};
-
-// 辅助函数：解析 UA
-const parseUserAgent = (ua) => {
-    if (!ua) return 'Unknown';
-    let browser = 'Other';
-    let os = 'Unknown';
-    if (ua.includes('Edg/')) browser = `Edge${ua.match(/Edg\/([\d.]+)/)?.[1]?.split('.')[0] || ''}`;
-    else if (ua.includes('Chrome/')) browser = 'Chrome';
-    else if (ua.includes('Huawei')) browser = 'Huawei Browser';
-    
-    if (ua.includes('Windows NT 10')) os = 'Windows 10';
-    else if (ua.includes('Windows NT 11')) os = 'Windows 11';
-    else if (ua.includes('iOS')) os = 'iOS';
-    else if (ua.includes('OpenHarmony')) os = 'OpenHarmony';
-    
-    return `${browser} | ${os}`;
-};
-
-// 【核心修改】获取评论列表并组装成树形结构
-app.get('/api/suggestion/list', async (req, res) => {
-    try {
-        await poolConnect;
-        const request = new sql.Request(pool);
-        
-        // 获取所有评论，按时间正序排列（方便组装树，或者倒序也行，看需求）
-        // 这里为了展示“最新在前”，我们先查出来，组装好树后再排序根节点
-        const result = await request.query(`
-            SELECT id, content, authorname, authoremail, authortelephone, useragent, ipaddress, parentid, likes, createdat 
-            FROM RdpgCode.dbo.Suggestion 
-            ORDER BY createdat ASC 
-        `);
-
-        const rows = result.recordset;
-        const commentMap = new Map();
-        const rootComments = [];
-
-        // 1. 初始化所有节点，建立映射
-        rows.forEach(row => {
-            const node = {
-                id: row.id,
-                author: row.authorname || '匿名',
-                date: formatDate(row.createdat),
-                browser: parseUserAgent(row.useragent),
-                content: row.content,
-                likes: row.likes || 0,
-                parentId: row.parentid,
-                replies: [] // 初始化为空数组
-            };
-            commentMap.set(node.id, node);
-        });
-
-        // 2. 组装树形结构
-        rows.forEach(row => {
-            const node = commentMap.get(row.id);
-            if (row.parentid === null || row.parentid === undefined) {
-                // 根节点
-                rootComments.push(node);
-            } else {
-                // 子节点：找到父节点并加入其 replies 数组
-                const parent = commentMap.get(row.parentid);
-                if (parent) {
-                    parent.replies.push(node);
-                } else {
-                    // 如果父节点不存在（可能被删除了），暂时提升为根节点或忽略
-                    rootComments.push(node);
-                }
-            }
-        });
-
-        // 3. 对根节点进行排序（默认最新在前）
-        rootComments.sort((a, b) => new Date(b.date) - new Date(a.date));
-        
-        // 注意：子节点 (replies) 目前是按插入顺序 (createdat ASC) 排列的。
-        // 如果你希望子评论也是最新的在最上面，可以在 push 之前对 rows 排序，或者在这里对每个 node.replies 排序。
-        // 这里我们对每个节点的回复也按时间倒序排序
-        const sortRepliesRecursive = (nodes) => {
-            nodes.sort((a, b) => new Date(b.date) - new Date(a.date));
-            nodes.forEach(node => {
-                if (node.replies && node.replies.length > 0) {
-                    sortRepliesRecursive(node.replies);
-                }
-            });
-        };
-        sortRepliesRecursive(rootComments);
-
-        res.json(rootComments);
-    } catch (err) {
-        console.error('Error fetching suggestions tree:', err);
-        res.status(500).json({ error: 'Failed to fetch comments' });
-    }
-});
-
-// 提交评论 API (保持不变，支持 parentid 即可)
-app.post('/api/suggestion', async (req, res) => {
-    const { content, authorname, authoremail, authortelephone, parentid } = req.body;
-
-    if (!content || content.trim() === '') {
-        return res.status(400).json({ error: '评论内容不能为空' });
-    }
-
-    try {
-        await poolConnect;
-        const request = new sql.Request(pool);
-
-        const realIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress || '0.0.0.0';
-        const realUa = req.headers['user-agent'] || 'Unknown';
-        const finalAuthor = authorname && authorname.trim() !== '' ? authorname.trim() : '匿名';
-
-        const insertQuery = `
-            INSERT INTO RdpgCode.dbo.Suggestion 
-            (content, authorname, authoremail, authortelephone, useragent, ipaddress, parentid, likes, createdat)
-            VALUES 
-            (@content, @authorname, @authoremail, @authortelephone, @useragent, @ipaddress, @parentid, 0, GETDATE())
-        `;
-
-        request.input('content', sql.NVarChar, content);
-        request.input('authorname', sql.NVarChar, finalAuthor);
-        request.input('authoremail', sql.NVarChar, authoremail || null);
-        request.input('authortelephone', sql.NVarChar, authortelephone || null);
-        request.input('useragent', sql.NVarChar, realUa);
-        request.input('ipaddress', sql.VarChar, realIp);
-        request.input('parentid', sql.Int, parentid || null);
-
-        await request.query(insertQuery);
-
-        // 广播刷新信号
-        io.emit('refresh_comments'); 
-
-        res.json({ success: true });
-    } catch (err) {
-        console.error('Error posting suggestion:', err);
-        res.status(500).json({ error: 'Failed to post comment' });
-    }
-});
-
-// 点赞 API
-app.post('/api/suggestion/like', async (req, res) => {
-    const { id } = req.body;
-    if (!id) return res.status(400).json({ error: 'ID required' });
-    try {
-        await poolConnect;
-        const request = new sql.Request(pool);
-        await request.query(`UPDATE RdpgCode.dbo.Suggestion SET likes = likes + 1 WHERE id = @id`, {
-            input: 'id', value: id
-        });
-        io.emit('refresh_comments'); // 简单起见，点赞也触发刷新，或者可以单独优化
-        res.json({ success: true });
-    } catch (err) {
-        res.status(500).json({ error: 'Like failed' });
-    }
-});
-
-
-
         io.on('connection', (socket) => {
             // 1. 客户端连接成功时，打印连接的客户端ID（用于调试）
             // console.log('Client connected:', socket.id);
@@ -14993,10 +14835,624 @@ app.post('/api/suggestion/like', async (req, res) => {
         });
 
 
+    }
+
+
+    {   //网站建议 //www.cqrdpg.com网站建议 意见反馈
+
+
+        // 辅助函数：格式化日期
+        const formatDate = (dateObj) => {
+            if (!dateObj) return '';
+            const d = new Date(dateObj);
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        };
+
+        // 辅助函数：解析 UA
+        const parseUserAgent = (ua) => {
+            if (!ua) return 'Unknown';
+            let browser = 'Other';
+            let os = 'Unknown';
+            if (ua.includes('Edg/')) browser = `Edge${ua.match(/Edg\/([\d.]+)/)?.[1]?.split('.')[0] || ''}`;
+            else if (ua.includes('Chrome/')) browser = 'Chrome';
+            else if (ua.includes('Huawei')) browser = 'Huawei Browser';
+
+            if (ua.includes('Windows NT 10')) os = 'Windows 10';
+            else if (ua.includes('Windows NT 11')) os = 'Windows 11';
+            else if (ua.includes('iOS')) os = 'iOS';
+            else if (ua.includes('OpenHarmony')) os = 'OpenHarmony';
+
+            return `${browser} | ${os}`;
+        };
+
+
+
+        // 提交评论 API (保持不变，支持 parentid 即可)
+        app.post('/api/suggestion', async (req, res) => {
+            const { content, authorname, authoremail, authortelephone, parentid } = req.body;
+
+            if (!content || content.trim() === '') {
+                return res.status(400).json({ error: '评论内容不能为空' });
+            }
+
+            try {
+                await poolConnect;
+                const request = new sql.Request(pool);
+
+                const realIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress || '0.0.0.0';
+                const realUa = req.headers['user-agent'] || 'Unknown';
+                const finalAuthor = authorname && authorname.trim() !== '' ? authorname.trim() : '匿名';
+
+                const insertQuery = `
+            INSERT INTO RdpgCode.dbo.Suggestion 
+            (content, authorname, authoremail, authortelephone, useragent, ipaddress, parentid, likes, createdat)
+            VALUES 
+            (@content, @authorname, @authoremail, @authortelephone, @useragent, @ipaddress, @parentid, 0, GETDATE())
+        `;
+
+                request.input('content', sql.NVarChar, content);
+                request.input('authorname', sql.NVarChar, finalAuthor);
+                request.input('authoremail', sql.NVarChar, authoremail || null);
+                request.input('authortelephone', sql.NVarChar, authortelephone || null);
+                request.input('useragent', sql.NVarChar, realUa);
+                request.input('ipaddress', sql.VarChar, realIp);
+                request.input('parentid', sql.Int, parentid || null);
+
+                await request.query(insertQuery);
+
+                // 广播刷新信号
+                io.emit('refresh_comments');
+
+                res.json({ success: true });
+            } catch (err) {
+                console.error('Error posting suggestion:', err);
+                res.status(500).json({ error: 'Failed to post comment' });
+            }
+        });
+
+        // ==========================================
+        // 1. 获取根评论列表 (带前 10 条子评论)
+        // ==========================================
+        app.get('/api/suggestion/list', async (req, res) => {
+            const page = parseInt(req.query.page) || 1;
+            const limit = 100; // 父级每次加载 100 条
+            const offset = (page - 1) * limit;
+
+            try {
+                await poolConnect;
+                const request = new sql.Request(pool);
+
+                // 第一步：查根评论
+                const rootQuery = `
+            SELECT id, content, authorname, authoremail, authortelephone, useragent, ipaddress, likes, createdat 
+            FROM RdpgCode.dbo.Suggestion 
+            WHERE parentid IS NULL
+            ORDER BY createdat DESC
+            OFFSET @offset ROWS FETCH NEXT @limit ROWS ONLY
+        `;
+
+                request.input('offset', sql.Int, offset);
+                request.input('limit', sql.Int, limit);
+
+                const rootResult = await request.query(rootQuery);
+                const rootRows = rootResult.recordset;
+
+                if (rootRows.length === 0) {
+                    return res.json([]);
+                }
+
+                // 提取所有根评论 ID
+                const rootIds = rootRows.map(r => r.id);
+
+                // 第二步：批量查这些根评论下的前 10 条子评论
+                // 使用 IN 查询提高效率
+                const childrenQuery = `
+            SELECT id, content, authorname, authoremail, authortelephone, useragent, likes, createdat, parentid
+            FROM RdpgCode.dbo.Suggestion 
+            WHERE parentid IN (@rootIds)
+            ORDER BY parentid, createdat ASC -- 按父ID分组，再按时间正序
+        `;
+
+                // 注意：mssql 的 input 对 IN 查询支持有限，通常需要在 JS 层过滤或构建动态 SQL
+                // 这里为了简单稳妥，我们在 JS 层过滤，或者构建动态 SQL 字符串
+                // 方案：构建动态 SQL 字符串 (注意防注入，id 是整数，直接拼接是安全的)
+                const idsString = rootIds.join(',');
+                const dynamicChildrenQuery = `
+            SELECT id, content, authorname, authoremail, authortelephone, useragent, likes, createdat, parentid
+            FROM RdpgCode.dbo.Suggestion 
+            WHERE parentid IN (${idsString})
+            ORDER BY parentid, createdat ASC
+        `;
+
+                const childrenResult = await request.query(dynamicChildrenQuery);
+                const allChildren = childrenResult.recordset;
+
+                // 第三步：在内存中组装数据
+                // 将子评论按 parentId 分组
+                const childrenMap = new Map();
+                allChildren.forEach(child => {
+                    if (!childrenMap.has(child.parentid)) {
+                        childrenMap.set(child.parentid, []);
+                    }
+                    // 每个父节点只取前 10 条用于初始渲染
+                    if (childrenMap.get(child.parentid).length < 10) {
+                        childrenMap.get(child.parentid).push({
+                            id: child.id,
+                            author: child.authorname || '匿名',
+                            date: formatDate(child.createdat),
+                            content: child.content,
+                            likes: child.likes || 0,
+                            parentId: child.parentid
+                            // 注意：子评论不再需要复杂的回复关系，只展示基本信息
+                        });
+                    }
+                });
+
+                // 第四步：构建最终返回结构
+                const finalData = rootRows.map(row => {
+                    const replies = childrenMap.get(row.id) || [];
+                    // 判断是否有更多子评论：如果数据库里该父ID下的总数 > 10，则 hasMore 为 true
+                    // 由于我们上面只查了部分，这里有个小瑕疵：我们需要知道总数。
+                    // 优化：可以在第一步查根评论时，带一个子评论数量的子查询，或者这里简单假设：
+                    // 如果拿到的子评论等于 10 条，我们就标记 hasMore 为 true，让前端去加载第 11 条验证。
+                    // 更严谨的做法是再查一次 count，但为了性能，我们先假设拿到 10 条就是有剩余。
+                    // 实际上，如果该父节点刚好只有 10 条，前端点了加载更多会发现没数据，这也是可接受的。
+
+                    return {
+                        id: row.id,
+                        author: row.authorname || '匿名',
+                        date: formatDate(row.createdat),
+                        browser: parseUserAgent(row.useragent),
+                        content: row.content,
+                        likes: row.likes || 0, // 确保点赞数传过去了
+                        replies: replies,      // 直接带上前 10 条子评论
+                        hasMoreReplies: replies.length === 10 // 标记是否可能有更多
+                    };
+                });
+
+                res.json(finalData);
+
+            } catch (err) {
+                console.error('Error fetching list with replies:', err);
+                res.status(500).json({ error: 'Failed to fetch comments' });
+            }
+        });
+
+        // ==========================================
+        // 2. 加载子评论的剩余部分 (分页)
+        // ==========================================
+        app.get('/api/suggestion/children', async (req, res) => {
+            const parentId = req.query.parentId;
+            const page = parseInt(req.query.page) || 1;
+            const limit = 10;
+            const offset = (page - 1) * limit;
+
+            if (!parentId) return res.status(400).json({ error: 'Parent ID required' });
+
+            try {
+                await poolConnect;
+                const request = new sql.Request(pool);
+
+                // 跳过前 10 条（因为首页已经加载了），从第 11 条开始查
+                // 注意：前端传过来的 page=2 时，offset 应该是 10
+                const query = `
+            SELECT id, content, authorname, authoremail, authortelephone, useragent, likes, createdat, parentid
+            FROM RdpgCode.dbo.Suggestion 
+            WHERE parentid = @parentId
+            ORDER BY createdat ASC
+            OFFSET @offset ROWS FETCH NEXT @limit ROWS ONLY
+        `;
+
+                request.input('parentId', sql.Int, parseInt(parentId));
+                request.input('offset', sql.Int, offset);
+                request.input('limit', sql.Int, limit);
+
+                const result = await request.query(query);
+                const rows = result.recordset;
+
+                const comments = rows.map(row => ({
+                    id: row.id,
+                    author: row.authorname || '匿名',
+                    date: formatDate(row.createdat),
+                    content: row.content,
+                    likes: row.likes || 0,
+                    parentId: row.parentid
+                }));
+
+                res.json(comments);
+            } catch (err) {
+                console.error('Error fetching more children:', err);
+                res.status(500).json({ error: 'Failed' });
+            }
+        });
+
+        // ==========================================
+        // 3. 点赞 API (保持不变，确保返回最新数值)
+        // ==========================================
+        // 点赞 API (修复 req.connection 弃用警告 + 优化 IP 获取)
+        const likedCache = new Set(); // 内存缓存，重启后清空
+
+        app.post('/api/suggestion/like', async (req, res) => {
+            const { id } = req.body;
+
+            // 【重要】确保 id 是整数，防止 SQL 注入和类型错误
+            const intId = parseInt(id, 10);
+            if (!intId) return res.status(400).json({ error: 'Valid ID required' });
+
+            const forwarded = req.headers['x-forwarded-for'];
+            const userIp = forwarded
+                ? forwarded.split(',')[0].trim()
+                : (req.headers['x-real-ip'] || (req.socket && req.socket.remoteAddress) || 'unknown');
+
+            const cacheKey = `${userIp}_${intId}`;
+
+            if (likedCache.has(cacheKey)) {
+                return res.status(400).json({ error: 'Already liked', success: false });
+            }
+
+            try {
+                await poolConnect;
+                const request = new sql.Request(pool);
+
+                // 【修复点】明确定义输入参数，类型必须匹配数据库字段类型 (通常是 Int)
+                request.input('id', sql.Int, intId);
+
+                // 更新操作
+                // 注意：这里直接使用普通字符串，不要用过度的模板插值，虽然 @id 在里面是安全的
+                const updateSql = "UPDATE RdpgCode.dbo.Suggestion SET likes = likes + 1 WHERE id = @id";
+                await request.query(updateSql);
+
+                likedCache.add(cacheKey);
+
+                // 查询最新数值
+                const selectSql = "SELECT likes FROM RdpgCode.dbo.Suggestion WHERE id = @id";
+                const resCount = await request.query(selectSql);
+
+                const newLikes = resCount.recordset[0] ? resCount.recordset[0].likes : 0;
+
+                io.emit('like_update', { id: intId, likes: newLikes });
+
+                res.json({ success: true, likes: newLikes });
+            } catch (err) {
+                console.error('Like error:', err);
+                res.status(500).json({ error: 'Like failed', details: err.message });
+            }
+        });
+
+
 
     }
 
+    {  //www.cqwrdpg.com 网站消息发布
+
+        // ==========================================
+        // Multer 配置 
+        // ==========================================
+        const storagePublishNews = multer.diskStorage({
+            destination: async (req, file, cb) => {
+                const newsId = req.body.newsId || req.query.newsId;
+
+                if (!newsId) {
+                    return cb(new Error('newsId is required for image upload'), null);
+                }
+
+                const uploadPath = path.join(__dirname, 'images', 'PublishNewsPictures', newsId.toString());
+
+                if (!fs.existsSync(uploadPath)) {
+                    fs.mkdirSync(uploadPath, { recursive: true });
+                }
+                cb(null, uploadPath);
+            },
+            filename: (req, file, cb) => {
+                const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+                cb(null, uniqueSuffix + '-' + file.originalname);
+            }
+        });
+
+        const uploadPublishNews = multer({
+            storage: storagePublishNews,
+            fileFilter: (req, file, cb) => {
+                if (file.mimetype.match(/image\/(jpeg|jpg|png)/)) {
+                    cb(null, true);
+                } else {
+                    cb(new Error('只允许上传 JPG/PNG 图片文件'), false);
+                }
+            },
+            limits: {
+                fileSize: 5 * 1024 * 1024
+            }
+        });
+
+        // ==========================================
+        // API: 获取新闻列表 (已移除 Summary)
+        // ==========================================
+        app.get('/api/publish-news/list', async (req, res) => {
+            const page = parseInt(req.query.page) || 1;
+            const limit = parseInt(req.query.limit) || 10;
+            const category = req.query.category;
+            const offset = (page - 1) * limit;
+
+            try {
+                await poolConnect;
+                const request = new sql.Request(pool);
+
+                // 【修改点】SELECT 中移除了 Summary
+                let query = `
+            SELECT Id, Title, Category, Content, ImageUrl, PublishDate, ViewCount 
+            FROM RdpgCode.dbo.PublishNews 
+            WHERE IsActive = 1
+        `;
+
+                if (category && category !== 'all') {
+                    query += ` AND Category = @category`;
+                }
+
+                query += ` ORDER BY PublishDate DESC OFFSET @offset ROWS FETCH NEXT @limit ROWS ONLY`;
+
+                if (category && category !== 'all') {
+                    request.input('category', sql.NVarChar, category);
+                }
+                request.input('offset', sql.Int, offset);
+                request.input('limit', sql.Int, limit);
+
+                const result = await request.query(query);
+
+                const rows = result.recordset.map(row => ({
+                    ...row,
+                    PublishDate: row.PublishDate ? row.PublishDate.toISOString().split('T')[0] : ''
+                }));
+
+                res.json({ list: rows, total: rows.length });
+            } catch (err) {
+                console.error('Get news list error:', err);
+                res.status(500).json({ error: 'Failed to fetch news' });
+            }
+        });
+
+        // ==========================================
+        // API: 创建新闻 (已移除 Summary)
+        // ==========================================
+        app.post('/api/publish-news', async (req, res) => {
+            // 【修改点】解构中移除了 summary
+            const { title, category, content, publishDate } = req.body;
+
+            if (!title || !category) {
+                return res.status(400).json({ error: 'Title and Category are required' });
+            }
+
+            try {
+                await poolConnect;
+                const request = new sql.Request(pool);
+
+                request.input('title', sql.NVarChar, title);
+                request.input('category', sql.NVarChar, category);
+                request.input('content', sql.NVarChar, content || '');
+                // 移除了 summary 的 input
+                request.input('publishDate', sql.Date, publishDate || new Date());
+
+                // 【修改点】INSERT 语句中移除了 Summary 列
+                const query = `
+            INSERT INTO RdpgCode.dbo.PublishNews (Title, Category, Content, PublishDate, ImageUrl, ViewCount, IsActive, UpdatedAt)
+            OUTPUT INSERTED.Id
+            VALUES (@title, @category, @content, @publishDate, 'Defaultbackground.jpg', 50, 1, GETDATE())
+        `;
+
+                const result = await request.query(query);
+                const newId = result.recordset[0].Id;
+
+                res.json({ success: true, id: newId, message: 'News created.' });
+            } catch (err) {
+                console.error('Create news error:', err);
+                res.status(500).json({ error: 'Failed to create news' });
+            }
+        });
+
+        // ==========================================
+        // API: 上传图片 (保持不变)
+        // ==========================================
+        app.post('/api/publish-news/upload-image', uploadPublishNews.single('image'), async (req, res) => {
+            const newsId = req.body.newsId;
+
+            if (!req.file) {
+                return res.status(400).json({ error: 'No image file uploaded' });
+            }
+            if (!newsId) {
+                if (req.file && req.file.path) fs.unlinkSync(req.file.path);
+                return res.status(400).json({ error: 'newsId is required' });
+            }
+
+            try {
+                const imageUrl = `/images/PublishNewsPictures/${newsId}/${req.file.filename}`;
+
+                await poolConnect;
+                const request = new sql.Request(pool);
+                request.input('id', sql.Int, parseInt(newsId));
+                request.input('imageUrl', sql.NVarChar, imageUrl);
+                request.input('now', sql.DateTime, new Date());
+
+                const query = `
+            UPDATE RdpgCode.dbo.PublishNews 
+            SET ImageUrl = @imageUrl, UpdatedAt = @now 
+            WHERE Id = @id
+        `;
+
+                await request.query(query);
+                res.json({ success: true, imageUrl: imageUrl });
+            } catch (err) {
+                console.error('Upload image error:', err);
+                if (req.file && req.file.path) fs.unlinkSync(req.file.path);
+                res.status(500).json({ error: 'Failed to save image path' });
+            }
+        });
+
+        // ==========================================
+        // API: 更新新闻信息 (已移除 Summary)
+        // ==========================================
+        app.put('/api/publish-news/:id', async (req, res) => {
+            const { id } = req.params;
+            // 【修改点】解构中移除了 summary
+            const { title, category, content, publishDate } = req.body;
+
+            try {
+                await poolConnect;
+                const request = new sql.Request(pool);
+
+                request.input('id', sql.Int, parseInt(id));
+                request.input('title', sql.NVarChar, title);
+                request.input('category', sql.NVarChar, category);
+                request.input('content', sql.NVarChar, content);
+                // 移除了 summary input
+                request.input('publishDate', sql.Date, publishDate);
+                request.input('now', sql.DateTime, new Date());
+
+                // 【修改点】UPDATE 语句中移除了 Summary
+                const query = `
+            UPDATE RdpgCode.dbo.PublishNews 
+            SET Title = @title, Category = @category, Content = @content, 
+                PublishDate = @publishDate, UpdatedAt = @now
+            WHERE Id = @id
+        `;
+
+                await request.query(query);
+                res.json({ success: true });
+            } catch (err) {
+                console.error('Update news error:', err);
+                res.status(500).json({ error: 'Failed to update news' });
+            }
+        });
+
+        // ==========================================
+        // API: 删除新闻 (保持不变)
+        // ==========================================
+        app.delete('/api/publish-news/:id', async (req, res) => {
+            const { id } = req.params;
+            try {
+                await poolConnect;
+                const request = new sql.Request(pool);
+                request.input('id', sql.Int, parseInt(id));
+
+                await request.query(`UPDATE RdpgCode.dbo.PublishNews SET IsActive = 0 WHERE Id = @id`);
+                res.json({ success: true });
+            } catch (err) {
+                res.status(500).json({ error: 'Delete failed' });
+            }
+        });
+
+        // 查看新闻详细页面 没有增加阅读量
+        app.get('/api/publish-newsold/:id', async (req, res) => {
+            const { id } = req.params;
+
+            if (isNaN(id)) {
+                return res.status(400).json({ success: false, error: '无效的 ID' });
+            }
+
+            try {
+                const pool = await sql.connect(config);
+
+                const request = pool.request();
+                request.input('id', sql.Int, parseInt(id));
+
+
+                const query = `
+            SELECT Id, Title, Category, Content, ImageUrl, PublishDate, ViewCount, IsActive, UpdatedAt 
+            FROM RdpgCode.dbo.PublishNews 
+            WHERE Id = @id AND IsActive = 1
+        `;
+
+                const result = await request.query(query);
+
+                if (result.recordset.length === 0) {
+                    return res.status(404).json({ success: false, error: '新闻不存在' });
+                }
+
+                res.json({ success: true, data: result.recordset[0] });
+
+            } catch (error) {
+                console.error('API Error (Get Detail):', error);
+                res.status(500).json({ success: false, error: '服务器内部错误: ' + error.message });
+            }
+        });
+
+
+        //新闻阅读量增加+1
+        // 新闻详细页面 (带阅读量统计)
+        app.get('/api/publish-news/:id', async (req, res) => {
+            const { id } = req.params;
+
+            if (isNaN(id)) {
+                return res.status(400).json({ success: false, error: '无效的 ID' });
+            }
+
+            let pool;
+            try {
+                // 1. 连接数据库
+                pool = await sql.connect(config);
+
+                // 2. 查询新闻详情
+                const request = pool.request();
+                request.input('id', sql.Int, parseInt(id));
+
+                const query = `
+                    SELECT Id, Title, Category, Content, ImageUrl, PublishDate, ViewCount, IsActive, UpdatedAt 
+                    FROM RdpgCode.dbo.PublishNews 
+                    WHERE Id = @id AND IsActive = 1
+                `;
+
+                const result = await request.query(query);
+
+                if (result.recordset.length === 0) {
+                    return res.status(404).json({ success: false, error: '新闻不存在' });
+                }
+
+                // 获取当前新闻对象
+                const newsItem = result.recordset[0];
+
+                // 3. 【新增】执行更新操作：浏览量 +1
+                try {
+                    const updateRequest = pool.request();
+                    updateRequest.input('id', sql.Int, parseInt(id));
+
+                    const updateQuery = `
+                        UPDATE RdpgCode.dbo.PublishNews 
+                        SET ViewCount = ISNULL(ViewCount, 0) + 1, 
+                            UpdatedAt = GETDATE() 
+                        WHERE Id = @id
+                    `;
+
+                    await updateRequest.query(updateQuery);
+
+                    // 4. 【重要】手动更新返回给前端的数据
+                    // 因为数据库更新是异步的，为了不重新查库，我们直接在内存中 +1 返回给前端
+                    newsItem.ViewCount = (newsItem.ViewCount || 0) + 1;
+
+                } catch (updateErr) {
+                    // 如果更新阅读量失败，记录错误但不影响用户看新闻
+                    console.error('更新阅读量失败:', updateErr);
+                }
+
+                // 5. 返回包含新浏览量的数据
+                res.json({ success: true, data: newsItem });
+
+            } catch (error) {
+                console.error('API Error (Get Detail):', error);
+                res.status(500).json({ success: false, error: '服务器内部错误: ' + error.message });
+            } finally {
+                // 6. 关闭连接 (如果你使用的是连接池，通常不需要每次 close，但如果是临时 connect 则建议关闭)
+                // 如果你的 config 是全局连接池模式，这里可以注释掉 pool.close()
+                // 如果每次请求都新建连接，则必须关闭以防连接泄露
+                if (pool) {
+                    // 注意：如果你在全局使用了单例连接池，请不要在这里 close，否则后续请求会失败
+                    // 只有当你每次都是 await sql.connect(config) 时才需要 close
+                    // 鉴于你的代码写法是每次 connect，建议保留关闭，或者改为全局单例池
+                    await pool.close();
+                }
+            }
+        });
+    }
+
+
 }
+
 
 
 
