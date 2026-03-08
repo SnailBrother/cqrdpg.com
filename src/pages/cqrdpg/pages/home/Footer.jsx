@@ -43,6 +43,12 @@ const Footer = () => {
                   意见反馈
                 </Link>
               </li>
+              <li>
+                <Link to="/easyvaluation" className={styles.link}>
+                  易估价
+                </Link>
+              </li>
+
             </ul>
           </div>
 
