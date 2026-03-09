@@ -1,42 +1,158 @@
 import React, { useEffect, useState, useRef } from 'react';
 import io from 'socket.io-client';
 import styles from './Overview.module.css';
-
-// 从环境变量读取 URL
-// process.env.REACT_APP_SOCKET_URL 会在打包时自动替换为 .env 文件中的值
-// const SOCKET_URL = process.env.REACT_APP_SOCKET_URL || '/'; 
-
+import { UAParser } from 'ua-parser-js';  // 修改这里的导入方式
 const Overview = () => {
+  // --- 全局统计状态 ---
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [timeRange, setTimeRange] = useState('today');
   const chartRef = useRef(null);
 
+  // --- 实时访问列表状态 ---
+  const [visitorList, setVisitorList] = useState([]);
+  const [listLoading, setListLoading] = useState(true);
+    // 【配置】
+  const INITIAL_LOAD_LIMIT = 200; // 初始化拉取 200 条
+  const MAX_LIST_SIZE = 200;      // 内存中最大保留 200 条
+
+  // 或者使用更详细的解析函数
+  const parseUserAgent = (userAgent) => {
+    if (!userAgent) return { type: '未知', icon: '❓', os: '未知', browser: '未知' };
+
+    try {
+      const parser = new UAParser(userAgent);
+      const browser = parser.getBrowser();
+      const os = parser.getOS();
+      const device = parser.getDevice();
+
+      let type = '电脑';
+      let icon = '💻';
+
+      if (device.type === 'mobile') {
+        type = '手机';
+        icon = '📱';
+      } else if (device.type === 'tablet') {
+        type = '平板';
+        icon = '📟';
+      } else if (device.type === 'wearable') {
+        type = '穿戴设备';
+        icon = '⌚';
+      } else if (device.type === 'console') {
+        type = '游戏机';
+        icon = '🎮';
+      } else if (device.type === 'smarttv') {
+        type = '智能电视';
+        icon = '📺';
+      }
+
+      return {
+        type,
+        icon,
+        os: os.name || '未知系统',
+        browser: browser.name || '未知浏览器'
+      };
+    } catch (error) {
+      console.error('解析 UserAgent 失败:', error);
+      return { type: '未知', icon: '❓', os: '未知', browser: '未知' };
+    }
+  };
+  // 1. Socket 连接与事件监听
   useEffect(() => {
-    // 初始化 Socket
-    // 如果是开发环境，SOCKET_URL 是 http://121.4.22.55:5202
-    // 如果是生产环境，SOCKET_URL 是 / (相对路径)，浏览器会自动请求当前域名的 /socket.io/
-    // 生产环境下，如果使用了 Nginx 代理，通常不需要额外配置 path
-      // 但如果你的 Nginx 配置了特定的 path，可以在这里指定，例如: path: '/socket.io/'
-    const socket = io('/', {
+    // 连接 Socket
+    const socket = io('http://121.4.22.55:5202', {
       transports: ['websocket', 'polling'],
-        // 生产环境下，如果使用了 Nginx 代理，通常不需要额外配置 path
-      // 但如果你的 Nginx 配置了特定的 path，可以在这里指定，例如: path: '/socket.io/'
     });
 
+    // 监听统计数据更新 (PV, UV, 趋势图等)
     socket.on('stats-update', (data) => {
       setStats(data);
       setLoading(false);
     });
 
+    // 【核心】监听新访问记录事件 (实时插入列表)
+    // 【核心】监听新访问记录事件 (实时插入列表)
+    socket.on('new-visit-record', (newRecord) => {
+      setVisitorList((prevList) => {
+        // 1. 定义唯一标识符：优先用 sessionid，如果没有，则组合 username+email
+        // 对于特殊用户，sessionid 可能会变（如果是新会话），但 username/email 不变
+        // 为了稳妥，我们主要依赖 sessionid，但如果业务上认为同一人就是同一条，可以用 username+email
+        // 这里假设：只要 sessionid 相同，就是同一次会话的更新。
+        // 如果你的逻辑是：李中敬不管 sessionid 变不变，都只保留最新的一条，那需要用 username 作为 key。
+        
+        // 方案 A：严格基于 sessionid (推荐，符合常规会话逻辑)
+        const uniqueKey = newRecord.sessionid; 
+        
+        // 方案 B (备选)：如果是特殊用户，忽略 sessionid，只用 username 去重
+        // const isSpecial = ['李中敬', '陈彦羽'].includes(newRecord.username) || ['471883209@qq.com'].includes(newRecord.email);
+        // const uniqueKey = isSpecial ? `${newRecord.username}-${newRecord.email}` : newRecord.sessionid;
+
+        // 2. 在现有列表中查找是否已经存在该 Key 的记录
+        const existingIndex = prevList.findIndex(item => item.sessionid === uniqueKey);
+
+        let newList;
+
+        if (existingIndex !== -1) {
+          // 【情况 1：找到了旧记录】-> 执行更新操作
+          // 创建新列表：把旧的那条删掉，把新的这条放到最前面
+          // 或者直接修改该位置的数据并移动到头部
+          
+          // 方法：过滤掉旧的，然后把新的 unshift
+          const filteredList = prevList.filter(item => item.sessionid !== uniqueKey);
+          newList = [newRecord, ...filteredList];
+          
+          console.log(`🔄 更新列表中的记录: ${newRecord.username}`);
+        } else {
+          // 【情况 2：没找到】-> 执行插入操作
+          newList = [newRecord, ...prevList];
+          console.log(`➕ 新增列表记录: ${newRecord.username}`);
+        }
+
+        // 3. 限制列表长度，防止内存泄漏
+        return newList.slice(0, MAX_LIST_SIZE);
+      });
+
+      if (listLoading) {
+        setListLoading(false);
+      }
+    });
+
+    // 清理函数
     return () => {
+      socket.off('stats-update');
+      socket.off('new-visit-record');
       socket.disconnect();
     };
-  }, []);
+  }, [listLoading]);
 
+  useEffect(() => {
+    const fetchInitialHistory = async () => {
+      try {
+        // 调用刚才后端新建的 /api/website/records-history 接口
+        const response = await fetch(`/api/website/records-history?limit=${INITIAL_LOAD_LIMIT}`);
+        
+        if (!response.ok) throw new Error('Network response was not ok');
+        const result = await response.json();
+
+        if (result.success) {
+          setVisitorList(result.data);
+        }
+      } catch (error) {
+        console.error('获取历史访问列表失败:', error);
+      } finally {
+        setListLoading(false);
+      }
+    };
+
+    fetchInitialHistory();
+  }, []); // 只执行一次
+
+  // 加载状态判断
   if (loading || !stats) {
     return <div className={styles.loading}>加载实时监控数据...</div>;
   }
+
+  // --- 辅助函数 ---
 
   const getCurrentStats = () => {
     if (!stats) return {};
@@ -46,13 +162,31 @@ const Overview = () => {
 
   const currentStats = getCurrentStats();
 
-  // 格式化列表
   const formatList = (list, limit = 7) => {
     if (!list) return [];
     return list.slice(0, limit).map((item, index) => ({ ...item, key: index }));
   };
 
-  // 生成折线图路径
+  const formatTime = (dateString) => {
+    if (!dateString) return '-';
+    const date = new Date(dateString);
+    return date.toLocaleString('zh-CN', {
+      hour12: false,
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    });
+  };
+
+  const truncate = (str, length) => {
+    if (!str) return '-';
+    return str.length > length ? str.substring(0, length) + '...' : str;
+  };
+
+  // --- 图表数据生成 ---
+
   const generateLinePath = (data, width, height) => {
     if (!data || data.length === 0) return '';
     const max = Math.max(...data, 1);
@@ -83,6 +217,8 @@ const Overview = () => {
     return path;
   };
 
+  // --- 数据准备 ---
+
   const referrers = formatList(stats.referrers);
   const landingPages = formatList(stats.landingPages);
   const entryPages = formatList(stats.entryPages);
@@ -93,7 +229,6 @@ const Overview = () => {
   const avgValue = Math.round(trendData.reduce((a, b) => a + b, 0) / trendData.length);
   const totalValue = trendData.reduce((a, b) => a + b, 0);
 
-  // 柱状图数据
   const barChartData = [
     { label: '新访客', today: stats.today.newUsers || 0, yesterday: stats.yesterday.newUsers || 0, color: '#3b82f6' },
     { label: '老访客', today: stats.today.returningUsers || 0, yesterday: stats.yesterday.returningUsers || 0, color: '#10b981' }
@@ -129,16 +264,6 @@ const Overview = () => {
             <div className={styles.statValue}>{currentStats?.avgTime || '0s'}</div>
             <div className={styles.statSub}>跳出率：{currentStats?.bounceRate || '0%'}</div>
           </div>
-          {/* <div className={styles.statItem}>
-            <div className={styles.statLabel}>今日新访客</div>
-            <div className={styles.statValue} style={{color: '#3b82f6'}}>{stats.today.newUsers || 0}</div>
-            <div className={styles.statSub}>昨日：{stats.yesterday.newUsers || 0}</div>
-          </div>
-          <div className={styles.statItem}>
-            <div className={styles.statLabel}>今日老访客</div>
-            <div className={styles.statValue} style={{color: '#10b981'}}>{stats.today.returningUsers || 0}</div>
-            <div className={styles.statSub}>昨日：{stats.yesterday.returningUsers || 0}</div>
-          </div> */}
         </div>
       </div>
 
@@ -150,9 +275,9 @@ const Overview = () => {
         <span onClick={() => setTimeRange('30days')}>最近 30 日</span>
       </div>
 
-      {/* 【核心修改】左右双列布局：趋势分析 + 新老访客 */}
+      {/* 左右双列布局：趋势分析 + 新老访客 */}
       <div className={styles.trendRow}>
-        
+
         {/* 左侧：趋势折线图 */}
         <div className={styles.trendColumn}>
           <div className={styles.trendHeader}>
@@ -200,8 +325,8 @@ const Overview = () => {
           <div className={styles.trendHeader}>
             <h3 className={styles.sectionTitle}>新老访客对比</h3>
             <div className={styles.legendBox}>
-              <span className={styles.legendItem}><span className={styles.dot} style={{background:'#3b82f6'}}></span>今日</span>
-              <span className={styles.legendItem}><span className={styles.dot} style={{background:'#3b82f6', opacity:0.4}}></span>昨日</span>
+              <span className={styles.legendItem}><span className={styles.dot} style={{ background: '#3b82f6' }}></span>今日</span>
+              <span className={styles.legendItem}><span className={styles.dot} style={{ background: '#3b82f6', opacity: 0.4 }}></span>昨日</span>
             </div>
           </div>
 
@@ -228,14 +353,14 @@ const Overview = () => {
               </div>
             ))}
           </div>
-          
+
           <div className={styles.barSummary}>
-             <div className={styles.summaryItem}>
-               <span>总新访客:</span> <strong>{stats.today.newUsers + stats.yesterday.newUsers}</strong>
-             </div>
-             <div className={styles.summaryItem}>
-               <span>总老访客:</span> <strong>{stats.today.returningUsers + stats.yesterday.returningUsers}</strong>
-             </div>
+            <div className={styles.summaryItem}>
+              <span>总新访客:</span> <strong>{stats.today.newUsers + stats.yesterday.newUsers}</strong>
+            </div>
+            <div className={styles.summaryItem}>
+              <span>总老访客:</span> <strong>{stats.today.returningUsers + stats.yesterday.returningUsers}</strong>
+            </div>
           </div>
         </div>
       </div>
@@ -279,6 +404,80 @@ const Overview = () => {
               </div>
             )) : <div className={styles.emptyRow}>暂无数据</div>}
           </div>
+        </div>
+      </div>
+
+     {/* ========================================== */}
+      {/* 实时访问记录列表 (调用独立 API) */}
+      {/* ========================================== */}
+      <div className={styles.visitorListSection}>
+        <div className={styles.listHeader}>
+          <h3 className={styles.sectionTitle}>
+            实时访问明细 (最近 {MAX_LIST_SIZE} 条)
+            <span style={{ fontSize: '0.8em', color: '#10b981', marginLeft: '10px', fontWeight: 'normal' }}>
+              {listLoading ? '加载中...' : '● 实时监听中'}
+            </span>
+          </h3>
+          <button
+            className={styles.refreshBtn}
+            onClick={() => {
+              setListLoading(true);
+              // 刷新时也调用独立的历史 API
+              fetch(`/api/website/records-history?limit=${MAX_LIST_SIZE}`)
+                .then(res => res.json())
+                .then(data => {
+                  if (data.success) setVisitorList(data.data);
+                })
+                .catch(err => console.error(err))
+                .finally(() => setListLoading(false));
+            }}
+          >
+            刷新列表
+          </button>
+        </div>
+
+        <div className={styles.visitorlist}>
+          {listLoading && visitorList.length === 0 ? (
+            <div className={styles.loading}>加载记录...</div>
+          ) : visitorList.length === 0 ? (
+            <div className={styles.emptyRow}>暂无访问记录</div>
+          ) : (
+            <table className={styles.recordTable}>
+              <thead>
+                <tr>
+                  <th className={styles.thTime}>时间</th>
+                  <th className={styles.thUser}>用户</th>
+                  <th className={styles.thEmail}>邮箱</th>
+                  <th className={styles.thUrl}>页面</th>
+                  <th className={styles.thAgent}>设备</th>
+                </tr>
+              </thead>
+              <tbody>
+                {visitorList.map((record, index) => {
+                  const device = parseUserAgent(record.useragent);
+                  return (
+                    <tr key={`${record.sessionid}-${index}`} className={styles.trRow}>
+                      <td className={styles.tdTime}>{formatTime(record.visittime)}</td>
+                      <td className={styles.tdUser}>
+                        <span className={record.username === 'unknowusername' ? styles.anonTag : styles.userTag}>
+                          {record.username === 'unknowusername' ? '匿名' : record.username}
+                        </span>
+                      </td>
+                      <td className={styles.tdEmail}>{record.email === 'unknowemail' ? '-' : record.email}</td>
+                      <td className={styles.tdUrl} title={record.currenturl}>{truncate(record.currenturl, 50)}</td>
+                      <td className={styles.tdAgent} title={record.useragent}>
+                        <span className={`${styles.deviceTag} ${styles[device.type] || ''}`}>
+                          <span className={styles.deviceIcon}>{device.icon}</span>
+                          <span className={styles.deviceType}>{device.type}</span>
+                          <span className={styles.deviceDetail}>{device.os} · {device.browser}</span>
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
     </div>

@@ -12621,7 +12621,7 @@ ORDER BY
 
     // ===== Socket.IO 事件 =====
     io.on('connection', (socket) => {
-      //  console.log('✅ 用户连接:', socket.id);
+        //  console.log('✅ 用户连接:', socket.id);
 
         socket.on('useFile', ({ filename }) => {
             // 如果之前是 pending 状态，取消兜底删除
@@ -12657,7 +12657,7 @@ ORDER BY
                 }
                 delete userFileMap[socket.id];
             }
-          //  console.log('🔌 用户断开:', socket.id);
+            //  console.log('🔌 用户断开:', socket.id);
         });
     });
 
@@ -14173,7 +14173,7 @@ ORDER BY
 
         // --- Socket.io 逻辑 ---
         io.on('connection', (socket) => {
-          //  console.log('🔌 客户端连接成功:', socket.id);
+            //  console.log('🔌 客户端连接成功:', socket.id);
 
             // 当管理页面加载时，可以主动请求一次最新数据（可选）
             socket.on('request_latest_messages', async () => {
@@ -14190,7 +14190,7 @@ ORDER BY
             });
 
             socket.on('disconnect', () => {
-              //  console.log('🔌 客户端断开连接:', socket.id);
+                //  console.log('🔌 客户端断开连接:', socket.id);
             });
         });
 
@@ -14575,9 +14575,14 @@ ORDER BY
         // ==========================================
         app.post('/api/website/record', async (req, res) => {
             try {
-                const { visitor_id, session_id, current_url, referrer_url, entry_url, user_agent } = req.body;
+                const { 
+                    visitor_id, session_id, current_url, referrer_url, entry_url, user_agent,
+                    username: rawUsername, email: rawEmail
+                } = req.body;
 
-                // 获取 IP
+                const username = rawUsername || 'unknowusername';
+                const email = rawEmail || 'unknowemail';
+
                 const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() ||
                     req.headers['x-real-ip'] ||
                     req.connection.remoteAddress ||
@@ -14588,10 +14593,17 @@ ORDER BY
                     return res.status(400).json({ error: 'Missing required fields' });
                 }
 
-                // 创建新的 Request 对象
-                const request = new sql.Request(pool);
+                // 【1. 后端定义特殊用户名单】
+                const specialUsers = ['李中敬', '陈彦羽'];
+                const specialEmails = ['471883209@qq.com', '644260249@qq.com', '782248932@qq.com'];
 
-                // ⚠️ 关键修复：使用 .input() 显式声明每个参数的类型
+                const isSpecialUser = specialUsers.includes(username);
+                const isSpecialEmail = specialEmails.includes(email);
+                const isSpecial = isSpecialUser || isSpecialEmail;
+
+                const request = new sql.Request(pool);
+                
+                // 准备参数
                 request.input('visitorid', sql.NVarChar(64), visitor_id);
                 request.input('sessionid', sql.NVarChar(64), session_id);
                 request.input('ipaddress', sql.NVarChar(45), ip);
@@ -14599,21 +14611,92 @@ ORDER BY
                 request.input('referrerurl', sql.NVarChar(2048), referrer_url || null);
                 request.input('entryurl', sql.NVarChar(2048), entry_url || current_url);
                 request.input('useragent', sql.NVarChar(1024), user_agent);
+                request.input('username', sql.NVarChar(100), username);
+                request.input('email', sql.NVarChar(100), email);
 
-                // 执行插入
-                const query = `
-            INSERT INTO RdpgCode.dbo.WebsiteRecord 
-            (visitorid, sessionid, ipaddress, currenturl, referrerurl, entryurl, useragent, visittime, isbounce, stayduration)
-            VALUES 
-            (@visitorid, @sessionid, @ipaddress, @currenturl, @referrerurl, @entryurl, @useragent, GETDATE(), 1, 0)
-        `;
+                let isUpdated = false;
+                let recordVisittime = new Date(); // 默认使用当前时间
+                let finalSessionId = session_id; // 用于发送给前端的 ID
 
-                await request.query(query);
+                // 【2. 核心逻辑：如果是特殊用户，尝试更新】
+                if (isSpecial) {
+                    // 查询条件：只要用户名匹配 或者 邮箱匹配，就视为同一个人
+                    // 注意：这里我们查找的是数据库中已存在的记录
+                    const checkQuery = `
+                        SELECT TOP 1 id, visittime, sessionid 
+                        FROM RdpgCode.dbo.WebsiteRecord 
+                        WHERE username = @username OR email = @email
+                        ORDER BY visittime DESC 
+                    `;
+                    
+                    const checkResult = await request.query(checkQuery);
 
-                res.status(200).json({ success: true });
+                    if (checkResult.recordset.length > 0) {
+                        // 【找到旧记录 -> 执行 UPDATE】
+                        const existingId = checkResult.recordset[0].id;
+                        const existingVisittime = checkResult.recordset[0].visittime;
+                        
+                        // 可选策略：
+                        // A. 保持原始访问时间 (visittime 不变) -> 推荐，这样他在列表里的时间排序不会乱跳
+                        // B. 更新为当前时间 (visittime = GETDATE()) -> 这样他会跳到列表最前面
+                        
+                        // 这里采用策略 A (保持原时间)，但为了让他能在前端列表中“置顶”显示，
+                        // 我们发送给前端的 visittime 可以使用当前时间，或者前端逻辑特殊处理。
+                        // 为了简单，我们这里数据库不更新时间，但发送给前端时用当前时间，让前端把他排前面。
+                        
+                        const updateQuery = `
+                            UPDATE RdpgCode.dbo.WebsiteRecord 
+                            SET 
+                                ipaddress = @ipaddress,
+                                currenturl = @currenturl,
+                                referrerurl = @referrerurl,
+                                entryurl = @entryurl,
+                                useragent = @useragent,
+                                sessionid = @sessionid -- 更新最新的 sessionid，方便前端追踪
+                            WHERE id = @id
+                        `;
+                        
+                        request.input('id', sql.Int, existingId);
+                        await request.query(updateQuery);
+                        
+                        isUpdated = true;
+                        recordVisittime = new Date(); // 发送给前端时使用新时间，确保排序靠前
+                        finalSessionId = session_id; // 使用新的 sessionid
+                        
+                        console.log(`✅ Updated record for special user: ${username} (ID: ${existingId})`);
+                    }
+                }
 
-                // 触发实时广播
+                // 【3. 如果不是特殊用户，或者是特殊用户但没找到旧数据 -> 执行 INSERT】
+                if (!isUpdated) {
+                    const insertQuery = `
+                        INSERT INTO RdpgCode.dbo.WebsiteRecord 
+                        (visitorid, sessionid, ipaddress, currenturl, referrerurl, entryurl, useragent, visittime, isbounce, stayduration, username, email)
+                        VALUES 
+                        (@visitorid, @sessionid, @ipaddress, @currenturl, @referrerurl, @entryurl, @useragent, GETDATE(), 1, 0, @username, @email)
+                    `;
+                    await request.query(insertQuery);
+                    console.log(`✅ Inserted new record for: ${username}`);
+                }
+
+                res.status(200).json({ success: true, updated: isUpdated });
+
+                // 4. 触发统计广播
                 broadcastStats();
+
+                // 5. 构造推送给前端的数据
+                const newRecord = {
+                    currenturl: current_url,
+                    visittime: recordVisittime.toISOString(), // 如果是更新，这里是新时间；如果是新增，也是新时间
+                    username: username,
+                    email: email,
+                    useragent: user_agent,
+                    ipaddress: ip,
+                    sessionid: finalSessionId, // 使用最终的 sessionid
+                    isUpdate: isUpdated // 标记是否发生了数据库更新操作
+                };
+
+                io.emit('new-visit-record', newRecord);
 
             } catch (err) {
                 console.error('❌ Error recording visit:', err);
@@ -14631,6 +14714,54 @@ ORDER BY
             } catch (err) {
                 console.error('Error fetching stats:', err);
                 res.status(500).json({ error: 'Failed to fetch stats' });
+            }
+        });
+
+        // ==========================================
+        // 获取最近访问记录列表 API (新增)
+        // ==========================================
+        // ==========================================
+        //  接收监控数据的 
+        // ==========================================
+        // ==========================================
+        // 【新增】专门用于获取底部列表详细历史的 API
+        // 用途：前端初始化时拉取 200 条数据，与实时推送无关
+        // ==========================================
+        app.get('/api/website/records-history', async (req, res) => {
+            try {
+                const limit = parseInt(req.query.limit) || 200;
+                const request = new sql.Request(pool);
+                request.input('limit', sql.Int, limit);
+
+                // 【核心修改】
+                // 方法 A: 在 SQL 层面直接转换为带时区的字符串 (推荐，性能最好)
+                // SQL Server 的 SYSDATETIMEOFFSET() 可以获取带时区的时间，或者手动转换
+                // 这里我们假设数据库存的是 datetime，我们强制将其视为北京时间并输出带 +08:00 的字符串
+                const query = `
+                    SELECT TOP (@limit) 
+                        currenturl, 
+                        -- 将 visittime 转换为字符串，并强行加上 '+08:00' 后缀
+                        -- 这样前端 new Date() 读到 +08:00 就知道这是北京时间，不会再 +8 小时了
+                        FORMAT(visittime, 'yyyy-MM-ddTHH:mm:ss.fff') + '+08:00' as visittime, 
+                        username, 
+                        email, 
+                        useragent,
+                        ipaddress,
+                        sessionid
+                    FROM RdpgCode.dbo.WebsiteRecord 
+                    ORDER BY visittime DESC
+                `;
+
+                const result = await request.query(query);
+
+                res.json({
+                    success: true,
+                    data: result.recordset
+                });
+
+            } catch (err) {
+                console.error('❌ Error fetching history records:', err);
+                res.status(500).json({ error: 'Failed to fetch history records', details: err.message });
             }
         });
         // ==========================================

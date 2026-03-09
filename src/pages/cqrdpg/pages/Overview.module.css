@@ -409,3 +409,142 @@
   color: #94a3b8;
   font-size: 13px;
 }
+/* --- 新增：实时访问记录列表样式 --- */
+
+.visitorListSection {
+  margin-top: 30px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.listHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 10px;
+}
+
+.refreshBtn {
+  background-color: #f3f4f6;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: #4b5563;
+  transition: all 0.2s;
+}
+
+.refreshBtn:hover {
+  background-color: #e5e7eb;
+  color: #111827;
+}
+
+.visitorlist {
+  overflow-x: auto; /* 允许横向滚动 */
+  max-height: 400px; /* 限制高度，内部滚动 */
+  overflow-y: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+.recordTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  min-width: 800px; /* 保证在小屏幕上也能横向滚动查看完整内容 */
+}
+
+.recordTable thead {
+  background-color: #f9fafb;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.recordTable th {
+  text-align: left;
+  padding: 12px 15px;
+  font-weight: 600;
+  color: #374151;
+  border-bottom: 2px solid #e5e7eb;
+  white-space: nowrap;
+}
+
+.recordTable td {
+  padding: 10px 15px;
+  border-bottom: 1px solid #f3f4f6;
+  color: #4b5563;
+  vertical-align: middle;
+}
+
+.recordTable tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+/* 列宽控制 */
+.thTime, .tdTime { width: 140px; }
+.thUser, .tdUser { width: 120px; }
+.thEmail, .tdEmail { width: 180px; }
+.thUrl, .tdUrl { width: 250px; }
+.thAgent, .tdAgent { width: 200px; }
+
+/* 标签样式 */
+.userTag {
+  background-color: #dbeafe;
+  color: #1e40af;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.anonTag {
+  background-color: #f3f4f6;
+  color: #6b7280;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-style: italic;
+}
+
+/* 文本截断 - 修改这里 */
+.tdUrl, .tdAgent {
+  max-width: inherit; /* 继承列宽 */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  /* 移除 display: block */
+}
+
+/* 确保表格单元格正常显示 */
+.recordTable td {
+  padding: 10px 15px;
+  border-bottom: 1px solid #f3f4f6;
+  color: #4b5563;
+  vertical-align: middle;
+  /* 添加以下属性确保宽度控制生效 */
+  box-sizing: border-box;
+}
+
+/* 如果需要，可以设置表格布局固定 */
+.recordTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  min-width: 800px;
+  table-layout: fixed; /* 添加这行，强制使用固定表格布局 */
+}
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .visitorlist {
+    font-size: 0.8rem;
+  }
+  .recordTable th, .recordTable td {
+    padding: 8px 10px;
+  }
+}
