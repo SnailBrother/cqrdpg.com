@@ -31,7 +31,7 @@ const MENU_ITEMS = [
   { 
     id: 'message', 
     label: '留言管理', 
-    iconHref: '#icon-liaotian12' 
+    iconHref: '#icon-liuyanmoban' 
   },
   { 
     id: 'qrcode', 
@@ -41,12 +41,12 @@ const MENU_ITEMS = [
   { 
     id: 'overview', 
     label: '概况', 
-    iconHref: '#icon-yongtuguanzhishishijiancepingguxitong' 
+    iconHref: '#icon-0jianchajieguotongji' 
   },
   { 
     id: 'publishnews', 
     label: '消息新闻', 
-    iconHref: '#icon-yongtuguanzhishishijiancepingguxitong' 
+    iconHref: '#icon-xinwenzixun' 
   },
 ];
 

@@ -1,39 +1,22 @@
 // src/routes/index.js
-// 来智能处理 部分懒加载，部分全部加载
 import React, { Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import ProtectedRoute from './ProtectedRoute';
 
-// 导入基础页面组件
-//import Home from '../pages/home';
-import Home from '../pages/cqrdpg/pages/Home';
-import NewsDetails from '../pages/cqrdpg/pages/home/NewsDetails';
-import Suggestion from '../pages/cqrdpg/pages/Suggestion';
-import EasyValuation from '../pages/cqrdpg/pages/EasyValuation';
-import QrcodeRealCheck from '../pages/cqrdpg/pages/home/QrcodeRealCheck';
-
-import ModuleSelect from '../pages/modules/Select';
-import ModuleLayout from '../pages/modules/ModuleLayout';
-//import Login from '../pages/user/login';
-import Login from '../pages/cqrdpg/pages/Login';
-import Register from '../pages/user/register';
-import Reportqrcodepag from '../pages/modules/office/WordReportGenerator/ReportQrCodePage';
-
-import Four from '../components/Animation/404';
-
-// 导入 LookHousePricePicture 组件,无需保护路由
-import OfficeLookHousePricePicture from '../pages/modules/office/SearchPrice/LookHousePricePicture'
-
-// 导入配置
+import { Loading } from '../components/UI';
+// 导入动态模块配置
 import { moduleConfig, MODULE_KEYS } from '../config/moduleConfig';
 
-//二维码检测
-//import CodeCheck from './pages/CodeCheck';
-import CodeCheck from '../pages/cqrdpg/pages/CodeCheck';
+// 导入公开路由配置
+import { publicRouteConfig, notFoundRedirect } from '../config/publicRouteConfig';
+import ModuleSelect from '../pages/modules/Select'; 
+import ModuleLayout from '../pages/modules/ModuleLayout';
+
 // 判断组件是否是懒加载的
 const isLazyComponent = (component) => {
-  return component.$$typeof === Symbol.for('react.lazy');
+  // 检查是否为 React Lazy 组件
+  return component && component.$$typeof === Symbol.for('react.lazy');
 };
 
 // 优化的加载组件
@@ -42,18 +25,71 @@ const OptimizedLoadingFallback = () => (
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    height: '200px',
-    background: 'transparent',
-    color: '#666'
+    height: '100vh', // 占满屏幕
+    background: '#f5f5f5', // 浅色背景，减少白屏闪烁
+    color: '#999'
   }}>
-    <div>加载中...</div>
+    {/* 这里可以放一个简单的 CSS 动画骨架，不要用复杂的组件 */}
+    <Loading message="首页加载中..." />
   </div>
 );
+
+// 通用组件渲染器：处理懒加载 Suspense
+const RenderComponent = ({ component: Component, ...props }) => {
+  if (isLazyComponent(Component)) {
+    return (
+      <Suspense fallback={<OptimizedLoadingFallback />}>
+        <Component {...props} />
+      </Suspense>
+    );
+  }
+  // 直接导入的组件或普通函数组件
+  return <Component {...props} />;
+};
 
 const AppRoutes = () => {
   const { isAuthenticated } = useAuth();
 
-  // 动态生成模块路由
+  // 1. 生成公开路由
+  const renderPublicRoutes = () => {
+    return publicRouteConfig.map((route, index) => {
+      // 特殊处理 /apps 路径，因为它需要 ProtectedRoute 且组件是固定的 ModuleSelect
+      if (route.isSpecialEntry && route.path === '/apps') {
+        return (
+          <Route
+            key={route.path}
+            path={route.path}
+            element={
+              <ProtectedRoute>
+                <ModuleSelect />
+              </ProtectedRoute>
+            }
+          />
+        );
+      }
+
+      // 处理需要登录重定向的逻辑 (如 login/register)
+      let element = <RenderComponent component={route.component} />;
+
+      if (route.redirectIfAuth && isAuthenticated) {
+        element = <Navigate to={route.redirectIfAuth} replace />;
+      } else if (route.requiresAuth && !isAuthenticated && !route.redirectIfAuth) {
+        // 如果配置了需要 auth 但没有重定向逻辑（比如未来的某些公开但需登录页），可在此处理
+        // 目前你的公开页大多不需要登录，除了 /apps 已特殊处理
+        element = <Navigate to="/login" replace />;
+      }
+
+      return (
+        <Route
+          key={route.path || index}
+          path={route.path}
+          element={element}
+        />
+      );
+    });
+  };
+
+  // 2. 生成模块路由 (保持原有逻辑，复用 RenderComponent)
   const renderModuleRoutes = () => {
     return MODULE_KEYS.map(moduleKey => {
       const module = moduleConfig[moduleKey];
@@ -74,15 +110,7 @@ const AppRoutes = () => {
               key={route.key}
               path={route.key}
               element={
-                isLazyComponent(route.component) ? (
-                  // 懒加载组件使用 Suspense
-                  <Suspense fallback={<OptimizedLoadingFallback />}>
-                    <route.component />
-                  </Suspense>
-                ) : (
-                  // 直接导入的组件直接渲染
-                  <route.component />
-                )
+                <RenderComponent component={route.component} />
               }
             />
           ))}
@@ -93,64 +121,14 @@ const AppRoutes = () => {
 
   return (
     <Routes>
-      {/* 公开路由 */}
-
-      <Route
-        path="/login"
-        element={
-          isAuthenticated ? <Navigate to="/apps" replace /> : <Login />
-        }
-      />
-      <Route
-        path="/register"
-        element={
-          isAuthenticated ? <Navigate to="/apps" replace /> : <Register />
-        }
-      />
-      <Route
-        path="/suggestion"
-        element={<Suggestion />}
-      />
-      <Route
-        path="/home"
-        element={<Home />}
-      // element={
-      //   isAuthenticated ? <Home /> : <Navigate to="/login" replace />
-      // }
-      />
-      <Route
-        path="/app/office/reportqrcodepage"
-        element={<Reportqrcodepag />}
-      />
-
-      {/* 公开的图片查看页面 - 不需要登录 */}
-      <Route
-        path="/app/office/LookHousePricePicture"
-        element={<OfficeLookHousePricePicture />}
-      />
-
-      {/* 二维码查验页面 (通常不需要登录也能看，或者根据需要调整) */}
-      <Route path="/codecheck/:code" element={<CodeCheck />} />
-      {/* 消息详细页面 */}
-      <Route path="/newsdetails/:id" element={<NewsDetails />} />
-      <Route path="/qrcodeRealcheck" element={<QrcodeRealCheck />} />
-      <Route path="/easyvaluation" element={<EasyValuation />} />
-
-      {/* 登录后选择模块的入口 */}
-      <Route
-        path="/apps"
-        element={
-          <ProtectedRoute>
-            <ModuleSelect />
-          </ProtectedRoute>
-        }
-      />
+      {/* 渲染公开路由 */}
+      {renderPublicRoutes()}
 
       {/* 动态生成的模块路由 */}
       {renderModuleRoutes()}
 
       {/* 404 页面 */}
-      <Route path="*" element={<Navigate to="/home" replace />} />
+      <Route path={notFoundRedirect.path} element={notFoundRedirect.element} />
     </Routes>
   );
 };

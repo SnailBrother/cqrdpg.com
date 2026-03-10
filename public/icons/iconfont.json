@@ -6,6 +6,34 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "3930447",
+      "name": "访客领码",
+      "font_class": "fangkelingma",
+      "unicode": "eb3d",
+      "unicode_decimal": 60221
+    },
+    {
+      "icon_id": "4568441",
+      "name": "留言模板",
+      "font_class": "liuyanmoban",
+      "unicode": "eb3e",
+      "unicode_decimal": 60222
+    },
+    {
+      "icon_id": "12505714",
+      "name": "访客_访客管理",
+      "font_class": "fangke_fangkeguanli",
+      "unicode": "eb3f",
+      "unicode_decimal": 60223
+    },
+    {
+      "icon_id": "34251099",
+      "name": "新闻资讯",
+      "font_class": "xinwenzixun",
+      "unicode": "eb40",
+      "unicode_decimal": 60224
+    },
+    {
       "icon_id": "1677618",
       "name": "二维码",
       "font_class": "erweima2",
