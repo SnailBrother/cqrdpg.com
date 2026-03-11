@@ -38,7 +38,7 @@ const OfficeSearchPrice = lazy(() => import('../pages/modules/office/SearchPrice
 const OfficeLookHousePricePicture = lazy(() => import('../pages/modules/office/SearchPrice/LookHousePricePicture'));
 const OfficeLookBuildingsPricePicture = lazy(() => import('../pages/modules/office/SearchPrice/LookBuildingsPricePicture'));
 const OfficeUploadHousePricePicture = lazy(() => import('../pages/modules/office/SearchPrice/UploadHousePricePicture'));
-const OfficeTemplateManagement = lazy(() => import('../pages/modules/office/TemplateManagement'));
+//const OfficeTemplateManagement = lazy(() => import('../pages/modules/office/TemplateManagement'));
 const OfficeSpecialtips = lazy(() => import('../pages/modules/office/Specialtips'));
 const OfficeSiteLinks = lazy(() => import('../pages/modules/office/SiteLinks'));
 const OfficeWordReportGenerator = lazy(() => import('../pages/modules/office/WordReportGenerator'));
@@ -127,7 +127,7 @@ export const moduleConfig = {
     routes: [
         { key: 'SearchPrice', label: '价格查询', icon: '#icon-chakantupian4', component: OfficeSearchPrice, showInNavigation: true, showInTabs: false },
         { key: 'OfficeSearchPdfFileView', label: '资料查找', icon: '#icon-pdf2', component: OfficeSearchPdfFileView, showInNavigation: true, showInTabs: false  },
-        { key: 'TemplateManagement', label: '模板下载', icon: '#icon-a-bianzu10', component: OfficeTemplateManagement, showInNavigation: true, showInTabs: false },
+        // { key: 'TemplateManagement', label: '模板下载', icon: '#icon-a-bianzu10', component: OfficeTemplateManagement, showInNavigation: true, showInTabs: false },
         { key: 'PublicNews', label: '消息通知', icon: '#icon-tongzhi4', component: OfficePublicNews, showInNavigation: true, showInTabs: false },
      // { key: 'PriceConsultationDialog', label: '价格咨询', icon: '#icon-dingwei-xiaoquzuola', component: OfficePriceConsultationDialog, showInNavigation: true, showInTabs: false  },
       //{ key: 'NeighborhoodFinder', label: '小区查询', icon: '#icon-stock', component: OfficeNeighborhoodFinder, showInNavigation: true, showInTabs: false  },

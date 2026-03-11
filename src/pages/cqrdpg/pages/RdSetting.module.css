@@ -8,6 +8,9 @@
   position: relative;
   font-family: 'Microsoft YaHei', sans-serif;
   color: #fff;
+    background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 /* ================= 左侧导航栏 (Left Box) ================= */
@@ -156,10 +159,12 @@
 }
 
 .topBar {
-  margin: 25px 35px;
+  margin: 0;
+  padding: 25px 35px;
   display: flex;
   align-items: center;
-  height: 46px;
+  height: 70px;
+  box-sizing: border-box;
 }
 
 .currentTag {
@@ -174,6 +179,72 @@
   justify-content: flex-start; /* 水平左对齐 */
   gap: 1px; /* 图片和文字之间的间距 */
   text-align: left;
+}
+.logotext {
+   position: relative;
+    color: #fff;
+    font-size: 14px;
+    letter-spacing: 3px;
+    /* 初始宽度设为0，避免一开始就显示全部文字 */
+    width: 0; 
+    white-space: nowrap;
+    overflow: hidden;
+    /* 字数： "打字动画特效" 是 18 个字 */
+    --count: 18; 
+    
+    /* 【修改2】核心修改：
+       1. 时长改为 3s (1.8s打字 + 1.2s停顿)
+       2. 去掉 forwards
+       3. 加上 infinite 
+    */
+    animation: typing 10s steps(var(--count)) infinite;
+    
+    -webkit-box-reflect: below 1px linear-gradient(transparent 30%, rgba(0,0,0,0.05));
+}
+/* 光标 */
+.logotext::after {
+    content: "";
+    width: 2px;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    right: 1px;
+    background-color: #fff;
+    animation: blink 1s step-end infinite; /* 建议用 step-end 让光标闪烁更硬朗 */
+}
+/* 定义动画 */
+/* 光标闪烁 */
+@keyframes blink {
+    /* 
+       关键修改：
+       0% 到 59% (打字阶段): 光标完全透明 (opacity: 0)，避免出现在错误位置。
+       60% 到 100% (停顿阶段): 光标开始闪烁。
+       注意：这里的百分比必须和 typing 动画的 60% 对应！
+    */
+    0%, 59% {
+        opacity: 0;
+    }
+    60%, 74% {
+        opacity: 0; /* 停顿开始，先灭一下 */
+    }
+    75%, 100% {
+        opacity: 1; /* 然后亮起来 */
+    }
+}
+/* 打字动画 */
+/* 实现“停顿”效果 */
+@keyframes typing {
+    0% {
+        width: 0;
+    }
+    /* 在 60% 的时间点 (3s * 0.6 = 1.8s) 刚好打完所有字 */
+    60% {
+        width: calc(var(--count) * 18px);
+    }
+    /* 从 60% 到 100% 保持全宽，形成视觉上的“停顿”，然后瞬间重置 */
+    100% {
+        width: calc(var(--count) * 18px);
+    }
 }
 
 .actionBtns {

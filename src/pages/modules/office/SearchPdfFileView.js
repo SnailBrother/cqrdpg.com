@@ -3,7 +3,7 @@ import styles from './SearchPdfFileView.module.css';
 
 import MergePrintPdf from './PdfFileView/MergePrintPdf';
 import EvaluationFilePreview from './PdfFileView/EvaluationFilePreview';
-
+import TemplateManagement from './TemplateManagement';
 
 const SearchPrice = () => {
   const [activeTab, setActiveTab] = useState('报告打印');
@@ -11,7 +11,7 @@ const SearchPrice = () => {
   const tabs = [
     { id: 'MergePrintPdf', label: '报告打印', component: MergePrintPdf },
     { id: 'EvaluationFilePreview', label: '评估资料', component: EvaluationFilePreview },
-
+    { id: 'TemplateManagement', label: '报告模板', component: TemplateManagement },
 
   ];
 
@@ -23,9 +23,8 @@ const SearchPrice = () => {
           {tabs.map((tab) => (
             <button
               key={tab.id}
-              className={`${styles.tabButton} ${
-                activeTab === tab.label ? styles.active : ''
-              }`}
+              className={`${styles.tabButton} ${activeTab === tab.label ? styles.active : ''
+                }`}
               onClick={() => setActiveTab(tab.label)}
             >
               {tab.label}
@@ -41,9 +40,8 @@ const SearchPrice = () => {
           return (
             <div
               key={tab.id}
-              className={`${styles.tabContent} ${
-                activeTab === tab.label ? styles.active : ''
-              }`}
+              className={`${styles.tabContent} ${activeTab === tab.label ? styles.active : ''
+                }`}
             >
               <Component />
             </div>

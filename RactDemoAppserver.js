@@ -7402,9 +7402,9 @@ app.get('/api/getEvaluationFilePreview', async (req, res) => {
 
         console.error('数据库查询错误:', err);
         res.status(500).json({ error: '获取数据失败' });
-    } finally {
-        sql.close(); // 关闭连接
-    }
+    } // finally {
+       //  sql.close();  
+   //  }
 });
 
 //获取评估文件预览👇
