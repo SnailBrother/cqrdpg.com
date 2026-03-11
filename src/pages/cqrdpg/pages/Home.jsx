@@ -321,7 +321,7 @@ const HomeOptions = () => {
 
         {/* 第7页 -  联系我们*/}
         <div className={styles.page}>
-          <div className={`${styles.pageContent} ${styles.page5}`}>
+          <div className={`${styles.pageContent} ${styles.page6}`}>
             <Suspense fallback={<PageSkeleton />}>
               <ContactUs />
             </Suspense>
@@ -339,15 +339,28 @@ const HomeOptions = () => {
       </div>
 
       {/* 页面指示器 */}
-      <div className={`${styles.indicators} ${currentPage === 0 ? styles.hideOnFirst : ''}`}>
-        {Array.from({ length: totalPages }).map((_, index) => (
-          <button
-            key={index}
-            className={`${styles.indicator} ${currentPage === index ? styles.active : ''}`}
-            onClick={() => goToPage(index)}
-          />
-        ))}
+      {/* 页面指示器容器 */}
+      {currentPage !== 0 && currentPage !== 6 && (
+      <div className={styles.floatingContactWrapper}>
+        <button 
+          className={styles.floatingContactBtn}
+          onClick={() => goToPage(6)}
+        >
+          联系我们
+          <span className={styles.speechTriangle}></span>
+        </button>
       </div>
+    )}
+    
+    <div className={`${styles.indicators} ${currentPage === 0 ? styles.hideOnFirst : ''}`}>
+      {Array.from({ length: totalPages }).map((_, index) => (
+        <button
+          key={index}
+          className={`${styles.indicator} ${currentPage === index ? styles.active : ''}`}
+          onClick={() => goToPage(index)}
+        />
+      ))}
+    </div>
 
       {currentPage > 0 && (
         <button className={styles.prevButton} onClick={prevPage}>↑</button>
