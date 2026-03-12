@@ -1,5 +1,5 @@
 // src/routes/index.js
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import ProtectedRoute from './ProtectedRoute';
@@ -10,8 +10,10 @@ import { moduleConfig, MODULE_KEYS } from '../config/moduleConfig';
 
 // 导入公开路由配置
 import { publicRouteConfig, notFoundRedirect } from '../config/publicRouteConfig';
-import ModuleSelect from '../pages/modules/Select'; 
+import ModuleSelect from '../pages/modules/Select';
 import ModuleLayout from '../pages/modules/ModuleLayout';
+import NotFound from '../components/Animation/NotFound';
+import styles from './index.module.css';
 
 // 判断组件是否是懒加载的
 const isLazyComponent = (component) => {
@@ -21,16 +23,9 @@ const isLazyComponent = (component) => {
 
 // 优化的加载组件
 const OptimizedLoadingFallback = () => (
-  <div style={{
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100vh', // 占满屏幕
-    background: '#f5f5f5', // 浅色背景，减少白屏闪烁
-    color: '#999'
-  }}>
-    {/* 这里可以放一个简单的 CSS 动画骨架，不要用复杂的组件 */}
-    <Loading message="首页加载中..." />
+  <div className={styles.loading}>
+    {/* 这里可以放一个简单的加载 */}
+    <Loading message="正在加载中..." />
   </div>
 );
 
@@ -43,12 +38,40 @@ const RenderComponent = ({ component: Component, ...props }) => {
       </Suspense>
     );
   }
-  // 直接导入的组件或普通函数组件
+  // 直接导入的组件
   return <Component {...props} />;
 };
 
 const AppRoutes = () => {
   const { isAuthenticated } = useAuth();
+  const [isBlockedIp, setIsBlockedIp] = useState(false);
+  // 检查当前域名是否包含目标IP
+  useEffect(() => {
+    const checkHostname = () => {
+      const hostname = window.location.hostname;
+      // 检查是否包含 121.4.22.55
+      if (hostname.includes('121.4.22.55')) {
+        setIsBlockedIp(true);
+      }
+      if (hostname.includes('localhost')) {
+        setIsBlockedIp(false);
+      } else {
+        setIsBlockedIp(false);
+      }
+    };
+
+    checkHostname();
+  }, []);
+
+  // 如果检测到被屏蔽的 IP，直接返回一个只有重定向的 Routes
+  if (isBlockedIp) {
+    return (
+      <Routes>
+        <Route path="*" element={<Navigate to="/NotFound" replace />} />
+        <Route path="/NotFound" element={<NotFound />} />
+      </Routes>
+    );
+  }
 
   // 1. 生成公开路由
   const renderPublicRoutes = () => {
@@ -126,9 +149,8 @@ const AppRoutes = () => {
 
       {/* 动态生成的模块路由 */}
       {renderModuleRoutes()}
-
-      {/* 404 页面 */}
-      <Route path={notFoundRedirect.path} element={notFoundRedirect.element} />
+      {/* <Route path="*" element={<SystemProfile />} /> */}
+      <Route path="*" element={<Navigate to="/home" replace />} /> 
     </Routes>
   );
 };

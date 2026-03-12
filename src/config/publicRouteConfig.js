@@ -21,7 +21,7 @@ const QrcodeRealCheck = lazy(() => import('../pages/cqrdpg/pages/home/QrcodeReal
 const Reportqrcodepag = lazy(() => import('../pages/modules/office/WordReportGenerator/ReportQrCodePage'));
 const OfficeLookHousePricePicture = lazy(() => import('../pages/modules/office/SearchPrice/LookHousePricePicture'));
 const CodeCheck = lazy(() => import('../pages/cqrdpg/pages/CodeCheck'));
-const Four = lazy(() => import('../components/Animation/404')); // 404 页面通常也可以懒加载
+const Four = lazy(() => import('../components/Animation/NotFound')); // 404 页面通常也可以懒加载
 
 // --- 3. 路由配置表 ---
 export const publicRouteConfig = [

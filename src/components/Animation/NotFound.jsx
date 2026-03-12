@@ -1,7 +1,7 @@
 // src/components/Animation/404/index.jsx
 import React from 'react';
 
-import styles from './404.module.css';
+import styles from './NotFound.module.css';
 
 const Four = () => {
 

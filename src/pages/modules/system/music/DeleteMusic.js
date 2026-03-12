@@ -15,7 +15,7 @@ const DeleteMusic = () => {
     const imgErrorHandled = useRef(new Set());
     const observer = useRef();
     const pageSize = 12;
-    const baseUrl = 'http://121.4.22.55:8888/backend';
+    const baseUrl = 'http://121.4.22.55:80/backend';
 
     const lastMusicElementRef = useCallback((node) => {
         if (loading) return;

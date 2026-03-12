@@ -201,7 +201,7 @@ const PhotoConfessionWall3D = () => {
 
   // 图片URL
   const allImages = Array.from({ length: 12 }, (_, i) => 
-    `http://121.4.22.55:8888/backend/images/OurHomePage/Details/PhotoConfessionWall3D/${i + 1}.jpg`
+    `http://121.4.22.55:80/backend/images/OurHomePage/Details/PhotoConfessionWall3D/${i + 1}.jpg`
   );
 
   // 重新组织图片分配，确保12列每列3张图片不重复

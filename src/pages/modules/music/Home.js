@@ -252,10 +252,10 @@ const Home = () => {
                     artist: song.artist,
                     genre: song.genre,
                     liked: song.liked || false,
-                    src: `http://121.4.22.55:8888/backend/musics/${song.src}`,
+                    src: `http://121.4.22.55:80/backend/musics/${song.src}`,
                     coverimage: song.coverimage
-                        ? `http://121.4.22.55:8888/backend/musics/${song.coverimage}`
-                        : 'http://121.4.22.55:8888/backend/musics/default.jpg',
+                        ? `http://121.4.22.55:80/backend/musics/${song.coverimage}`
+                        : 'http://121.4.22.55:80/backend/musics/default.jpg',
                 }));
                 setMusics(prev => {
                     const all = page === 1 ? newMusics : [...prev, ...newMusics];

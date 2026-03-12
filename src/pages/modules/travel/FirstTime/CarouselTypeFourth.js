@@ -7,21 +7,21 @@ const CarouselTypeFourth = () => {
       title: '南坪万达',
       desc: '布鲁牛排海鲜自助',
       staticDesc: '陈宝宝在吃饭打喷嚏',
-      src: `http://121.4.22.55:8888/backend/images/OurHomePage/CarouselTypeFourth/1.jpg`,
+      src: `http://121.4.22.55:80/backend/images/OurHomePage/CarouselTypeFourth/1.jpg`,
       position: 'top-left'
     },
     {
       title: '渝北园博园',
       desc: '山顶',
       staticDesc: '陈宝宝在(*^_^*)',
-      src: `http://121.4.22.55:8888/backend/images/OurHomePage/CarouselTypeFourth/2.jpg`,
+      src: `http://121.4.22.55:80/backend/images/OurHomePage/CarouselTypeFourth/2.jpg`,
       position: 'top-right'
     },
     {
       title: '家天下',
       desc: '躺在床上还不起来',
       staticDesc: '陈宝宝在睡懒觉',
-      src: `http://121.4.22.55:8888/backend/images/OurHomePage/CarouselTypeFourth/3.jpg`,
+      src: `http://121.4.22.55:80/backend/images/OurHomePage/CarouselTypeFourth/3.jpg`,
       position: 'bottom-center'
     }
   ];

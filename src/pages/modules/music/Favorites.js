@@ -77,10 +77,10 @@ const handleKeyDown = (e) => {
                 id: song.id,
                 title: song.title,
                 artist: song.artist,
-                src: `http://121.4.22.55:8888/backend/musics/${song.src}`,
+                src: `http://121.4.22.55:80/backend/musics/${song.src}`,
                 coverimage: song.coverimage
-                            ? `http://121.4.22.55:8888/backend/musics/${song.coverimage}`
-                            : 'http://121.4.22.55:8888/backend/musics/default.jpg',
+                            ? `http://121.4.22.55:80/backend/musics/${song.coverimage}`
+                            : 'http://121.4.22.55:80/backend/musics/default.jpg',
                 play_count: song.play_count
             }));
 

@@ -15,7 +15,7 @@ import Login from '../pages/cqrdpg/pages/Login';
 import Register from '../pages/user/register';
 import Reportqrcodepag from '../pages/modules/office/WordReportGenerator/ReportQrCodePage';
 
-import Four from '../components/Animation/404';
+import Four from '../components/Animation/NotFound';
 
 // 导入 LookHousePricePicture 组件,无需保护路由
 import OfficeLookHousePricePicture from '../pages/modules/office/SearchPrice/LookHousePricePicture'

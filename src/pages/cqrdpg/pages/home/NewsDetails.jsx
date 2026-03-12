@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import styles from './NewsDetails.module.css';
 
 const API_BASE_URL = '/api/publish-news';
-const SERVER_BASE_URL = 'http://121.4.22.55:8888/backend';
+const SERVER_BASE_URL = 'http://121.4.22.55:80/backend';
 const DEFAULT_IMAGE = `${SERVER_BASE_URL}/images/PublishNewsPictures/Defaultbackground.jpg`;
 
 const NewsDetails = () => {
