@@ -15,6 +15,7 @@ const Partner = () => {
     '忠县规划和自然资源局',
     '江津区国有资产管理中心',
     '忠县财政局',
+    '-············-',
   ];
 
   // 金融机构数据
@@ -31,6 +32,7 @@ const Partner = () => {
     '厦门国际银行',
     '国家开发银行重庆市分行',
     '重庆农村商业银行',
+    '-············-',
   ];
 
   return (
@@ -40,7 +42,7 @@ const Partner = () => {
 
       <div className={styles.content}>
         <h2 className={styles.mainTitle}>
-          我们的<span>合作伙伴</span>
+          <span>合作伙伴</span>
         </h2>
         <p className={styles.subTitle}>信任源自专业 · 携手共筑未来</p>
 
@@ -49,8 +51,8 @@ const Partner = () => {
           <div className={styles.block}>
             <div className={styles.blockHeader}>
               <span className={styles.icon}>🏛️</span>
-              <h3 className={styles.blockTitle}>入围政府机关</h3>
-              <span className={styles.blockCount}>{governmentList.length}</span>
+              <h3 className={styles.blockTitle}>政府机关</h3>
+              {/* <span className={styles.blockCount}>{governmentList.length}</span> */}
             </div>
             <ul className={styles.list}>
               {governmentList.map((item, index) => (
@@ -66,8 +68,8 @@ const Partner = () => {
           <div className={styles.block}>
             <div className={styles.blockHeader}>
               <span className={styles.icon}>🏦</span>
-              <h3 className={styles.blockTitle}>入围金融机构</h3>
-              <span className={styles.blockCount}>{financialList.length}</span>
+              <h3 className={styles.blockTitle}>金融机构</h3>
+              {/* <span className={styles.blockCount}>{financialList.length}</span> */}
             </div>
             <ul className={styles.list}>
               {financialList.map((item, index) => (

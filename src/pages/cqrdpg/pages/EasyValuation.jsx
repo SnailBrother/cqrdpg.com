@@ -25,9 +25,9 @@ const EasyValuation = () => {
                 <div className={styles.topLogoBar}>
                     <div className={styles.logoWrapper}>
                         <div className={styles.logo}>
-                            <img src="/RuidaLogo.jpg" alt="重庆瑞达评估" />
+                            <img src="/RuidaLogo.jpg" alt="重庆评估" />
                         </div>
-                        <span className={styles.companyName}>重庆瑞达评估</span>
+                        <span className={styles.companyName}>重庆评估</span>
                     </div>
                 </div>
 
@@ -305,7 +305,7 @@ const EasyValuation = () => {
 
                 </div>
                 <div className={styles.copyright}>
-                    © 2026 重庆瑞达评估 版权所有 | 网站备案号：渝ICP备xxxxxx号
+                    © 2026 重庆评估 版权所有 | 网站备案号：渝ICP备xxxxxx号
                 </div>
             </div>
         </div>

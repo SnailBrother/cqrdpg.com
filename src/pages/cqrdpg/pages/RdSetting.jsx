@@ -19,8 +19,8 @@ const SvgIcon = ({ href, className, size = "24px" }) => (
 // ================= 配置菜单与组件映射 =================
 const MENU_ITEMS = [
   { id: 'message', label: '留言管理', iconHref: '#icon-liuyanmoban', component: MessageManagement },
-  { id: 'qrcode', label: '二维码设置', iconHref: '#icon-erweima2', component: QrcodeManagementSettings },
-  { id: 'overview', label: '概况', iconHref: '#icon-0jianchajieguotongji', component: Overview },
+  { id: 'qrcode', label: '二维码', iconHref: '#icon-erweima2', component: QrcodeManagementSettings },
+  // { id: 'overview', label: '概况', iconHref: '#icon-0jianchajieguotongji', component: Overview },
   { id: 'publishnews', label: '消息新闻', iconHref: '#icon-xinwenzixun', component: PublishNews },
   { id: 'searchprice', label: '价格查询', iconHref: '#icon-chakantupian4', component: SearchPrice },
   { id: 'templatemanagement', label: '模板下载', iconHref: '#icon-a-bianzu10', component: SearchPdfFileView },
@@ -35,7 +35,6 @@ const RdSetting = () => {
 
   const handleMenuClick = (id) => setActiveTab(id);
   const toggleSidebar = () => setIsSidebarCollapsed(!isSidebarCollapsed);
-
   return (
     <div className={styles.container} style={{ backgroundImage: `url(./images/cqrdpg/image1.png)` }}>
       
@@ -84,7 +83,7 @@ const RdSetting = () => {
         <header className={styles.topBar}>
           <div className={styles.currentTag}>
             <img src='/RuidaLogo.jpg' alt="Avatar" className={styles.userAvatar} onError={(e) => e.target.src = 'https://via.placeholder.com/32'} />
-            <span className={styles.logotext}>重庆瑞达资产评估房地产土地估价有限公司</span>
+            <span className={styles.logotext}>重庆资产评估工作室</span>
           </div>
           <div className={styles.actionBtns}>
             <div className={styles.btn}><SvgIcon href="#icon-fangdajing2" className={styles.btnIcon} /></div>

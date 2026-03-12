@@ -1,15 +1,58 @@
 // context/ThemeContext.js
+// context/ThemeContext.js
 import React, { createContext, useState, useContext, useCallback, useEffect } from 'react';
-import axios from 'axios';
 
 const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
   const [themeSettings, setThemeSettings] = useState({});
+  const [defaultTheme, setDefaultTheme] = useState({
+    'background-color': '#ffffff',
+    'secondary-background-color': '#f5f5f5',
+    'hover_background-color': '#e6f7ff',
+    'focus_background-color': '#1890ff',
+    'font-color': '#000000',
+    'secondary-font-color': '#666666',
+    'hover_font-color': '#1890ff',
+    'focus_font-color': '#ffffff',
+    'watermark-font-color': '#cccccc',
+    'font-family': 'system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+    'border_color': '#d9d9d9',
+    'secondary-border_color': '#f0f0f0',
+    'hover_border_color': '#1890ff',
+    'focus_border_color': '#1890ff',
+    'shadow_color': 'rgba(0, 0, 0, 0.1)',
+    'hover_shadow_color': 'rgba(24, 144, 255, 0.3)',
+    'focus_shadow_color': 'rgba(24, 144, 255, 0.5)'
+  });
   const [previewTheme, setPreviewTheme] = useState(null);
   const [allThemes, setAllThemes] = useState([]);
   const [activeTheme, setActiveTheme] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  // 页面加载时从本地存储恢复主题
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('activeTheme');
+    if (savedTheme) {
+      try {
+        const theme = JSON.parse(savedTheme);
+        console.log('从本地存储恢复主题:', theme);
+        setActiveTheme(theme);
+        applyThemeToRoot(transformDbThemeToCss(theme));
+      } catch (error) {
+        console.error('恢复主题失败:', error);
+        localStorage.removeItem('activeTheme');
+      }
+    }
+  }, []);
+
+  // 当 activeTheme 变化时保存到本地存储
+  useEffect(() => {
+    if (activeTheme) {
+      localStorage.setItem('activeTheme', JSON.stringify(activeTheme));
+      console.log('主题已保存到本地存储:', activeTheme);
+    }
+  }, [activeTheme]);
 
   // 更新主题设置
   const updateThemeSettings = useCallback((newSettings) => {
@@ -27,8 +70,10 @@ export const ThemeProvider = ({ children }) => {
     setPreviewTheme(null);
     if (activeTheme) {
       applyThemeToRoot(transformDbThemeToCss(activeTheme));
+    } else {
+      applyThemeToRoot(defaultTheme);
     }
-  }, [activeTheme]);
+  }, [activeTheme, defaultTheme]);
 
   // 应用主题到根元素
   const applyThemeToRoot = useCallback((settings) => {
@@ -102,116 +147,23 @@ export const ThemeProvider = ({ children }) => {
     setActiveTheme(theme);
     if (theme) {
       applyThemeToRoot(transformDbThemeToCss(theme));
+      // 自动保存到本地存储
+      localStorage.setItem('activeTheme', JSON.stringify(theme));
+    } else {
+      // 如果没有主题，清除本地存储并应用默认主题
+      localStorage.removeItem('activeTheme');
+      applyThemeToRoot(defaultTheme);
     }
-  }, [applyThemeToRoot, transformDbThemeToCss]);
+  }, [applyThemeToRoot, transformDbThemeToCss, defaultTheme]);
 
   // 设置加载状态
   const setLoadingState = useCallback((isLoading) => {
     setLoading(isLoading);
   }, []);
 
-  // API：获取用户主题
-  const fetchUserThemes = useCallback(async (email) => {
-    if (!email) {
-      console.warn('fetchUserThemes: 未提供邮箱');
-      return { success: false, message: '未提供邮箱' };
-    }
-
-    setLoadingState(true);
-    try {
-      const response = await axios.get('/api/UserThemeSettings', {
-        params: { email }
-      });
-
-      if (response.data && response.data.success && Array.isArray(response.data.themes)) {
-        const fetchedThemes = response.data.themes;
-        updateThemes(fetchedThemes);
-
-        // 查找活动主题
-        const activeForUser = fetchedThemes.find(t => t.is_active && t.email === email);
-        if (activeForUser) {
-          updateActiveTheme(activeForUser);
-        } else {
-          // 如果没有活动主题，查找默认主题
-          const defaultForUser = fetchedThemes.find(t => t.is_default && t.email === email);
-          if (defaultForUser) {
-            updateActiveTheme(defaultForUser);
-          } else {
-            updateActiveTheme(null);
-          }
-        }
-
-        return { success: true, themes: fetchedThemes };
-      } else {
-        throw new Error('API data format error');
-      }
-    } catch (error) {
-      console.error('获取用户主题失败:', error);
-      updateThemes([]);
-      updateActiveTheme(null);
-      return { success: false, message: error.message };
-    } finally {
-      setLoadingState(false);
-    }
-  }, [updateThemes, updateActiveTheme, setLoadingState]);
-
-  // API：获取用户活动主题
-  const fetchActiveTheme = useCallback(async (email) => {
-    if (!email) {
-      console.warn('fetchActiveTheme: 未提供邮箱');
-      return { success: false, message: '未提供邮箱' };
-    }
-
-    setLoadingState(true);
-    try {
-      const response = await axios.get('/api/UserThemeSettings/active', {
-        params: { email }
-      });
-
-      if (response.data && response.data.success && response.data.theme) {
-        const theme = response.data.theme;
-        updateActiveTheme(theme);
-        return { success: true, theme };
-      } else {
-        throw new Error(response.data?.message || '获取活动主题失败');
-      }
-    } catch (error) {
-      console.error('获取活动主题失败:', error);
-      return { success: false, message: error.message };
-    } finally {
-      setLoadingState(false);
-    }
-  }, [updateActiveTheme, setLoadingState]);
-
-  // API：获取用户默认主题
-  const fetchDefaultTheme = useCallback(async (email) => {
-    if (!email) {
-      console.warn('fetchDefaultTheme: 未提供邮箱');
-      return { success: false, message: '未提供邮箱' };
-    }
-
-    setLoadingState(true);
-    try {
-      const response = await axios.get('/api/UserThemeSettings/default', {
-        params: { email }
-      });
-
-      if (response.data && response.data.success && response.data.theme) {
-        const theme = response.data.theme;
-        return { success: true, theme };
-      } else {
-        throw new Error(response.data?.message || '获取默认主题失败');
-      }
-    } catch (error) {
-      console.error('获取默认主题失败:', error);
-      return { success: false, message: error.message };
-    } finally {
-      setLoadingState(false);
-    }
-  }, [setLoadingState]);
-
   const value = {
     themeSettings,
+    defaultTheme,
     previewTheme,
     allThemes,
     activeTheme,
@@ -222,13 +174,10 @@ export const ThemeProvider = ({ children }) => {
     transformDbThemeToCss,
     transformCssToDbTheme,
     applyThemeToRoot,
+    setDefaultTheme,
     updateThemes,
     updateActiveTheme,
-    setLoadingState,
-    // 新增API方法
-    fetchUserThemes,
-    fetchActiveTheme,
-    fetchDefaultTheme
+    setLoadingState
   };
 
   return (

@@ -146,7 +146,7 @@ const Examples = () => {
   return (
     <section className={styles.examplesSection}>
       <div className={styles.container}>
-        <h2 className={styles.sectionTitle}>企业案例</h2>
+        <h2 className={styles.sectionTitle}>评估项目</h2>
         <p className={styles.sectionSubtitle}>我们以专业的水准完成各种复杂、大型的评估项目</p>
 
         <div className={styles.contentWrapper}>
@@ -169,7 +169,7 @@ const Examples = () => {
             {expandedSections.expropriation && (
               <div className={styles.categoryContent}>
                 <p className={styles.categoryDesc}>
-                  瑞达评估公司的执业人员均经过国家从业资格认证，具有丰富的理论知识和长期的实践经验，
+                  执业人员均经过国家从业资格认证，具有丰富的理论知识和长期的实践经验，
                   以高专业的水准完成各种复杂、大型的房屋征收评估。目前公司已参与并完成了多起征收（拆迁）评估工作，部分项目展示如下：
                 </p>
                 <ul className={styles.caseList}>

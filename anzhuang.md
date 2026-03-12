@@ -913,7 +913,7 @@ createdDate DATE NOT NULL DEFAULT GETDATE(),      -- 日期字段，默认当前
 -- 创建 ReportPdfPrintFile 评估报告附件装订pdf文件 表
 CREATE TABLE PdfFileData.dbo.ReportPdfPrintFile (
     pdfPrintFileId INT IDENTITY(1,1) PRIMARY KEY,  -- ID，主键
-     companyName NVARCHAR(100) NOT NULL DEFAULT 'ruida',  -- 新增：公司名称，非空且默认值为'瑞达'
+     companyName NVARCHAR(100) NOT NULL DEFAULT 'ruida',  -- 新增：公司名称，非空且默认值为'ruida'
     fileType NVARCHAR(50) NOT NULL DEFAULT '房地产',        -- 文件类型，默认值为 '房地产'
     pdfPrintFileName NVARCHAR(100) NOT NULL,         -- PDF文件名
     paperSize NVARCHAR(10) NOT NULL DEFAULT 'A4',           -- 纸张大小，默认值为 A4

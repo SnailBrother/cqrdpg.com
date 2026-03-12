@@ -6,7 +6,7 @@ const Service = () => {
   const serviceItems = [
     {
       title: '无形资产评估',
-      image: '/images/cqrdpg/home/Dynamic/1.jpg',
+      image: '/images/cqrdpg/home/CompanyProfile/Purpose.jpg',
       description: [
         '● 作价入股、资产转让、使用许可、特许经营等目的而涉及的专利技术(动植物)品种权,专有技术',
         '● 商标专用权'
@@ -14,7 +14,7 @@ const Service = () => {
     },
     {
       title: '司法鉴定评估',
-      image: '/images/cqrdpg/home/Dynamic/2.jpg',
+      image: '/images/cqrdpg/home/CompanyProfile/Purpose.jpg',
       description: [
         '● 重庆市各级人民法院指定的诉讼司法鉴定评估机构',
         '● 可提供房地产、土地使用权、机器设备、机动车等各项资产的鉴定评估'
@@ -22,7 +22,7 @@ const Service = () => {
     },
     {
       title: '企业价值评估',
-      image: '/images/cqrdpg/home/Dynamic/3.jpg',
+      image: '/images/cqrdpg/home/CompanyProfile/Purpose.jpg',
       description: [
         '● 设立公司、组建集团、中外合资、合作涉及的评估',
         '● 企业资产重组、股份制改造涉及的评估',
@@ -35,7 +35,7 @@ const Service = () => {
     },
     {
       title: '单项资产评估',
-      image: '/images/cqrdpg/home/Dynamic/4.jpg',
+      image: '/images/cqrdpg/home/CompanyProfile/Purpose.jpg',
       description: [
         '● 资产转让、资产抵押、资产拍卖、资产租赁',
         '● 诉讼清偿等目的的机器设备、建筑物、债权、股份等单项资产的价值评估'
@@ -43,7 +43,7 @@ const Service = () => {
     },
     {
       title: '房地产估价',
-      image: '/images/cqrdpg/home/Dynamic/5.jpg',
+      image: '/images/cqrdpg/home/CompanyProfile/Purpose.jpg',
       description: [
         '● 抵押价值评估',
         '● 转让价格评估(包括买卖、赠与等)',
@@ -58,7 +58,7 @@ const Service = () => {
     },
     {
       title: '土地估价',
-      image: '/images/cqrdpg/home/Dynamic/6.jpg',
+      image: '/images/cqrdpg/home/CompanyProfile/Purpose.jpg',
       description: [
         '● 重庆市各国土房屋相关部门委估土地的收储，收购，出让底价以及成本价格的评估',
         '● 土地的使用权出让、转让、出租、抵押、作价入股以及国家收回土地等的宗地价格评估',

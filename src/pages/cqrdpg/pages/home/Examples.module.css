@@ -169,7 +169,7 @@
   flex: 1;
   background-color: #fff;
   overflow-y: auto; /* 核心：内容过多时出现滚动条 */
-  padding: 40px;
+  padding: 20px;
   scroll-behavior: smooth;
 }
 
@@ -230,22 +230,22 @@
   margin: 0;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 15px;
+  gap: 5px;
 }
 
 .caseCard {
   background: #fff;
   border: 1px solid #eaeaea;
   border-radius: 8px;
-  padding: 15px 15px 15px 35px;
+  padding: 10px 10px 10px 35px;
   font-size: 14px;
-  line-height: 1.5;
+  line-height: 1.2;
   color: #444;
   position: relative;
   transition: all 0.2s ease;
   display: flex;
   align-items: flex-start;
-  min-height: 60px;
+  min-height: 20px;
 }
 
 .caseCard:hover {
@@ -257,7 +257,7 @@
 .cardDot {
   position: absolute;
   left: 15px;
-  top: 18px;
+  top: 15px;
   width: 8px;
   height: 8px;
   background-color: #c9a982;
@@ -344,14 +344,3 @@
   }
 }
 
-@media (max-width: 480px) {
-  .container {
-    padding: 20px 15px;
-  }
-  .sectionTitle {
-    font-size: 26px;
-  }
-  .contentTitle {
-    font-size: 22px;
-  }
-}

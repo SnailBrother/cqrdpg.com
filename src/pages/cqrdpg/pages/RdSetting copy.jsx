@@ -129,7 +129,7 @@ const RdSetting = () => {
 
             <img src='/RuidaLogo.jpg' alt="Avatar" className={styles.userAvatar} onError={(e) => e.target.src = 'https://via.placeholder.com/32'} />
             <span className={styles.logotext}>
-              重庆瑞达资产评估房地产土地估价有限公司
+              评估工作室
             </span>
           </div>
           <div className={styles.actionBtns}>

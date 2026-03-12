@@ -316,7 +316,7 @@ const HomeOptions = () => {
             {/* 左侧：Logo和公司名称 */}
             <div className={styles.navLeft}>
               <img src={logoImg} alt="公司Logo" className={styles.navLogo} />
-              <span className={styles.companyName}>重庆瑞达资产评估房地产土地估价有限公司</span>
+              <span className={styles.companyName}>评估工作室</span>
             </div>
 
             {/* 中间：导航菜单 - 桌面端显示 */}
@@ -364,7 +364,7 @@ const HomeOptions = () => {
               <div className={styles.mobileMenu} ref={menuRef}>
                 <div className={styles.mobileMenuHeader}>
                   
-                  <span className={styles.mobileCompanyName}>重庆瑞达资产评估</span>
+                  <span className={styles.mobileCompanyName}>重庆评估资产评估</span>
                   <button className={styles.mobileCloseBtn} onClick={toggleMenu}>×</button>
                 </div>
 

@@ -28,7 +28,7 @@ function Login() {
 
   // 静态资源
   const logoImg = '/RuidaLogo.jpg';
-  const companyName = '重庆瑞达评估';
+  const companyName = '重庆评估';
   const backgroundImg = '/images/cqrdpg/home/CompanyProfile/Purpose.jpg';
 
   // --- Canvas 验证码逻辑 (保持不变) ---

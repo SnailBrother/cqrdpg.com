@@ -259,60 +259,6 @@ const SystemThemeSettings = () => {
     }
   }, [isAuthenticated, user, backgroundAnimation, imageFile, allThemes, transformCssToDbTheme, updateThemes, updateActiveTheme, uploadBackgroundImage]);
 
-  // 更新主题
-  // const updateThemeById = useCallback(async (themeId, updateData) => {
-  //   try {
-  //     console.log('调用 updateThemeById:', { themeId, updateData, user });
-
-  //     // 确保包含用户邮箱
-  //     const requestData = {
-  //       email: user?.email,
-  //       ...updateData
-  //     };
-
-  //     const response = await axios.put(`/api/UserThemeSettings/${themeId}`, requestData);
-
-  //     console.log('更新主题响应:', response.data);
-
-  //     if (response.data && response.data.success && response.data.theme) {
-  //       const updatedTheme = response.data.theme;
-  //       const newThemesList = allThemes.map(t => t.id === themeId ? updatedTheme : t);
-  //       updateThemes(newThemesList);
-
-  //       if (activeTheme && activeTheme.id === themeId) {
-  //         updateActiveTheme(updatedTheme);
-  //       }
-
-  //       // 如果有自定义背景图片，上传图片
-  //       if (backgroundAnimation === 'CustomBackground' && imageFile) {
-  //         try {
-  //           console.log('开始上传背景图片...');
-  //           await uploadBackgroundImage(themeId);
-  //           console.log('背景图片上传成功');
-  //           message.success('主题和背景图片更新成功！');
-  //         } catch (uploadError) {
-  //           console.error('背景图片上传失败:', uploadError);
-  //           // 主题更新成功，但图片上传失败，显示警告而不是错误
-  //           message.warning('主题更新成功，但背景图片上传失败');
-  //         }
-  //       } else {
-  //         message.success('主题更新成功！');
-  //       }
-
-  //       return { success: true, theme: updatedTheme };
-  //     } else {
-  //       throw new Error(response.data?.message || '更新主题失败');
-  //     }
-  //   } catch (error) {
-  //     console.error('updateThemeById 错误详情:', {
-  //       error: error,
-  //       response: error.response,
-  //       data: error.response?.data,
-  //       status: error.response?.status
-  //     });
-  //     throw error;
-  //   }
-  // }, [allThemes, activeTheme, updateThemes, updateActiveTheme, backgroundAnimation, imageFile, uploadBackgroundImage, user]);
 const updateThemeById = useCallback(async (themeId, updateData) => {
   try {
     console.log('调用 updateThemeById:', { themeId, updateData, user });
@@ -471,46 +417,6 @@ const updateThemeById = useCallback(async (themeId, updateData) => {
     cancelPreview();
   }, [cancelPreview]);
 
-  // const handleSaveEdit = useCallback(async () => {
-  //   if (!editingTheme || !newThemeName.trim()) {
-  //     message.error('请输入主题名称');
-  //     return;
-  //   }
-
-  //   setSaving(true);
-  //   try {
-  //     const dbTheme = transformCssToDbTheme(customThemeSettings);
-
-  //     // 添加调试信息
-  //     console.log('更新主题数据:', {
-  //       themeId: editingTheme,
-  //       themeName: newThemeName,
-  //       backgroundAnimation: backgroundAnimation,
-  //       dbTheme: dbTheme
-  //     });
-
-  //     await updateThemeById(editingTheme, {
-  //       ...dbTheme,
-  //       theme_name: newThemeName,
-  //       background_animation: backgroundAnimation
-  //     });
-  //     message.success('主题更新成功！');
-  //     cancelEditingAndCreating();
-  //   } catch (error) {
-  //     // 详细错误日志
-  //     console.error('更新主题失败详情:', {
-  //       error: error,
-  //       response: error.response,
-  //       data: error.response?.data,
-  //       status: error.response?.status
-  //     });
-
-  //     const errorMessage = error.response?.data?.message || error.message || '更新主题失败';
-  //     message.error(errorMessage);
-  //   } finally {
-  //     setSaving(false);
-  //   }
-  // }, [editingTheme, newThemeName, customThemeSettings, backgroundAnimation, updateThemeById, transformCssToDbTheme, cancelEditingAndCreating]);
 const handleSaveEdit = useCallback(async () => {
   if (!editingTheme || !newThemeName.trim()) {
     message.error('请输入主题名称');
@@ -538,7 +444,7 @@ const handleSaveEdit = useCallback(async () => {
     if (result.success) {
       message.success('主题更新成功！');
       
-      // 关键修改：保存成功后立即应用更新后的主题
+      // 保存成功后立即应用更新后的主题
       const updatedTheme = result.theme;
       
       // 如果当前编辑的主题是活动主题，更新活动主题
@@ -546,7 +452,6 @@ const handleSaveEdit = useCallback(async () => {
         updateActiveTheme(updatedTheme);
         applyThemeToRoot(transformDbThemeToCss(updatedTheme));
       }
-      
       // 取消编辑状态，但保持主题应用
       setEditingTheme(null);
       setCreatingNew(false);
@@ -555,12 +460,9 @@ const handleSaveEdit = useCallback(async () => {
       setImageFile(null);
       setShowImageUpload(false);
       
-      // 不要调用 cancelPreview()，这样会重置到旧的主题
-      // 而是直接应用更新后的主题
       if (activeTheme && activeTheme.id === editingTheme) {
-        // 已经是活动主题，不需要额外操作
+
       } else {
-        // 如果不是活动主题，取消预览会重置到当前活动主题，这是正确的行为
         cancelPreview();
       }
     }
@@ -648,9 +550,6 @@ const handleSaveEdit = useCallback(async () => {
       <div className={styles.content}>
         {/* 左侧：主题编辑器 */}
         <div className={styles.editor}>
-          {/* <p><strong>用户名:</strong> {user?.username}</p>
-          <p><strong>邮箱:</strong> {user?.email}</p> */}
-
           {/* 背景颜色设置 */}
           <div className={styles.section}>
             <h2 className={styles.sectionTitle}>
@@ -786,23 +685,6 @@ const handleSaveEdit = useCallback(async () => {
               </div>
             </div>
           )}
-
-          {/* 编辑/创建按钮 */}
-          {/* {(editingTheme || creatingNew) && (
-            <div className={styles.actionButtons}>
-              <Button 
-                onClick={editingTheme ? handleSaveEdit : handleSaveNewTheme} 
-                variant="primary" 
-                loading={saving} 
-                disabled={!newThemeName.trim()}
-              >
-                {editingTheme ? '保存修改' : '创建主题'}
-              </Button>
-              <Button onClick={cancelEditingAndCreating} variant="secondary">
-                取消
-              </Button>
-            </div>
-          )} */}
         </div>
 
         {/* 右侧：主题列表 */}
@@ -856,7 +738,7 @@ const handleSaveEdit = useCallback(async () => {
                       ) : (
                         <div className={styles.itemName}>
                           {theme.theme_name}
-                          {/* {isActive && <span className={styles.badgeActive}>已应用</span>} */}
+                        
                           {isDefault && <span className={styles.badgeDefault}>默认</span>}
                         </div>
                       )}

@@ -50,8 +50,8 @@ const ContactUs = () => {
         
         {/* 【修改点】先渲染右侧表单区域 (移动端会显示在上面) */}
         <div className={styles.rightCol}>
-          <h3 className={styles.formTitle}>专业评估</h3>
-          <h4 className={styles.formTitleprompt}>有任何问题？请告诉我们，我们会第一时间回复您</h4>
+          <h3 className={styles.formTitle}>需要评估</h3>
+          <h4 className={styles.formTitleprompt}>有需要帮助？请告诉我们，我们会第一时间联系您</h4>
          
           <form className={styles.contactForm} onSubmit={handleSubmit}>
             <div className={styles.formGroup}>
@@ -106,21 +106,20 @@ const ContactUs = () => {
 
         {/* 【修改点】后渲染左侧图片和信息区域 (移动端会显示在下面) */}
         <div className={styles.leftCol}>
-          <div className={styles.imageWrapper}>
+          {/* <div className={styles.imageWrapper}>
             <img
               src='/images/cqrdpg/home/ContactUs/1.jpg'
               alt="联系我们"
               className={styles.contactImage}
               onError={(e) => { e.target.src = 'https://via.placeholder.com/600x400?text=Contact+Image'; }}
             />
-          </div>
+          </div> */}
 
           <div className={styles.contactInfo}>
             <h3 className={styles.infoTitle}>联系方式</h3>
             <ul className={styles.infoList}>
-              <li className={styles.infoItem}><span className={styles.label}>联系人：</span><span className={styles.value}>李先生</span></li>
+              <li className={styles.infoItem}><span className={styles.label}>联系人：</span><span className={styles.value}>李老师</span></li>
               <li className={styles.infoItem}><span className={styles.label}>电话：</span><span className={styles.value}>18983033184</span></li>
-              <li className={styles.infoItem}><span className={styles.label}>公司地址：</span><span className={styles.value}>重庆市渝中区和平路7号6-19号、6-20号</span></li>
               <li className={styles.infoItem}><span className={styles.label}>公司邮箱：</span><span className={styles.value}>644260249@qq.com</span></li>
               <li className={styles.infoItem}><span className={styles.label}>公司邮编：</span><span className={styles.value}>400010</span></li>
               <li className={styles.infoItem}><span className={styles.label}>客服QQ：</span><span className={styles.value}>644260249</span></li>
@@ -134,14 +133,8 @@ const ContactUs = () => {
                   <span className={styles.qrLabel}>微信</span>
                   <img src='/images/cqrdpg/home/ContactUs/wechat.png' alt="微信二维码" className={styles.qrImage} />
                 </div>
-                <div className={styles.qrCodeWrapper}>
-                  <span className={styles.qrLabel}>公众号</span>
-                  <img src='/images/cqrdpg/home/ContactUs/fuwuhao.jpg' alt="公众号" className={styles.qrImage} />
-                </div>
-                <div className={styles.qrCodeWrapper}>
-                  <span className={styles.qrLabel}>微博号</span>
-                  <img src='/images/cqrdpg/home/ContactUs/fuwuhao.jpg' alt="微博号" className={styles.qrImage} />
-                </div>
+                
+                
               </li>
             </ul>
           </div>

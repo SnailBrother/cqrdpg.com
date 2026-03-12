@@ -220,7 +220,7 @@ function CodeCheck() {
           </div>
 
           <div className={styles.paperHeader}>
-            <h1 className={styles.reportTitle}>重庆瑞达资产评估房地产土地估价有限公司</h1>
+            <h1 className={styles.reportTitle}>重庆资产评估工作室</h1>
           </div>
 
           <div className={styles.informationContainer}>
@@ -244,7 +244,7 @@ function CodeCheck() {
               </div>
               <div className={styles.infoRow}>
                 <span className={styles.label}>评估机构：</span>
-                <span className={styles.value}>重庆瑞达资产评估房地产土地估价有限公司</span>
+                <span className={styles.value}>评估工作室</span>
               </div>
             </div>
 

@@ -1,12 +1,11 @@
 /* ================= 全局重置与容器 ================= */
 .container {
-  width: 100vw;
-  height: 100vh;
+  width: 100dvw;
+  height: 100dvh;
   display: flex;
   overflow: hidden;
   background-size: cover;
   position: relative;
-  font-family: 'Microsoft YaHei', sans-serif;
   color: #fff;
     background-size: cover;
   background-position: center;
@@ -17,7 +16,8 @@
 .leftBox {
   width: 250px;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.075); 
+  /* background-color: rgba(0, 0, 0, 0.075);  */
+  background-color: transparent;
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
   display: flex;
@@ -150,7 +150,8 @@
 /* ================= 右侧主内容区 (Right Box) ================= */
 .rightBox {
   flex: 1;
-  background-color: rgba(15, 15, 17, 0.171);
+  /* background-color: rgba(15, 15, 17, 0.171); */
+  background-color: transparent;
   backdrop-filter: blur(3px);
   position: relative;
   display: flex;

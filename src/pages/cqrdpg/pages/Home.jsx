@@ -214,7 +214,7 @@ const HomeOptions = () => {
           <nav className={styles.navBar}>
             <div className={styles.navLeft}>
               <img src={logoImg} alt="公司Logo" className={styles.navLogo} />
-              <span className={styles.companyName}>重庆瑞达资产评估房地产土地估价有限公司</span>
+              <span className={styles.companyName}>重庆资产房地产土地评估</span>
             </div>
             <div className={styles.navCenter}>
               {navItems.map((item, index) => (
@@ -242,7 +242,7 @@ const HomeOptions = () => {
             {isMenuOpen && (
               <div className={styles.mobileMenu} ref={menuRef}>
                 <div className={styles.mobileMenuHeader}>
-                  <span className={styles.mobileCompanyName}>重庆瑞达资产评估</span>
+                  <span className={styles.mobileCompanyName}>重庆评估资产评估</span>
                   <button className={styles.mobileCloseBtn} onClick={toggleMenu}>×</button>
                 </div>
                 <div className={styles.mobileSearchBox}>

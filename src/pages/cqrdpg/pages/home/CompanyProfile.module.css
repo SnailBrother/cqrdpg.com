@@ -145,9 +145,9 @@
 /* 描述框容器：全尺寸半透明黑底 */
 .carouseltypesecond-description {
   position: absolute;
-  top: 50%;
+  /* top: 50%; */
   right: 10%;
-
+bottom: 10px;
   /* 【关键修改】初始状态：向右平移 100px (移出视觉中心)，且完全透明 */
   transform: translateY(-50%) translateX(100px);
   opacity: 0;
@@ -155,15 +155,15 @@
   width: 300px;
 
   /* 视觉样式：毛玻璃效果 */
-  background: rgba(255, 255, 255, 0.3);
+  /* background: rgba(255, 255, 255, 0.3); */
   /* 初始背景更透一点 */
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  /* backdrop-filter: blur(10px); */
+  /* -webkit-backdrop-filter: blur(10px); */
   /* border: 1px solid rgba(151, 151, 151, 0.2); */
 
   padding: 25px;
   border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); */
   /* 阴影大一点，增加立体感 */
   z-index: 200;
   overflow: hidden;
@@ -186,9 +186,9 @@
     /* 滑回到正常位置 */
     transform: translateY(-50%) translateX(0);
     /* 结束后背景稍微实一点，边框亮一点 */
-    background: rgba(255, 255, 255, 0.35);
-    border-color: rgba(255, 255, 255, 0.6);
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+    /* background: rgba(255, 255, 255, 0.35);
+    border-color: rgba(255, 255, 255, 0.6); */
+    /* box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15); */
   }
 }
 
@@ -217,8 +217,8 @@
   left: 0;
   width: 3px;
   /* 光条稍细一点更精致 */
-  background-color: rgba(255, 255, 255, 0.95);
-  box-shadow: 0 0 12px rgba(255, 255, 255, 0.8);
+  /* background-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.8); */
 
   /* 初始状态 */
   transform: translateX(-100%);
@@ -296,7 +296,7 @@
   font-size: 1.05rem;
   line-height: 1.7;
   white-space: pre-line;
-  color: #1f1e1e;
+  color: #cfcfcf;
   /* 接近白色的浅灰 */
 
   /* 初始状态：向下偏移更多且透明 */

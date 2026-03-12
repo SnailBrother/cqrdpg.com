@@ -2936,7 +2936,7 @@ const handleSavePreviewData = (updatedData) => {
                                                 className="reportgenerator-field-label"
                                                 onDoubleClick={() => {
                                                     if (!reportgeneratorReportData.result.reportID) {
-                                                        reportgeneratorHandleInputChange('result', 'reportID', `渝瑞达房评〔2025〕司字第***号`);
+                                                        reportgeneratorHandleInputChange('result', 'reportID', `渝房评〔2025〕司字第***号`);
                                                     }
                                                 }}
 

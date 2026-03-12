@@ -4,13 +4,12 @@ import styles from './Dynamic.module.css';
 const CarouselTypeThird = () => {
     // 图片源保持在组件内部
     const images = [
-        { src: '/images/cqrdpg/home/Dynamic/1.jpg', description: '云南旅游' },
-        { src: '/images/cqrdpg/home/Dynamic/2.jpg', description: '团队旅游' },
-        { src: '/images/cqrdpg/home/Dynamic/3.jpg', description: '外出活动' },
-        { src: '/images/cqrdpg/home/Dynamic/4.jpg', description: '体育赛事' },
-        { src: '/images/cqrdpg/home/Dynamic/5.jpg', description: '帮扶经济' },
-        { src: '/images/cqrdpg/home/Dynamic/6.jpg', description: '公司十分重视与各高校合作，于2011年在重庆工商大学设立“瑞达奖学金”、2020年与重庆商务职业学院建立实习基地，深化校企合作，积极推动产、学、研结合，扩大了后备人才储备。' },
-    ];
+        { src: '/images/cqrdpg/home/CompanyProfile/Purpose.jpg', description: '高效响应' },
+        { src: '/images/cqrdpg/home/CompanyProfile/Honor.jpg', description: '快速出稿' },
+        { src: '/images/cqrdpg/home/CompanyProfile/Qualification.jpg', description: '精准评估' },
+        { src: '/images/cqrdpg/home/CompanyProfile/Service.jpg', description: '按时交付' },
+        { src: '/images/cqrdpg/home/CompanyProfile/Team.jpg', description: '全程高效' },
+];
 
     const [slides, setSlides] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);

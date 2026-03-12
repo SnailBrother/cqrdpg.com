@@ -19,7 +19,7 @@ const ReportQrCodePage = () => {
   
   // 修改页面标题
   useEffect(() => {
-    document.title = '重庆瑞达评估报告在线验证';
+    document.title = '重庆评估报告在线验证';
   }, []);
   
   // 格式化报告日期函数
@@ -308,7 +308,7 @@ const ReportQrCodePage = () => {
 
       <div className="code-scrollable">
         <header className="code-header">
-          <h1 className="code-title">重庆瑞达资产评估房地产土地估价有限公司</h1>
+          <h1 className="code-title">评估工作室</h1>
           <h2 className="code-subtitle">评估报告验证</h2>
 
           {/* 报告有效性提示 */}

@@ -114,9 +114,9 @@ const Examples = () => {
 
   // 辅助函数：获取当前显示的内容列表
   const getCurrentCases = () => {
-    if (activeMainCategory === 'expropriation') return { title: '征收（拆迁）评估案例', desc: '瑞达评估公司的执业人员均经过国家从业资格认证，具有丰富的理论知识和长期的实践经验，以高专业的水准完成各种复杂、大型的房屋征收评估。目前公司已参与并完成了多起征收（拆迁）评估工作，部分项目展示如下：', list: expropriationCases };
-    if (activeMainCategory === 'land') return { title: '土地评估项目', desc: '长期以来，本公司与重庆市各区县国土房屋等相关部门有着良好的合作，为其提供了优质高效的服务。近年估价师完成项目类型展示：', list: landCases };
-    if (activeMainCategory === 'judicial') return { title: '司法鉴定评估', desc: '本公司经全国最高人民法院批准的重庆市司法评估机构资质，为重庆各法院提供高效优质的服务，部分估价师荣获重庆市优秀司法鉴定人。', list: judicialCases };
+    if (activeMainCategory === 'expropriation') return { title: '征收（拆迁）评估', desc: '部分项目展示如下：', list: expropriationCases };
+    if (activeMainCategory === 'land') return { title: '土地评估项目', desc: '近年估价师完成项目类型展示：', list: landCases };
+    if (activeMainCategory === 'judicial') return { title: '司法鉴定评估', desc: '部分项目展示如下：', list: judicialCases };
     
     // 资产评估逻辑
     if (activeMainCategory === 'asset') {
@@ -143,7 +143,7 @@ const Examples = () => {
       <div className={styles.container}>
         {/* 头部标题 */}
         <div className={styles.headerArea}>
-          <h2 className={styles.sectionTitle}>企业案例</h2>
+          <h2 className={styles.sectionTitle}>评估项目</h2>
           <p className={styles.sectionSubtitle}>我们以专业的水准完成各种复杂、大型的评估项目</p>
         </div>
 
