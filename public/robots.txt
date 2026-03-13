@@ -1,3 +1,25 @@
-# https://www.robotstxt.org/robotstxt.html
+# 百度爬虫
+User-agent: baiduspider
+Allow: /
+Disallow: /admin/
+Disallow: /temp/
+Disallow: /*?*
+Disallow: /*.json$
+Disallow: /*.js$
+Disallow: /*.css$
+
+# 谷歌爬虫（如果你也关注谷歌收录）
+User-agent: Googlebot
+Allow: /
+Disallow: /admin/
+Disallow: /*?*
+Disallow: /*.json$
+
+# 所有其他爬虫
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /admin/
+Disallow: /*?*
+
+# 站点地图位置
+Sitemap: http://www.cqrdpg.com/sitemap.xml
