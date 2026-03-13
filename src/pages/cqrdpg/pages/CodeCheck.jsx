@@ -16,7 +16,7 @@ function CodeCheck() {
   const [data, setData] = useState(null);
   const [error, setError] = useState('');
   const [qrUrl, setQrUrl] = useState('');
-  const logoImg = '/RuidaLogo.jpg';
+  const logoImg = '/WebpageLogo.jpg';
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false); // 新增：下载 loading 状态
   const handleDownloadPdf = async () => {
     setIsGeneratingPdf(true);
@@ -31,7 +31,7 @@ function CodeCheck() {
       // scale: 2 可以提高清晰度 (Retina 屏优化)
       // useCORS: true 允许加载跨域图片 (如果 Logo 或公章是跨域的)
       const canvas = await html2canvas(element, {
-        scale: 2, 
+        scale: 2,
         useCORS: true,
         logging: false,
         backgroundColor: '#ffffff', // 强制白色背景
@@ -201,7 +201,8 @@ function CodeCheck() {
               </div>
             )}
             <div className={styles.verifiedBadge}>
-              校验码:{code}
+              {/* 校验码: */}
+              {code}
             </div>
           </div>
 
@@ -220,7 +221,7 @@ function CodeCheck() {
           </div>
 
           <div className={styles.paperHeader}>
-            <h1 className={styles.reportTitle}>重庆资产评估工作室</h1>
+            <h1 className={styles.reportTitle}>重庆资产房地产土地评估</h1>
           </div>
 
           <div className={styles.informationContainer}>
@@ -266,7 +267,7 @@ function CodeCheck() {
             <div className={styles.footer}>
               <p>本查验仅供核实报告真伪使用，谨防假冒网站。</p>
               <p style={{ wordBreak: 'break-all', fontSize: '10px', color: '#999' }}>
-                官网查询地址：www.cqrdpg.com，
+                官网查询地址：www.cqrdpg.com/qrcodeRealcheck
               </p>
               {/* <p style={{ wordBreak: 'break-all', fontSize: '10px', color: '#999' }}>
                这是当前网页地址 {qrUrl}
@@ -276,19 +277,19 @@ function CodeCheck() {
 
           </div>
 
-       
+          <div className={styles.actionBar}>
+            <button onClick={() => window.print()} className={styles.printBtn}>🖨️ 打印</button>
+            <button
+              onClick={handleDownloadPdf}
+              className={styles.downloadBtn} // 需要新增一个样式类
+              disabled={isGeneratingPdf}
+            >
+              {isGeneratingPdf ? '⏳ 生成中...' : '📄 下载 PDF'}
+            </button>
+            <Link to="/" className={styles.backBtn}>🏠 首页</Link>
+          </div>
 
-        </div>
- <div className={styles.actionBar}>
-          <button onClick={() => window.print()} className={styles.printBtn}>🖨️ 打印</button>
-          <button 
-            onClick={handleDownloadPdf} 
-            className={styles.downloadBtn} // 需要新增一个样式类
-            disabled={isGeneratingPdf}
-          >
-            {isGeneratingPdf ? '⏳ 生成中...' : '📄 下载 PDF'}
-          </button>
-           <Link to="/" className={styles.backBtn}>🏠 首页</Link>
+
         </div>
 
       </div>

@@ -1,15 +1,18 @@
 // context/ThemeContext.js
 import React, { createContext, useState, useContext, useCallback, useEffect } from 'react';
 import axios from 'axios';
+import { useAuth } from '../hooks/useAuth'; // 添加这行
 
 const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
+  const { user, isAuthenticated } = useAuth(); // 添加这行
   const [themeSettings, setThemeSettings] = useState({});
   const [previewTheme, setPreviewTheme] = useState(null);
   const [allThemes, setAllThemes] = useState([]);
   const [activeTheme, setActiveTheme] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [initialized, setInitialized] = useState(false); // 添加初始化状态
 
   // 更新主题设置
   const updateThemeSettings = useCallback((newSettings) => {
@@ -210,12 +213,41 @@ export const ThemeProvider = ({ children }) => {
     }
   }, [setLoadingState]);
 
+  // 自动加载主题数据
+  useEffect(() => {
+    const loadUserThemes = async () => {
+      if (isAuthenticated && user?.email && !initialized) {
+        console.log('自动加载用户主题:', user.email);
+        await fetchUserThemes(user.email);
+        setInitialized(true);
+      } else if (!isAuthenticated) {
+        // 未登录时加载默认主题或清除主题
+        setInitialized(false);
+        setAllThemes([]);
+        setActiveTheme(null);
+        // 可以在这里设置一个默认主题
+        // applyThemeToRoot(defaultTheme);
+      }
+    };
+
+    loadUserThemes();
+  }, [isAuthenticated, user, fetchUserThemes, initialized]);
+
+  // 监听用户变化
+  useEffect(() => {
+    if (isAuthenticated && user?.email) {
+      // 用户变化时重新加载
+      setInitialized(false);
+    }
+  }, [user?.email, isAuthenticated]);
+
   const value = {
     themeSettings,
     previewTheme,
     allThemes,
     activeTheme,
     loading,
+    initialized,
     updateThemeSettings,
     previewThemeSettings,
     cancelPreview,
@@ -225,7 +257,7 @@ export const ThemeProvider = ({ children }) => {
     updateThemes,
     updateActiveTheme,
     setLoadingState,
-    // 新增API方法
+    // API方法
     fetchUserThemes,
     fetchActiveTheme,
     fetchDefaultTheme

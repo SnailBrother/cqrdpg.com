@@ -25,7 +25,7 @@ const HomeOptions = () => {
   const totalPages = 8; // 总共7个页面，有一个页脚
 
   // logo图片路径
-  const logoImg = '/RuidaLogo.jpg';
+  const logoImg = '/WebpageLogo.jpg';
 
   // 翻页到指定页面
   const goToPage = useCallback((pageIndex) => {

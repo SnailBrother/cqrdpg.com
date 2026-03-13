@@ -25,7 +25,7 @@ const EasyValuation = () => {
                 <div className={styles.topLogoBar}>
                     <div className={styles.logoWrapper}>
                         <div className={styles.logo}>
-                            <img src="/RuidaLogo.jpg" alt="重庆评估" />
+                            <img src="/WebpageLogo.jpg" alt="重庆评估" />
                         </div>
                         <span className={styles.companyName}>重庆评估</span>
                     </div>

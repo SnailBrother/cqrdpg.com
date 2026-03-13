@@ -68,7 +68,7 @@ const RdSetting = () => {
 
         {/* 底部用户信息 */}
         <div className={styles.userInfo}>
-          <img src='/RuidaLogo.jpg' alt="Avatar" className={styles.userAvatar} onError={(e) => e.target.src = 'https://via.placeholder.com/32'} />
+          <img src='/WebpageLogo.jpg' alt="Avatar" className={styles.userAvatar} onError={(e) => e.target.src = 'https://via.placeholder.com/32'} />
           {!isSidebarCollapsed && (
             <>
               <span className={styles.userName}>{user?.permission_level}</span>
@@ -82,7 +82,7 @@ const RdSetting = () => {
       <main className={styles.rightBox}>
         <header className={styles.topBar}>
           <div className={styles.currentTag}>
-            <img src='/RuidaLogo.jpg' alt="Avatar" className={styles.userAvatar} onError={(e) => e.target.src = 'https://via.placeholder.com/32'} />
+            <img src='/WebpageLogo.jpg' alt="Avatar" className={styles.userAvatar} onError={(e) => e.target.src = 'https://via.placeholder.com/32'} />
             <span className={styles.logotext}>重庆资产评估工作室</span>
           </div>
           <div className={styles.actionBtns}>

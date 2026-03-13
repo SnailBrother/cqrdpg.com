@@ -1,6 +1,6 @@
 /* src/pages/QrcodeManagementSettings.module.css */
 .container {
-  padding: 2rem;
+  padding: 0.5rem;
  width: 100%;
   /* 缩窄主容器，聚焦表单 */
   margin: 0 auto;
@@ -39,10 +39,10 @@
 /* --- 主表单卡片 --- */
 .mainFormCard {
  
-  padding: 2rem;
+  padding: 0rem;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  border: 1px solid #eee;
+  /* border: 1px solid #eee; */
 }
 
 
@@ -59,7 +59,7 @@
 .formHeader h2 {
   margin: 0;
   font-size: 1.4rem;
-  color: #d9dadb;
+  color: #ffffff;
 }
 
 
@@ -126,6 +126,7 @@
   display: flex;
   align-items: center;
   min-height: 50px;
+  gap: 0.5rem; /* 标签和右侧内容之间的间距 */
 }
 
 
@@ -161,15 +162,7 @@
 }
 
 
-.sectionTitle {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #b2b3b4;
-  margin-top: 0.8rem;
-  margin-bottom: 0.5rem;
-  border-left: 4px solid #3498db;
-  padding-left: 0.8rem;
-}
+ 
 
 
 .viewQrContainer {
@@ -348,3 +341,30 @@
   padding: 1rem;
   background: #f9f9f9;
 }
+/* --- 新增：签字人员组合布局样式 --- */
+
+/* 右侧容器：垂直排列两行 */
+.signersGroup {
+  flex: 1; /* 占据剩余宽度 */
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem; /* 两行之间的间距 */
+}
+
+/* 每一行签字人员（姓名 + 编号） */
+.signerRow {
+  display: flex;
+  gap: 1rem; /* 姓名和编号输入框之间的间距 */
+  align-items: center;
+}
+
+/* 优化签字人员输入框的宽度比例 (可选) */
+/* 如果希望姓名宽一点，编号窄一点，可以这样设置 */
+.signerRow .formField:first-child {
+  flex: 1; 
+}
+.signerRow .formField:last-child {
+  flex: 1;
+}
+
+ 

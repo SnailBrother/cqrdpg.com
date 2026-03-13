@@ -49,15 +49,22 @@ const AppRoutes = () => {
   useEffect(() => {
     const checkHostname = () => {
       const hostname = window.location.hostname;
-      // 检查是否包含 121.4.22.55
-      if (hostname.includes('121.4.22.55')) {
+      
+      // 情况1: 本地开发环境 -> 放行 (false)
+      if (hostname === 'localhost' || hostname === '192.168') {
+        setIsBlockedIp(false);
+        return;
+      }
+
+      // 情况2: 特定的被屏蔽IP -> 屏蔽 (true)
+      if (hostname === '121.4.22.55') {
         setIsBlockedIp(true);
+        return;
       }
-      if (hostname.includes('localhost')) {
-        setIsBlockedIp(false);
-      } else {
-        setIsBlockedIp(false);
-      }
+
+      // 情况3: 其他所有正常域名 -> 放行 (false)
+      // 如果你的策略是“非 localhost 即屏蔽”，请将此处改为 true
+      setIsBlockedIp(false);
     };
 
     checkHostname();

@@ -27,7 +27,7 @@ function Login() {
   const canvasRef = useRef(null);
 
   // 静态资源
-  const logoImg = '/RuidaLogo.jpg';
+  const logoImg = '/WebpageLogo.jpg';
   const companyName = '重庆评估';
   const backgroundImg = '/images/cqrdpg/home/CompanyProfile/Purpose.jpg';
 

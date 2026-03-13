@@ -5,6 +5,7 @@ import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { MusicProvider } from './context/MusicContext';
 import { ShareExcelWordDataProvider } from './context/ShareExcelWordData';
+//import ThemeInitializer from './context/ThemeInitializer'; // 导入
 import { MessageProvider } from './components/UI/Message';
 import AppRoutes from './routes';
 import './assets/styles/variables.css';
@@ -43,9 +44,11 @@ function App() {
                 <MessageProvider>
                   <AccountingProvider>
                     <WebsiteMonitorProvider>
+                       {/* <ThemeInitializer>   */}
                     <div className={styles.app}>
                       <AppRoutes />
                     </div>
+                      {/* </ThemeInitializer> */}
                     </WebsiteMonitorProvider>
                   </AccountingProvider>
                 </MessageProvider>

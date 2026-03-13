@@ -18,8 +18,8 @@
   height: 100%;
   /* background-color: rgba(0, 0, 0, 0.075);  */
   background-color: transparent;
-  backdrop-filter: blur(3px);
-  -webkit-backdrop-filter: blur(3px);
+  /* backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px); */
   display: flex;
   flex-direction: column;
   transition: width 0.3s ease; /* 稍微加快过渡 */
@@ -152,7 +152,7 @@
   flex: 1;
   /* background-color: rgba(15, 15, 17, 0.171); */
   background-color: transparent;
-  backdrop-filter: blur(3px);
+  /* backdrop-filter: blur(3px); */
   position: relative;
   display: flex;
   flex-direction: column;
@@ -291,13 +291,20 @@
 .contentArea {
   flex: 1;
   margin: 0 0px 0px 0px;
-  background: rgba(255, 255, 255, 0.03);
+  /* background: rgba(255, 255, 255, 0.03); */
   border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   overflow: auto;
   padding: 20px;
   position: relative; /* 为绝对定位的子元素提供参考 */
-  scrollbar-width: thin;
+  scrollbar-width: none;
+  /* 标准语法 */
+/* scrollbar-width: auto;    */
+/* 浏览器默认宽度（通常是较宽）*/
+/* scrollbar-width: thin;    */
+/* 细滚动条 */
+/* scrollbar-width: none;   */
+ /* 隐藏滚动条（但仍可滚动）*/
   scrollbar-color: rgba(255,255,255,0.3) transparent;
 }
 

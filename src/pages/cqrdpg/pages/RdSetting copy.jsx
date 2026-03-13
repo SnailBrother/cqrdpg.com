@@ -114,7 +114,7 @@ const RdSetting = () => {
 
         {/* 底部用户信息 */}
         <div className={styles.userInfo}>
-          <img src='/RuidaLogo.jpg' alt="Avatar" className={styles.userAvatar} onError={(e) => e.target.src = 'https://via.placeholder.com/32'} />
+          <img src='/WebpageLogo.jpg' alt="Avatar" className={styles.userAvatar} onError={(e) => e.target.src = 'https://via.placeholder.com/32'} />
           {!isSidebarCollapsed && <span className={styles.userName}>{user?.permission_level}</span>}
           {!isSidebarCollapsed && <SvgIcon href="#icon-guanyu3" className={styles.userIcon} size="18px" />}
         </div>
@@ -127,7 +127,7 @@ const RdSetting = () => {
           <div className={styles.currentTag}>
             {/* {currentTagLabel} */}
 
-            <img src='/RuidaLogo.jpg' alt="Avatar" className={styles.userAvatar} onError={(e) => e.target.src = 'https://via.placeholder.com/32'} />
+            <img src='/WebpageLogo.jpg' alt="Avatar" className={styles.userAvatar} onError={(e) => e.target.src = 'https://via.placeholder.com/32'} />
             <span className={styles.logotext}>
               评估工作室
             </span>

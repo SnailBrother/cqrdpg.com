@@ -11,7 +11,7 @@ function QrcodeManagementSettings({ onLogout }) {
 
   // --- 主表单状态 ---
   const [formData, setFormData] = useState({
-    Id: null, 
+    Id: null,
     SafeCode: null, // 新增：存储当前编辑项的混淆码
     ProjectName: '',
     EvaluationAmount: '',
@@ -58,7 +58,7 @@ function QrcodeManagementSettings({ onLogout }) {
 
   const loadSearchResults = async (page, keyword, reset = false) => {
     if (isSearching || (isInfiniteLoading && !reset)) return;
-    
+
     if (reset) setIsSearching(true);
     else setIsInfiniteLoading(true);
 
@@ -80,8 +80,8 @@ function QrcodeManagementSettings({ onLogout }) {
 
       const totalFetched = reset ? result.data.length : searchResults.length + result.data.length;
       setHasMore(totalFetched < result.total);
-      
-      if (!reset) setSearchPage(page); 
+
+      if (!reset) setSearchPage(page);
 
 
     } catch (error) {
@@ -153,12 +153,12 @@ function QrcodeManagementSettings({ onLogout }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const isEdit = formData.Id !== null; 
-    
-    const url = isEdit 
-      ? `/api/CodeDatabase/Update/${formData.Id}` 
+    const isEdit = formData.Id !== null;
+
+    const url = isEdit
+      ? `/api/CodeDatabase/Update/${formData.Id}`
       : '/api/CodeDatabase/Add';
-    
+
     const method = isEdit ? 'PUT' : 'POST';
 
 
@@ -183,11 +183,11 @@ function QrcodeManagementSettings({ onLogout }) {
       if (response.ok) {
         const msg = isEdit ? '修改成功！' : '添加成功！';
         alert(msg);
-        
+
         if (!isEdit) {
-           // 如果是新增，后端返回了新的 safeCode，可以直接利用或者清空
-           // 这里选择清空表单，让用户重新搜索或录入
-           setFormData({
+          // 如果是新增，后端返回了新的 safeCode，可以直接利用或者清空
+          // 这里选择清空表单，让用户重新搜索或录入
+          setFormData({
             Id: null,
             SafeCode: null,
             ProjectName: '',
@@ -200,7 +200,7 @@ function QrcodeManagementSettings({ onLogout }) {
             SignerB_Number: ''
           });
         } else {
-            // 如果是修改，safeCode 不会变，保持即可
+          // 如果是修改，safeCode 不会变，保持即可
         }
       } else {
         alert(result.error || '操作失败');
@@ -230,19 +230,17 @@ function QrcodeManagementSettings({ onLogout }) {
 
   return (
     <div className={styles.container}>
-      <header className={styles.header}>
-        <h1 className={styles.title}>二维码</h1>
-        <button onClick={handleLogout} className={styles.logoutButton}>退出登录</button>
-      </header>
+      
 
 
       <div className={styles.mainFormCard}>
         <div className={styles.formHeader}>
-          <h2>数据录入 / 编辑</h2>
+          <h2>数据管理</h2>
           <div className={styles.formActions}>
-            <button type="button" onClick={openSearchModal} className={styles.searchBtn}>📋 选择报告</button>
+            <button type="button" onClick={openSearchModal} className={styles.searchBtn}>📋 选择</button>
             <button type="button" onClick={handleClear} className={styles.clearBtn}>清空</button>
             <button type="button" onClick={handleSubmit} className={styles.submitBtn}>保存</button>
+             <button onClick={handleLogout} className={styles.logoutButton}>退出登录</button>
           </div>
         </div>
 
@@ -251,8 +249,8 @@ function QrcodeManagementSettings({ onLogout }) {
           {/* 只有当当前编辑的数据有 ID 时，才显示查看按钮 */}
           {formData.Id && formData.SafeCode && (
             <div className={styles.viewQrContainer}>
-              <button 
-                type="button" 
+              <button
+                type="button"
                 // 【关键修改】跳转时使用 safeCode
                 onClick={() => navigate(`/codecheck/${encodeURIComponent(formData.SafeCode)}`)}
                 className={styles.viewQrBtn}
@@ -261,7 +259,7 @@ function QrcodeManagementSettings({ onLogout }) {
               </button>
             </div>
           )}
-          
+
           <div className={styles.formItem}>
             <label className={styles.formLabel}>报告号：</label>
             <div className={styles.formField}>
@@ -278,12 +276,12 @@ function QrcodeManagementSettings({ onLogout }) {
           <div className={styles.formItem}>
             <label className={styles.formLabel}>项目名称：</label>
             <div className={styles.formField}>
-              <input 
-                name="ProjectName" 
-                value={formData.ProjectName} 
-                onChange={handleInputChange} 
+              <input
+                name="ProjectName"
+                value={formData.ProjectName}
+                onChange={handleInputChange}
                 placeholder="请输入项目名称"
-                className={styles.input} 
+                className={styles.input}
               />
             </div>
           </div>
@@ -291,14 +289,14 @@ function QrcodeManagementSettings({ onLogout }) {
           <div className={styles.formItem}>
             <label className={styles.formLabel}>评估金额：</label>
             <div className={styles.formField}>
-              <input 
-                type="number" 
-                step="0.01" 
-                name="EvaluationAmount" 
-                value={formData.EvaluationAmount} 
-                onChange={handleInputChange} 
-                placeholder="请输入评估金额"
-                className={styles.input} 
+              <input
+                type="number"
+                step="0.01"
+                name="EvaluationAmount"
+                value={formData.EvaluationAmount}
+                onChange={handleInputChange}
+                placeholder="请输入评估金额，单位元"
+                className={styles.input}
               />
             </div>
           </div>
@@ -306,71 +304,68 @@ function QrcodeManagementSettings({ onLogout }) {
           <div className={styles.formItem}>
             <label className={styles.formLabel}>报告时间：</label>
             <div className={styles.formField}>
-              <input 
-                type="date" 
-                name="ReportTime" 
-                value={formData.ReportTime} 
-                onChange={handleInputChange} 
-                className={styles.input} 
+              <input
+                type="date"
+                name="ReportTime"
+                value={formData.ReportTime}
+                onChange={handleInputChange}
+                className={styles.input}
               />
             </div>
           </div>
-
-          <div className={styles.sectionTitle}>签字人员 A</div>
-          
+        
           <div className={styles.formItem}>
-            <label className={styles.formLabel}>姓名：</label>
-            <div className={styles.formField}>
-              <input 
-                name="SignerA_Name" 
-                value={formData.SignerA_Name} 
-                onChange={handleInputChange} 
-                placeholder="请输入姓名"
-                className={styles.input} 
-              />
-            </div>
-          </div>
+            {/* 左侧标签 */}
+            <label className={styles.formLabel}>签字人员</label>
+            
+            {/* 右侧内容区：包含两行 */}
+            <div className={styles.signersGroup}>
+              {/* 第一行：人员 A */}
+              <div className={styles.signerRow}>
+                <div className={styles.formField}>
+                  <input
+                    name="SignerA_Name"
+                    value={formData.SignerA_Name}
+                    onChange={handleInputChange}
+                    placeholder="姓名 (人员A)"
+                    className={styles.input}
+                  />
+                </div>
+                <div className={styles.formField}>
+                  <input
+                    name="SignerA_Number"
+                    value={formData.SignerA_Number}
+                    onChange={handleInputChange}
+                    placeholder="编号 (人员A)"
+                    className={styles.input}
+                  />
+                </div>
+              </div>
 
-          <div className={styles.formItem}>
-            <label className={styles.formLabel}>编号：</label>
-            <div className={styles.formField}>
-              <input 
-                name="SignerA_Number" 
-                value={formData.SignerA_Number} 
-                onChange={handleInputChange} 
-                placeholder="请输入编号"
-                className={styles.input} 
-              />
+              {/* 第二行：人员 B */}
+              <div className={styles.signerRow}>
+                <div className={styles.formField}>
+                  <input
+                    name="SignerB_Name"
+                    value={formData.SignerB_Name}
+                    onChange={handleInputChange}
+                    placeholder="姓名 (人员B)"
+                    className={styles.input}
+                  />
+                </div>
+                <div className={styles.formField}>
+                  <input
+                    name="SignerB_Number"
+                    value={formData.SignerB_Number}
+                    onChange={handleInputChange}
+                    placeholder="编号 (人员B)"
+                    className={styles.input}
+                  />
+                </div>
+              </div>
             </div>
           </div>
-
-          <div className={styles.sectionTitle}>签字人员 B</div>
-          
-          <div className={styles.formItem}>
-            <label className={styles.formLabel}>姓名：</label>
-            <div className={styles.formField}>
-              <input 
-                name="SignerB_Name" 
-                value={formData.SignerB_Name} 
-                onChange={handleInputChange} 
-                placeholder="请输入姓名"
-                className={styles.input} 
-              />
-            </div>
-          </div>
-
-          <div className={styles.formItem}>
-            <label className={styles.formLabel}>编号：</label>
-            <div className={styles.formField}>
-              <input 
-                name="SignerB_Number" 
-                value={formData.SignerB_Number} 
-                onChange={handleInputChange} 
-                placeholder="请输入编号"
-                className={styles.input} 
-              />
-            </div>
-          </div>
+        
         </form>
       </div>
 
@@ -383,11 +378,11 @@ function QrcodeManagementSettings({ onLogout }) {
               <h3>选择报告数据</h3>
               <button onClick={() => setIsSearchModalOpen(false)} className={styles.closeBtn}>×</button>
             </div>
-            
+
             <form onSubmit={handleSearchSubmit} className={styles.modalSearchBar}>
-              <input 
-                type="text" 
-                placeholder="输入项目名称或报告号搜索..." 
+              <input
+                type="text"
+                placeholder="输入项目名称或报告号搜索..."
                 value={searchKeyword}
                 onChange={(e) => setSearchKeyword(e.target.value)}
                 className={styles.input}
@@ -398,7 +393,7 @@ function QrcodeManagementSettings({ onLogout }) {
 
             <div className={styles.modalListContainer} ref={modalListRef}>
               {isSearching && <div className={styles.loadingState}>加载中...</div>}
-              
+
               {searchResults.length === 0 && !isSearching && (
                 <div className={styles.emptyState}>暂无数据，请尝试搜索</div>
               )}
@@ -414,8 +409,8 @@ function QrcodeManagementSettings({ onLogout }) {
                 </thead>
                 <tbody>
                   {searchResults.map(item => (
-                    <tr 
-                      key={item.Id} 
+                    <tr
+                      key={item.Id}
                       onClick={() => handleSelectRecord(item)}
                       className={styles.modalTableRow}
                     >

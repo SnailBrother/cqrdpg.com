@@ -32,7 +32,7 @@ const HomeOptions = () => {
 
   const navItems = ['关于我们', '服务领域', '合作伙伴', '企业案例', '企业团队', '新闻动态', '联系我们'];
   const totalPages = 8;
-  const logoImg = '/RuidaLogo.jpg';
+  const logoImg = '/WebpageLogo.jpg';
 
   // 翻页逻辑 (保持不变)
   const goToPage = useCallback((pageIndex) => {
@@ -213,7 +213,7 @@ const HomeOptions = () => {
         <div className={styles.page}>
           <nav className={styles.navBar}>
             <div className={styles.navLeft}>
-              <img src={logoImg} alt="公司Logo" className={styles.navLogo} />
+              <img src='./WebpageLogo.jpg' alt="公司Logo" className={styles.navLogo} />
               <span className={styles.companyName}>重庆资产房地产土地评估</span>
             </div>
             <div className={styles.navCenter}>
