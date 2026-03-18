@@ -60,7 +60,7 @@ const Overview = () => {
   // 1. Socket 连接与事件监听
   useEffect(() => {
     // 连接 Socket
-    const socket = io('http://121.4.22.55:5202', {
+    const socket = io('/', {
       transports: ['websocket', 'polling'],
     });
 

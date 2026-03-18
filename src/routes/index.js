@@ -5,15 +5,19 @@ import { useAuth } from '../hooks/useAuth';
 import ProtectedRoute from './ProtectedRoute';
 
 import { Loading } from '../components/UI';
+import styles from './index.module.css';
 // 导入动态模块配置
 import { moduleConfig, MODULE_KEYS } from '../config/moduleConfig';
 
 // 导入公开路由配置
-import { publicRouteConfig, notFoundRedirect } from '../config/publicRouteConfig';
-import ModuleSelect from '../pages/modules/Select';
-import ModuleLayout from '../pages/modules/ModuleLayout';
-import NotFound from '../components/Animation/NotFound';
-import styles from './index.module.css';
+import { publicRouteConfig } from '../config/publicRouteConfig';
+//import ModuleSelect from '../pages/modules/Select';
+const ModuleSelect = React.lazy(() => import('../pages/modules/Select'));
+//import ModuleLayout from '../pages/modules/ModuleLayout';
+const ModuleLayout = React.lazy(() => import('../pages/modules/ModuleLayout'));
+//import NotFound from '../components/Animation/NotFound';
+const NotFound = React.lazy(() => import('../components/Animation/NotFound'));
+
 
 // 判断组件是否是懒加载的
 const isLazyComponent = (component) => {
