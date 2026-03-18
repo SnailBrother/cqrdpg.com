@@ -4,12 +4,12 @@ import './CarouselTypeThird.css';
 const CarouselTypeThird = () => {
     // 图片源保持在组件内部
     const images = [
-        'http://121.4.22.55:80/backend/images/WebsiteHomepageImage/Music/歌词评论.jpg',
-       'http://121.4.22.55:80/backend/images/WebsiteHomepageImage/Music/收藏记录.jpg',
-        'http://121.4.22.55:80/backend/images/WebsiteHomepageImage/Music/一听听歌.jpg',
-        'http://121.4.22.55:80/backend/images/WebsiteHomepageImage/Music/音乐听歌.jpg',
-        'http://121.4.22.55:80/backend/images/WebsiteHomepageImage/Music/音乐推荐.jpg',
-        'http://121.4.22.55:80/backend/images/WebsiteHomepageImage/Music/音乐欣赏.jpg',
+        'https://121.4.22.55:80/backend/images/WebsiteHomepageImage/Music/歌词评论.jpg',
+       'https://121.4.22.55:80/backend/images/WebsiteHomepageImage/Music/收藏记录.jpg',
+        'https://121.4.22.55:80/backend/images/WebsiteHomepageImage/Music/一听听歌.jpg',
+        'https://121.4.22.55:80/backend/images/WebsiteHomepageImage/Music/音乐听歌.jpg',
+        'https://121.4.22.55:80/backend/images/WebsiteHomepageImage/Music/音乐推荐.jpg',
+        'https://121.4.22.55:80/backend/images/WebsiteHomepageImage/Music/音乐欣赏.jpg',
     ];
 
     const [slides, setSlides] = useState([]);

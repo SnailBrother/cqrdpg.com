@@ -4,12 +4,12 @@ import './CarouselTypeThird.css';
 const CarouselTypeThird = () => {
     // 图片源保持在组件内部
     const images = [
-        'http://121.4.22.55:80/backend/images/OurHomePage/CarouselTypeThird/1.jpg',
-        'http://121.4.22.55:80/backend/images/OurHomePage/CarouselTypeThird/2.jpg',
-        'http://121.4.22.55:80/backend/images/OurHomePage/CarouselTypeThird/3.jpg',
-        'http://121.4.22.55:80/backend/images/OurHomePage/CarouselTypeThird/4.jpg',
-        'http://121.4.22.55:80/backend/images/OurHomePage/CarouselTypeThird/5.jpg',
-        'http://121.4.22.55:80/backend/images/OurHomePage/CarouselTypeThird/6.jpg',
+        'https://121.4.22.55:80/backend/images/OurHomePage/CarouselTypeThird/1.jpg',
+        'https://121.4.22.55:80/backend/images/OurHomePage/CarouselTypeThird/2.jpg',
+        'https://121.4.22.55:80/backend/images/OurHomePage/CarouselTypeThird/3.jpg',
+        'https://121.4.22.55:80/backend/images/OurHomePage/CarouselTypeThird/4.jpg',
+        'https://121.4.22.55:80/backend/images/OurHomePage/CarouselTypeThird/5.jpg',
+        'https://121.4.22.55:80/backend/images/OurHomePage/CarouselTypeThird/6.jpg',
     ];
 
     const [slides, setSlides] = useState([]);

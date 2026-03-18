@@ -10,15 +10,20 @@ const RealEstateAISearch = () => {
     const messagesEndRef = useRef(null);
     const chatContainerRef = useRef(null);
     
-    // 状态控制显示
+    // 新增状态控制显示
     const [showSQL, setShowSQL] = useState(false);
-    const [showExamplePopup, setShowExamplePopup] = useState(false); // 默认关闭，或者保持 false
-    // const [useAliyunAI, setUseAliyunAI] = useState(false); // 已移除
-    
+    const [showExamplePopup, setShowExamplePopup] = useState(false);
+    const [useAliyunAI, setUseAliyunAI] = useState(false); // 新增：是否使用阿里云API
     const popupRef = useRef(null);
     const exampleBtnRef = useRef(null);
 
-    // API_CONFIG 已移除
+    // 阿里云百炼API配置
+    //https://bailian.console.aliyun.com/cn-beijing/?spm=a2c4g.11186623.0.0.3234c7b4B95o8W&tab=model#/api-key
+    const API_CONFIG = {
+        endpoint: 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions',
+        apiKey: 'sk-cf3cf29dbeaa4edc9765d4ae83ebdc1e',
+        model: 'qwen-max'
+    };
 
     // 监听点击外部关闭悬浮框
     useEffect(() => {
@@ -59,7 +64,47 @@ const RealEstateAISearch = () => {
         scrollToBottom();
     }, [messages, isTyping]);
 
-    // callAliyunAPI 函数已移除
+    // 调用阿里云百炼API
+    const callAliyunAPI = async (message, history) => {
+        try {
+            const response = await fetch(API_CONFIG.endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${API_CONFIG.apiKey}`
+                },
+                body: JSON.stringify({
+                    model: API_CONFIG.model,
+                    messages: [
+                        {
+                            role: 'system',
+                            content: '你是一个专业的房产AI助手，专门帮助用户查询房产信息、分析房价趋势、对比不同区域房价等。回答要专业、准确、简洁。如果用户询问具体房价，需要给出基于历史数据的分析。请用中文回答。'
+                        },
+                        ...history.map(msg => ({
+                            role: msg.isUser ? 'user' : 'assistant',
+                            content: msg.text
+                        })),
+                        {
+                            role: 'user',
+                            content: message
+                        }
+                    ],
+                    temperature: 0.7,
+                    max_tokens: 1000
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`API请求失败: ${response.status}`);
+            }
+
+            const data = await response.json();
+            return data.choices[0]?.message?.content || '抱歉，我没有理解您的问题。';
+        } catch (error) {
+            console.error('调用阿里云API失败:', error);
+            return '抱歉，服务暂时不可用，请稍后重试。';
+        }
+    };
 
     // 发送消息
     const sendMessage = async (message = inputText) => {
@@ -78,80 +123,125 @@ const RealEstateAISearch = () => {
         setShowExamples(false);
 
         try {
-            // 直接使用原有的后端 API 逻辑
-            const response = await fetch('/api/ai-query', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    question: message,
-                    history: messages.slice(-5).map(m => ({
-                        role: m.type === 'user' ? 'user' : 'assistant',
-                        content: m.content
-                    }))
-                }),
-            });
+            if (useAliyunAI) {
+                // 使用阿里云百炼API
+                const history = messages.slice(-5).map(m => ({
+                    isUser: m.type === 'user',
+                    text: m.content
+                }));
+                
+                const aiResponse = await callAliyunAPI(message, history);
 
-            if (!response.ok) {
-                throw new Error(`API请求失败: ${response.status}`);
-            }
+                // 模拟AI打字效果
+                setIsTyping(true);
+                let displayedText = '';
 
-            const data = await response.json();
+                const typingInterval = setInterval(() => {
+                    if (displayedText.length < aiResponse.length) {
+                        displayedText = aiResponse.substring(0, displayedText.length + 1);
 
-            // 模拟AI打字效果
-            setIsTyping(true);
-            const aiResponse = data.response || "抱歉，我暂时无法回答这个问题。";
-            let displayedText = '';
+                        setMessages(prev => {
+                            const lastMessage = prev[prev.length - 1];
+                            if (lastMessage?.type === 'ai') {
+                                return [
+                                    ...prev.slice(0, -1),
+                                    { ...lastMessage, content: displayedText }
+                                ];
+                            } else {
+                                return [
+                                    ...prev,
+                                    {
+                                        id: Date.now() + 1,
+                                        type: 'ai',
+                                        content: displayedText,
+                                        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                                        isAliyunAI: true // 标记为阿里云AI回复
+                                    }
+                                ];
+                            }
+                        });
+                    } else {
+                        clearInterval(typingInterval);
+                        setIsTyping(false);
+                    }
+                }, 20);
+            } else {
+                // 使用原有的后端API
+                const response = await fetch('/api/ai-query', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        question: message,
+                        history: messages.slice(-5).map(m => ({
+                            role: m.type === 'user' ? 'user' : 'assistant',
+                            content: m.content
+                        }))
+                    }),
+                });
 
-            const typingInterval = setInterval(() => {
-                if (displayedText.length < aiResponse.length) {
-                    displayedText = aiResponse.substring(0, displayedText.length + 1);
+                const data = await response.json();
 
-                    setMessages(prev => {
-                        const lastMessage = prev[prev.length - 1];
-                        if (lastMessage?.type === 'ai') {
-                            return [
-                                ...prev.slice(0, -1),
-                                { ...lastMessage, content: displayedText }
-                            ];
-                        } else {
-                            return [
-                                ...prev,
-                                {
-                                    id: Date.now() + 1,
-                                    type: 'ai',
-                                    content: displayedText,
-                                    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                                    sql: data.sql,
-                                    data: data.data,
-                                    analysis: data.analysis,
-                                    // isAliyunAI 字段已移除，默认为数据库模式
-                                }
-                            ];
-                        }
-                    });
-                } else {
-                    clearInterval(typingInterval);
-                    setIsTyping(false);
-                    
-                    // 打字结束后，确保完整数据（SQL/Data）被附加到消息上
-                    // 注意：上面的打字循环可能只更新了 content，这里确保 sql/data 存在
-                    setMessages(prev => {
-                        const lastMsg = prev[prev.length - 1];
-                        if (lastMsg && lastMsg.type === 'ai' && (data.sql || data.data)) {
-                             // 如果打字结束时还没有带上 sql/data（取决于打字逻辑是否覆盖了整个对象），这里做最终确认
-                             if (!lastMsg.sql && !lastMsg.data) {
-                                 return [
-                                     ...prev.slice(0, -1),
-                                     { ...lastMsg, sql: data.sql, data: data.data, analysis: data.analysis }
-                                 ];
-                             }
-                        }
-                        return prev;
-                    });
+                // 模拟AI打字效果
+                setIsTyping(true);
+                const aiResponse = data.response || "抱歉，我暂时无法回答这个问题。";
+                let displayedText = '';
+
+                const typingInterval = setInterval(() => {
+                    if (displayedText.length < aiResponse.length) {
+                        displayedText = aiResponse.substring(0, displayedText.length + 1);
+
+                        setMessages(prev => {
+                            const lastMessage = prev[prev.length - 1];
+                            if (lastMessage?.type === 'ai') {
+                                return [
+                                    ...prev.slice(0, -1),
+                                    { ...lastMessage, content: displayedText }
+                                ];
+                            } else {
+                                return [
+                                    ...prev,
+                                    {
+                                        id: Date.now() + 1,
+                                        type: 'ai',
+                                        content: displayedText,
+                                        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                                        sql: data.sql,
+                                        data: data.data,
+                                        analysis: data.analysis,
+                                        isAliyunAI: false // 标记为非阿里云AI回复
+                                    }
+                                ];
+                            }
+                        });
+                    } else {
+                        clearInterval(typingInterval);
+                        setIsTyping(false);
+                    }
+                }, 20);
+
+                // 如果有SQL和数据，添加到消息中
+                if (data.sql || data.data) {
+                    setTimeout(() => {
+                        setMessages(prev => {
+                            const lastMsg = prev[prev.length - 1];
+                            if (lastMsg.type === 'ai') {
+                                return [
+                                    ...prev.slice(0, -1),
+                                    {
+                                        ...lastMsg,
+                                        sql: data.sql,
+                                        data: data.data,
+                                        analysis: data.analysis
+                                    }
+                                ];
+                            }
+                            return prev;
+                        });
+                    }, 500);
                 }
-            }, 20);
+            }
 
         } catch (error) {
             console.error('Error:', error);
@@ -250,14 +340,19 @@ const RealEstateAISearch = () => {
 
         return (
             <div className={styles.aiMessage}>
-                {/* 阿里云标识已移除 */}
+                {/* 如果是阿里云AI回复，显示标识 */}
+                {message.isAliyunAI && (
+                    <div className={styles.aliyunTag}>
+                        <span className={styles.aliyunIcon}>☁️</span>
+                        阿里百炼
+                    </div>
+                )}
                 
                 <div className={styles.aiContent}>
                     {message.content}
                 </div>
 
-                {/* 移除了 !message.isAliyunAI 判断，现在默认都显示 */}
-                {showSQL && message.sql && (
+                {showSQL && message.sql && !message.isAliyunAI && (
                     <div className={styles.sqlSection}>
                         <div className={styles.sqlTitle}>
                             <span>📋 生成的SQL：</span>
@@ -275,14 +370,14 @@ const RealEstateAISearch = () => {
                     </div>
                 )}
 
-                {message.data && message.data.length > 0 && (
+                {message.data && message.data.length > 0 && !message.isAliyunAI && (
                     <div className={styles.dataSection}>
                         <div className={styles.dataTitle}>📊 查询结果：</div>
                         {formatData(message.data)}
                     </div>
                 )}
 
-                {message.analysis && (
+                {message.analysis && !message.isAliyunAI && (
                     <div className={styles.analysisSection}>
                         <div className={styles.analysisTitle}>📈 数据分析：</div>
                         <div className={styles.analysisContent}>{message.analysis}</div>
@@ -306,7 +401,9 @@ const RealEstateAISearch = () => {
                                 <div className={styles.tipItem}>💰 支持价格区间筛选</div>
                                 <div className={styles.tipItem}>🏠 支持户型、面积、楼层查询</div>
                                 <div className={styles.tipItem}>📊 支持统计分析</div>
-                                {/* 阿里云提示已移除 */}
+                                <div className={`${styles.tipItem} ${styles.aliyunTip}`}>
+                                    ☁️ {useAliyunAI ? '当前使用阿里云AI模式' : '可切换到阿里云AI模式'}
+                                </div>
                             </div>
                         </div>
                     ) : (
@@ -385,16 +482,35 @@ const RealEstateAISearch = () => {
                             </div>
                         )}
 
-                        {/* 显示SQL按钮 - 始终显示 */}
-                        <button
-                            className={`${styles.toggleBtn} ${showSQL ? styles.active : ''}`}
-                            onClick={() => setShowSQL(!showSQL)}
-                            title={showSQL ? "隐藏SQL语句" : "显示SQL语句"}
-                        >
-                            📋 {showSQL ? '隐藏SQL' : '显示SQL'}
-                        </button>
+                        {/* 显示SQL按钮 */}
+                        {!useAliyunAI && (
+                            <button
+                                className={`${styles.toggleBtn} ${showSQL ? styles.active : ''}`}
+                                onClick={() => setShowSQL(!showSQL)}
+                                title={showSQL ? "隐藏SQL语句" : "显示SQL语句"}
+                            >
+                                📋 {showSQL ? '隐藏SQL' : '显示SQL'}
+                            </button>
+                        )}
 
-                        {/* 切换阿里云AI模式按钮 - 已移除 */}
+                        {/* 切换阿里云AI模式按钮 */}
+                        <button
+                            className={`${styles.toggleBtn} ${useAliyunAI ? styles.active : ''} ${styles.aliyunBtn}`}
+                            onClick={() => setUseAliyunAI(!useAliyunAI)}
+                            title={useAliyunAI ? "切换到数据库查询模式" : "切换到阿里云AI模式"}
+                        >
+                            {useAliyunAI ? (
+                                <>
+                                    <span className={styles.aliyunIcon}>☁️</span>
+                                    数据库查询
+                                </>
+                            ) : (
+                                <>
+                                    <span className={styles.aliyunIcon}>🤖</span>
+                                    阿里百炼
+                                </>
+                            )}
+                        </button>
 
                         <button
                             onClick={() => sendMessage()}

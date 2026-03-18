@@ -46,7 +46,7 @@ const LookHousePricePicture = () => {
         if (data.success && data.images) {
           // 构造完整的图片URL
           // const imageUrls = data.images.map(image =>
-          //   `http://121.4.22.55:80/backend/images/HousePricePictures/${reportsID}/${image.pictureFileName}`
+          //   `https://121.4.22.55:80/backend/images/HousePricePictures/${reportsID}/${image.pictureFileName}`
           // );
           // setImages(imageUrls);
           // 使用环境变量构造图片URL

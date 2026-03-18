@@ -5,12 +5,12 @@ import './TravelDetailsSixth.css';
 const TravelDetailsSixth = () => {
   const [isHovered, setIsHovered] = useState(false);
   const images = [
-    'http://121.4.22.55:80/backend/images/OurHomePage/Details/TravelDetailsSixth/1.jpg',
-    'http://121.4.22.55:80/backend/images/OurHomePage/Details/TravelDetailsSixth/2.jpg',
-    'http://121.4.22.55:80/backend/images/OurHomePage/Details/TravelDetailsSixth/3.jpg',
-    'http://121.4.22.55:80/backend/images/OurHomePage/Details/TravelDetailsSixth/4.jpg',
-    'http://121.4.22.55:80/backend/images/OurHomePage/Details/TravelDetailsSixth/5.jpg',
-    'http://121.4.22.55:80/backend/images/OurHomePage/Details/TravelDetailsSixth/6.jpg'
+    'https://121.4.22.55:80/backend/images/OurHomePage/Details/TravelDetailsSixth/1.jpg',
+    'https://121.4.22.55:80/backend/images/OurHomePage/Details/TravelDetailsSixth/2.jpg',
+    'https://121.4.22.55:80/backend/images/OurHomePage/Details/TravelDetailsSixth/3.jpg',
+    'https://121.4.22.55:80/backend/images/OurHomePage/Details/TravelDetailsSixth/4.jpg',
+    'https://121.4.22.55:80/backend/images/OurHomePage/Details/TravelDetailsSixth/5.jpg',
+    'https://121.4.22.55:80/backend/images/OurHomePage/Details/TravelDetailsSixth/6.jpg'
   ];
 
   return (
