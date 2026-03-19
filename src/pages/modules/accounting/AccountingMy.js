@@ -109,7 +109,7 @@ const AccountingMy = () => {
                 <div className="accountingmy-profile-avatar">
                     {!imageError && username && (
                         <img
-                            src={`https://121.4.22.55:80/backend/images/ChatApp/${username}/headpicture/avatar.png`}
+                            src={`http://121.4.22.55:80/backend/images/ChatApp/${username}/headpicture/avatar.png`}
                             alt="Avatar"
                             onError={() => setImageError(true)}
                             style={{ width: '100%', height: '100%', borderRadius: '50%' }}

@@ -78,10 +78,10 @@ const Recent = () => {
                 title: song.title,
                 artist: song.artist,
                 genre: song.genre,
-                src: `https://121.4.22.55:80/backend/musics/${song.src}`,
+                src: `http://121.4.22.55:80/backend/musics/${song.src}`,
                 coverimage: song.coverimage
-                    ? `https://121.4.22.55:80/backend/musics/${song.coverimage}`
-                    : 'https://121.4.22.55:80/backend/musics/default.jpg',
+                    ? `http://121.4.22.55:80/backend/musics/${song.coverimage}`
+                    : 'http://121.4.22.55:80/backend/musics/default.jpg',
                 playtime: song.playtime,
                 play_count: song.play_count || 0
             }));

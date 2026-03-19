@@ -2276,7 +2276,7 @@ app.get('/api/getrealestatepicturecarouselimages', (req, res) => {
 
         // 构造完整的图片URL
         const imageUrls = imageFiles.map(file =>
-            `https://121.4.22.55:80/backend/images/Community/${encodeURIComponent(region)}/${encodeURIComponent(folder)}/${file}`
+            `http://121.4.22.55:80/backend/images/Community/${encodeURIComponent(region)}/${encodeURIComponent(folder)}/${file}`
         );
 
         // 返回图片URL列表
@@ -2622,7 +2622,7 @@ app.get('/api/checkImageExists', (req, res) => {
                 const messageId = result.recordset[0].message_id;
 
                 // 构建图片访问URL
-                const imageUrl = `https://121.4.22.55:80/backend/images/ChatImages/${sender_name}/${req.file.filename}`;
+                const imageUrl = `http://121.4.22.55:80/backend/images/ChatImages/${sender_name}/${req.file.filename}`;
 
                 res.status(201).json({
                     success: true,
@@ -3094,7 +3094,7 @@ app.get('/api/checkImageExists', (req, res) => {
             }
 
             // 返回第一张图片的URL
-            const imageUrl = `https://121.4.22.55:80/backend/images/ChatApp/${encodeURIComponent(username)}/headpicture/${imageFiles[0]}`;
+            const imageUrl = `http://121.4.22.55:80/backend/images/ChatApp/${encodeURIComponent(username)}/headpicture/${imageFiles[0]}`;
             res.json({ imageUrl });
         });
     });
@@ -3158,7 +3158,7 @@ app.get('/api/checkImageExists', (req, res) => {
         }
 
         // 返回新的头像 URL
-        const imageUrl = `https://121.4.22.55:80/backend/images/ChatApp/${encodeURIComponent(username)}/headpicture/${req.file.filename}`;
+        const imageUrl = `http://121.4.22.55:80/backend/images/ChatApp/${encodeURIComponent(username)}/headpicture/${req.file.filename}`;
         res.json({ imageUrl });
     });
 
@@ -3220,7 +3220,7 @@ app.get('/api/checkImageExists', (req, res) => {
         }
 
         // 返回新的背景图片 URL
-        const imageUrl = `https://121.4.22.55:80/backend/images/ChatApp/${encodeURIComponent(username)}/chatbackgroundimage/${req.file.filename}`;
+        const imageUrl = `http://121.4.22.55:80/backend/images/ChatApp/${encodeURIComponent(username)}/chatbackgroundimage/${req.file.filename}`;
         res.json({ imageUrl });
     });
 
@@ -4309,7 +4309,7 @@ app.post('/backend/api/uploadmusic', uploadMusic.fields([
             console.log(`歌词文件已保存: ${lyricsFile.filename}`);
         }
 
-        const baseUrl = 'https://121.4.22.55:80/backend/musics';
+        const baseUrl = 'http://121.4.22.55:80/backend/musics';
 
         await sql.connect(config);
         const request = new sql.Request();
@@ -4637,7 +4637,7 @@ app.get('/api/dressing-guidelines/random', async (req, res) => {
             ...weatherResult.recordset[0],
             images: imagesResult.recordset.map(img => ({
                 ...img,
-                url: `https://121.4.22.55:80/backend/images/DressingGuidelinesData/${formattedDate}/${img.src}`
+                url: `http://121.4.22.55:80/backend/images/DressingGuidelinesData/${formattedDate}/${img.src}`
             }))
         };
 
@@ -4688,7 +4688,7 @@ app.get('/api/dressing-guidelines/today', async (req, res) => {
             ...weatherResult.recordset[0],
             images: imagesResult.recordset.map(img => ({
                 ...img,
-                url: `https://121.4.22.55:80/backend/images/DressingGuidelinesData/${today}/${img.src}`
+                url: `http://121.4.22.55:80/backend/images/DressingGuidelinesData/${today}/${img.src}`
             }))
         };
 
@@ -4789,7 +4789,7 @@ app.get('/api/dressing-guidelines/search', async (req, res) => {
                     ...weatherItem,
                     images: imagesResult.recordset.map(img => ({
                         ...img,
-                        url: `https://121.4.22.55:80/backend/images/DressingGuidelinesData/${weatherItem.date}/${img.src}`
+                        url: `http://121.4.22.55:80/backend/images/DressingGuidelinesData/${weatherItem.date}/${img.src}`
                     }))
                 };
             })
@@ -5044,7 +5044,7 @@ app.post('/api/dressing-guidelines/upload',
             // 插入穿搭图片数据
             for (let i = 0; i < req.files.length; i++) {
                 const file = req.files[i];
-                const imageUrl = `https://121.4.22.55:80/backend/images/DressingGuidelinesData/${date}/${file.originalname}`;
+                const imageUrl = `http://121.4.22.55:80/backend/images/DressingGuidelinesData/${date}/${file.originalname}`;
 
                 const imageRequest = new sql.Request(pool);
                 const imageQuery = `
@@ -5069,7 +5069,7 @@ app.post('/api/dressing-guidelines/upload',
                 imagesCount: req.files.length,
                 images: req.files.map(file => ({
                     filename: file.originalname,
-                    path: `https://121.4.22.55:80/backend/images/DressingGuidelinesData/${date}/${file.originalname}`
+                    path: `http://121.4.22.55:80/backend/images/DressingGuidelinesData/${date}/${file.originalname}`
                 }))
             });
 
@@ -6831,8 +6831,8 @@ app.get('/api/getWardrobeStewardData', async (req, res) => {
 
         result.recordset.forEach(item => {
             // 构建两张图片URL
-            const itemImageUrl = `https://121.4.22.55:80/backend/images/WardrobeStewar/${item.category}/${item.item_code}.png`;
-            const effectImageUrl = `https://121.4.22.55:80/backend/images/WardrobeStewar/${item.category}/${item.item_code}effect.png`;
+            const itemImageUrl = `http://121.4.22.55:80/backend/images/WardrobeStewar/${item.category}/${item.item_code}.png`;
+            const effectImageUrl = `http://121.4.22.55:80/backend/images/WardrobeStewar/${item.category}/${item.item_code}effect.png`;
 
             const formattedItem = {
                 id: item.id,
@@ -8559,7 +8559,7 @@ app.post('/api/UploadHousePricePicture',
                 skippedCount: duplicateFiles.length,
                 images: newFiles.map(file => ({
                     filename: file.originalname,
-                    path: `https://121.4.22.55:80/backend/images/HousePricePictures/${reportsID}/${file.originalname}`
+                    path: `http://121.4.22.55:80/backend/images/HousePricePictures/${reportsID}/${file.originalname}`
                 }))
             });
 
@@ -9580,10 +9580,10 @@ app.get('/api/reactdemorecommend', async (req, res) => {
             SELECT *,
                 CASE 
                     WHEN coverimage IS NOT NULL AND coverimage != '' 
-                    THEN CONCAT('https://121.4.22.55:80/backend/musics/', coverimage)
-                    ELSE 'https://121.4.22.55:80/backend/musics/default.jpg'
+                    THEN CONCAT('http://121.4.22.55:80/backend/musics/', coverimage)
+                    ELSE 'http://121.4.22.55:80/backend/musics/default.jpg'
                 END as coverimage_url,
-                CONCAT('https://121.4.22.55:80/backend/musics/', src) as src_url
+                CONCAT('http://121.4.22.55:80/backend/musics/', src) as src_url
             FROM (${baseQuery}) as filtered
             ${orderBy}
             OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY
@@ -9931,7 +9931,7 @@ app.post('/api/ReactDemomusic-rooms', async (req, res) => {
             .input('max_users', sql.Int, max_users)
             .input('title', sql.NVarChar, '暂无歌曲')
             .input('artist', sql.NVarChar, '暂无歌手')
-            .input('coverimage', sql.NVarChar, 'https://121.4.22.55:80/backend/musics/default.jpg')
+            .input('coverimage', sql.NVarChar, 'http://121.4.22.55:80/backend/musics/default.jpg')
             .input('src', sql.NVarChar, '')
             .input('genre', sql.NVarChar, '')
             .input('current_time', sql.Float, 0)
@@ -12407,7 +12407,7 @@ app.get('/api/react-demo/background-image/:email/:themeId', (req, res) => {
                     images: newFiles.map(file => ({
                         pictureFileName: file.originalname,
                         buildingsPriceid: buildingsPriceid,
-                        url: `https://121.4.22.55:80/backend/images/BuildingsPricePictures/${buildingsPriceid}/${file.originalname}`
+                        url: `http://121.4.22.55:80/backend/images/BuildingsPricePictures/${buildingsPriceid}/${file.originalname}`
                     }))
                 });
 
@@ -12788,7 +12788,7 @@ ORDER BY
 
             // ... [cleanup logic unchanged] ...
 
-            const url = `https://121.4.22.55:80/backend/mergedpdf/${filename}`;
+            const url = `http://121.4.22.55:80/backend/mergedpdf/${filename}`;
             res.json({ url, filename });
 
         } catch (err) {

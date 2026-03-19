@@ -24,13 +24,13 @@ const CustomBackground = () => {
 
     if (user?.email && activeTheme?.id) {
       // 使用动态的 themeId 而不是硬编码的 6
-      const userImageUrl = `https://121.4.22.55:80/backend/images/ReactDemoUserThemeSettings/${user.email}/${activeTheme.id}/CustomBackground.jpg?t=${imageTimestamp}`;
+      const userImageUrl = `http://121.4.22.55:80/backend/images/ReactDemoUserThemeSettings/${user.email}/${activeTheme.id}/CustomBackground.jpg?t=${imageTimestamp}`;
       
       checkImageExists(userImageUrl, (exists) => {
         if (exists) {
           setImageSrc(userImageUrl);
         } else {
-          setImageSrc('https://121.4.22.55:80/backend/images/ReactDemoUserThemeSettings/default/CustomBackground.jpg');
+          setImageSrc('http://121.4.22.55:80/backend/images/ReactDemoUserThemeSettings/default/CustomBackground.jpg');
         }
       });
     }
@@ -61,7 +61,7 @@ const CustomBackground = () => {
           alt="Custom Background" 
           className="customBackground-image"
           onError={(e) => {
-            e.target.src = 'https://121.4.22.55:80/backend/images/ReactDemoUserThemeSettings/default/CustomBackground.jpg';
+            e.target.src = 'http://121.4.22.55:80/backend/images/ReactDemoUserThemeSettings/default/CustomBackground.jpg';
           }}
         />
       )}
@@ -71,4 +71,4 @@ const CustomBackground = () => {
 
 export default CustomBackground;
 
-// src="https://121.4.22.55:80/backend/images/SystemThemesettings/李中敬/CustomBackground.jpg"
+// src="http://121.4.22.55:80/backend/images/SystemThemesettings/李中敬/CustomBackground.jpg"

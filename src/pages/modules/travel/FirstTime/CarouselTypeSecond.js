@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import './CarouselTypeSecond.css';
 
 const images = [
-  { id: 1, src: `https://121.4.22.55:80/backend/images/OurHomePage/CarouselTypeSecond/1.jpg`, alt: 'Image 1' },
-  { id: 2, src: `https://121.4.22.55:80/backend/images/OurHomePage/CarouselTypeSecond/2.jpg`, alt: 'Image 2' },
-  { id: 3, src: `https://121.4.22.55:80/backend/images/OurHomePage/CarouselTypeSecond/3.jpg`, alt: 'Image 3' },
-  { id: 4, src: `https://121.4.22.55:80/backend/images/OurHomePage/CarouselTypeSecond/4.jpg`, alt: 'Image 4' },
+  { id: 1, src: `http://121.4.22.55:80/backend/images/OurHomePage/CarouselTypeSecond/1.jpg`, alt: 'Image 1' },
+  { id: 2, src: `http://121.4.22.55:80/backend/images/OurHomePage/CarouselTypeSecond/2.jpg`, alt: 'Image 2' },
+  { id: 3, src: `http://121.4.22.55:80/backend/images/OurHomePage/CarouselTypeSecond/3.jpg`, alt: 'Image 3' },
+  { id: 4, src: `http://121.4.22.55:80/backend/images/OurHomePage/CarouselTypeSecond/4.jpg`, alt: 'Image 4' },
 ];
 
 const CarouselTypeSecond = () => {

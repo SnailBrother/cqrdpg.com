@@ -408,10 +408,10 @@ const Player = ({ className = '' }) => {
         {/* --- 第一列：歌曲封面 --- */}
         <div className={styles.column1}>
           <img
-            src={currentSong.coverimage || 'https://121.4.22.55:80/backend/musics/default.jpg'}
+            src={currentSong.coverimage || 'http://121.4.22.55:80/backend/musics/default.jpg'}
             alt={currentSong.title}
             className={styles.playerArtwork}
-            onError={(e) => { e.target.onerror = null; e.target.src = 'https://121.4.22.55:80/backend/musics/default.jpg' }}
+            onError={(e) => { e.target.onerror = null; e.target.src = 'http://121.4.22.55:80/backend/musics/default.jpg' }}
           />
         </div>
 
