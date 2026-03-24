@@ -3,11 +3,11 @@ import './TravelDetailsFifth.css';
 
 const TravelDetailsFifth = () => {
   const images = [
-    { id: 0, src: 'http://121.4.22.55:80/backend/images/OurHomePage/Details/TravelDetailsFifth/1.jpg', alt: 'Image 0' },
-    { id: 1, src: 'http://121.4.22.55:80/backend/images/OurHomePage/Details/TravelDetailsFifth/2.jpg', alt: 'Image 1' },
-    { id: 2, src: 'http://121.4.22.55:80/backend/images/OurHomePage/Details/TravelDetailsFifth/3.jpg', alt: 'Image 2' },
-    { id: 3, src: 'http://121.4.22.55:80/backend/images/OurHomePage/Details/TravelDetailsFifth/4.jpg', alt: 'Image 3' },
-    { id: 4, src: 'http://121.4.22.55:80/backend/images/OurHomePage/Details/TravelDetailsFifth/5.jpg', alt: 'Image 4' },
+    { id: 0, src: 'http://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsFifth/1.jpg', alt: 'Image 0' },
+    { id: 1, src: 'http://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsFifth/2.jpg', alt: 'Image 1' },
+    { id: 2, src: 'http://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsFifth/3.jpg', alt: 'Image 2' },
+    { id: 3, src: 'http://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsFifth/4.jpg', alt: 'Image 3' },
+    { id: 4, src: 'http://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsFifth/5.jpg', alt: 'Image 4' },
   ];
 
   const [activeIndex, setActiveIndex] = useState(0);

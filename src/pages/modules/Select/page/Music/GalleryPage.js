@@ -4,11 +4,11 @@ import styles from './GalleryPage.module.css';
 const GalleryPage = () => {
   // 图片数据
   const images = [
-    'http://121.4.22.55:80/backend/images/WebsiteHomepageImage/Music/主题自定义.jpg',
-    'http://121.4.22.55:80/backend/images/WebsiteHomepageImage/Music/特备提示.jpg',
-    'http://121.4.22.55:80/backend/images/WebsiteHomepageImage/Music/聊天.jpg',
-    'http://121.4.22.55:80/backend/images/WebsiteHomepageImage/Music/朋友圈.jpg',
-    'http://121.4.22.55:80/backend/images/WebsiteHomepageImage/Music/消息发布.jpg',
+    'http://www.cqrdpg.com/backend/images/WebsiteHomepageImage/Music/主题自定义.jpg',
+    'http://www.cqrdpg.com/backend/images/WebsiteHomepageImage/Music/特备提示.jpg',
+    'http://www.cqrdpg.com/backend/images/WebsiteHomepageImage/Music/聊天.jpg',
+    'http://www.cqrdpg.com/backend/images/WebsiteHomepageImage/Music/朋友圈.jpg',
+    'http://www.cqrdpg.com/backend/images/WebsiteHomepageImage/Music/消息发布.jpg',
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);

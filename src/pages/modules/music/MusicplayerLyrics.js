@@ -155,7 +155,7 @@ const handleBack = () => {
 
                 <div className={styles.headerLeft}>
                     <img 
-                        src={currentSong.coverimage || 'http://121.4.22.55:80/backend/musics/default.jpg'} 
+                        src={currentSong.coverimage || 'http://www.cqrdpg.com/backend/musics/default.jpg'} 
                         alt={currentSong.title}
                         className={styles.coverImage}
                     />

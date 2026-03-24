@@ -8,27 +8,27 @@ const CarouselTypeEighth = () => {
   const items = [
     {
       title: '白帝城',
-      src: `http://121.4.22.55:80/backend/images/OurHomePage/CarouselTypeEighth/1.jpg`
+      src: `http://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeEighth/1.jpg`
     },
     {
       title: '刘备托孤',
-      src: `http://121.4.22.55:80/backend/images/OurHomePage/CarouselTypeEighth/2.jpg`
+      src: `http://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeEighth/2.jpg`
     },
     {
       title: '山王坪',
-      src: `http://121.4.22.55:80/backend/images/OurHomePage/CarouselTypeEighth/3.jpg`
+      src: `http://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeEighth/3.jpg`
     },
     {
       title: '习水',
-      src: `http://121.4.22.55:80/backend/images/OurHomePage/CarouselTypeEighth/4.jpg`
+      src: `http://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeEighth/4.jpg`
     },
     {
       title: '园博园',
-      src: `http://121.4.22.55:80/backend/images/OurHomePage/CarouselTypeEighth/5.jpg`
+      src: `http://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeEighth/5.jpg`
     },
     {
       title: '龚滩古镇',
-      src: `http://121.4.22.55:80/backend/images/OurHomePage/CarouselTypeEighth/6.jpg`
+      src: `http://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeEighth/6.jpg`
     }
   ];
 

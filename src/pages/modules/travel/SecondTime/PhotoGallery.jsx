@@ -9,7 +9,7 @@ const PhotoGallery = () => {
         const slice = images.slice(start, end);
         return Array(repeats).fill(slice).flat();
     };
-//http://121.4.22.55:80/backend/images/OurHomePage/Details/PhotoGallery/5.jpg
+//http://www.cqrdpg.com/backend/images/OurHomePage/Details/PhotoGallery/5.jpg
 
     return (
         <div className="photogallery-container">
@@ -20,7 +20,7 @@ const PhotoGallery = () => {
                         <div className="photogallery-frame">
                             <div className="photogallery-mat">
                                 <img
-                                    src={`http://121.4.22.55:80/backend/images/OurHomePage/Details/PhotoGallery/${num}.jpg`}
+                                    src={`http://www.cqrdpg.com/backend/images/OurHomePage/Details/PhotoGallery/${num}.jpg`}
                                     alt={`Reunion Photo ${num}`}
                                     className="photogallery-image"
                                     loading="lazy"  // 添加懒加载优化性能
@@ -39,7 +39,7 @@ const PhotoGallery = () => {
                         <div className="photogallery-frame">
                             <div className="photogallery-mat">
                                 <img
-                                    src={`http://121.4.22.55:80/backend/images/OurHomePage/Details/PhotoGallery/${num}.jpg`}
+                                    src={`http://www.cqrdpg.com/backend/images/OurHomePage/Details/PhotoGallery/${num}.jpg`}
                                     alt={`Reunion Photo ${num}`}
                                     className="photogallery-image"
                                     loading="lazy"
@@ -58,7 +58,7 @@ const PhotoGallery = () => {
                         <div className="photogallery-frame">
                             <div className="photogallery-mat">
                                 <img
-                                    src={`http://121.4.22.55:80/backend/images/OurHomePage/Details/PhotoGallery/${num}.jpg`}
+                                    src={`http://www.cqrdpg.com/backend/images/OurHomePage/Details/PhotoGallery/${num}.jpg`}
                                     alt={`Reunion Photo ${num}`}
                                     className="photogallery-image"
                                     loading="lazy"

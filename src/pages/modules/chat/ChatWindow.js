@@ -108,7 +108,7 @@ const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) 
 
     // 获取图片URL
     const getImageUrl = (senderName, filename) => {
-        return `http://121.4.22.55:80/backend/images/ChatImages/${senderName}/${filename}`;
+        return `http://www.cqrdpg.com/backend/images/ChatImages/${senderName}/${filename}`;
     };
 
     // 渲染消息内容
@@ -623,7 +623,7 @@ const formatTime = (timestamp) => {
             style={{
                 backgroundColor: themeSettings.backgroundColor,
                 backgroundImage: themeSettings.useBackgroundImage
-                    ? `url(http://121.4.22.55:80/backend/images/ChatApp/${username}/chatbackgroundimage/backgroundimage.jpg)`
+                    ? `url(http://www.cqrdpg.com/backend/images/ChatApp/${username}/chatbackgroundimage/backgroundimage.jpg)`
                     : 'none',
                 backgroundRepeat: 'no-repeat', // 背景图片不重复
                 backgroundPosition: 'center center', // 背景图片居中

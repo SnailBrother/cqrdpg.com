@@ -51,7 +51,7 @@ const MusicTableView = ({ musics, onPlayMusic, onPlaySingle, onLike, lastMusicEl
                                                 alt={music.title}
                                                 onError={(e) => {
                                                     e.target.onerror = null;
-                                                    e.target.src = 'http://121.4.22.55:80/backend/musics/default.jpg'
+                                                    e.target.src = 'http://www.cqrdpg.com/backend/musics/default.jpg'
                                                 }}
                                             />
                                         </div>

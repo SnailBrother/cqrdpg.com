@@ -8,7 +8,7 @@ const ProfilePage = () => {
   const pageContents = [
     {
       id: 0,
-      img: 'http://121.4.22.55:80/backend/images/WebsiteHomepageImage/Music/动态图.jpg',
+      img: 'http://www.cqrdpg.com/backend/images/WebsiteHomepageImage/Music/动态图.jpg',
       texts: [
         '💘',
         '记录',
@@ -20,7 +20,7 @@ const ProfilePage = () => {
     },
     {
       id: 1,
-      img: 'http://121.4.22.55:80/backend/images/WebsiteHomepageImage/Music/文本互动.jpg',
+      img: 'http://www.cqrdpg.com/backend/images/WebsiteHomepageImage/Music/文本互动.jpg',
       texts: [
         '💘',
         '文本',
@@ -30,7 +30,7 @@ const ProfilePage = () => {
     },
     {
       id: 2,
-      img: 'http://121.4.22.55:80/backend/images/WebsiteHomepageImage/Music/图片压缩.jpg',
+      img: 'http://www.cqrdpg.com/backend/images/WebsiteHomepageImage/Music/图片压缩.jpg',
       texts: [
         '💘',
         '图片',
@@ -41,7 +41,7 @@ const ProfilePage = () => {
     },
     {
       id: 3,
-      img: 'http://121.4.22.55:80/backend/images/WebsiteHomepageImage/Music/记账.jpg',
+      img: 'http://www.cqrdpg.com/backend/images/WebsiteHomepageImage/Music/记账.jpg',
       texts: [
         '💘',
         '生活',
@@ -51,7 +51,7 @@ const ProfilePage = () => {
     },
     {
       id: 4,
-      img: 'http://121.4.22.55:80/backend/images/WebsiteHomepageImage/Music/百度数据获取.jpg',
+      img: 'http://www.cqrdpg.com/backend/images/WebsiteHomepageImage/Music/百度数据获取.jpg',
       texts: [
         '💘',
         '定位',
@@ -62,7 +62,7 @@ const ProfilePage = () => {
     },
     {
       id: 5,
-      img: 'http://121.4.22.55:80/backend/images/WebsiteHomepageImage/Music/音乐统计.jpg',
+      img: 'http://www.cqrdpg.com/backend/images/WebsiteHomepageImage/Music/音乐统计.jpg',
       texts: [
         '💘',
         '自动分析用户爱好！！！',

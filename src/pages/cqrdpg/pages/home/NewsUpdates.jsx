@@ -4,7 +4,7 @@ import styles from './NewsUpdates.module.css';
 
 // 配置项
 const API_BASE_URL = '/api/publish-news';
-const SERVER_BASE_URL = 'http://121.4.22.55:80/backend';
+const SERVER_BASE_URL = 'http://www.cqrdpg.com/backend';
 const DEFAULT_IMAGE = `${SERVER_BASE_URL}/images/PublishNewsPictures/Defaultbackground.jpg`;
 
 const NewsUpdates = () => {
