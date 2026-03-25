@@ -11,7 +11,9 @@ import { Navigate } from 'react-router-dom';
 
 // --- 2. 非核心/低频页面 (懒加载 - Lazy Loading) ---
 // 这些页面只有用户点击特定链接才会访问，拆分出去减小主包体积
-const Home = lazy(() => import('../pages/cqrdpg/pages/Home'));
+//const Home = lazy(() => import('../pages/cqrdpg/pages/Home'));//评估官网
+const Home = lazy(() => import('../pages/love/home'));
+
 const Login = lazy(() => import('../pages/cqrdpg/pages/Login'));
 const Register = lazy(() => import('../pages/user/register'));
 const NewsDetails = lazy(() => import('../pages/cqrdpg/pages/home/NewsDetails'));

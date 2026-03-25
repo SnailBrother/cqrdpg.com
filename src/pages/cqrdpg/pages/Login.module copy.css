@@ -1,0 +1,436 @@
+.body {
+  height: 100dvh;
+  width: 100dvw;
+  font-family: 'Microsoft YaHei', sans-serif;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  box-sizing: border-box;
+  overflow: hidden; /* 防止出现滚动条，确保全屏 */
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+.switchButton {
+  margin-left: 5px;
+}
+/* 切换按钮样式 */
+.switchButton {
+  background: none;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  font-size: inherit;
+  text-decoration: underline;
+  padding: 0;
+  margin-left: 4px;
+}
+
+.switchButton:hover {
+  color: #0056b3;
+}
+.loginBox {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 460px;
+  padding: 40px 40px 50px;
+  /* 使用更透明的背景 */
+  background: rgba(255, 255, 255, 0.1);
+  box-sizing: border-box;
+  border-radius: 20px;
+  /* 增强的模糊效果 */
+  backdrop-filter: blur(20px) saturate(200%);
+  -webkit-backdrop-filter: blur(20px) saturate(200%);
+  z-index: 2;
+  /* 确保在移动端不会溢出 */
+
+  max-height: 100dvh;
+box-sizing: border-box;
+  overflow: hidden; /* 如果内容真的太多，允许内部滚动 */
+}
+
+/* 添加一个微妙的背景光效 */
+.loginBox::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 20px;
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255, 255, 255, 0.2) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Logo和公司名称在同一行 */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3); /* 改淡一点以适应背景 */
+}
+
+.logo {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  padding: 2px;
+  background: white;
+  flex-shrink: 0;
+}
+
+.companyName {
+  font-size: 16px;
+  color: #ffffff;
+  line-height: 1.4;
+  font-weight: 500;
+  margin: 0;
+  flex: 1;
+  word-break: break-word;
+}
+
+.prompt {
+  margin: 0 0 30px;
+  padding: 0;
+  color: #dfdfdf;
+  text-align: center;
+  font-size: 12px;
+  letter-spacing: 1px;
+  position: relative;
+}
+
+.userBox {
+  position: relative;
+  margin-bottom: 30px;
+}
+
+.userBox input {
+  width: 100%;
+  padding: 12px 0;
+  font-size: 16px;
+  color: #ffffff;
+  border: none;
+  border-bottom: 2px solid #e0e0e0;
+  outline: none;
+  background: transparent;
+  transition: 0.3s;
+  box-sizing: border-box; /* 确保 padding 不撑大宽度 */
+  /* 【新增】移除浏览器默认的自动填充背景色和文字颜色修正 */
+  -webkit-text-fill-color: #ffffff; 
+  transition: background-color 5000s ease-out !important; /* 黑科技：延缓背景色变化 */
+}
+
+.userBox input:focus,
+.userBox input:valid {
+  border-bottom-color: #667eea;
+}
+
+.userBox label {
+  position: absolute;
+  top: 12px;
+  left: 0;
+  font-size: 12px;
+  color: #cecccc;
+  pointer-events: none;
+  transition: 0.3s;
+}
+
+/* 【修改后】同时支持：聚焦时 OR 有值(data-filled="true")时，标签上浮 */
+.userBox input:focus ~ label,
+.userBox input[data-filled="true"] ~ label {
+  top: -12px !important;
+  left: 0;
+  color: #5de742; /* 保持你原本的上浮颜色 */
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* 验证码区域 */
+.captchaBox {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.captchaCanvas {
+  width: 160px;
+  height: 50px;
+  border-radius: 8px;
+  background: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: 0.3s;
+  flex-shrink: 0; /* 防止 canvas 被压缩 */
+}
+
+.captchaCanvas:hover {
+  border-color: #667eea;
+  box-shadow: 0 4px 8px rgba(102, 126, 234, 0.2);
+}
+
+.refreshBtn {
+  flex: 1;
+  padding: 0 10px;
+  height: 50px;
+  background: #f0f0f0;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  color: #666;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.3s;
+  white-space: nowrap;
+  line-height: 50px;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+
+.refreshBtn:hover {
+  background: #667eea;
+  border-color: #667eea;
+  color: #fff;
+  box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+}
+
+/* 验证码输入框错误状态 */
+.errorInput {
+  border-bottom-color: #ff4d4f !important;
+}
+
+/* 提交按钮 */
+.submitButton {
+  position: relative;
+  display: inline-block;
+  padding: 14px 20px;
+  margin-top: 20px;
+  width: 100%;
+  font-size: 18px;
+  color: #fff;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 8px;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  overflow: hidden;
+  transition: 0.3s;
+  cursor: pointer;
+  font-weight: 600;
+  box-shadow: 0 4px 6px rgba(102, 126, 234, 0.4);
+}
+
+.submitButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 14px rgba(102, 126, 234, 0.5);
+}
+
+.submitButton:active {
+  transform: translateY(0);
+}
+
+/* 按钮流光动画 */
+.submitButton span {
+  position: absolute;
+  display: block;
+}
+
+.submitButton span:nth-child(1) {
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, #ec2d2d, #4be2c1);
+  
+  animation: btnAn1 2s linear infinite;
+}
+
+@keyframes btnAn1 {
+  0% { left: -100%; }
+  50%, 100% { left: 100%; }
+}
+
+.submitButton span:nth-child(2) {
+  top: -100%;
+  right: 0;
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(180deg, #454dc7, #ade036);
+  animation: btnAn2 2s linear infinite;
+  animation-delay: 0.5s;
+}
+
+@keyframes btnAn2 {
+  0% { top: -100%; }
+  50%, 100% { top: 100%; }
+}
+
+.submitButton span:nth-child(3) {
+  bottom: 0;
+  right: -100%;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(270deg, #85aada, #7c5017);
+  animation: btnAn3 2s linear infinite;
+  animation-delay: 1s;
+}
+
+@keyframes btnAn3 {
+  0% { right: -100%; }
+  50%, 100% { right: 100%; }
+}
+
+.submitButton span:nth-child(4) {
+  bottom: -100%;
+  left: 0;
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(360deg, #38e494, #50a9d3);
+  animation: btnAn4 2s linear infinite;
+  animation-delay: 1.5s;
+}
+
+@keyframes btnAn4 {
+  0% { bottom: -100%; }
+  50%, 100% { bottom: 100%; }
+}
+
+/* 验证码输入框水印文字样式 */
+.userBox input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 14px;
+  font-weight: 300;
+  letter-spacing: 1px;
+  transition: opacity 0.3s;
+}
+
+.userBox input:focus::placeholder {
+  opacity: 0.5;
+}
+
+.userBox input.errorInput::placeholder {
+  color: rgba(255, 102, 102, 0.8);
+}
+
+@keyframes placeholderPulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 0.4; }
+  100% { opacity: 0.6; }
+}
+
+.userBox input::placeholder {
+  animation: placeholderPulse 3s infinite;
+}
+
+/* ========================================= */
+/* === 新增：手机端响应式适配 (关键修改) === */
+/* ========================================= */
+@media (max-width: 768px) {
+  .loginBox {
+    /* 宽度改为 90%，但不超过 400px */
+    width: 90%;
+    max-width: 400px;
+    /* 减小内边距，给内容更多空间 */
+    padding: 25px 20px 35px;
+    /* 确保垂直居中时不会超出屏幕 */
+box-sizing: border-box;
+    overflow: hidden; /* 允许内部滚动 */
+    /* 优化滚动条样式 (可选) */
+    scrollbar-width: none; 
+  }
+  
+  .loginBox::-webkit-scrollbar {
+    display: none;
+  }
+
+  .header {
+    /* 小屏幕上如果太挤，可以稍微调整间距 */
+    gap: 10px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+  }
+
+  .logo {
+    /* 稍微缩小 Logo */
+    width: 50px;
+    height: 50px;
+  }
+
+  .companyName {
+    font-size: 14px; /* 缩小公司名称字体 */
+  }
+
+  .prompt {
+    margin-bottom: 20px; /* 减小间距 */
+    font-size: 11px;
+  }
+
+  .userBox {
+    margin-bottom: 20px; /* 减小输入框间距 */
+  }
+
+  .userBox input {
+    font-size: 14px; /* 防止 iOS 自动放大 */
+    padding: 10px 0;
+  }
+
+  .userBox label {
+    font-size: 11px;
+    top: 10px;
+  }
+  
+  .userBox input:focus ~ label,
+  .userBox input:valid ~ label {
+    top: -10px;
+    font-size: 11px;
+  }
+
+  .captchaBox {
+    /* 手机端验证码区域可能需要更紧凑 */
+    gap: 8px;
+    margin-bottom: 15px;
+  }
+
+  .captchaCanvas {
+    /* 稍微缩小画布宽度以适应窄屏 */
+    width: 130px;
+    height: 45px;
+  }
+
+  .refreshBtn {
+    height: 45px;
+    line-height: 45px;
+    font-size: 12px;
+    padding: 0 5px;
+  }
+
+  .submitButton {
+    padding: 12px 20px;
+    font-size: 16px;
+    margin-top: 10px;
+    letter-spacing: 2px;
+  }
+}
+

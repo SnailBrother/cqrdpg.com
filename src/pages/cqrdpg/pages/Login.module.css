@@ -1,3 +1,7 @@
+/* src/pages/Login.module.css */
+
+/* #region start 基础样式 */
+
 .body {
   height: 100dvh;
   width: 100dvw;
@@ -9,7 +13,7 @@
   background-position: center;
   background-repeat: no-repeat;
   box-sizing: border-box;
-  overflow: hidden; /* 防止出现滚动条，确保全屏 */
+  overflow: hidden;
 }
 
 .overlay {
@@ -21,47 +25,88 @@
   background: rgba(0, 0, 0, 0.5);
   z-index: 1;
 }
-.switchButton {
-  margin-left: 5px;
-}
-/* 切换按钮样式 */
-.switchButton {
-  background: none;
-  border: none;
-  color: #007bff;
-  cursor: pointer;
-  font-size: inherit;
-  text-decoration: underline;
-  padding: 0;
-  margin-left: 4px;
+
+/*  #endregion end */
+
+/* #region start 左右布局容器 */
+
+.splitContainer {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 60px;
+  padding: 40px;
+  box-sizing: border-box;
 }
 
-.switchButton:hover {
-  color: #0056b3;
+/*  #endregion end */
+
+/* #region start 左侧动画角色区域 */
+
+.charactersArea {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  height: 60%;
+  max-width: 550px;
+  pointer-events: none;
+  background-color: #2d2d2d28;
+
 }
-.loginBox {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+
+.charactersContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 600px;
+  max-width: 550px;
+ 
+}
+
+/*  #endregion end */
+
+/* #region start 右侧表单区域 */
+
+.formArea {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 460px;
+}
+
+.loginBox {
+  width: 100%;
   padding: 40px 40px 50px;
-  /* 使用更透明的背景 */
   background: rgba(255, 255, 255, 0.1);
   box-sizing: border-box;
   border-radius: 20px;
-  /* 增强的模糊效果 */
   backdrop-filter: blur(20px) saturate(200%);
   -webkit-backdrop-filter: blur(20px) saturate(200%);
-  z-index: 2;
-  /* 确保在移动端不会溢出 */
-
   max-height: 100dvh;
-box-sizing: border-box;
-  overflow: hidden; /* 如果内容真的太多，允许内部滚动 */
+  overflow: auto;
 }
 
-/* 添加一个微妙的背景光效 */
+.loginBox::-webkit-scrollbar {
+  width: 6px;
+}
+
+.loginBox::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.loginBox::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
 .loginBox::before {
   content: '';
   position: absolute;
@@ -79,14 +124,237 @@ box-sizing: border-box;
   z-index: -1;
 }
 
-/* Logo和公司名称在同一行 */
+/*  #endregion end */
+
+/* #region start 紫色角色 */
+
+.purpleCharacter {
+  position: absolute;
+  bottom: 0;
+  left: 10%;
+  width: 180px;
+  background-color: #6C3FF5;
+  border-radius: 10px 10px 0 0;
+  z-index: 1;
+  transform-origin: bottom center;
+  transition: all 0.7s ease-in-out;
+  pointer-events: none;
+}
+
+.purpleEyes {
+  position: absolute;
+  display: flex;
+  gap: 32px;
+  transition: all 0.7s ease-in-out;
+}
+
+.purpleMouth {
+  position: absolute;
+  transition: all 0.4s ease-out;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.purpleMouthContainer {
+  width: 24px;
+  height: 24px;
+  position: relative;
+}
+
+.purpleMouthShape {
+  width: 16px;
+  height: 16px;
+  border: 10px solid #2D2D2D;
+  background: transparent;
+  transition: all 0.7s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  box-sizing: border-box;
+}
+
+.purpleCharacter[data-mouth="circle"] .purpleMouthShape {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  transform: translateY(0);
+}
+
+.purpleCharacter[data-mouth="foldUp"] .purpleMouthShape {
+  width: 18px;
+  height: 10px;
+  border-radius: 0 0 20px 20px;
+  border-top: none;
+  transform: translateY(-2px);
+}
+
+.purpleCharacter[data-mouth="foldDown"] .purpleMouthShape {
+  width: 18px;
+  height: 10px;
+  border-radius: 20px 20px 0 0;
+  border-bottom: none;
+  transform: translateY(2px);
+}
+
+/*  #endregion end */
+
+/* #region start 黑色角色 */
+
+.blackCharacter {
+  position: absolute;
+  bottom: 0;
+  left: 28%;
+  width: 120px;
+  height: 310px;
+  background-color: #2D2D2D;
+  border-radius: 8px 8px 0 0;
+  z-index: 2;
+  transform-origin: bottom center;
+  transition: all 0.7s ease-in-out;
+  pointer-events: none;
+}
+
+.blackEyes {
+  position: absolute;
+  display: flex;
+  gap: 24px;
+  transition: all 0.7s ease-in-out;
+}
+
+/*  #endregion end */
+
+/* #region start 橙色角色 */
+
+.orangeCharacter {
+  position: absolute;
+  bottom: 0;
+  left: -5%;
+  width: 240px;
+  height: 200px;
+  z-index: 3;
+  background-color: #FF9B6B;
+  border-radius: 120px 120px 0 0;
+  transform-origin: bottom center;
+  transition: all 0.7s ease-in-out;
+  pointer-events: none;
+}
+
+.orangeEyes {
+  position: absolute;
+  display: flex;
+  gap: 32px;
+  transition: all 0.2s ease-out;
+}
+
+.orangeMouth {
+  position: absolute;
+  transition: all 0.2s ease-out;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mouthContainer {
+  width: 24px;
+  height: 24px;
+  position: relative;
+}
+
+.mouthShape {
+  width: 16px;
+  height: 16px;
+  border: 10px solid #2D2D2D;
+  background: transparent;
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  box-sizing: border-box;
+}
+
+.orangeCharacter[data-mouth="circle"] .mouthShape {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  transform: translateY(0);
+}
+
+.orangeCharacter[data-mouth="foldUp"] .mouthShape {
+  width: 18px;
+  height: 10px;
+  border-radius: 0 0 20px 20px;
+  border-top: none;
+  transform: translateY(-2px);
+}
+
+.orangeCharacter[data-mouth="foldDown"] .mouthShape {
+  width: 18px;
+  height: 10px;
+  border-radius: 20px 20px 0 0;
+  border-bottom: none;
+  transform: translateY(2px);
+}
+
+/*  #endregion end */
+
+/* #region start 黄色角色 */
+
+.yellowCharacter {
+  position: absolute;
+  bottom: 0;
+  left: 42%;
+  width: 140px;
+  height: 230px;
+  background-color: #E8D754;
+  border-radius: 70px 70px 0 0;
+  z-index: 4;
+  transform-origin: bottom center;
+  transition: all 0.7s ease-in-out;
+  pointer-events: none;
+}
+
+.yellowEyes {
+  position: absolute;
+  display: flex;
+  gap: 24px;
+  transition: all 0.2s ease-out;
+}
+
+.yellowMouth {
+  position: absolute;
+  width: 80px;
+  height: 4px;
+  background-color: #2D2D2D;
+  border-radius: 9999px;
+  transition: all 0.2s ease-out;
+}
+
+/*  #endregion end */
+
+/* #region start 眼睛组件通用样式 */
+
+.eyeBall {
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease-out;
+  overflow: hidden;
+}
+
+.pupil {
+  border-radius: 9999px;
+  transition: transform 0.1s ease-out;
+}
+
+/*  #endregion end */
+
+/* #region start 表单内部样式 */
+
 .header {
   display: flex;
   align-items: center;
   gap: 15px;
   margin-bottom: 25px;
   padding-bottom: 15px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.3); /* 改淡一点以适应背景 */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .logo {
@@ -134,10 +402,9 @@ box-sizing: border-box;
   outline: none;
   background: transparent;
   transition: 0.3s;
-  box-sizing: border-box; /* 确保 padding 不撑大宽度 */
-  /* 【新增】移除浏览器默认的自动填充背景色和文字颜色修正 */
-  -webkit-text-fill-color: #ffffff; 
-  transition: background-color 5000s ease-out !important; /* 黑科技：延缓背景色变化 */
+  box-sizing: border-box;
+  -webkit-text-fill-color: #ffffff;
+  transition: background-color 5000s ease-out !important;
 }
 
 .userBox input:focus,
@@ -145,7 +412,16 @@ box-sizing: border-box;
   border-bottom-color: #667eea;
 }
 
-.userBox label {
+.userBox input:focus ~ label,
+.userBox input[data-filled="true"] ~ label {
+  top: -12px !important;
+  left: 0;
+  color: #5de742;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.floatingLabel {
   position: absolute;
   top: 12px;
   left: 0;
@@ -155,17 +431,30 @@ box-sizing: border-box;
   transition: 0.3s;
 }
 
-/* 【修改后】同时支持：聚焦时 OR 有值(data-filled="true")时，标签上浮 */
-.userBox input:focus ~ label,
-.userBox input[data-filled="true"] ~ label {
-  top: -12px !important;
-  left: 0;
-  color: #5de742; /* 保持你原本的上浮颜色 */
-  font-size: 12px;
-  font-weight: 500;
+.passwordWrapper {
+  position: relative;
+  width: 100%;
 }
 
-/* 验证码区域 */
+.togglePassword {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #667eea;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  z-index: 1;
+}
+
+.togglePassword:hover {
+  background: rgba(102, 126, 234, 0.2);
+}
+
 .captchaBox {
   display: flex;
   gap: 12px;
@@ -182,7 +471,7 @@ box-sizing: border-box;
   cursor: pointer;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   transition: 0.3s;
-  flex-shrink: 0; /* 防止 canvas 被压缩 */
+  flex-shrink: 0;
 }
 
 .captchaCanvas:hover {
@@ -205,7 +494,6 @@ box-sizing: border-box;
   white-space: nowrap;
   line-height: 50px;
   text-align: center;
-  letter-spacing: 0.5px;
 }
 
 .refreshBtn:hover {
@@ -215,12 +503,10 @@ box-sizing: border-box;
   box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
 }
 
-/* 验证码输入框错误状态 */
 .errorInput {
   border-bottom-color: #ff4d4f !important;
 }
 
-/* 提交按钮 */
 .submitButton {
   position: relative;
   display: inline-block;
@@ -242,7 +528,7 @@ box-sizing: border-box;
   box-shadow: 0 4px 6px rgba(102, 126, 234, 0.4);
 }
 
-.submitButton:hover {
+.submitButton:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 7px 14px rgba(102, 126, 234, 0.5);
 }
@@ -251,7 +537,11 @@ box-sizing: border-box;
   transform: translateY(0);
 }
 
-/* 按钮流光动画 */
+.submitButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
 .submitButton span {
   position: absolute;
   display: block;
@@ -263,7 +553,6 @@ box-sizing: border-box;
   width: 100%;
   height: 2px;
   background: linear-gradient(90deg, #ec2d2d, #4be2c1);
-  
   animation: btnAn1 2s linear infinite;
 }
 
@@ -317,7 +606,6 @@ box-sizing: border-box;
   50%, 100% { bottom: 100%; }
 }
 
-/* 验证码输入框水印文字样式 */
 .userBox input::placeholder {
   color: rgba(255, 255, 255, 0.6);
   font-size: 14px;
@@ -344,77 +632,117 @@ box-sizing: border-box;
   animation: placeholderPulse 3s infinite;
 }
 
-/* ========================================= */
-/* === 新增：手机端响应式适配 (关键修改) === */
-/* ========================================= */
-@media (max-width: 768px) {
-  .loginBox {
-    /* 宽度改为 90%，但不超过 400px */
-    width: 90%;
-    max-width: 400px;
-    /* 减小内边距，给内容更多空间 */
-    padding: 25px 20px 35px;
-    /* 确保垂直居中时不会超出屏幕 */
-box-sizing: border-box;
-    overflow: hidden; /* 允许内部滚动 */
-    /* 优化滚动条样式 (可选) */
-    scrollbar-width: none; 
+.loginFooter {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.switchMode {
+  color: #ccc;
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.switchButton {
+  background: none;
+  border: none;
+  color: #667eea;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: underline;
+  padding: 0;
+  margin-left: 4px;
+}
+
+.switchButton:hover {
+  color: #5de742;
+}
+
+/*  #endregion end */
+
+/* #region start 响应式设计 - 手机端隐藏左侧角色区域 */
+
+@media (max-width: 968px) {
+  .splitContainer {
+    gap: 0;
+    padding: 20px;
   }
   
-  .loginBox::-webkit-scrollbar {
+  /* 手机端隐藏左侧角色区域 */
+  .charactersArea {
     display: none;
   }
+  
+  .formArea {
+    width: 100%;
+    max-width: 460px;
+    margin: 0 auto;
+  }
+  
+  .loginBox {
+    padding: 30px 25px 40px;
+  }
+}
 
+@media (max-width: 480px) {
+  .splitContainer {
+    padding: 15px;
+  }
+  
+  .loginBox {
+    padding: 25px 20px 35px;
+  }
+  
   .header {
-    /* 小屏幕上如果太挤，可以稍微调整间距 */
     gap: 10px;
     margin-bottom: 20px;
     padding-bottom: 10px;
   }
 
   .logo {
-    /* 稍微缩小 Logo */
     width: 50px;
     height: 50px;
   }
 
   .companyName {
-    font-size: 14px; /* 缩小公司名称字体 */
+    font-size: 14px;
   }
 
   .prompt {
-    margin-bottom: 20px; /* 减小间距 */
+    margin-bottom: 20px;
     font-size: 11px;
   }
 
   .userBox {
-    margin-bottom: 20px; /* 减小输入框间距 */
+    margin-bottom: 20px;
   }
 
   .userBox input {
-    font-size: 14px; /* 防止 iOS 自动放大 */
+    font-size: 14px;
     padding: 10px 0;
   }
 
-  .userBox label {
+  .floatingLabel {
     font-size: 11px;
     top: 10px;
   }
   
   .userBox input:focus ~ label,
-  .userBox input:valid ~ label {
+  .userBox input[data-filled="true"] ~ label {
     top: -10px;
     font-size: 11px;
   }
 
   .captchaBox {
-    /* 手机端验证码区域可能需要更紧凑 */
     gap: 8px;
     margin-bottom: 15px;
   }
 
   .captchaCanvas {
-    /* 稍微缩小画布宽度以适应窄屏 */
     width: 130px;
     height: 45px;
   }
@@ -434,3 +762,4 @@ box-sizing: border-box;
   }
 }
 
+/*  #endregion end */
