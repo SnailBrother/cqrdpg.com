@@ -1,0 +1,419 @@
+/* 全局重置 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+
+.container {
+  width: 100%;
+  min-height: 100vh;
+  background: #fff;
+}
+
+/* 顶部导航栏 */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 80px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10%;
+  /* background: rgba(255, 255, 255, 0.027); */
+  /* backdrop-filter: blur(10px); */
+  z-index: 999;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: 2px;
+}
+
+.slogan {
+  font-size: 16px;
+  color: #fff;
+}
+
+/* 背景横幅区域 */
+.banner {
+  position: relative;
+  width: 100%;
+  height: 60vh;
+  overflow: hidden;
+}
+
+.bannerBg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.9);
+}
+
+/* 情侣信息卡片 */
+.coupleCard {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60%;
+  max-width: 800px;
+  padding: 40px 60px;
+  background: rgba(255, 255, 255, 0.055);
+  backdrop-filter: blur(3px);
+  border-radius: 30px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.avatarWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #fff;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.name {
+  font-size: 20px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.heartIcon {
+  font-size: 60px;
+  animation: heartBeat 1.5s infinite;
+}
+
+@keyframes heartBeat {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+/* 在一起时长区域 */
+.timeSection {
+  width: 100%;
+  padding: 40px 0;
+  background: #fff;
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+  background-size: 20px 20px;
+  text-align: center;
+}
+
+.timeTitle {
+  font-size: 24px;
+  background: linear-gradient(90deg, #4ade80, #fbbf24);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 20px;
+}
+
+.timeCount {
+  font-size: 40px;
+  font-weight: 700;
+  color: #333;
+  letter-spacing: 2px;
+}
+
+/* 功能模块区域 */
+.featuresSection {
+  width: 100%;
+  padding: 60px 10%;
+  background: #f8f9fa;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 花瓣飘落背景 */
+.featuresSection::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="5" fill="%23f472b6" opacity="0.3"/></svg>');
+  background-size: 100px 100px;
+  animation: float 10s infinite linear;
+  pointer-events: none;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  100% {
+    transform: translateY(100vh) rotate(360deg);
+  }
+}
+
+.featuresTitle {
+  font-size: 32px;
+  color: #9d174d;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.featuresSubtitle {
+  font-size: 28px;
+  color: #333;
+  text-align: center;
+  margin-bottom: 50px;
+  font-weight: 500;
+}
+
+.featuresGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+}
+
+.featureCard {
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.featureCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.featureIcon {
+  font-size: 50px;
+  line-height: 1;
+}
+
+.featureContent {
+  flex: 1;
+}
+
+.featureTitle {
+  font-size: 22px;
+  color: #333;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.featureDesc {
+  font-size: 16px;
+  color: #666;
+}
+
+/* 新增：时间详情小字样式 */
+.timeDetail {
+  margin-top: 10px;
+  font-size: 18px;
+  color: #666;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+/* 响应式适配 */
+@media (max-width: 768px) {
+  .header {
+    height: 60px;
+    padding: 0 5%;
+  }
+
+  .logo {
+    font-size: 20px;
+  }
+
+  .slogan {
+    font-size: 14px;
+  }
+
+  .banner {
+    height: 50vh;
+  }
+
+  .coupleCard {
+    width: 90%;
+    padding: 20px;
+  }
+
+  .avatar {
+    width: 80px;
+    height: 80px;
+  }
+
+  .name {
+    font-size: 16px;
+  }
+
+  .heartIcon {
+    font-size: 40px;
+  }
+
+  .timeCount {
+    font-size: 28px;
+  }
+
+  .featuresGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* #region start */
+
+
+
+.waveContainer {
+  position: relative;
+  /* 改为 relative，作为子元素的定位参照物 */
+  width: 100%;
+  height: 100px;
+  /* 设置高度，让容器可见 */
+  background-color: transparent;
+  /* overflow: hidden;     */
+  /* 隐藏超出部分，避免滚动条 */
+  top: 300px;
+  overflow: hidden;
+}
+
+.waveAnimation {
+  position: absolute;
+  width: 100dvw;
+  height: 100dvh;
+  min-height: 1500px;
+
+  background: #33d67100;
+  border-radius: 50%;
+  left: 50%;
+
+  /* 修改点 1: 定位顶部到 100px */
+  top: 220px;
+
+  /* 修改点 2: 合并 transform。先向左移50%居中，再向上移50%高度(即中心对齐)，最后旋转 */
+  /* 注意顺序：translate 通常在前，rotate 在后，或者根据需求调整 */
+  transform: translate(-50%, -50%) rotateX(100deg);
+
+  transform-origin: center center;
+}
+
+.waveAnimation::before,
+.waveAnimation::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+
+  /* 修改点 3: 不需要特定的 top 值，或者设为 50% 配合 transform */
+  top: 50%;
+  left: 75%;
+
+  /* 修改点 4: 完全居中 (中心对中心) */
+  /* 这里的 -50%, -50% 会让它们的中心与 .waveAnimation 的中心重合 */
+  transform: translate(-50%, -50%);
+
+  background: transparent;
+  overflow: hidden;
+}
+
+/* 单独调整动画时的 transform，注意不要覆盖掉居中的 translate */
+.waveAnimation::after {
+  border-radius: 45%;
+  background: rgb(255, 255, 255);
+  /* 动画中需要保留居中的 translate(-50%, -50%)，只改变旋转 */
+  animation: outanimate 15s linear infinite;
+}
+
+/* .waveAnimation::before {
+  border-radius: 40%;
+    background: rgba(255, 255, 255, 0.863);
+  animation: outanimate 15s linear infinite;
+} */
+
+@keyframes outanimate {
+  0% {
+    /* 保持居中 (-50%, -50%)，只旋转 */
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+
+.waterAnimation {
+  position: absolute;
+  width: 100dvw;
+  height: 100dvh;
+  min-height: 1500px;
+
+  background-color: transparent;
+  border-radius: 50%;
+  left: 25%;
+
+  /* 修改点 1: 定位顶部到 100px */
+  top: 220px;
+
+  /* 修改点 2: 合并 transform。先向左移50%居中，再向上移50%高度(即中心对齐)，最后旋转 */
+  /* 注意顺序：translate 通常在前，rotate 在后，或者根据需求调整 */
+  transform: translate(-50%, -50%) rotateX(100deg);
+
+  transform-origin: center center;
+}
+
+.waterAnimation::before,
+.waterAnimation::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+
+  /* 修改点 3: 不需要特定的 top 值，或者设为 50% 配合 transform */
+  top: 50%;
+  left: 50%;
+
+  /* 修改点 4: 完全居中 (中心对中心) */
+  /* 这里的 -50%, -50% 会让它们的中心与 .waterAnimation 的中心重合 */
+  transform: translate(-50%, -50%);
+
+  background: #e4e0e011;
+  overflow: hidden;
+}
+
+/* 单独调整动画时的 transform，注意不要覆盖掉居中的 translate */
+.waterAnimation::after {
+  border-radius: 45%;
+  background: rgb(255, 255, 255);
+  /* 动画中需要保留居中的 translate(-50%, -50%)，只改变旋转 */
+  animation: outanimate 15s linear infinite;
+}
+
+/*  #endregion end */

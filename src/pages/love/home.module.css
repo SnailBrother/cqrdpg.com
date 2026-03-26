@@ -101,9 +101,12 @@
 }
 
 @keyframes heartBeat {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: scale(1);
   }
+
   50% {
     transform: scale(1.2);
   }
@@ -114,7 +117,7 @@
   width: 100%;
   padding: 40px 0;
   background: #fff;
-  background-image: 
+  background-image:
     linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
     linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
   background-size: 20px 20px;
@@ -164,6 +167,7 @@
   0% {
     transform: translateY(0) rotate(0deg);
   }
+
   100% {
     transform: translateY(100vh) rotate(360deg);
   }
@@ -227,6 +231,7 @@
   font-size: 16px;
   color: #666;
 }
+
 /* 新增：时间详情小字样式 */
 .timeDetail {
   margin-top: 10px;
@@ -235,6 +240,7 @@
   font-weight: 500;
   opacity: 0.9;
 }
+
 /* 响应式适配 */
 @media (max-width: 768px) {
   .header {
@@ -280,3 +286,122 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* #region start */
+
+
+
+.waveContainer {
+  position: absolute;
+  /* 改为 relative，作为子元素的定位参照物 */
+  width: 100%;
+  height: 100px;
+  background-color: rgba(214, 28, 152, 0);
+ top: calc(60dvh - 100px);  
+ overflow: hidden;
+
+}
+
+.waveAnimation {
+  position: absolute;
+  left: 20%;
+  background-color: rgba(255, 255, 255, 0.829);
+  height: 1500px;
+  width: 1500px;
+ border-radius: 52% 48% 50% 50% / 48% 55% 45% 52%;
+top: 50px;
+   /* 同时应用两个动画，用逗号分隔 */
+   animation: wavespin 50s linear infinite,
+             wavemove 10s ease-in-out infinite alternate; 
+}
+
+@keyframes wavespin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* 左右移动动画 */
+@keyframes wavemove {
+  from {
+    left: -20%;
+  }
+  to {
+    left: 70%;
+  }
+}
+.waterAnimation {
+  position: absolute;
+  left: 20%;
+  background-color: rgba(255, 255, 255, 0.849);
+  height: 1500px;
+  width: 1500px;
+  border-radius: 52% 48% 50% 50% / 48% 55% 45% 52%;
+top: 50px;
+
+   /* 同时应用两个动画，用逗号分隔 */
+  /*   transform: rotateX(200deg); 沿水平中线旋转20度  watertilt 1s ease-in-out infinite alternate; */
+  animation: waterspin 50s linear infinite,
+             watermove 10s ease-in-out infinite alternate; 
+            
+}
+@keyframes waterspin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* 左右移动动画 */
+@keyframes watermove {
+  from {
+    left: 70%;
+  }
+  to {
+    left: -20%;
+  }
+}
+/*  #endregion end */
+/* #region start 小狗行走*/
+.west01{
+    position: absolute;
+    width: 200px;   /* 一帧的宽度 */
+    height: 200px;
+    top: 352px;
+    left: 50%;
+    background: url(./move.png) no-repeat;
+    
+    background-size: 400px auto; /* 2张图总宽度：200×2 */
+    animation: west01 1.4s steps(2) infinite,
+               dogmove 20s ease-in-out infinite alternate, 
+               dogtopmove 50s ease-in-out infinite alternate; 
+    z-index: 100;
+}
+
+@keyframes west01{
+    0%{ background-position: 0 0; }
+    100%{ background-position: -400px 0; } /* 移动总宽度 */
+}
+@keyframes dogmove {
+  from {
+    left: 5%;
+  }
+  to {
+    left: 95%;
+  }
+}
+@keyframes dogtopmove {
+  from {
+    top: 5%;
+  }
+  to {
+    top: 60%;
+  }
+}
+/*  #endregion end */
+

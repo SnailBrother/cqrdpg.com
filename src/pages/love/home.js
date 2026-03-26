@@ -114,6 +114,8 @@ const Home = () => {
 
       {/* banner */}
       <div className={styles.banner}>
+        <div className={styles.west01}></div>
+
         <img src={bgImage} alt="情侣背景" className={styles.bannerBg} />
         <div className={styles.coupleCard}>
           <div className={styles.avatarWrapper}>
@@ -126,11 +128,19 @@ const Home = () => {
             <span className={styles.name}>LiDarling</span>
           </div>
         </div>
+
+
+        <div className={styles.waveContainer}>
+          <div className={styles.waveAnimation} />
+          <div className={styles.waterAnimation} />
+        </div>
+
+
       </div>
 
       {/* 时间区域 */}
       <div className={styles.timeSection}>
-        <p className={styles.timeTitle}>这是我们一起在一起的</p>
+        <p className={styles.timeTitle}>这是我们在一起的</p>
         <div className={styles.timeCount}> 第 {time.totalDays} 天 {time.hours} 小时 {time.minutes} 分</div>
         <p className={styles.timeDetail}>
           {time.years} 年 {time.months} 月 {time.days} 天 {time.hours} 小时 {time.minutes} 分 {time.seconds} 秒
