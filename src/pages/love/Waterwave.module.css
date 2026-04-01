@@ -1,0 +1,13 @@
+/* pages/WaterWave/index.module.css */
+.Container {
+    display: block;
+     
+    width: 100%;
+    /* 使Canvas适应父容器宽度 */
+    height: 100%;
+    /* 保持宽高比 */
+     /* 绝对定位 底部 */
+ 
+  
+  }
+    

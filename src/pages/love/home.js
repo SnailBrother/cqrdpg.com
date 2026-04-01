@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // 新增路由钩子
 import styles from './home.module.css';
-
+import WaterWave from './WaterWave';
 // 图片路径
 const bgImage = './images/love/Background.jpg';
 const avatar1 = './images/love/girl.jpg';
@@ -131,8 +131,9 @@ const Home = () => {
 
 
         <div className={styles.waveContainer}>
-          <div className={styles.waveAnimation} />
-          <div className={styles.waterAnimation} />
+          <WaterWave></WaterWave>
+          {/* <div className={styles.waveAnimation} />
+          <div className={styles.waterAnimation} /> */}
         </div>
 
 
