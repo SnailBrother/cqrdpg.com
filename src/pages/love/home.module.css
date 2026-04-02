@@ -23,8 +23,6 @@
   justify-content: space-between;
   align-items: center;
   padding: 0 10%;
-  /* background: rgba(255, 255, 255, 0.027); */
-  /* backdrop-filter: blur(10px); */
   z-index: 999;
 }
 
@@ -101,12 +99,10 @@
 }
 
 @keyframes heartBeat {
-
   0%,
   100% {
     transform: scale(1);
   }
-
   50% {
     transform: scale(1.2);
   }
@@ -140,99 +136,6 @@
   letter-spacing: 2px;
 }
 
-/* 功能模块区域 */
-.featuresSection {
-  width: 100%;
-  padding: 60px 10%;
-  background: #f8f9fa;
-  position: relative;
-  overflow: hidden;
-}
-
-/* 花瓣飘落背景 */
-.featuresSection::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="5" fill="%23f472b6" opacity="0.3"/></svg>');
-  background-size: 100px 100px;
-  animation: float 10s infinite linear;
-  pointer-events: none;
-}
-
-@keyframes float {
-  0% {
-    transform: translateY(0) rotate(0deg);
-  }
-
-  100% {
-    transform: translateY(100vh) rotate(360deg);
-  }
-}
-
-.featuresTitle {
-  font-size: 32px;
-  color: #9d174d;
-  text-align: center;
-  margin-bottom: 10px;
-}
-
-.featuresSubtitle {
-  font-size: 28px;
-  color: #333;
-  text-align: center;
-  margin-bottom: 50px;
-  font-weight: 500;
-}
-
-.featuresGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 30px;
-}
-
-.featureCard {
-  background: #fff;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-
-.featureCard:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-}
-
-.featureIcon {
-  font-size: 50px;
-  line-height: 1;
-}
-
-.featureContent {
-  flex: 1;
-}
-
-.featureTitle {
-  font-size: 22px;
-  color: #333;
-  margin-bottom: 8px;
-  font-weight: 600;
-}
-
-.featureDesc {
-  font-size: 16px;
-  color: #666;
-}
-
-/* 新增：时间详情小字样式 */
 .timeDetail {
   margin-top: 10px;
   font-size: 18px;
@@ -241,65 +144,193 @@
   opacity: 0.9;
 }
 
+/* ========= 3D旋转木马样式 ========= */
+.carouselSection {
+  width: 100%;
+  padding: 60px 10%;
+  background: linear-gradient(145deg, #f8f9fa 0%, #f0f2f5 100%);
+  overflow: hidden;
+  position: relative;
+}
+
+.carouselTitle {
+  text-align: center;
+  font-size: 36px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #e11d48, #f97316);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 50px;
+  letter-spacing: 2px;
+}
+
+.carouselContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  perspective: 1200px;
+  margin-bottom: 30px;
+}
+
+.carouselStage {
+  position: relative;
+  width: 280px;
+  height: 340px;
+  transform-style: preserve-3d;
+  animation: rotateCarousel 25s linear infinite;
+  cursor: pointer;
+}
+
+/* 暂停旋转的类 */
+.carouselStage.paused {
+  animation-play-state: paused;
+}
+
+.carouselCard {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(145deg, #ffffff, #fff5f7);
+  border-radius: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 25px 20px;
+  box-shadow: 0 25px 40px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(4px);
+  -webkit-box-reflect: below 12px -webkit-linear-gradient(transparent 65%, rgba(255, 255, 255, 0.25));
+}
+
+/* 移除卡片的hover缩放效果，避免抖动 */
+.carouselCard:hover {
+  box-shadow: 0 30px 50px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(145deg, #fff0f5, #ffe4ed);
+  /* 移除 transform 缩放 */
+}
+
+/* 不同卡片不同背景色 */
+.carouselCard:nth-child(1) { background: linear-gradient(145deg, #ffe8e8, #ffd4d4); }
+.carouselCard:nth-child(2) { background: linear-gradient(145deg, #e8f5e9, #d4ecd6); }
+.carouselCard:nth-child(3) { background: linear-gradient(145deg, #e8f0fe, #d4e4fc); }
+.carouselCard:nth-child(4) { background: linear-gradient(145deg, #fff8e7, #fff0d4); }
+.carouselCard:nth-child(5) { background: linear-gradient(145deg, #e0f7fa, #cceef2); }
+.carouselCard:nth-child(6) { background: linear-gradient(145deg, #f3e8ff, #e9d6ff); }
+
+.carouselIcon {
+  font-size: 70px;
+  margin-bottom: 20px;
+  filter: drop-shadow(2px 4px 8px rgba(0, 0, 0, 0.15));
+}
+
+.carouselContent {
+  width: 100%;
+}
+
+.carouselTitleText {
+  font-size: 26px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 12px;
+  background: linear-gradient(135deg, #c2410c, #be123c);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.carouselDesc {
+  font-size: 15px;
+  color: #666;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+.carouselHint {
+  text-align: center;
+  font-size: 14px;
+  color: #888;
+  margin-top: 40px;
+  letter-spacing: 1px;
+}
+
+/* 旋转动画 */
+@keyframes rotateCarousel {
+  0% {
+    transform: rotateY(0deg);
+  }
+  100% {
+    transform: rotateY(360deg);
+  }
+}
+
 /* 响应式适配 */
 @media (max-width: 768px) {
   .header {
     height: 60px;
     padding: 0 5%;
   }
-
   .logo {
     font-size: 20px;
   }
-
   .slogan {
     font-size: 14px;
   }
-
   .banner {
     height: 50vh;
   }
-
   .coupleCard {
     width: 90%;
     padding: 20px;
   }
-
   .avatar {
     width: 80px;
     height: 80px;
   }
-
   .name {
     font-size: 16px;
   }
-
   .heartIcon {
     font-size: 40px;
   }
-
   .timeCount {
     font-size: 28px;
   }
-
-  .featuresGrid {
-    grid-template-columns: 1fr;
+  .carouselContainer {
+    perspective: 800px;
+  }
+  .carouselStage {
+    width: 220px;
+    height: 280px;
+  }
+  .carouselIcon {
+    font-size: 50px;
+  }
+  .carouselTitleText {
+    font-size: 20px;
+  }
+  .carouselDesc {
+    font-size: 12px;
+  }
+  .carouselTitle {
+    font-size: 28px;
   }
 }
 
-/* #region start */
-
-
-
+/* 原有波浪和小狗动画保留 */
 .waveContainer {
   position: absolute;
-  /* 改为 relative，作为子元素的定位参照物 */
   width: 100%;
   height: 100px;
   background-color: rgba(214, 28, 152, 0);
- top: calc(60dvh - 100px);  
- overflow: hidden;
-
+  top: calc(60dvh - 100px);  
+  overflow: hidden;
 }
 
 .waveAnimation {
@@ -308,31 +339,21 @@
   background-color: rgba(255, 255, 255, 0.829);
   height: 1500px;
   width: 1500px;
- border-radius: 52% 48% 50% 50% / 48% 55% 45% 52%;
-top: 50px;
-   /* 同时应用两个动画，用逗号分隔 */
-   animation: wavespin 50s linear infinite,
-             wavemove 10s ease-in-out infinite alternate; 
+  border-radius: 52% 48% 50% 50% / 48% 55% 45% 52%;
+  top: 50px;
+  animation: wavespin 50s linear infinite, wavemove 10s ease-in-out infinite alternate;
 }
 
 @keyframes wavespin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
-/* 左右移动动画 */
 @keyframes wavemove {
-  from {
-    left: -20%;
-  }
-  to {
-    left: 70%;
-  }
+  from { left: -20%; }
+  to { left: 70%; }
 }
+
 .waterAnimation {
   position: absolute;
   left: 20%;
@@ -340,68 +361,45 @@ top: 50px;
   height: 1500px;
   width: 1500px;
   border-radius: 52% 48% 50% 50% / 48% 55% 45% 52%;
-top: 50px;
-
-   /* 同时应用两个动画，用逗号分隔 */
-  /*   transform: rotateX(200deg); 沿水平中线旋转20度  watertilt 1s ease-in-out infinite alternate; */
-  animation: waterspin 50s linear infinite,
-             watermove 10s ease-in-out infinite alternate; 
-            
+  top: 50px;
+  animation: waterspin 50s linear infinite, watermove 10s ease-in-out infinite alternate;
 }
+
 @keyframes waterspin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
-/* 左右移动动画 */
 @keyframes watermove {
-  from {
-    left: 70%;
-  }
-  to {
-    left: -20%;
-  }
-}
-/*  #endregion end */
-/* #region start 小狗行走*/
-.west01{
-    position: absolute;
-    width: 200px;   /* 一帧的宽度 */
-    height: 200px;
-    top: 352px;
-    left: 50%;
-    background: url(./move.png) no-repeat;
-    
-    background-size: 400px auto; /* 2张图总宽度：200×2 */
-    animation: west01 1.4s steps(2) infinite,
-               dogmove 20s ease-in-out infinite alternate, 
-               dogtopmove 50s ease-in-out infinite alternate; 
-    z-index: 100;
+  from { left: 70%; }
+  to { left: -20%; }
 }
 
-@keyframes west01{
-    0%{ background-position: 0 0; }
-    100%{ background-position: -400px 0; } /* 移动总宽度 */
+.west01 {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  top: 352px;
+  left: 50%;
+  background: url(./move.png) no-repeat;
+  background-size: 400px auto;
+  animation: west01 1.4s steps(2) infinite,
+             dogmove 20s ease-in-out infinite alternate, 
+             dogtopmove 50s ease-in-out infinite alternate;
+  z-index: 100;
 }
+
+@keyframes west01 {
+  0%{ background-position: 0 0; }
+  100%{ background-position: -400px 0; }
+}
+
 @keyframes dogmove {
-  from {
-    left: 5%;
-  }
-  to {
-    left: 95%;
-  }
+  from { left: 5%; }
+  to { left: 95%; }
 }
-@keyframes dogtopmove {
-  from {
-    top: 5%;
-  }
-  to {
-    top: 60%;
-  }
-}
-/*  #endregion end */
 
+@keyframes dogtopmove {
+  from { top: 5%; }
+  to { top: 60%; }
+}
