@@ -2,7 +2,7 @@
 .Container {
     display: block;
      
-    width: 100%;
+    width: 100dvw;
     /* 使Canvas适应父容器宽度 */
     height: 100%;
     /* 保持宽高比 */
@@ -10,4 +10,6 @@
  
   
   }
-    
+    .waveone {
+        width: 100dvw;
+    }

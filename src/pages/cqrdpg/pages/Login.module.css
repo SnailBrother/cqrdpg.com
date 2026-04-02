@@ -22,7 +22,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.596);
   z-index: 1;
 }
 
@@ -41,6 +41,12 @@
   gap: 60px;
   padding: 40px;
   box-sizing: border-box;
+   /* 磨砂玻璃效果 */
+  background: rgba(255, 255, 255, 0.1); /* 半透明白色背景 */
+  backdrop-filter: blur(3px); /* 背景模糊，产生磨砂效果 */
+  -webkit-backdrop-filter: blur(5px); /* Safari 兼容 */
+  border-radius: 20px; /* 可选：添加圆角 */
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); /* 可选：添加阴影增强立体感 */
 }
 
 /*  #endregion end */
@@ -54,7 +60,7 @@
   justify-content: center;
   position: relative;
   height: 60%;
-  max-width: 550px;
+  max-width: 750px;
   pointer-events: none;
   background-color: #2d2d2d28;
 
@@ -65,7 +71,7 @@
   width: 100%;
   height: 100%;
   min-height: 600px;
-  max-width: 550px;
+  max-width: 750px;
  
 }
 
@@ -84,13 +90,14 @@
 .loginBox {
   width: 100%;
   padding: 40px 40px 50px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.021);
   box-sizing: border-box;
   border-radius: 20px;
   backdrop-filter: blur(20px) saturate(200%);
   -webkit-backdrop-filter: blur(20px) saturate(200%);
   max-height: 100dvh;
   overflow: auto;
+  
 }
 
 .loginBox::-webkit-scrollbar {
@@ -763,3 +770,81 @@
 }
 
 /*  #endregion end */
+/* 修复 label 浮动问题 */
+.userBox {
+  position: relative;
+  margin-bottom: 30px;
+}
+
+.userBox input {
+  width: 100%;
+  padding: 12px 0;
+  font-size: 16px;
+  color: #ffffff;
+  border: none;
+  border-bottom: 2px solid #e0e0e0;
+  outline: none;
+  background: transparent;
+  transition: 0.3s;
+  box-sizing: border-box;
+  -webkit-text-fill-color: #ffffff;
+}
+
+.userBox input:focus,
+.userBox input:valid {
+  border-bottom-color: #667eea;
+}
+
+/* 普通 input 的 label 浮动 */
+.userBox input:focus ~ .floatingLabel,
+.userBox input[data-filled="true"] ~ .floatingLabel {
+  top: -12px !important;
+  left: 0;
+  color: #5de742;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* 密码输入框的 label 浮动 - 使用 :has 选择器 */
+.userBox:has(.passwordWrapper input:focus) .floatingLabel,
+.userBox:has(.passwordWrapper input[data-filled="true"]) .floatingLabel {
+  top: -12px !important;
+  left: 0;
+  color: #5de742;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.floatingLabel {
+  position: absolute;
+  top: 12px;
+  left: 0;
+  font-size: 12px;
+  color: #cecccc;
+  pointer-events: none;
+  transition: 0.3s;
+}
+
+.passwordWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.togglePassword {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #667eea;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  z-index: 1;
+}
+
+.togglePassword:hover {
+  background: rgba(102, 126, 234, 0.2);
+}

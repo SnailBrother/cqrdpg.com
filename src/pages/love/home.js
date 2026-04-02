@@ -83,20 +83,55 @@ const Home = () => {
       <div className={styles.banner}>
         <div className={styles.west01}></div>
         <img src={bgImage} alt="情侣背景" className={styles.bannerBg} />
+
         <div className={styles.coupleCard}>
           <div className={styles.avatarWrapper}>
             <img src={avatar1} alt="ChenBaby" className={styles.avatar} />
             <span className={styles.name}>ChenBaby</span>
           </div>
-          <div className={styles.heartIcon}>❤️</div>
+          <div className={styles.heartIconWrapper}>
+            <div className={styles.ecgLine}></div>
+            <div className={styles.heartIcon}>❤️</div>
+          </div>
           <div className={styles.avatarWrapper}>
             <img src={avatar2} alt="LiDarling" className={styles.avatar} />
             <span className={styles.name}>LiDarling</span>
           </div>
         </div>
+
         <div className={styles.waveContainer}>
           <WaterWave />
         </div>
+
+        {/* 3D旋转木马功能模块 */}
+        <div
+          className={styles.carouselSection}
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+        >
+
+          <div className={styles.carouselContainer}>
+            <div className={`${styles.carouselStage} ${isPaused ? styles.paused : ''}`}>
+              {features.map((item, index) => (
+                <div
+                  key={index}
+                  className={styles.carouselCard}
+                  //  translateZ 数值越小 → 旋转半径越小（圆更紧凑）
+                  style={{ transform: `rotateY(${index * 50}deg) translateZ(80px)` }}
+                  onClick={() => goToPage(item.path)}
+                >
+                  <div className={styles.carouselIcon}>{item.icon}</div>
+                  <div className={styles.carouselContent}>
+                    <h3 className={styles.carouselTitleText}>{item.title}</h3>
+                    {/* <p className={styles.carouselDesc}>{item.desc}</p>   */}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+        </div>
+
       </div>
 
       {/* 时间区域 */}
@@ -108,33 +143,7 @@ const Home = () => {
         </p>
       </div>
 
-      {/* 3D旋转木马功能模块 */}
-      <div 
-        className={styles.carouselSection}
-        onMouseEnter={() => setIsPaused(true)}
-        onMouseLeave={() => setIsPaused(false)}
-      >
-        <h2 className={styles.carouselTitle}>✨ 专属功能 ✨</h2>
-        <div className={styles.carouselContainer}>
-          <div className={`${styles.carouselStage} ${isPaused ? styles.paused : ''}`}>
-            {features.map((item, index) => (
-              <div
-                key={index}
-                className={styles.carouselCard}
-                style={{ transform: `rotateY(${index * 60}deg) translateZ(320px)` }}
-                onClick={() => goToPage(item.path)}
-              >
-                <div className={styles.carouselIcon}>{item.icon}</div>
-                <div className={styles.carouselContent}>
-                  <h3 className={styles.carouselTitleText}>{item.title}</h3>
-                  <p className={styles.carouselDesc}>{item.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-        <p className={styles.carouselHint}>💡 鼠标悬停可暂停旋转</p>
-      </div>
+
     </div>
   );
 };

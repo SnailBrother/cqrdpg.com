@@ -124,9 +124,9 @@ function Login() {
   const canvasRef = useRef(null);
 
   // 静态资源
-  const logoImg = '/WebpageLogo.jpg';
-  const companyName = '重庆评估';
-  const backgroundImg = '/images/cqrdpg/home/CompanyProfile/Purpose.jpg';
+  const logoImg = '/images/logo192.png';
+  const companyName = '宝宝乐园';
+  const backgroundImg = '/images/love/Background.jpg';
 
   // --- Canvas 验证码逻辑 ---
   const generateCaptcha = () => {
