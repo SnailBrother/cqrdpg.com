@@ -2949,7 +2949,7 @@ app.get('/api/checkImageExists', (req, res) => {
                 try {
                     if (fs.existsSync(imagePath)) {
                         await fs.promises.unlink(imagePath);
-                        console.log(`删除图片文件: ${imagePath}`);
+                        /// console.log(`删除图片文件: ${imagePath}`);
                     }
                 } catch (error) {
                     console.error(`删除图片文件失败: ${imagePath}`, error);
@@ -3440,7 +3440,7 @@ io.on('connection', (socket) => {
     // 加入房间
     socket.on('join-room', ({ roomName, username }) => {
         socket.join(`room-${roomName}`);
-        console.log(`${username} 加入了房间 ${roomName}`);
+        // console.log(`${username} 加入了房间 ${roomName}`);
 
         // 通知房间内其他用户有新成员加入
         socket.to(`room-${roomName}`).emit('user-joined', {
@@ -3451,7 +3451,7 @@ io.on('connection', (socket) => {
     // 离开房间
     socket.on('leave-room', ({ roomName, username }) => {
         socket.leave(`room-${roomName}`);
-        console.log(`${username} 离开了房间 ${roomName}`);
+        //  console.log(`${username} 离开了房间 ${roomName}`);
 
         // 通知房间内其他用户有成员离开
         socket.to(`room-${roomName}`).emit('user-left', {
@@ -4306,7 +4306,7 @@ app.post('/backend/api/uploadmusic', uploadMusic.fields([
         // 处理歌词文件（如果有）
         if (req.files.lyrics) {
             const lyricsFile = req.files.lyrics[0];
-            console.log(`歌词文件已保存: ${lyricsFile.filename}`);
+            //   console.log(`歌词文件已保存: ${lyricsFile.filename}`);
         }
 
         const baseUrl = 'http://www.cqrdpg.com/backend/musics';
@@ -4538,7 +4538,7 @@ app.post('/backend/api/play-history', async (req, res) => {
 // 获取播放历史 - 改进版
 app.get('/backend/api/play-history/:user_name', async (req, res) => {
     const { user_name } = req.params;
-    console.log(`Fetching play history for user: ${user_name}`);
+    //  console.log(`Fetching play history for user: ${user_name}`);
 
     if (!user_name) {
         return res.status(400).json({ error: 'user_name is required' });
@@ -4909,7 +4909,7 @@ io.on('connection', (socket) => {
     // 客户端可以订阅特定穿搭的评论更新
     socket.on('subscribe_comments', (dressingGuidelineId) => {
         socket.join(`comments_${dressingGuidelineId}`);
-        console.log(`客户端 ${socket.id} 订阅了穿搭 ${dressingGuidelineId} 的评论`);
+        //  console.log(`客户端 ${socket.id} 订阅了穿搭 ${dressingGuidelineId} 的评论`);
     });
 
     // 客户端取消订阅
@@ -5360,7 +5360,7 @@ app.post('/api/lifebookkeepingaddRecord', async (req, res) => {
 
         // 获取新插入的ID
         const newId = result.recordset[0].new_id;
-        console.log(`新记录ID: ${newId}`);
+        //   console.log(`新记录ID: ${newId}`);
 
         // 通知所有客户端
         const newRecord = {
@@ -7403,8 +7403,8 @@ app.get('/api/getEvaluationFilePreview', async (req, res) => {
         console.error('数据库查询错误:', err);
         res.status(500).json({ error: '获取数据失败' });
     } // finally {
-       //  sql.close();  
-   //  }
+    //  sql.close();  
+    //  }
 });
 
 //获取评估文件预览👇
@@ -10883,7 +10883,7 @@ app.post('/api/auth/register', async (req, res) => {
 
             await transaction.commit();
 
-            console.log(`用户 ${username} 注册成功，并创建了默认主题`);
+            //  console.log(`用户 ${username} 注册成功，并创建了默认主题`);
 
             const userResponse = {
                 id: newUser.id,
@@ -11272,13 +11272,13 @@ app.post('/api/react-demo/upload-background', (req, res) => {
     let fileMimetype = null;
 
     bb.on('field', (name, val) => {
-        console.log(`ReactDemo 解析字段: ${name} = ${val}`);
+        //   console.log(`ReactDemo 解析字段: ${name} = ${val}`);
         fields[name] = val;
     });
 
     bb.on('file', (name, file, info) => {
         const { filename, encoding, mimeType } = info;
-        console.log(`ReactDemo 解析文件: ${name} = ${filename}`);
+        // console.log(`ReactDemo 解析文件: ${name} = ${filename}`);
 
         fileName = filename;
         fileMimetype = mimeType;
@@ -12582,7 +12582,7 @@ ORDER BY
 
             const result = await request.query(query);
 
-            console.log(`公司 ${company} 查询到 ${result.recordset.length} 个文件`);
+            //   console.log(`公司 ${company} 查询到 ${result.recordset.length} 个文件`);
 
             // 返回查询结果
             res.json(result.recordset);
@@ -12612,7 +12612,7 @@ ORDER BY
         try {
             if (fs.existsSync(filePath)) {
                 fs.unlinkSync(filePath);
-                console.log(`🗑️ 已删除文件: ${filename}`);
+                //   console.log(`🗑️ 已删除文件: ${filename}`);
             }
         } catch (err) {
             console.warn(`❌ 删除失败 ${filename}:`, err.message);
@@ -12632,7 +12632,7 @@ ORDER BY
             // 引用计数 +1
             fileRefCount[filename] = (fileRefCount[filename] || 0) + 1;
             userFileMap[socket.id] = filename;
-            console.log(`📱 ${socket.id} 使用文件: ${filename} (引用: ${fileRefCount[filename]})`);
+            //   console.log(`📱 ${socket.id} 使用文件: ${filename} (引用: ${fileRefCount[filename]})`);
         });
 
         socket.on('releaseFile', ({ filename }) => {
@@ -12707,7 +12707,7 @@ ORDER BY
                 if (fs.existsSync(oldFilePath)) {
                     try {
                         fs.unlinkSync(oldFilePath);
-                        console.log(`🗑️ 主动删除旧合并文件: ${oldFilename}`);
+                        //   console.log(`🗑️ 主动删除旧合并文件: ${oldFilename}`);
                     } catch (err) {
                         console.warn(`⚠️ 删除失败:`, err.message);
                     }
@@ -12744,7 +12744,7 @@ ORDER BY
                     );
 
                     if (fs.existsSync(defaultFilePath)) {
-                        console.log(`使用默认文件: ${defaultFilePath}`);
+                        //   console.log(`使用默认文件: ${defaultFilePath}`);
                         // 继续使用 defaultFilePath...
                     } else {
                         throw new Error(`文件不存在: ${filePath} 和 ${defaultFilePath}`);
@@ -12848,9 +12848,9 @@ ORDER BY
                     const filePath = path.join(dirPath, file.name);
                     try {
                         fs.unlinkSync(filePath);
-                        console.log(`🗑️ 清理超量旧文件: ${file.name}`);
+                        // console.log(`🗑️ 清理超量旧文件: ${file.name}`);
                     } catch (err) {
-                        console.warn(`⚠️ 清理失败: ${file.name}`, err.message);
+                        //  console.warn(`⚠️ 清理失败: ${file.name}`, err.message);
                     }
                 });
             }
@@ -14575,7 +14575,7 @@ ORDER BY
         // ==========================================
         app.post('/api/website/record', async (req, res) => {
             try {
-                const { 
+                const {
                     visitor_id, session_id, current_url, referrer_url, entry_url, user_agent,
                     username: rawUsername, email: rawEmail
                 } = req.body;
@@ -14602,7 +14602,7 @@ ORDER BY
                 const isSpecial = isSpecialUser || isSpecialEmail;
 
                 const request = new sql.Request(pool);
-                
+
                 // 准备参数
                 request.input('visitorid', sql.NVarChar(64), visitor_id);
                 request.input('sessionid', sql.NVarChar(64), session_id);
@@ -14628,22 +14628,22 @@ ORDER BY
                         WHERE username = @username OR email = @email
                         ORDER BY visittime DESC 
                     `;
-                    
+
                     const checkResult = await request.query(checkQuery);
 
                     if (checkResult.recordset.length > 0) {
                         // 【找到旧记录 -> 执行 UPDATE】
                         const existingId = checkResult.recordset[0].id;
                         const existingVisittime = checkResult.recordset[0].visittime;
-                        
+
                         // 可选策略：
                         // A. 保持原始访问时间 (visittime 不变) -> 推荐，这样他在列表里的时间排序不会乱跳
                         // B. 更新为当前时间 (visittime = GETDATE()) -> 这样他会跳到列表最前面
-                        
+
                         // 这里采用策略 A (保持原时间)，但为了让他能在前端列表中“置顶”显示，
                         // 我们发送给前端的 visittime 可以使用当前时间，或者前端逻辑特殊处理。
                         // 为了简单，我们这里数据库不更新时间，但发送给前端时用当前时间，让前端把他排前面。
-                        
+
                         const updateQuery = `
                             UPDATE RdpgCode.dbo.WebsiteRecord 
                             SET 
@@ -14655,15 +14655,15 @@ ORDER BY
                                 sessionid = @sessionid -- 更新最新的 sessionid，方便前端追踪
                             WHERE id = @id
                         `;
-                        
+
                         request.input('id', sql.Int, existingId);
                         await request.query(updateQuery);
-                        
+
                         isUpdated = true;
                         recordVisittime = new Date(); // 发送给前端时使用新时间，确保排序靠前
                         finalSessionId = session_id; // 使用新的 sessionid
-                        
-                        console.log(`✅ Updated record for special user: ${username} (ID: ${existingId})`);
+
+                        //  console.log(`✅ Updated record for special user: ${username} (ID: ${existingId})`);
                     }
                 }
 
@@ -14676,7 +14676,7 @@ ORDER BY
                         (@visitorid, @sessionid, @ipaddress, @currenturl, @referrerurl, @entryurl, @useragent, GETDATE(), 1, 0, @username, @email)
                     `;
                     await request.query(insertQuery);
-                    console.log(`✅ Inserted new record for: ${username}`);
+                    //   console.log(`✅ Inserted new record for: ${username}`);
                 }
 
                 res.status(200).json({ success: true, updated: isUpdated });
@@ -15585,7 +15585,231 @@ ORDER BY
 }
 
 
+{ //运动减肥app
 
+    // 获取当前用户当天某个运动的最新组别
+app.get('/api/SportsAppWorkoutRecords/getMaxGroupNumber', async (req, res) => {
+  try {
+    const { username, sportname, sportdate } = req.query;
+    
+    // 验证必填参数
+    if (!username || !sportname) {
+      return res.status(400).json({ 
+        success: false, 
+        message: '缺少必填参数' 
+      });
+    }
+    
+    const pool = await sql.connect(config);
+    
+    // 使用传入的日期或当天日期
+    const targetDate = sportdate || new Date().toISOString().split('T')[0];
+    
+    const result = await pool.request()
+      .input('username', sql.NVarChar, username)
+      .input('sportname', sql.NVarChar, sportname)
+      .input('sportdate', sql.Date, targetDate)
+      .query(`
+        SELECT ISNULL(MAX(groupnumber), 0) as maxGroupNumber
+        FROM SportsApp.dbo.WorkoutRecords
+        WHERE username = @username 
+          AND sportname = @sportname 
+          AND sportdate = @sportdate
+      `);
+    
+    res.status(200).json({
+      success: true,
+      maxGroupNumber: result.recordset[0].maxGroupNumber
+    });
+    
+  } catch (error) {
+    console.error('获取最大组别失败:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: '服务器错误',
+      error: error.message 
+    });
+  }
+});
+
+// 后端 API - 保存运动记录
+app.post('/api/SportsAppWorkoutRecords/add', async (req, res) => {
+  try {
+    const { 
+      username, 
+      sportname, 
+      count, 
+      durationseconds, 
+      groupnumber, 
+      sportdate, 
+      remarks 
+    } = req.body;
+
+    // 验证必填字段
+    if (!username || !sportname || !count || !durationseconds || !groupnumber) {
+      return res.status(400).json({ 
+        success: false, 
+        message: '缺少必填字段' 
+      });
+    }
+
+    // 连接数据库
+    const pool = await sql.connect(config);
+    
+    // 插入记录
+    const result = await pool.request()
+      .input('username', sql.NVarChar, username)
+      .input('sportname', sql.NVarChar, sportname)
+      .input('count', sql.Int, count)
+      .input('durationseconds', sql.Int, durationseconds)
+      .input('groupnumber', sql.Int, groupnumber)
+      .input('sportdate', sql.Date, sportdate || new Date())
+      .input('remarks', sql.NVarChar, remarks || null)
+      .query(`
+        INSERT INTO SportsApp.dbo.WorkoutRecords 
+        (username, sportname, count, durationseconds, groupnumber, sportdate, remarks)
+        OUTPUT INSERTED.id
+        VALUES (@username, @sportname, @count, @durationseconds, @groupnumber, @sportdate, @remarks)
+      `);
+
+    const insertedId = result.recordset[0].id;
+
+    // 简化的广播 - 像你的例子一样
+    io.emit('workout-record-update', { 
+      message: '运动记录已更新' 
+    });
+
+    res.status(200).json({
+      success: true,
+      message: '运动记录保存成功',
+      id: insertedId
+    });
+
+  } catch (error) {
+    console.error('保存运动记录失败:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: '服务器错误', 
+      error: error.message 
+    });
+  }
+});
+
+// 获取用户的所有运动记录
+app.get('/api/SportsAppWorkoutRecords/list/:username', async (req, res) => {
+  try {
+    const { username } = req.params;
+    
+    const pool = await sql.connect(config);
+    const result = await pool.request()
+      .input('username', sql.NVarChar, username)
+      .query(`
+        SELECT id, username, sportname, count, durationseconds, 
+               groupnumber, CONVERT(DATE, sportdate) as sportdate, remarks
+        FROM SportsApp.dbo.WorkoutRecords
+        WHERE username = @username
+        ORDER BY sportdate DESC, id DESC
+      `);
+
+    // 如果需要，也可以添加广播
+    // io.emit('workout-record-update', { 
+    //   message: '运动记录已查询' 
+    // });
+
+    res.status(200).json({
+      success: true,
+      records: result.recordset
+    });
+
+  } catch (error) {
+    console.error('获取运动记录失败:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: '服务器错误',
+      error: error.message 
+    });
+  }
+});
+
+// 更新运动记录
+app.put('/api/SportsAppWorkoutRecords/update/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { sportname, count, durationseconds, groupnumber, sportdate, remarks } = req.body;
+
+    const pool = await sql.connect(config);
+    await pool.request()
+      .input('id', sql.Int, id)
+      .input('sportname', sql.NVarChar, sportname)
+      .input('count', sql.Int, count)
+      .input('durationseconds', sql.Int, durationseconds)
+      .input('groupnumber', sql.Int, groupnumber)
+      .input('sportdate', sql.Date, sportdate)
+      .input('remarks', sql.NVarChar, remarks || null)
+      .query(`
+        UPDATE SportsApp.dbo.WorkoutRecords 
+        SET sportname = @sportname,
+            count = @count,
+            durationseconds = @durationseconds,
+            groupnumber = @groupnumber,
+            sportdate = @sportdate,
+            remarks = @remarks
+        WHERE id = @id
+      `);
+
+    // 简化：只发送更新通知
+    io.emit('workout-record-update', { 
+      message: '运动记录已更新' 
+    });
+
+    res.status(200).json({
+      success: true,
+      message: '更新成功'
+    });
+
+  } catch (error) {
+    console.error('更新运动记录失败:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: '服务器错误',
+      error: error.message 
+    });
+  }
+});
+
+// 删除运动记录
+app.delete('/api/SportsAppWorkoutRecords/delete/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const pool = await sql.connect(config);
+    await pool.request()
+      .input('id', sql.Int, id)
+      .query(`
+        DELETE FROM SportsApp.dbo.WorkoutRecords 
+        WHERE id = @id
+      `);
+
+    // 简化：只发送更新通知
+    io.emit('workout-record-update', { 
+      message: '运动记录已删除' 
+    });
+
+    res.status(200).json({
+      success: true,
+      message: '删除成功'
+    });
+
+  } catch (error) {
+    console.error('删除运动记录失败:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: '服务器错误',
+      error: error.message 
+    });
+  }
+});
+}
 
 
 // 启动服务器

@@ -71,9 +71,9 @@ const ToolDoubleChromosphere = lazy(() => import('../pages/modules/tool/DoubleCh
 const ToolImageCompressionTool = lazy(() => import('../pages/modules/tool/ImageCompressionTool'));
 const ToolFunGames = lazy(() => import('../pages/modules/tool/FunGames'));
 
-
-
-
+//------------------------------运动------------------------------
+const Sport = lazy(() => import('../pages/modules/sports/Sports'));
+const SportsDetails = lazy(() => import('../pages/modules/sports/SportsDetails'));
 
 // 隐藏页面 - 不显示在导航中
 const MusicplayerLyrics = lazy(() => import('../pages/modules/music/MusicplayerLyrics'));
@@ -191,7 +191,16 @@ export const moduleConfig = {
       { key: 'fungames', label: '游戏', icon: '#icon-yigui1', component: ToolFunGames, showInNavigation: true },
      
     ]
-  }
+  },
+    sport: {
+    label: '运动',
+    defaultRoute: 'sport',
+    routes: [
+      { key: 'sport', label: '运动', icon: '#icon-ticao2', component: Sport, showInTabs: false, showInNavigation: true },
+       { key: 'sportsdetails', label: '详情', icon: '#icon-yuqiequanxuanzhong', component: SportsDetails, showInTabs: false, showInNavigation: true },
+      
+    ]
+  },
 };
 
 // 导出用于 ModuleLayout 的菜单数据 - 只包含 showInNavigation 为 true 的路由

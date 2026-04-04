@@ -997,3 +997,16 @@ CREATE TABLE LazyBee.dbo.Websites (
     url NVARCHAR(255) NOT NULL,                    -- 网址
     notes NVARCHAR(MAX)                            -- 备注
 );
+
+
+--创建运动减肥数据库
+CREATE TABLE SportsApp.dbo.WorkoutRecords (
+  id INT IDENTITY(1,1) PRIMARY KEY,          -- ✅ 运动数据id，主键，自增长
+  username NVARCHAR(100) NOT NULL,            -- 运动者姓名 
+  sportname NVARCHAR(50) NOT NULL,            -- 运动类别
+  count INT NOT NULL,                         -- ✅ 完成次数
+  durationseconds INT NOT NULL,               -- ✅ 运动时长（秒） 
+  groupnumber INT NOT NULL,                   -- ✅ 组别编号
+  sportdate DATE NOT NULL DEFAULT CAST(GETDATE() AS DATE),  -- 运动日期  默认为当天日期
+  remarks NVARCHAR(255),  -- 备注，长度为255
+);

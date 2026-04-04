@@ -1,0 +1,726 @@
+/* Sports.module.css */
+.container {
+  width: 100%;
+  height: calc(100dvh - 60px);
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  position: relative;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+/* 控制按钮 - 右上角 */
+.controls {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  gap: 12px;
+  z-index: 2;
+}
+
+.btn {
+  padding: 10px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.btnStart {
+  background: linear-gradient(135deg, #00b4db, #0083b0);
+  color: white;
+}
+
+.btnStart:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 180, 219, 0.4);
+}
+
+.btnPause {
+  background: linear-gradient(135deg, #f2994a, #f2c94c);
+  color: white;
+}
+
+.btnPause:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(242, 153, 74, 0.4);
+}
+
+.btnResume {
+  background: linear-gradient(135deg, #11998e, #38ef7d);
+  color: white;
+}
+
+.btnResume:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(56, 239, 125, 0.4);
+}
+
+.btnStop {
+  background: linear-gradient(135deg, #eb3349, #f45c43);
+  color: white;
+}
+
+.btnStop:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(235, 51, 73, 0.4);
+}
+
+.btnSettings {
+  background: linear-gradient(135deg, #6c5ce7, #a8a4ff);
+  color: white;
+}
+
+.btnSettings:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(108, 92, 231, 0.4);
+}
+
+/* 全屏倒计时遮罩 */
+.countdownOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
+}
+
+.countdownNumber {
+  font-size: 180px;
+  font-weight: bold;
+  color: #ff6b6b;
+  text-shadow: 0 0 40px rgba(255, 107, 107, 0.6);
+  animation: countdownScale 1s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes countdownScale {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* 主要内容区域 */
+.mainContent {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+/* 当前运动显示 */
+.currentSportSection {
+  margin-bottom: 20px;
+}
+
+.currentSportCard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+  background: linear-gradient(135deg, rgba(255, 107, 107, 0.2), rgba(255, 107, 107, 0.1));
+  border-radius: 30px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 107, 107, 0.3);
+}
+
+.currentSportIcon {
+  font-size: 64px;
+}
+
+.currentSportInfo {
+  text-align: left;
+}
+
+.currentSportName {
+  font-size: 28px;
+  font-weight: bold;
+  color: #ff6b6b;
+  margin-bottom: 5px;
+}
+
+.currentSportHint {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+ 
+/* 弹窗遮罩 */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  animation: fadeIn 0.2s ease;
+}
+
+.modalContent {
+  background: linear-gradient(135deg, #2a2a4a, #1a1a3a);
+  border-radius: 32px;
+  padding: 32px;
+  min-width: 350px;
+  max-width: 500px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+  from {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modalTitle {
+  font-size: 28px;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.modalSection {
+  margin-bottom: 30px;
+}
+
+.modalSectionTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 15px;
+}
+
+.modalSportsGrid {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.modalSportCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 15px 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+  min-width: 80px;
+}
+
+.modalSportCard:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.modalSportCard.selected {
+  border-color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.3);
+  box-shadow: 0 0 15px rgba(255, 107, 107, 0.3);
+}
+
+.modalSportIcon {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
+} 
+
+.modalSportName {
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+}
+
+.modalIntervalGrid {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.modalIntervalCard {
+  padding: 12px 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 40px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 16px;
+  font-weight: 500;
+  color: #fff;
+  border: 2px solid transparent;
+}
+
+.modalIntervalCard:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+
+.modalIntervalCard.selected {
+  border-color: #00b4db;
+  background: rgba(0, 180, 219, 0.3);
+  box-shadow: 0 0 15px rgba(0, 180, 219, 0.3);
+}
+
+.modalButtons {
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.cancelBtn, .saveBtn {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 40px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancelBtn {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+
+.cancelBtn:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.saveBtn {
+  background: linear-gradient(135deg, #00b4db, #0083b0);
+  color: white;
+}
+
+.saveBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 180, 219, 0.4);
+}
+
+/* 计数器和计时器两列布局 */
+.statsRow {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+
+.counterSection {
+  flex: 1;
+  text-align: center;
+  padding: 30px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 30px;
+  backdrop-filter: blur(10px);
+}
+
+.timerSection {
+  flex: 1;
+  text-align: center;
+  padding: 30px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 30px;
+}
+
+.counterValue {
+  font-size: 100px;
+  font-weight: bold;
+  color: #ff6b6b;
+  text-shadow: 0 0 20px rgba(255, 107, 107, 0.5);
+  line-height: 1;
+}
+
+.counterLabel {
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 10px;
+}
+
+.timerValue {
+  font-size: 56px;
+  font-weight: bold;
+  color: #00b4db;
+  font-family: monospace;
+  letter-spacing: 4px;
+}
+
+.timerLabel {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 8px;
+}
+
+/* 记录表格 */
+.recordsSection {
+  margin-top: 20px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 30px;
+  padding: 20px;
+}
+
+.recordsTitle {
+  font-size: 20px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.recordsTable {
+  width: 100%;
+  border-collapse: collapse;
+  color: #fff;
+}
+
+.recordsTable th,
+.recordsTable td {
+  padding: 12px 8px;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.recordsTable th {
+  background: rgba(0, 180, 219, 0.3);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.recordsTable td {
+  font-size: 14px;
+}
+
+.emptyRecords {
+  text-align: center;
+  padding: 30px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 14px;
+}
+
+
+
+/* 保存按钮样式 */
+.saveRecordBtn {
+  padding: 6px 12px;
+  background: linear-gradient(135deg, #11998e, #38ef7d);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.saveRecordBtn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(56, 239, 125, 0.4);
+}
+
+.saveRecordBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* 状态标记样式 */
+.savedBadge {
+  display: inline-block;
+  padding: 4px 8px;
+  background: rgba(56, 239, 125, 0.2);
+  color: #38ef7d;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.unsavedBadge {
+  display: inline-block;
+  padding: 4px 8px;
+  background: rgba(255, 107, 107, 0.2);
+  color: #ff6b6b;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* 成功提示样式 */
+.successToast {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  background: linear-gradient(135deg, #11998e, #38ef7d);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 1500;
+  animation: slideInRight 0.3s ease;
+  font-weight: 500;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* 表格操作列样式 */
+.recordsTable td:last-child {
+  text-align: center;
+}
+
+ /* 响应式 */
+/* 响应式 - 手机屏幕样式调整 */
+@media (max-width: 768px) {
+  .container {
+    padding: 12px;
+  }
+  
+  .controls {
+    top: 12px;
+    right: 12px;
+    gap: 6px;
+  }
+  
+  .btn {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+  
+  .mainContent {
+    padding: 60px 8px 20px;
+    max-width: 100%;
+  }
+  
+  /* 当前运动卡片 - 缩小 */
+  .currentSportSection {
+    margin-bottom: 5px;
+  }
+  
+  .currentSportCard {
+    gap: 5px;
+    padding: 5px;
+    border-radius: 20px;
+  }
+  
+  .currentSportIcon {
+    width: 1em;
+  height: 1em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
+  }
+  
+  .currentSportInfo {
+    text-align: center;
+  }
+  
+  .currentSportName {
+    font-size: 15px;
+  }
+  
+  .currentSportHint {
+    font-size: 10px;
+  }
+  
+  /* 计数器和计时器 - 缩小并减小间距 */
+  .statsRow {
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .counterSection {
+    padding: 15px;
+    border-radius: 20px;
+  }
+  
+  .timerSection {
+    padding: 15px;
+    border-radius: 20px;
+  }
+  
+  .counterValue {
+    font-size: 48px;
+  }
+  
+  .counterLabel {
+    font-size: 12px;
+    margin-top: 6px;
+  }
+  
+  .timerValue {
+    font-size: 32px;
+    letter-spacing: 1px;
+  }
+  
+  .timerLabel {
+    font-size: 12px;
+    margin-top: 5px;
+  }
+  
+  /* 记录表格区域 */
+  .recordsSection {
+    border-radius: 20px;
+    padding: 12px;
+  }
+  
+  .recordsTitle {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+  
+  .recordsTable th,
+  .recordsTable td {
+    padding: 8px 4px;
+    font-size: 11px;
+  }
+  
+  .recordsTable th {
+    font-size: 11px;
+  }
+  
+  .recordsTable td {
+    font-size: 11px;
+  }
+  
+  /* 倒计时 */
+  .countdownNumber {
+    font-size: 100px;
+  }
+  
+  /* 弹窗 */
+  .modalContent {
+    margin: 20px;
+    padding: 20px;
+    min-width: auto;
+    max-width: 90%;
+    border-radius: 20px;
+  }
+  
+  .modalTitle {
+    font-size: 22px;
+    margin-bottom: 20px;
+  }
+  
+  .modalSection {
+    margin-bottom: 20px;
+  }
+  
+  .modalSectionTitle {
+    font-size: 15px;
+    margin-bottom: 10px;
+  }
+  
+  .modalSportsGrid {
+    gap: 8px;
+  }
+  
+  .modalSportCard {
+    padding: 8px 12px;
+    min-width: 60px;
+    border-radius: 14px;
+  }
+  
+  .modalSportIcon {
+    font-size: 28px;
+  }
+  
+  .modalSportName {
+    font-size: 11px;
+  }
+  
+  .modalIntervalGrid {
+    gap: 6px;
+  }
+  
+  .modalIntervalCard {
+    padding: 6px 14px;
+    font-size: 13px;
+  }
+  
+  .modalButtons {
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  .cancelBtn, .saveBtn {
+    padding: 8px;
+    font-size: 13px;
+  }
+  
+  /* 成功提示 */
+  .successToast {
+    top: 60px;
+    right: 12px;
+    padding: 8px 14px;
+    font-size: 12px;
+  }
+  
+  /* 保存按钮 */
+  .saveRecordBtn {
+    padding: 4px 8px;
+    font-size: 10px;
+  }
+  
+  /* 状态标记 */
+  .savedBadge, .unsavedBadge {
+    padding: 2px 6px;
+    font-size: 10px;
+  }
+  
+  /* 空状态提示 */
+  .emptyRecords {
+    padding: 15px;
+    font-size: 12px;
+  }
+}
+ 

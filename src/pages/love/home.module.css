@@ -511,18 +511,17 @@
 
 .west01 {
   position: absolute;
-  width: 50px;
-  height: 50px;
+  width: 200px;  /* 单帧宽度：总精灵图宽度 / 帧数 = 550px / 11 = 50px（保持不变） */
+  height: 200px; /* 单帧高度，根据你的精灵图实际高度调整 */
   top: 100px;
   left: 50%;
-  background: url(./move.png) no-repeat;
-  background-size: 100px auto;
-  animation:
-    west01 1.2s steps(2) infinite,
-    dogmove 40s linear infinite,
-    /* 改为 linear infinite，去掉 alternate */
-    dogtopmove 40s ease-in-out infinite alternate;
-  /* 上下移动保持不变 */
+  background: url(./movetest.png) no-repeat;
+  /* 关键修改1：背景尺寸 - 总宽度改为 11帧 × 单帧宽度 = 550px */
+  background-size: 4000px auto; 
+  /* 关键修改2：steps(2) 改为 steps(11)，对应11帧 */
+  animation: west01 5s steps(20) infinite,
+  dogleftmove 40s linear infinite,
+  dogtopmove 40s ease-in-out infinite alternate;
   z-index: 100;
 }
 
@@ -530,13 +529,19 @@
   0% {
     background-position: 0 0;
   }
-
+  /* 关键修改3：背景位置终点 = -总精灵图宽度 = -550px */
   100% {
-    background-position: -100px 0;
+    background-position: -4000px 0;
   }
 }
 
-@keyframes dogmove {
+  /* dogleftmove 40s linear infinite, */
+    /* 改为 linear infinite，去掉 alternate */
+    /* dogtopmove 40s ease-in-out infinite alternate; */
+  /* 上下移动保持不变 */
+
+
+@keyframes dogleftmove {
   from {
     left: 0%;
   }

@@ -32,6 +32,7 @@ const Phone = () => {
       system: '⚙️',
       tool: '🛠️',
       travel: '🧳',
+      sports: '🧳',
     };
     return emojiMap[key] || '📱';
   }
