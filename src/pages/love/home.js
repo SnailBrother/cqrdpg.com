@@ -64,7 +64,8 @@ const Home = () => {
     { icon: '✈️', title: '旅游', desc: '一起去看遍山川湖海', path: '/app/chat/ChatDressingGuidelines' },
     { icon: '✨', title: '愿望', desc: '许下我们的小小心愿', path: '/app/music/favorites' },
     { icon: '👕', title: '穿搭', desc: '每天都要精致又好看', path: '/app/chat/ChatDressingGuidelines' },
-    { icon: '💞', title: '关于', desc: '属于我们的专属故事', path: '/app/office/SearchPrice' }
+    { icon: '💞', title: '关于', desc: '属于我们的专属故事', path: '/app/office/SearchPrice' },
+     { icon: '🏃', title: '运动', desc: '一起挥洒汗水，健康生活', path: '/app/sport/sport' }
   ];
 
   const goToPage = (path) => {

@@ -75,6 +75,8 @@ const ToolFunGames = lazy(() => import('../pages/modules/tool/FunGames'));
 //------------------------------运动------------------------------
 const Sport = lazy(() => import('../pages/modules/sports/Sports'));
 const SportsDetails = lazy(() => import('../pages/modules/sports/SportsDetails'));
+const SportsManual = lazy(() => import('../pages/modules/sports/Manual'));
+
 
 // 隐藏页面 - 不显示在导航中
 const MusicplayerLyrics = lazy(() => import('../pages/modules/music/MusicplayerLyrics'));
@@ -202,6 +204,7 @@ export const moduleConfig = {
     routes: [
       { key: 'sport', label: '运动', icon: '#icon-ticao2', component: Sport, showInTabs: false, showInNavigation: true },
        { key: 'sportsdetails', label: '详情', icon: '#icon-yuqiequanxuanzhong', component: SportsDetails, showInTabs: false, showInNavigation: true },
+        { key: 'sportsManual', label: '教程', icon: '#icon-dr_yxyz', component: SportsManual, showInTabs: false, showInNavigation: true },
       
     ]
   },

@@ -1,0 +1,434 @@
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+}
+
+/* 头部样式 */
+.header {
+  text-align: center;
+  margin-bottom: 32px;
+  padding: 24px 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 24px;
+  color: white;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+  font-size: 32px;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.subtitle {
+  font-size: 16px;
+  opacity: 0.9;
+}
+
+/* 主内容区域 - 两栏布局 */
+.content {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+/* 左侧边栏 */
+.sidebar {
+  flex: 1;
+  min-width: 240px;
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  height: fit-content;
+}
+
+.sidebarTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #667eea;
+  display: inline-block;
+}
+
+.exerciseList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.exerciseItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: #f8f9fa;
+  color: #555;
+}
+
+.exerciseItem:hover {
+  background: #e9ecef;
+  transform: translateX(4px);
+}
+
+.exerciseItem.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.exerciseInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* SVG 图标样式 */
+.sportIcon {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+  stroke: currentColor;
+}
+
+.exerciseItem.active .sportIcon {
+  color: white;
+}
+
+.exerciseName {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.activeIndicator {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+/* 右侧详情区域 */
+.detail {
+  flex: 3;
+  min-width: 300px;
+  background: white;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+/* Markdown 加载状态 */
+.markdownLoading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  color: #666;
+}
+
+.loadingSpinnerSmall {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #e9ecef;
+  border-top-color: #667eea;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Markdown 错误状态 */
+.markdownError {
+  text-align: center;
+  padding: 60px 20px;
+  background: #fff5f5;
+  border-radius: 16px;
+  color: #e53e3e;
+}
+
+.errorIcon {
+  font-size: 48px;
+  display: block;
+  margin-bottom: 16px;
+}
+
+.errorHint {
+  font-size: 14px;
+  color: #718096;
+  margin-top: 16px;
+  background: #edf2f7;
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.errorHint code {
+  background: #cbd5e0;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+/* Markdown 内容样式 */
+.markdownContent {
+  line-height: 1.7;
+  color: #2d3748;
+}
+
+/* 图片样式 */
+.markdownImage {
+  max-width: 100%;
+  height: auto;
+  border-radius: 16px;
+  margin: 20px 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* 标题样式 */
+.markdownH1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 24px 0 16px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #667eea;
+}
+
+.markdownH2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 20px 0 12px;
+}
+
+.markdownH3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 16px 0 10px;
+}
+
+/* 段落样式 */
+.markdownContent p {
+  margin: 16px 0;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+/* 列表样式 */
+.markdownContent ul,
+.markdownContent ol {
+  margin: 12px 0;
+  padding-left: 24px;
+}
+
+.markdownContent li {
+  margin: 8px 0;
+  line-height: 1.6;
+}
+
+/* 代码样式 */
+.inlineCode {
+  background: #f1f3f5;
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-family: 'Fira Code', 'Consolas', monospace;
+  font-size: 14px;
+  color: #e53e3e;
+}
+
+.codeBlock {
+  background: #1a202c;
+  color: #f7fafc;
+  padding: 16px;
+  border-radius: 12px;
+  overflow-x: auto;
+  margin: 16px 0;
+  font-family: 'Fira Code', 'Consolas', monospace;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.codeBlock code {
+  background: none;
+  color: inherit;
+  padding: 0;
+}
+
+/* 引用样式 */
+.markdownContent blockquote {
+  border-left: 4px solid #667eea;
+  padding-left: 20px;
+  margin: 20px 0;
+  color: #4a5568;
+  font-style: italic;
+  background: #f7fafc;
+  padding: 12px 20px;
+  border-radius: 8px;
+}
+
+/* 表格样式 */
+.markdownContent table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+}
+
+.markdownContent th,
+.markdownContent td {
+  border: 1px solid #e2e8f0;
+  padding: 10px 12px;
+  text-align: left;
+}
+
+.markdownContent th {
+  background: #f7fafc;
+  font-weight: 600;
+}
+
+/* 分割线 */
+.markdownContent hr {
+  border: none;
+  border-top: 1px solid #e2e8f0;
+  margin: 24px 0;
+}
+
+/* 加载容器 */
+.loadingContainer,
+.errorContainer,
+.emptyContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  text-align: center;
+  background: white;
+  border-radius: 24px;
+  padding: 40px;
+}
+
+.loadingSpinner {
+  width: 60px;
+  height: 60px;
+  border: 4px solid #e9ecef;
+  border-top-color: #667eea;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 20px;
+}
+
+.retryButton {
+  margin-top: 20px;
+  padding: 10px 24px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.retryButton:hover {
+  transform: scale(1.02);
+}
+
+.emptyIcon {
+  font-size: 64px;
+  margin-bottom: 16px;
+}
+
+/* 响应式布局 */
+@media (max-width: 768px) {
+  .container {
+    padding: 12px;
+  }
+
+  .header {
+    padding: 20px 16px;
+  }
+
+  .title {
+    font-size: 24px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+  }
+
+  .content {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    min-width: auto;
+  }
+
+  .exerciseList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .exerciseItem {
+    flex: 1;
+    min-width: 120px;
+    justify-content: center;
+  }
+
+  .exerciseInfo {
+    justify-content: center;
+  }
+
+  .activeIndicator {
+    display: none;
+  }
+
+  .detail {
+    padding: 16px;
+  }
+
+  .markdownH1 {
+    font-size: 22px;
+  }
+
+  .markdownH2 {
+    font-size: 20px;
+  }
+
+  .markdownH3 {
+    font-size: 18px;
+  }
+}
+
+/* 滚动条美化 */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #667eea;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #5a67d8;
+}

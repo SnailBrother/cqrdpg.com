@@ -221,11 +221,21 @@ CREATE TABLE SportsApp.dbo.SportsRecordingTable (
     remark NVARCHAR(500) , 
 );
 CREATE TABLE SportsApp.dbo.SportsOptions (
+    id INT IDENTITY(1,1) PRIMARY KEY,   -- 自动递增的唯一标识符（主键）
     sport_type_Options VARCHAR(50) PRIMARY KEY,  -- 运动类型（跑步、深蹲、跳绳、引体向上 、平板撑、羽毛球、俯卧撑、瑜伽）
     unit_Options VARCHAR(20),  -- 计量单位（个，组，米）
 	participant_Options VARCHAR(20),  -- 
     icon_Options VARCHAR(255)  -- 图标（存储图标的路径或URL）
 );
+CREATE TABLE SportsApp.dbo.SportsOptions (
+    id INT IDENTITY(1,1) PRIMARY KEY,   -- 自动递增的唯一标识符（主键）
+    sport_type_Options VARCHAR(50) NOT NULL UNIQUE,  -- 运动类型（跑步、深蹲、跳绳、引体向上、平板撑、羽毛球、俯卧撑、瑜伽）
+    sport_type_English VARCHAR(50),  -- 运动类型英文名称（例如：running, squat, jump_rope, pull_up, plank, badminton, pushup, yoga）
+    unit_Options VARCHAR(20),  -- 计量单位（个，组，米）
+    participant_Options VARCHAR(20),  -- 参与方式（单人/双人/团体）
+    icon_Options VARCHAR(255)  -- 图标（存储图标的路径或URL）
+);
+
 sport_type：运动类型字段，存储例如 "跑步"、"深蹲" 等运动名称。
 unit：计量单位字段，存储单位，如 "个"、"组" 或 "米"。
 quantity：数量字段，存储运动的数量，比如跑步的距离，深蹲的次数等。
