@@ -228,9 +228,9 @@
 
 .modalSportsGrid {
   display: flex;
-  gap: 15px;
+  gap: 10px;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: left;
 }
 
 .modalSportCard {
@@ -238,7 +238,7 @@
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  padding: 15px 20px;
+  padding: 10px 15px;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 20px;
   cursor: pointer;

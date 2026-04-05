@@ -6,7 +6,9 @@
   /* min-height: 100vh; */
    box-sizing: border-box;
 }
-
+.container h3 {
+  text-align: center;
+}
 .content {
    
   border-radius: 8px;

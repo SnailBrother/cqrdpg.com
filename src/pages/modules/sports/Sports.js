@@ -6,7 +6,7 @@ import styles from './Sports.module.css';
 const Sports = () => {
   const { user, isAuthenticated } = useAuth();
 
-  const [sportsTypes, setSportsTypes] = useState([]); // 改为从API获取
+  const [sportsTypes, setSportsTypes] = useState([]);
   const intervalOptions = [1, 2, 3, 4, 5, 6];
 
   const [selectedSport, setSelectedSport] = useState('');
@@ -28,13 +28,13 @@ const Sports = () => {
   
   const lastSportRef = useRef(selectedSport);
   const timerRef = useRef(null);
-  const intervalLoopRef = useRef(null);
   const audioContextRef = useRef(null);
   const audioBuffersRef = useRef({});
   const isRunningRef = useRef(false);
   const intervalTimeRef = useRef(intervalTime);
-  const timerRefValue = useRef(timer);
   const isAudioContextClosed = useRef(false);
+  const shouldStopLoopRef = useRef(false);
+  const isStartingRef = useRef(false); // 启动锁，防止重复调用
   
   // 获取运动选项
   useEffect(() => {
@@ -69,7 +69,7 @@ const Sports = () => {
       const result = await response.json();
       
       if (result.success) {
-        return result.maxGroupNumber + 1; // 最大组别+1
+        return result.maxGroupNumber + 1;
       }
       return 1;
     } catch (error) {
@@ -81,10 +81,6 @@ const Sports = () => {
   useEffect(() => {
     intervalTimeRef.current = intervalTime;
   }, [intervalTime]);
-  
-  useEffect(() => {
-    timerRefValue.current = timer;
-  }, [timer]);
 
   // 1. 预加载音频
   useEffect(() => {
@@ -137,7 +133,7 @@ const Sports = () => {
     };
   }, []);
 
-  // 2. 数字解析逻辑（保持不变）
+  // 2. 数字解析逻辑
   const parseNumberToAudioParts = useCallback((number) => {
     if (number === 0) return ['0'];
     
@@ -193,12 +189,11 @@ const Sports = () => {
     return [number.toString()];
   }, []);
 
-  // 播放数字音频（保持不变）
+  // 播放数字音频
   const playNumberSync = useCallback(async (number) => {
     if (!audioContextRef.current || !audioBuffersRef.current || isAudioContextClosed.current) return;
     
     const audioParts = parseNumberToAudioParts(number);
-    console.log(`播放数字 ${number} 拆分为:`, audioParts);
 
     return new Promise((resolve) => {
       let index = 0;
@@ -239,18 +234,34 @@ const Sports = () => {
 
   const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-  // 运动间隔循环（保持不变）
-  const startCounterLoop = useCallback(async () => {
-    let localCount = 0;
-    while (isRunningRef.current) {
-      localCount++;
+  // 运动间隔循环
+  const startCounterLoop = useCallback(async (startFrom = 1) => {
+    let localCount = startFrom;
+    shouldStopLoopRef.current = false;
+
+    while (isRunningRef.current && !shouldStopLoopRef.current) {
       setCounter(localCount);
+      
+      // 1. 播放语音
       await playNumberSync(localCount);
+      
+      // 2. 播放完后立即检查是否还在运行
+      if (!isRunningRef.current || shouldStopLoopRef.current) {
+        break;
+      }
+
+      // 3. 如果还在运行，才进行等待
       await sleep(intervalTimeRef.current * 1000);
+      
+      // 4. 再次检查（防止在 sleep 期间被停止）
+      if (!isRunningRef.current || shouldStopLoopRef.current) {
+        break;
+      }
+      localCount++;
     }
   }, [playNumberSync]);
 
-  // 运动计时器（保持不变）
+  // 运动计时器
   const startTimer = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current);
     timerRef.current = setInterval(() => {
@@ -260,42 +271,60 @@ const Sports = () => {
     }, 1000);
   }, []);
 
-  // 停止所有计时器（保持不变）
+  // 停止所有计时器和循环
   const stopAllTimers = useCallback(() => {
     if (timerRef.current) {
       clearInterval(timerRef.current);
       timerRef.current = null;
     }
-    if (intervalLoopRef.current) {
-      clearTimeout(intervalLoopRef.current);
-      intervalLoopRef.current = null;
-    }
+  }, []);
+
+  // 停止计数循环
+  const stopCounterLoop = useCallback(() => {
+    shouldStopLoopRef.current = true;
+    isRunningRef.current = false;
   }, []);
 
   // 开始运动（内部逻辑，无倒计时）
   const startExerciseInternal = useCallback(async () => {
-    setIsRunning(true);
-    setIsPaused(false);
-    isRunningRef.current = true;
-    
-    if (audioContextRef.current && !isAudioContextClosed.current && audioContextRef.current.state === 'suspended') {
-      await audioContextRef.current.resume();
+    // 防止重复调用
+    if (isStartingRef.current) {
+      return;
     }
-    
-    startTimer();
-    
+    isStartingRef.current = true;
+
     try {
-      await startCounterLoop();
-    } catch (err) {
-      console.error("计数循环出错", err);
+      // 确保先停止之前的循环
+      stopCounterLoop();
+      
+      // 等待状态更新生效
+      await new Promise(resolve => setTimeout(resolve, 10));
+
+      setIsRunning(true);
+      setIsPaused(false);
+      isRunningRef.current = true;
+      shouldStopLoopRef.current = false;
+      
+      if (audioContextRef.current && !isAudioContextClosed.current && audioContextRef.current.state === 'suspended') {
+        await audioContextRef.current.resume();
+      }
+      
+      startTimer();
+      
+      // 从当前的 counter 值继续计数
+      const startFrom = counter > 0 ? counter + 1 : 1;
+      await startCounterLoop(startFrom);
+    } catch (error) {
+      console.error('启动运动失败:', error);
+    } finally {
+      isStartingRef.current = false;
     }
-  }, [startTimer, startCounterLoop]);
+  }, [startTimer, startCounterLoop, counter, stopCounterLoop]);
 
   // 倒计时并开始
   const startWithCountdown = useCallback(() => {
     if (isRunning || isPaused) return;
     
-    // 切换运动时重置组别逻辑已在 useEffect 中处理
     setCountdown(3);
     const countdownInterval = setInterval(async () => {
       setCountdown(prev => {
@@ -312,18 +341,22 @@ const Sports = () => {
     }, 1000);
   }, [isRunning, isPaused, startExerciseInternal, playNumberSync]);
 
-  // 暂停（保持不变）
+  // 暂停
   const handlePause = useCallback(() => {
     if (!isRunning) return;
+    
+    // 停止计数循环
+    stopCounterLoop();
+    
     setIsRunning(false);
     setIsPaused(true);
-    isRunningRef.current = false;
+    
     if (audioContextRef.current && !isAudioContextClosed.current) {
       audioContextRef.current.suspend();
     }
-  }, [isRunning]);
+  }, [isRunning, stopCounterLoop]);
 
-  // 继续（保持不变）
+  // 继续
   const handleResume = useCallback(() => {
     if (!isPaused) return;
     startExerciseInternal();
@@ -347,7 +380,6 @@ const Sports = () => {
       const result = await response.json();
       console.log('保存成功:', result);
       
-      // 更新本地记录，标记为已保存
       setRecords(prev => prev.map(r => 
         r.tempId === recordData.tempId ? { ...r, saved: true, id: result.id } : r
       ));
@@ -363,17 +395,18 @@ const Sports = () => {
 
   // 停止运动并保存记录
   const handleStop = useCallback(async () => {
+    // 停止所有循环和计时器
+    stopCounterLoop();
+    stopAllTimers();
+    
     setIsRunning(false);
     setIsPaused(false);
-    isRunningRef.current = false;
     
     if (audioContextRef.current && !isAudioContextClosed.current) {
       audioContextRef.current.resume();
     }
-    stopAllTimers();
     
     if (counter > 0) {
-      // 获取当前组别（从数据库查询当天该运动的最大组别）
       const nextGroup = await fetchCurrentGroupNumber(selectedSportName);
       
       const tempId = Date.now();
@@ -383,7 +416,7 @@ const Sports = () => {
         sportname: selectedSportName,
         count: counter,
         durationseconds: timer,
-        groupnumber: nextGroup,  // 使用从数据库获取的组别
+        groupnumber: nextGroup,
         sportdate: new Date().toISOString().split('T')[0],
         remarks: `运动组别: 第${nextGroup}组`,
         saved: false,
@@ -391,38 +424,28 @@ const Sports = () => {
       };
       
       setRecords(prev => [newRecord, ...prev]);
-      
-      // 自动保存到数据库
       await saveRecordToDatabase(newRecord);
     }
     
     setCounter(0);
     setTimer(0);
     setCountdown(null);
-  }, [counter, timer, selectedSportName, stopAllTimers, user, fetchCurrentGroupNumber]);
+  }, [counter, timer, selectedSportName, stopAllTimers, stopCounterLoop, user, fetchCurrentGroupNumber]);
 
-  // 手动保存记录
-  const handleSaveRecord = (record) => {
-    if (record.saved) {
-      alert('该记录已保存');
-      return;
-    }
-    saveRecordToDatabase(record);
-  };
-
-  // 切换运动时，重置组别显示（但不重置数据库组别）
+  // 切换运动时，重置组别显示
   useEffect(() => {
     if (!isRunning && !isPaused) {
       if (lastSportRef.current !== selectedSport) {
-        setCurrentGroup(1); // 这只是显示用的，实际组别会在保存时从数据库获取
+        setCurrentGroup(1);
         lastSportRef.current = selectedSport;
       }
     }
   }, [selectedSport, isRunning, isPaused]);
 
-  // 组件卸载时清理（保持不变）
+  // 组件卸载时清理
   useEffect(() => {
     return () => {
+      stopCounterLoop();
       stopAllTimers();
       if (audioContextRef.current && !isAudioContextClosed.current) {
         try {
@@ -433,7 +456,7 @@ const Sports = () => {
         }
       }
     };
-  }, [stopAllTimers]);
+  }, [stopCounterLoop, stopAllTimers]);
 
   // 打开设置弹窗
   const openSettingsModal = () => {
@@ -485,9 +508,8 @@ const Sports = () => {
         <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
           <div className={styles.modalTitle}>设置</div>
           
-          {/* 运动类型选择 */}
           <div className={styles.modalSection}>
-            <div className={styles.modalSectionTitle}>选择运动</div>
+            <div className={styles.modalSectionTitle}>类别</div>
             <div className={styles.modalSportsGrid}>
               {sportsTypes.map(sport => (
                 <div 
@@ -504,9 +526,8 @@ const Sports = () => {
             </div>
           </div>
 
-          {/* 间隔时间选择 */}
           <div className={styles.modalSection}>
-            <div className={styles.modalSectionTitle}>间隔时间（秒）</div>
+            <div className={styles.modalSectionTitle}>间隔</div>
             <div className={styles.modalIntervalGrid}>
               {intervalOptions.map(option => (
                 <div 
@@ -607,9 +628,6 @@ const Sports = () => {
                     <th>完成次数</th>
                     <th>运动时间</th>
                     <th>组别</th>
-                    {/* <th>时间</th> */}
-                    {/* <th>状态</th>
-                    <th>操作</th> */}
                   </tr>
                 </thead>
                 <tbody>
@@ -619,24 +637,6 @@ const Sports = () => {
                       <td>{record.count}</td>
                       <td>{formatTime(record.durationseconds)}</td>
                       <td>第{record.groupnumber}组</td>
-                      {/* <td>{record.displayTime}</td> */}
-                      {/* <td>
-                        {record.saved ? (
-                          <span className={styles.savedBadge}>已保存</span>
-                        ) : (
-                          <span className={styles.unsavedBadge}>未保存</span>
-                        )}
-                      </td>
-                      <td>
-                        {!record.saved && (
-                          <button 
-                            className={styles.saveRecordBtn}
-                            onClick={() => handleSaveRecord(record)}
-                          >
-                            保存
-                          </button>
-                        )}
-                      </td> */}
                     </tr>
                   ))}
                 </tbody>

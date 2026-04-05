@@ -211,26 +211,26 @@ const SongReview = () => {
 
   return (
     <div className={styles.container}>
-      <h2>歌曲评论管理</h2>
       
+         <h3>评论 ({comments.length})</h3>
       {isAuthenticated && user ? (
         <div className={styles.content}>
-          <div className={styles.currentSong}>
-            <h3>当前歌曲</h3>
+          {/* <div className={styles.currentSong}>
+          
             {state.currentSong ? (
               <div className={styles.songInfo}>
                 <p><strong>歌曲标题:</strong> {state.currentSong.title}</p>
                 <p><strong>艺术家:</strong> {state.currentSong.artist}</p>
-                <p><strong>数据库ID:</strong> {currentMusicId || '未找到对应歌曲'}</p>
+               <p><strong>数据库ID:</strong> {currentMusicId || '未找到对应歌曲'}</p>  
               </div>
             ) : (
               <p className={styles.noSong}>暂无播放歌曲</p>
             )}
-          </div>
+          </div> */}
 
           {state.currentSong && currentMusicId && (
             <div className={styles.commentInput}>
-              <h3>发表评论</h3>
+              {/* <h3>发表评论</h3> */}
               <textarea value={newComment} onChange={(e) => setNewComment(e.target.value)} placeholder="请输入您的评论..." rows="4" disabled={loading} />
               <button onClick={submitComment} disabled={loading || !newComment.trim()} className={styles.submitBtn}>
                 {loading ? '提交中...' : '提交评论'}
@@ -241,7 +241,7 @@ const SongReview = () => {
           {error && <div className={styles.error}>{error}</div>}
 
           <div className={styles.commentsSection}>
-            <h3>评论列表 ({comments.length})</h3>
+         
             {loading && comments.length === 0 ? (<div className={styles.loading}>加载中...</div>) 
             : !currentMusicId && state.currentSong ? (<div className={styles.noComments}>未找到对应的歌曲记录</div>)
             : comments.length === 0 ? (<div className={styles.noComments}>暂无评论</div>) 

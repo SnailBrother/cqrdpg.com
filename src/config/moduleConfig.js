@@ -22,6 +22,7 @@ const MusicRecent = lazy(() => import('../pages/modules/music/Recent'));
 const MusicFavorites = lazy(() => import('../pages/modules/music/Favorites'));
 const MusicTogetherRoomManager = lazy(() => import('../pages/modules/music/TogetherRoomManager'));
 const FluteSheetMusic = lazy(() => import('../pages/modules/music/FluteSheetMusic'));
+const MusicMenu = lazy(() => import('../pages/modules/music/MusicMenu'));
 
 //------------------------------穿搭------------------------------
 const OutfitPreviewWardrobe = lazy(() => import('../pages/modules/outfit/PreviewWardrobe'));
@@ -101,9 +102,12 @@ export const moduleConfig = {
       { key: 'recent', label: '最近', icon: '#icon-zuijinbofang', component: MusicRecent, showInTabs: false, showInNavigation: true },
       { key: 'favorites', label: '喜欢', icon: '#icon-xihuan11', component: MusicFavorites, showInTabs: false, showInNavigation: true },
       { key: 'musictogetherroommanager', label: '一起听', icon: '#icon-kefu', component: MusicTogetherRoomManager, showInTabs: false, showInNavigation: true },
-      { key: 'fluteSheetMusic', label: '音符', icon: '#icon-kefu', component: FluteSheetMusic, showInTabs: false, showInNavigation: true },
+
+      
+     // { key: 'fluteSheetMusic', label: '音符', icon: '#icon-kefu', component: FluteSheetMusic, showInTabs: false, showInNavigation: true },
      
       // 隐藏的路由 - 不显示在导航中
+            { key: 'musicMenu', label: '快捷键', icon: '#icon-kefu', component: MusicMenu, showInTabs: false, showInNavigation: false },
       { key: 'musicplayerlyrics', label: '歌词', component: MusicplayerLyrics, showInTabs: false, showInNavigation: false },
       { key: 'musicplayer', label: '播放器', component: Musicplayer, showInTabs: false, showInNavigation: false },
       { key: 'musicplaylist', label: '播放列表', component: MusicPlaylist, showInTabs: false, showInNavigation: false },

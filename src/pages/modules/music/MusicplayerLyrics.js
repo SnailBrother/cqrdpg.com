@@ -141,13 +141,13 @@ const handleBack = () => {
     return (
         <div className={styles.lyricsPage}>
             {/* 顶部歌曲信息和返回按钮 */}
-            <div className={styles.songHeader}>
+            {/* <div className={styles.songHeader}>
                 <button 
                     className={styles.backButton}
-                    // onClick={() => window.history.back()}
+                   
                      onClick={handleBack}
                 >
-                    {/* 返回 */}
+                   
                     <svg  className={styles.backButtonicon} aria-hidden="true">
                                 <use xlinkHref="#icon-quxiaoquanping" />
                             </svg>
@@ -162,13 +162,13 @@ const handleBack = () => {
                     <div className={styles.songInfo}>
                         <h1 className={styles.songTitle}>{currentSong.title}</h1>
                         <p className={styles.songArtist}>{currentSong.artist}</p>
-                        {/* <div className={styles.timeInfo}>
+                        <div className={styles.timeInfo}>
                             <span>{formatTime(progress)}</span>
-                        </div> */}
+                        </div>  
                     </div>
                 </div>
                 
-            </div>
+            </div> */}
 
             {/* 歌词显示区域 - 占据剩余全部空间 */}
             <div className={styles.lyricsContainer}>

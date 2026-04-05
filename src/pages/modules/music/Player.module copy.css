@@ -1,0 +1,355 @@
+/* 主播放器容器，使用 Grid 布局 */
+.player {
+     /* background: var(--secondary-background-color, #f8f9fa);    */
+   background: var(--secondary-background-color);  
+  border-top: 1px solid var(--border_color);
+  height: 80px;
+  padding: 0 5px;
+  display: grid;
+  align-items: center;
+  justify-content: space-between;
+  /* 定义严格的四列布局: */
+  grid-template-columns: auto 1.5fr 2fr 1fr;
+  gap: 0px;
+ 
+  box-sizing: border-box;
+}
+
+/* --- 第一列：封面 --- */
+.column1 {
+  display: flex;
+  align-items: center;
+}
+.playerArtwork {
+  width: 60px;
+  height: 60px;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* --- 第二列：歌曲信息 --- */
+.column2 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0px;
+  min-width: 0; /* 防止内容溢出 */
+ 
+}
+.songDetails {
+  display: flex;
+  align-items: baseline; /* 基线对齐，视觉效果更好 */
+  gap: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.songActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.songTitle {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--font-color, #212529);
+}
+.songArtist {
+  font-size: 13px;
+  color: var(--secondary-font-color, #6c757d);
+}
+.actionButton {
+  background: none; border: none; font-size: 18px; cursor: pointer;
+  color: var(--secondary-font-color, #6c757d); padding: 2px;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+.actionButton:hover {
+  transform: scale(1.1);
+  color: var(--font-color, #212529);
+}
+.actionButton.liked { color: #ff4757; }
+
+/* --- 第三列：主要控件 --- */
+.column3 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+   
+   
+}
+.topControls { 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between;
+ padding-left: 20px;
+ padding-right: 20px;
+  width: 100%;
+  gap: 5px; 
+  position: relative;
+}
+.bottomControls { display: flex; align-items: center; width: 100%; gap: 10px; }
+
+/* --- 第四列：附加控件 --- */
+.column4 {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 0px;
+ 
+}
+
+ 
+/* --- 通用控件样式 --- */
+.controlButton {
+  background: var(--background-color); border: none; color: var(--secondary-font-color);
+  font-size: 18px; cursor: pointer; padding: 0px; border-radius: 50%;
+  transition: all 0.2s; display: flex; align-items: center; justify-content: center; line-height: 1;
+}
+.controlButton:disabled { opacity: 0.3; cursor: not-allowed; }
+.controlButton:not(:disabled):hover {
+  background: var(--hover_background-color);
+  color: var(--hover_font-color, #007bff);
+}
+.playButton {
+  background: var(--background-color); color: var(--font-color);
+  width: 40px; height: 40px; font-size: 20px;
+}
+.playButton:hover { background: var(--hover_background-color); }
+
+/* --- 播放模式控制 --- */
+.playModeControlWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.playModeButton {
+  position: relative;
+}
+
+.playModeButton.active {
+  background: var(--hover_background-color);
+  color: var(--hover_font-color);
+}
+
+.playModeIcon {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+.playModeDropdown {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  /* background: var(--background-color); */
+  background-color: rgba(0, 0, 0, 0.233);
+  backdrop-filter: blur(10px); /* 磨砂效果 */
+  -webkit-backdrop-filter: blur(10px); /* Safari 支持 */
+  border: 1px solid var(--border_color);
+  border-radius: 8px;
+  padding: 8px 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  margin-bottom: 10px;
+  min-width: 140px;
+}
+
+.playModeOption {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 8px 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  color: var(--font-color, #212529);
+  font-size: 14px;
+  gap: 8px;
+}
+
+.playModeOption:hover {
+  background: var(--hover_background-color);
+}
+
+.playModeOption.active {
+  background: var(--hover_background-color);
+  color: var(--hover_font-color);
+}
+
+.playModeOptionIcon {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
+.playModeOptionText {
+  flex-grow: 1;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.playModeCheckIcon {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
+/* --- 时间和进度条 --- */
+.timeDisplay { font-size: 12px; color: var(--secondary-font-color, #6c757d); min-width: 40px; text-align: center; }
+.progressBar { flex-grow: 1; }
+
+.progressBar {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+  
+  /* 移除默认轨道 */
+  background: transparent;
+}
+
+/* 为不同浏览器设置轨道 */
+.progressBar::-webkit-slider-runnable-track {
+  -webkit-appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(
+    to right,
+    rgb(10, 219, 132) 0%,
+    rgb(10, 219, 132) var(--progress-percent, 0%),
+    #e5e7eb var(--progress-percent, 0%),
+    #e5e7eb 100%
+  );
+}
+
+.progressBar::-moz-range-track {
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(
+    to right,
+    rgb(46, 46, 46) 0%,
+    rgb(46, 46, 46) var(--progress-percent, 0%),
+    #e5e7eb var(--progress-percent, 0%),
+    #e5e7eb 100%
+  );
+}
+
+ 
+.progressBar::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgb(46, 46, 46);
+  cursor: pointer;
+  border: 2px solid #fff;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+  margin-top: -4px; /* 垂直居中 */
+}
+
+.progressBar::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgb(46, 46, 46);
+  cursor: pointer;
+  border: 2px solid #fff;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+}
+/* --- 音量控制 --- */
+.volumeControl { display: flex; align-items: center; gap: 8px; }
+.volumeIcon { font-size: 18px; color: var(--secondary-font-color, #6c757d); }
+.volumeSlider { width: 100px; }
+
+/* --- 自定义范围输入(range)样式 - 进度条和音量条 --- */
+input[type="range"] {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; height: 4px;
+  background: var(--secondary-border_color, #dee2e6);
+  border-radius: 2px; outline: none; cursor: pointer; transition: background 0.2s;
+}
+input[type="range"]:hover { background: var(--border_color, #ced4da); }
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 14px; height: 14px; background: var(--hover_font-color, #007bff);
+  border-radius: 50%; cursor: pointer; border: 2px solid var(--background-color, #fff);
+  box-shadow: 0 0 5px rgba(0,0,0,0.2);
+}
+input[type="range"]::-moz-range-thumb {
+  width: 14px; height: 14px; background: var(--hover_font-color, #007bff);
+  border-radius: 50%; cursor: pointer; border: 2px solid var(--background-color, #fff);
+}
+/* 音量控制包装器 */
+.volumeControlWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* 垂直音量滑块 */
+.verticalVolumeSlider {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--background-color, #fff);
+  border: 0px solid var(--border_color, #ddd);
+  border-radius: 8px;
+  padding: 2px 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  margin-bottom: 10px;
+}
+
+/* 音量轨道 */
+.volumeTrack {
+  width: 6px;
+  height: 120px;
+  background: var(--secondary-border_color, #dee2e6);
+  border-radius: 3px;
+  position: relative;
+  cursor: pointer;
+}
+
+/* 音量进度 */
+.volumeProgress {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background: var(--hover_font-color, #007bff);
+  border-radius: 3px;
+  transition: height 0.1s ease;
+  display: flex;
+  justify-content: center;
+}
+
+/* 音量滑块拇指 */
+.volumeThumb {
+  width: 12px;
+  height: 12px;
+  background: var(--hover_font-color, #007bff);
+  border: 2px solid var(--background-color, #fff);
+  border-radius: 50%;
+  position: absolute;
+  top: -2px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+/* 超小屏幕保护 */
+@media (max-width: 700px) {
+ 
+ 
+.column4 {
+flex-direction: column;
+gap: 5px;
+}
+}

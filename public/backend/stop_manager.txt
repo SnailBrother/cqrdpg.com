@@ -1,0 +1,5 @@
+@echo off
+echo Closing server and manager...
+taskkill /F /FI "WINDOWTITLE eq ServerManager*"
+taskkill /F /FI "WINDOWTITLE eq RactDemoAppserver*"
+echo Closed

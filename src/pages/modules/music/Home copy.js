@@ -18,14 +18,6 @@ const encodeForURL = (str) => {
     return encodeURIComponent(str);
 };
 
-// 根据日期获取默认视图模式
- 
-const getDefaultViewMode = () => {
-    const today = new Date();
-    const day = today.getDate(); // 获取当前日期（1-31）
-    return day % 2 === 1 ? 'grid' : 'table'; // 单数：网格视图，双数：列表视图
-};
-
 const Home = () => {
     const { state, dispatch } = useMusic();
     const { user, isAuthenticated } = useAuth();
@@ -37,20 +29,7 @@ const Home = () => {
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [searchInput, setSearchInput] = useState(''); // 新增：用于输入框的临时值
-    const [viewMode, setViewMode] = useState(() => {
-        // 尝试从 localStorage 获取用户保存的偏好
-        const savedViewMode = localStorage.getItem('musicViewMode');
-        if (savedViewMode && (savedViewMode === 'table' || savedViewMode === 'grid')) {
-            return savedViewMode;
-        }
-        // 如果没有保存的偏好，则根据日期返回默认值
-        return getDefaultViewMode();
-    });
-
-    // 保存用户手动切换的视图模式
-    useEffect(() => {
-        localStorage.setItem('musicViewMode', viewMode);
-    }, [viewMode]);
+    const [viewMode, setViewMode] = useState('table');
 
     // 处理搜索提交
     const handleSearchSubmit = () => {
@@ -319,19 +298,39 @@ const Home = () => {
             <div className={styles.allMusicSection}>
                 <div className={styles.sectionHeader}>
                     <h2 className={styles.sectionTitle}>音乐 ({musics.length})</h2>
+                    {/* {user.email}
+                    {isInRoom && currentRoom && (
+                        <span className={styles.roomNameLabel}>
+                            {currentRoom?.room_name}  {isInRoom ? '在房间' : '不在房间'}
+                        </span>
+                    )} */}
                     <div className={styles.sectionHeaderRight}>
                         <div className={styles.searchContainer}>
                             <svg className={styles.searchIcon} viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M10 18a7.952 7.952 0 0 0 4.897-1.688l4.396 4.396 1.414-1.414-4.396-4.396A7.952 7.952 0 0 0 18 10c0-4.411-3.589-8-8-8s-8 3.589-8 8 3.589 8 8 8zm0-14c3.309 0 6 2.691 6 6s-2.691 6-6 6-6-2.691-6-6 2.691-6 6-6z"></path>
                             </svg>
+                            {/* <input
+                                type="text"
+                                placeholder="搜索歌曲、艺术家..."
+                                className={styles.searchInput}
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            /> */}
                             <input
                                 type="text"
                                 placeholder="搜索歌曲、艺术家..."
                                 className={styles.searchInput}
-                                value={searchInput}
-                                onChange={(e) => setSearchInput(e.target.value)}
-                                onKeyDown={handleKeyPress}
+                                value={searchInput} // 使用临时值
+                                onChange={(e) => setSearchInput(e.target.value)} // 只更新临时值
+                                onKeyDown={handleKeyPress} // 监听回车键
                             />
+                            {/* 可选：添加搜索按钮
+<button 
+  className={styles.searchButton}
+  onClick={handleSearchSubmit}
+>
+  搜索
+</button> */}
                         </div>
 
                         <div className={styles.viewModeToggle}>
