@@ -10,7 +10,7 @@
 /* 主内容区域 - 两栏布局 */
 .content {
   display: flex;
-  gap: 24px;
+  gap: 0px;
   flex-wrap: wrap;
   height: 100%;
 }
@@ -79,13 +79,17 @@
 /* ========== 手机端运动选择器（默认隐藏） ========== */
 .mobileSportSelector {
   display: none;
-  margin-bottom: 5px;
+  margin: 0 auto;
+  width: 100%;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
 }
 
 .mobileSportButton {
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   padding: 14px 20px;
   background: white;
@@ -232,12 +236,13 @@
 .detail {
   flex: 3;
   min-width: 300px;
-
+box-sizing: border-box;
   border-radius: 20px;
-  padding: 5px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  padding: 30px;
+  /* box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); */
   overflow-y: auto;
-  max-height: calc(100dvh - 150px);
+  /* height: calc(100dvh - 150px); */
+  height: 100%;
 }
 
 /* Markdown 加载状态 */

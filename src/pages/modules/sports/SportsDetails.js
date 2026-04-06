@@ -273,10 +273,10 @@ const SportsDetails = () => {
       )}
 
       {/* 标题 */}
-      <div className={styles.header}>
+      {/* <div className={styles.header}>
         <h1>运动详情</h1>
         <p>{user?.username} 的运动记录</p>
-      </div>
+      </div> */}
 
       {/* 视图切换和日期选择 */}
       <div className={styles.controls}>

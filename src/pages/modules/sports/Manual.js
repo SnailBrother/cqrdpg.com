@@ -178,7 +178,7 @@ const Manual = () => {
                     <div className={styles.modalOverlay} onClick={() => setIsModalOpen(false)}>
                         <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
                             <div className={styles.modalHeader}>
-                                <h3>选择运动项目</h3>
+                                <h3>选择项目</h3>
                                 <button className={styles.modalClose} onClick={() => setIsModalOpen(false)}>✕</button>
                             </div>
                             <div className={styles.modalList}>

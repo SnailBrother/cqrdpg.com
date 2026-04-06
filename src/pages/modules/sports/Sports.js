@@ -597,7 +597,7 @@ const Sports = () => {
             </svg>
             <div className={styles.currentSportInfo}>
               <div className={styles.currentSportName}>{currentSportData.name}</div>
-              <div className={styles.currentSportHint}>{user?.username || '请登录'}</div>
+              {/* <div className={styles.currentSportHint}>{user?.username || '请登录'}</div> */}
             </div>
           </div>
         </div>
