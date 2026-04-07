@@ -97,8 +97,7 @@
 .dateControls {
   display: flex;
   align-items: center;
-
-  gap: 5px;
+  gap: 15px;
 }
 
 .dateBtn {
@@ -120,7 +119,7 @@
   font-size: 18px;
   font-weight: 600;
   color: #ff6b6b;
-  min-width: 120px;
+  min-width: 150px;
   text-align: center;
 }
 
@@ -150,7 +149,7 @@
   font-size: 36px;
   font-weight: bold;
   color: #ff6b6b;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
 }
 
 .statLabel {
@@ -193,19 +192,17 @@
   background: linear-gradient(135deg, rgba(0, 180, 219, 0.3), rgba(0, 180, 219, 0.1));
   padding: 15px 20px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  display: flex;
-  justify-content: space-between;
 }
 
 .dateHeader h3 {
   font-size: 20px;
   color: #00b4db;
-  margin-bottom: 0px;
+  margin-bottom: 10px;
 }
 
 .dateStats {
   display: flex;
-  gap: 5px;
+  gap: 20px;
   font-size: 14px;
   color: rgba(255, 255, 255, 0.7);
 }
@@ -538,10 +535,10 @@
   
   /* 控制栏 - 保持水平布局但缩小 */
   .controls {
-     
-    gap: 2px;
-    padding: 5px 5px;
-    margin-bottom: 5px;
+    flex-direction: row;
+    gap: 12px;
+    padding: 10px 15px;
+    margin-bottom: 20px;
   }
   
   .viewToggle {
@@ -554,7 +551,7 @@
   }
   
   .dateControls {
-    gap: 2px;
+    gap: 8px;
   }
   
   .dateBtn {
@@ -563,23 +560,23 @@
   }
   
   .currentDate {
-    font-size: 12px;
-    min-width: 80px;
+    font-size: 14px;
+    min-width: 120px;
   }
   
   /* 统计卡片 - 保持网格但缩小 */
   .statsCards {
-    gap: 5px;
-    margin-bottom: 5px;
+    gap: 12px;
+    margin-bottom: 20px;
   }
   
   .statCard {
-    padding: 5px;
+    padding: 15px;
     border-radius: 16px;
   }
   
   .statValue {
-    font-size: 20px;
+    font-size: 28px;
   }
   
   .statLabel {
@@ -588,7 +585,7 @@
   
   /* 记录容器 */
   .recordsContainer {
-    gap: 10px;
+    gap: 20px;
   }
   
   .dateGroup {
@@ -596,19 +593,18 @@
   }
   
   .dateHeader {
-    padding: 5px 5px;
-    align-items: baseline;
+    padding: 12px 15px;
   }
   
   .dateHeader h3 {
     font-size: 16px;
-    margin-bottom: 0px;
+    margin-bottom: 8px;
   }
   
   .dateStats {
     flex-direction: row;
     flex-wrap: wrap;
-    padding: 5px 5px;
+    gap: 12px;
     font-size: 11px;
   }
   
@@ -757,106 +753,5 @@
   /* 可点击行 */
   .clickableRow:hover {
     background-color: rgba(245, 245, 245, 0.2);
-  }
-}
-/* 图表区域样式 - 新增 */
-.chartSection {
-  background: rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(10px);
-  border-radius: 20px;
-  margin-bottom: 10px;
-  overflow: hidden;
-}
-
-.chartHeader {
-  padding: 2px;
-}
-
- 
-
-.chartControls {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 2px;
-  margin-bottom: 1px;
-}
-
-.chartDateSelect,
-.chartTypeSelect {
-  display: flex;
-  gap: 8px;
-}
-
-.chartDateBtn,
-.chartTypeBtn {
-  padding: 6px 5px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 20px;
-  color: rgba(255, 255, 255, 0.7);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 12px;
-}
-
-.chartDateBtn.active,
-.chartTypeBtn.active {
-  background: linear-gradient(135deg, #00b4db, #0083b0);
-  border-color: #00b4db;
-  color: white;
-}
-
-.chartDateBtn:hover,
-.chartTypeBtn:hover {
-  transform: translateY(-1px);
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.chartContainer {
-  padding: 20px;
-  height: 320px;
-  position: relative;
-}
-
-.chartCanvas {
-  width: 100%;
-  height: 100%;
-
-}
-
-/* 响应式 - 手机屏幕 */
-@media (max-width: 768px) {
-  .chartSection {
-    margin-bottom: 2px;
-    border-radius: 16px;
-  }
-  
-  .chartHeader {
-    padding: 2px;
-  }
-  
-  .chartTitle {
-    font-size: 16px;
-    margin-bottom: 12px;
-  }
-  
-
-  
-  .chartDateSelect,
-  .chartTypeSelect {
-    justify-content: center;
-  }
-  
-  .chartDateBtn,
-  .chartTypeBtn {
-    padding: 5px 5px;
-    font-size: 11px;
-  }
-  
-  .chartContainer {
-    padding: 3px;
-    height: 260px;
   }
 }

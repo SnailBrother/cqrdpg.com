@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../../context/AuthContext';
 import io from 'socket.io-client';
-import Chart from 'chart.js/auto';
 import styles from './SportsDetails.module.css';
 
 const SportsDetails = () => {
@@ -22,12 +21,6 @@ const SportsDetails = () => {
   });
   const [deleteConfirmId, setDeleteConfirmId] = useState(null);
   const [message, setMessage] = useState({ show: false, text: '', type: '' });
-  
-  // 图表相关状态
-  const [chartDataType, setChartDataType] = useState('count'); // 'count' 或 'duration'
-  const [chartDays, setChartDays] = useState(7); // 默认显示近7天
-  const chartRef = useRef(null);
-  let chartInstance = useRef(null);
 
   // 格式化日期函数
   const formatDate = (dateString) => {
@@ -84,176 +77,6 @@ const SportsDetails = () => {
       socket.disconnect();
     };
   }, [fetchRecords]);
-
-  // 获取图表数据
-  const getChartData = useCallback(() => {
-    const days = chartDays;
-    const result = [];
-    const today = new Date();
-    
-    for (let i = days - 1; i >= 0; i--) {
-      const date = new Date(today);
-      date.setDate(today.getDate() - i);
-      const dateStr = formatDate(date);
-      
-      // 获取当天的所有记录
-      const dayRecords = records.filter(record => {
-        const recordDate = formatDate(record.sportdate);
-        return recordDate === dateStr;
-      });
-      
-      // 计算当天的统计数据
-      let totalCount = 0;
-      let totalDuration = 0;
-      
-      dayRecords.forEach(record => {
-        totalCount += record.count;
-        totalDuration += record.durationseconds;
-      });
-      
-      result.push({
-        date: dateStr,
-        label: `${date.getMonth() + 1}/${date.getDate()}`,
-        count: totalCount,
-        duration: totalDuration
-      });
-    }
-    
-    return result;
-  }, [records, chartDays]);
-
-  // 更新图表
-  const updateChart = useCallback(() => {
-    if (!chartRef.current) return;
-    
-    const chartData = getChartData();
-    const labels = chartData.map(d => d.label);
-    const values = chartData.map(d => chartDataType === 'count' ? d.count : d.duration);
-    
-    const yAxisLabel = chartDataType === 'count' ? '次数' : '时长(秒)';
-    const datasetLabel = chartDataType === 'count' ? '运动次数' : '运动时长';
-    
-    // 创建渐变填充
-// 在 updateChart 函数中，找到创建渐变填充的部分 背景渐变
-const gradientFill = chartRef.current.getContext('2d').createLinearGradient(0, 0, 0, 250);
-gradientFill.addColorStop(0, 'rgba(34, 197, 94, 0.8)');   // 顶部：绿色，0.6透明度
-gradientFill.addColorStop(1, 'rgba(34, 197, 94, 0.1)');   // 底部：绿色，0.1透明度
-    
-    if (chartInstance.current) {
-      chartInstance.current.destroy();
-    }
-    
-    chartInstance.current = new Chart(chartRef.current, {
-      type: 'line',
-      data: {
-        labels: labels,
-        datasets: [{
-          label: datasetLabel,
-          data: values,
-          borderColor: '#43836d',
-          backgroundColor: gradientFill,
-          fill: true,
-          tension: 0.4,
-          pointRadius: 1, // 默认点的大小，改为 2 或更小（原来是 4）
-          pointHoverRadius: 4,   // 鼠标悬停时点的大小，可选
-          pointBackgroundColor: '#43836d',
-          pointBorderColor: '#43836d',
-          pointBorderWidth: 2,  // 边框宽度也可以调小
-          borderWidth: 1
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: true,
-            position: 'top',
-            labels: {
-              color: '#fff',
-              font: {
-                size: 12
-              }
-            }
-          },
-          tooltip: {
-            callbacks: {
-              label: function(context) {
-                let label = context.dataset.label || '';
-                let value = context.raw;
-                if (chartDataType === 'duration') {
-                  const hours = Math.floor(value / 3600);
-                  const minutes = Math.floor((value % 3600) / 60);
-                  const seconds = value % 60;
-                  let timeStr = '';
-                  if (hours > 0) timeStr += `${hours}小时`;
-                  if (minutes > 0) timeStr += `${minutes}分钟`;
-                  if (seconds > 0 || timeStr === '') timeStr += `${seconds}秒`;
-                  return `${label}: ${timeStr}`;
-                }
-                return `${label}: ${value}次`;
-              }
-            },
-            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-            titleColor: '#fff',
-            bodyColor: '#ddd'
-          }
-        },
-        scales: {
-          x: {
-            grid: {
-              display: false,
-              color: 'rgba(255, 255, 255, 0.1)'
-            },
-            ticks: {
-              color: 'rgba(255, 255, 255, 0.7)',
-              font: {
-                size: 11
-              }
-            }
-          },
-          y: {
-            grid: {
-              color: 'rgba(255, 255, 255, 0.1)'
-            },
-            ticks: {
-              color: 'rgba(255, 255, 255, 0.7)',
-              callback: function(value) {
-                if (chartDataType === 'duration') {
-                  const minutes = Math.floor(value / 60);
-                  if (minutes >= 60) {
-                    return `${Math.floor(minutes / 60)}h${minutes % 60}m`;
-                  }
-                  return `${minutes}m`;
-                }
-                return value;
-              }
-            },
-            beginAtZero: true,
-            title: {
-              display: true,
-              text: yAxisLabel,
-              color: 'rgba(255, 255, 255, 0.7)',
-              font: {
-                size: 12
-              }
-            }
-          }
-        },
-        interaction: {
-          intersect: false,
-          mode: 'index'
-        }
-      }
-    });
-  }, [getChartData, chartDataType]);
-
-  // 当数据或图表设置变化时更新图表
-  useEffect(() => {
-    if (records.length > 0 && chartRef.current) {
-      updateChart();
-    }
-  }, [records, chartDataType, chartDays, updateChart]);
 
   // 过滤数据
   const getFilteredRecords = () => {
@@ -462,13 +285,13 @@ gradientFill.addColorStop(1, 'rgba(34, 197, 94, 0.1)');   // 底部：绿色，0
             className={`${styles.viewBtn} ${viewType === 'month' ? styles.active : ''}`}
             onClick={() => setViewType('month')}
           >
-            按月
+            按月查看
           </button>
           <button 
             className={`${styles.viewBtn} ${viewType === 'year' ? styles.active : ''}`}
             onClick={() => setViewType('year')}
           >
-            按年
+            按年查看
           </button>
         </div>
 
@@ -507,54 +330,7 @@ gradientFill.addColorStop(1, 'rgba(34, 197, 94, 0.1)');   // 底部：绿色，0
           <div className={styles.statValue}>{totalStats.totalGroups}</div>
           <div className={styles.statLabel}>总运动组数</div>
         </div>
-      </div>
-
-      {/* 图表区域 - 新增 */}
-      <div className={styles.chartSection}>
-        <div className={styles.chartHeader}>
-          
-          <div className={styles.chartControls}>
-            {/* 日期范围选择 */}
-            <div className={styles.chartDateSelect}>
-              <button 
-                className={`${styles.chartDateBtn} ${chartDays === 7 ? styles.active : ''}`}
-                onClick={() => setChartDays(7)}
-              >
-                近7天
-              </button>
-              <button 
-                className={`${styles.chartDateBtn} ${chartDays === 14 ? styles.active : ''}`}
-                onClick={() => setChartDays(14)}
-              >
-                近14天
-              </button>
-              <button 
-                className={`${styles.chartDateBtn} ${chartDays === 30 ? styles.active : ''}`}
-                onClick={() => setChartDays(30)}
-              >
-                近30天
-              </button>
-            </div>
-            {/* 数据类型选择 */}
-            <div className={styles.chartTypeSelect}>
-              <button 
-                className={`${styles.chartTypeBtn} ${chartDataType === 'count' ? styles.active : ''}`}
-                onClick={() => setChartDataType('count')}
-              >
-                📊 次数
-              </button>
-              <button 
-                className={`${styles.chartTypeBtn} ${chartDataType === 'duration' ? styles.active : ''}`}
-                onClick={() => setChartDataType('duration')}
-              >
-                ⏱️ 时长
-              </button>
-            </div>
-          </div>
-        </div>
-        <div className={styles.chartContainer}>
-          <canvas ref={chartRef} className={styles.chartCanvas}></canvas>
-        </div>
+        
       </div>
 
       {/* 加载状态 */}
@@ -583,7 +359,7 @@ gradientFill.addColorStop(1, 'rgba(34, 197, 94, 0.1)');   // 底部：绿色，0
                       <th>运动类别</th>
                       <th>完成次数</th>
                       <th>运动时长</th>
-                      {/* <th>组别</th> */}
+                      <th>组别</th>
                       {/* <th>备注</th> */}
                     </tr>
                   </thead>
@@ -597,7 +373,7 @@ gradientFill.addColorStop(1, 'rgba(34, 197, 94, 0.1)');   // 底部：绿色，0
                         <td>{record.sportname}</td>
                         <td>{record.count}</td>
                         <td>{formatDuration(record.durationseconds)}</td>
-                        {/* <td>第{record.groupnumber}组</td> */}
+                        <td>第{record.groupnumber}组</td>
                         {/* <td>{record.remarks || '-'}</td> */}
                       </tr>
                     ))}
