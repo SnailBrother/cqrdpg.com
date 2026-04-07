@@ -233,7 +233,7 @@ CREATE TABLE SportsApp.dbo.SportsOptions (
     sport_type_English VARCHAR(50),  -- 运动类型英文名称（例如：running, squat, jump_rope, pull_up, plank, badminton, pushup, yoga）
     unit_Options VARCHAR(20),  -- 计量单位（个，组，米）
     participant_Options VARCHAR(20),  -- 参与方式（单人/双人/团体）
-    icon_Options VARCHAR(255)  -- 图标（存储图标的路径或URL）
+    icon_Options VARCHAR(255) DEFAULT 'icon-liuyanmoban'  -- 图标（存储图标的路径或URL）
 );
 
 sport_type：运动类型字段，存储例如 "跑步"、"深蹲" 等运动名称。

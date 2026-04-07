@@ -18,14 +18,14 @@ const Sports = () => {
   const [counter, setCounter] = useState(0);
   const [timer, setTimer] = useState(0);
   const [countdown, setCountdown] = useState(null);
-  
+
   const [records, setRecords] = useState([]);
   const [currentGroup, setCurrentGroup] = useState(1);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [tempSelectedSport, setTempSelectedSport] = useState('');
   const [tempIntervalTime, setTempIntervalTime] = useState(3);
   const [saveSuccess, setSaveSuccess] = useState(null);
-  
+
   const lastSportRef = useRef(selectedSport);
   const timerRef = useRef(null);
   const audioContextRef = useRef(null);
@@ -35,7 +35,32 @@ const Sports = () => {
   const isAudioContextClosed = useRef(false);
   const shouldStopLoopRef = useRef(false);
   const isStartingRef = useRef(false); // 启动锁，防止重复调用
-  
+
+  //添加新的运动
+  // 新增：添加运动类别弹窗相关状态
+  const [showAddSportModal, setShowAddSportModal] = useState(false);
+  const [newSportName, setNewSportName] = useState('');
+  const [newSportIcon, setNewSportIcon] = useState('');
+  const [isAddingSport, setIsAddingSport] = useState(false);
+  const [addSportError, setAddSportError] = useState('');
+  const fetchSportsOptions = useCallback(async () => {
+    try {
+      const response = await fetch('/api/getSportsOptions');
+      const data = await response.json();
+      setSportsTypes(data);
+      if (data.length > 0 && !selectedSport) {
+        setSelectedSport(data[0].sport_type_Options);
+        setSelectedSportName(data[0].sport_type_Options);
+        setSelectedSportIcon(data[0].icon_Options);
+        setTempSelectedSport(data[0].sport_type_Options);
+      }
+    } catch (error) {
+      console.error('获取运动选项失败:', error);
+    }
+  }, [selectedSport]);
+
+
+
   // 获取运动选项
   useEffect(() => {
     const fetchSportsOptions = async () => {
@@ -53,21 +78,72 @@ const Sports = () => {
         console.error('获取运动选项失败:', error);
       }
     };
-    
+
     fetchSportsOptions();
-  }, []);
-  
+  }, [fetchSportsOptions]);
+  // 新增：添加运动类别
+  const handleAddSport = async () => {
+    // 验证必填项
+    if (!newSportName.trim()) {
+      setAddSportError('请填写运动类别名称');
+      return;
+    }
+
+    setIsAddingSport(true);
+    setAddSportError('');
+
+    try {
+      const response = await fetch('/api/getSportsOptions/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          sport_type_Options: newSportName.trim(),
+          icon_Options: newSportIcon.trim() || 'icon-liuyanmoban' // 前端如果没填，传空字符串，后端会处理默认值
+        })
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        // 刷新运动选项列表
+        await fetchSportsOptions();
+
+        // 自动选中新添加的运动
+        setSelectedSport(newSportName.trim());
+        setSelectedSportName(newSportName.trim());
+        setSelectedSportIcon(newSportIcon.trim() || 'icon-liuyanmoban');
+        setTempSelectedSport(newSportName.trim());
+
+        // 关闭弹窗并重置表单
+        setShowAddSportModal(false);
+        setNewSportName('');
+        setNewSportIcon('');
+
+        // 可选：显示成功提示
+        alert('运动类别添加成功！');
+      } else {
+        setAddSportError(result.message || '添加失败，请重试');
+      }
+    } catch (error) {
+      console.error('添加运动类别失败:', error);
+      setAddSportError('网络错误，请重试');
+    } finally {
+      setIsAddingSport(false);
+    }
+  };
   // 获取当前用户当天该运动的组别
   const fetchCurrentGroupNumber = useCallback(async (sportname) => {
     if (!user?.username) return 1;
-    
+
     try {
       const today = new Date().toISOString().split('T')[0];
       const response = await fetch(
         `/api/SportsAppWorkoutRecords/getMaxGroupNumber?username=${user.username}&sportname=${encodeURIComponent(sportname)}&sportdate=${today}`
       );
       const result = await response.json();
-      
+
       if (result.success) {
         return result.maxGroupNumber + 1;
       }
@@ -77,7 +153,7 @@ const Sports = () => {
       return 1;
     }
   }, [user]);
-  
+
   useEffect(() => {
     intervalTimeRef.current = intervalTime;
   }, [intervalTime]);
@@ -85,7 +161,7 @@ const Sports = () => {
   // 1. 预加载音频
   useEffect(() => {
     let isMounted = true;
-    
+
     const loadAudio = async () => {
       try {
         if (audioContextRef.current && !isAudioContextClosed.current) {
@@ -95,13 +171,13 @@ const Sports = () => {
             console.log('关闭已有 AudioContext:', e);
           }
         }
-        
+
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
         audioContextRef.current = audioContext;
         isAudioContextClosed.current = false;
-        
+
         const audioFiles = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'shi', 'bai', 'qian', 'wan'];
-        
+
         for (const file of audioFiles) {
           if (!isMounted) return;
           try {
@@ -117,9 +193,9 @@ const Sports = () => {
         console.error('初始化音频失败:', error);
       }
     };
-    
+
     loadAudio();
-    
+
     return () => {
       isMounted = false;
       if (audioContextRef.current && !isAudioContextClosed.current) {
@@ -136,9 +212,9 @@ const Sports = () => {
   // 2. 数字解析逻辑
   const parseNumberToAudioParts = useCallback((number) => {
     if (number === 0) return ['0'];
-    
+
     const parts = [];
-    
+
     if (number >= 10000) {
       const wan = Math.floor(number / 10000);
       const remainder = number % 10000;
@@ -192,7 +268,7 @@ const Sports = () => {
   // 播放数字音频
   const playNumberSync = useCallback(async (number) => {
     if (!audioContextRef.current || !audioBuffersRef.current || isAudioContextClosed.current) return;
-    
+
     const audioParts = parseNumberToAudioParts(number);
 
     return new Promise((resolve) => {
@@ -241,10 +317,10 @@ const Sports = () => {
 
     while (isRunningRef.current && !shouldStopLoopRef.current) {
       setCounter(localCount);
-      
+
       // 1. 播放语音
       await playNumberSync(localCount);
-      
+
       // 2. 播放完后立即检查是否还在运行
       if (!isRunningRef.current || shouldStopLoopRef.current) {
         break;
@@ -252,7 +328,7 @@ const Sports = () => {
 
       // 3. 如果还在运行，才进行等待
       await sleep(intervalTimeRef.current * 1000);
-      
+
       // 4. 再次检查（防止在 sleep 期间被停止）
       if (!isRunningRef.current || shouldStopLoopRef.current) {
         break;
@@ -296,7 +372,7 @@ const Sports = () => {
     try {
       // 确保先停止之前的循环
       stopCounterLoop();
-      
+
       // 等待状态更新生效
       await new Promise(resolve => setTimeout(resolve, 10));
 
@@ -304,13 +380,13 @@ const Sports = () => {
       setIsPaused(false);
       isRunningRef.current = true;
       shouldStopLoopRef.current = false;
-      
+
       if (audioContextRef.current && !isAudioContextClosed.current && audioContextRef.current.state === 'suspended') {
         await audioContextRef.current.resume();
       }
-      
+
       startTimer();
-      
+
       // 从当前的 counter 值继续计数
       const startFrom = counter > 0 ? counter + 1 : 1;
       await startCounterLoop(startFrom);
@@ -324,7 +400,7 @@ const Sports = () => {
   // 倒计时并开始
   const startWithCountdown = useCallback(() => {
     if (isRunning || isPaused) return;
-    
+
     setCountdown(3);
     const countdownInterval = setInterval(async () => {
       setCountdown(prev => {
@@ -344,13 +420,13 @@ const Sports = () => {
   // 暂停
   const handlePause = useCallback(() => {
     if (!isRunning) return;
-    
+
     // 停止计数循环
     stopCounterLoop();
-    
+
     setIsRunning(false);
     setIsPaused(true);
-    
+
     if (audioContextRef.current && !isAudioContextClosed.current) {
       audioContextRef.current.suspend();
     }
@@ -379,14 +455,14 @@ const Sports = () => {
 
       const result = await response.json();
       console.log('保存成功:', result);
-      
-      setRecords(prev => prev.map(r => 
+
+      setRecords(prev => prev.map(r =>
         r.tempId === recordData.tempId ? { ...r, saved: true, id: result.id } : r
       ));
-      
+
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
-      
+
     } catch (error) {
       console.error('保存记录失败:', error);
       alert('保存失败，请重试');
@@ -398,17 +474,17 @@ const Sports = () => {
     // 停止所有循环和计时器
     stopCounterLoop();
     stopAllTimers();
-    
+
     setIsRunning(false);
     setIsPaused(false);
-    
+
     if (audioContextRef.current && !isAudioContextClosed.current) {
       audioContextRef.current.resume();
     }
-    
+
     if (counter > 0) {
       const nextGroup = await fetchCurrentGroupNumber(selectedSportName);
-      
+
       const tempId = Date.now();
       const newRecord = {
         tempId: tempId,
@@ -422,11 +498,11 @@ const Sports = () => {
         saved: false,
         displayTime: new Date().toLocaleString()
       };
-      
+
       setRecords(prev => [newRecord, ...prev]);
       await saveRecordToDatabase(newRecord);
     }
-    
+
     setCounter(0);
     setTimer(0);
     setCountdown(null);
@@ -486,7 +562,7 @@ const Sports = () => {
     const h = Math.floor(seconds / 3600);
     const m = Math.floor((seconds % 3600) / 60);
     const s = seconds % 60;
-    return h > 0 
+    return h > 0
       ? `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
       : `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   };
@@ -502,17 +578,17 @@ const Sports = () => {
   // 渲染设置弹窗
   const renderSettingsModal = () => {
     if (!showSettingsModal) return null;
-    
+
     return (
       <div className={styles.modalOverlay} onClick={() => setShowSettingsModal(false)}>
         <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
           <div className={styles.modalTitle}>设置</div>
-          
+
           <div className={styles.modalSection}>
             <div className={styles.modalSectionTitle}>类别</div>
             <div className={styles.modalSportsGrid}>
               {sportsTypes.map(sport => (
-                <div 
+                <div
                   key={sport.sport_type_Options}
                   className={`${styles.modalSportCard} ${tempSelectedSport === sport.sport_type_Options ? styles.selected : ''}`}
                   onClick={() => setTempSelectedSport(sport.sport_type_Options)}
@@ -523,6 +599,17 @@ const Sports = () => {
                   <span className={styles.modalSportName}>{sport.sport_type_Options}</span>
                 </div>
               ))}
+              {/* 新增：添加按钮 */}
+              <div
+                className={styles.modalSportCardAdd}
+                onClick={() => {
+                  setShowSettingsModal(false);
+                  setShowAddSportModal(true);
+                }}
+              >
+                <div className={styles.addIcon}>+</div>
+                <span className={styles.modalSportName}>添加</span>
+              </div>
             </div>
           </div>
 
@@ -530,7 +617,7 @@ const Sports = () => {
             <div className={styles.modalSectionTitle}>间隔</div>
             <div className={styles.modalIntervalGrid}>
               {intervalOptions.map(option => (
-                <div 
+                <div
                   key={option}
                   className={`${styles.modalIntervalCard} ${tempIntervalTime === option ? styles.selected : ''}`}
                   onClick={() => setTempIntervalTime(option)}
@@ -549,7 +636,86 @@ const Sports = () => {
       </div>
     );
   };
-
+ // 新增：添加运动类别弹窗
+  const renderAddSportModal = () => {
+    if (!showAddSportModal) return null;
+    
+    const isFormValid = newSportName.trim().length > 0;
+    
+    return (
+      <div className={styles.modalOverlay} onClick={() => {
+        setShowAddSportModal(false);
+        setNewSportName('');
+        setNewSportIcon('');
+        setAddSportError('');
+      }}>
+        <div className={styles.addSportModalContent} onClick={(e) => e.stopPropagation()}>
+          <div className={styles.modalTitle}>添加运动类别</div>
+          
+          <div className={styles.addSportForm}>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>
+                运动名称 <span className={styles.required}>*</span>
+              </label>
+              <input
+                type="text"
+                className={styles.formInput}
+                placeholder="请输入运动类别名称，如：深蹲"
+                value={newSportName}
+                onChange={(e) => {
+                  setNewSportName(e.target.value);
+                  setAddSportError('');
+                }}
+                maxLength={50}
+              />
+            </div>
+            
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>
+                图标（可选）
+              </label>
+              <input
+                type="text"
+                className={styles.formInput}
+                placeholder="请输入图标名称，留空将使用默认图标"
+                value={newSportIcon}
+                onChange={(e) => setNewSportIcon(e.target.value)}
+                maxLength={255}
+              />
+              <div className={styles.formHint}>
+                提示：不填写将使用默认图标 "icon-liuyanmoban"
+              </div>
+            </div>
+            
+            {addSportError && (
+              <div className={styles.formError}>{addSportError}</div>
+            )}
+          </div>
+          
+          <div className={styles.modalButtons}>
+            <button 
+              className={styles.cancelBtn} 
+              onClick={() => {
+                setShowAddSportModal(false);
+                setNewSportName('');
+                setNewSportIcon('');
+                setAddSportError('');
+              }}
+            >
+              取消
+            </button>
+            <button 
+              className={`${styles.saveBtn} ${!isFormValid ? styles.disabled : ''}`}
+              onClick={handleAddSport}
+              disabled={!isFormValid || isAddingSport}
+            >
+              {isAddingSport ? '添加中...' : '添加'}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
   const currentSportData = getCurrentSport();
 
   return (
@@ -560,17 +726,18 @@ const Sports = () => {
           <div className={styles.countdownNumber}>{countdown}</div>
         </div>
       )}
-      
+
       {/* 设置弹窗 */}
       {renderSettingsModal()}
-      
+  {/* 添加运动类别弹窗 */}
+      {renderAddSportModal()}
       {/* 保存成功提示 */}
       {saveSuccess && (
         <div className={styles.successToast}>
           ✅ 记录已保存到数据库！
         </div>
       )}
-      
+
       {/* 控制按钮区 */}
       <div className={styles.controls}>
         {!isRunning && !isPaused && counter === 0 && (
@@ -601,7 +768,7 @@ const Sports = () => {
             </div>
           </div>
         </div>
-  
+
         {/* 计数器 + 计时器 两列 */}
         <div className={styles.statsRow}>
           <div className={styles.counterSection}>

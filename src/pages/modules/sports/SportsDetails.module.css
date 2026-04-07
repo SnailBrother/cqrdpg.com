@@ -1,9 +1,13 @@
 .container {
   min-height: 100dvh;
   background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
- 
-}
 
+}
+/* 隐藏滚动条 - 兼容 Chrome, Safari, Edge */
+.container::-webkit-scrollbar {
+  width: 0;
+  background: transparent;
+}
 /* 消息提示 */
 .toast {
   position: fixed;

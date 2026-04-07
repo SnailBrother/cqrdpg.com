@@ -15809,6 +15809,85 @@ app.delete('/api/SportsAppWorkoutRecords/delete/:id', async (req, res) => {
     });
   }
 });
+
+//添加选项
+// 添加运动类别的 API
+app.post('/api/getSportsOptions/add', async (req, res) => {
+  const { sport_type_Options, icon_Options } = req.body;
+  
+  // 验证必填字段
+  if (!sport_type_Options || sport_type_Options.trim() === '') {
+    return res.status(400).json({ 
+      success: false, 
+      message: '运动类别名称不能为空' 
+    });
+  }
+  
+  try {
+    const pool = await sql.connect(config);
+    
+    // 检查是否已存在
+    const checkQuery = `
+      SELECT COUNT(*) as count 
+      FROM SportsApp.dbo.SportsOptions 
+      WHERE sport_type_Options = @sport_type_Options
+    `;
+    const checkResult = await pool.request()
+      .input('sport_type_Options', sql.VarChar(50), sport_type_Options.trim())
+      .query(checkQuery);
+    
+    if (checkResult.recordset[0].count > 0) {
+      return res.status(400).json({ 
+        success: false, 
+        message: '该运动类别已存在' 
+      });
+    }
+    
+    // 设置默认图标
+    const finalIcon = icon_Options && icon_Options.trim() !== '' 
+      ? icon_Options.trim() 
+      : 'icon-liuyanmoban';
+    
+    // 插入新记录
+    const insertQuery = `
+      INSERT INTO SportsApp.dbo.SportsOptions (sport_type_Options, icon_Options)
+      VALUES (@sport_type_Options, @icon_Options)
+    `;
+    
+    await pool.request()
+      .input('sport_type_Options', sql.VarChar(50), sport_type_Options.trim())
+      .input('icon_Options', sql.VarChar(255), finalIcon)
+      .query(insertQuery);
+    
+    // 发送 WebSocket 更新通知（不能少）
+    if (io) {
+      io.emit('workout-record-update', { 
+        message: '运动记录已更新',
+        type: 'SPORT_ADDED',
+        data: {
+          sport_type_Options: sport_type_Options.trim(),
+          icon_Options: finalIcon
+        }
+      });
+    }
+    
+    res.json({ 
+      success: true, 
+      message: '运动类别添加成功',
+      data: {
+        sport_type_Options: sport_type_Options.trim(),
+        icon_Options: finalIcon
+      }
+    });
+    
+  } catch (error) {
+    console.error('添加运动类别失败:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: error.message || '服务器错误' 
+    });
+  }
+});
 }
 
 
