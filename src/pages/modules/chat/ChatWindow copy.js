@@ -4,7 +4,6 @@ import io from 'socket.io-client';
 import { useAuth } from '../../../context/AuthContext';
 import './ChatWindow.css';
 import { Loading } from '../../../components/UI';
-import VideoCall from './VideoCall'; // 根据实际路径调整
 
 import Circularrotatingtext from './.././../../components/Animation/Circularrotatingtext'; // 加载动画里面的环形旋转文字
 const socket = io('http://121.4.22.55:5202');
@@ -14,7 +13,7 @@ const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) 
     const [senderName, setSenderName] = useState(username);
     const [receiverName, setReceiverName] = useState(selectedFriend ? selectedFriend.name : '我们来聊天吧');
     const [messageText, setMessageText] = useState('');
-    // 移除这一行：const { username: currentUsername } = useContext(useAuth);
+     // 移除这一行：const { username: currentUsername } = useContext(useAuth);
     const currentUsername = username; // 直接使用传入的 username
     const [isSettingOpen, setIsSettingOpen] = useState(false);
     const [selectedMessages, setSelectedMessages] = useState([]);
@@ -34,114 +33,6 @@ const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) 
     const [totalUnread, setTotalUnread] = useState(0); // 未读消息总数
     const [hasNewMessages, setHasNewMessages] = useState(false); // 新增：是否有新消息 针对滚动条不是在顶部的提示
     const [isAtBottom, setIsAtBottom] = useState(true); // 新增：是否在底部
-    //添加视频通话状态管理 
-
-
-    const [isVideoCallModalOpen, setIsVideoCallModalOpen] = useState(false);
-    const [videoCallInfo, setVideoCallInfo] = useState({
-        isIncoming: false, // 是否是收到的邀请
-        callerName: '', // 邀请者名称
-        receiverName: '', // 被邀请者名称
-        callId: null, // 通话ID
-        callStatus: 'waiting' // 通话状态: 'waiting', 'connected', 'rejected'
-    });
-    const videoCallInfoRef = useRef(videoCallInfo);
-    // 同步更新 ref
-    useEffect(() => {
-        videoCallInfoRef.current = videoCallInfo;
-    }, [videoCallInfo]);
-    //添加发送视频通话邀请的函数
-    // 在组件中添加发送视频通话邀请的函数
-// 发送视频通话邀请
-const sendVideoCallInvitation = async () => {
-    if (!selectedFriend) {
-        alert('请先选择聊天对象');
-        return;
-    }
-
-    try {
-        // 使用时间戳作为唯一标识
-        const callId = Date.now().toString();
-        console.log('发送视频通话邀请, callId:', callId);
-
-        // 发送视频通话邀请消息
-        const response = await axios.post('http://121.4.22.55:5202/api/messages', {
-            message_text: `您的好友 ${username} 邀请您进行视频通话`,
-            sender_name: username,
-            receiver_name: selectedFriend.name,
-            message_type: 'video_call_invitation',
-            call_id: callId  // 仍然保存到数据库，但前端匹配时不依赖它
-        });
-        
-        console.log('邀请发送响应:', response.data);
-
-        // 打开自己的视频通话模态框
-        setVideoCallInfo({
-            isIncoming: false,
-            callerName: username,
-            receiverName: selectedFriend.name,
-            callId: callId,
-            callStatus: 'waiting'
-        });
-        setIsVideoCallModalOpen(true);
-        
-        console.log('视频通话模态框已打开，callId:', callId);
-
-    } catch (error) {
-        console.error('发送视频通话邀请失败:', error);
-        alert('发送视频通话邀请失败: ' + (error.response?.data?.error || error.message));
-    }
-};
-
-// 添加 Socket 连接状态监听
-useEffect(() => {
-    const onConnect = () => {
-        console.log('Socket connected successfully');
-        // 重新注册用户
-        if (username) {
-            socket.emit('register-user', username);
-        }
-    };
-    
-    const onDisconnect = () => {
-        console.log('Socket disconnected');
-    };
-    
-    const onConnectError = (error) => {
-        console.error('Socket connection error:', error);
-    };
-    
-    socket.on('connect', onConnect);
-    socket.on('disconnect', onDisconnect);
-    socket.on('connect_error', onConnectError);
-    
-    return () => {
-        socket.off('connect', onConnect);
-        socket.off('disconnect', onDisconnect);
-        socket.off('connect_error', onConnectError);
-    };
-}, [username]);
-
-    //添加图片及视频通话悬浮
-    // 添加状态控制菜单显示
-    const [showImageMenu, setShowImageMenu] = useState(false);
-    const imageMenuRef = useRef(null);
-
-    // 点击外部关闭菜单
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (imageMenuRef.current && !imageMenuRef.current.contains(event.target)) {
-                setShowImageMenu(false);
-            }
-        };
-
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, []);
-
-
 
     // 模拟框图片
     const handleAvatarClick = (imageUrl) => {
@@ -305,22 +196,22 @@ useEffect(() => {
         root.style.setProperty('--my-bubble-color', themeSettings.myBubbleColor);
     }, [themeSettings]);
 
-    const formatTime = (timestamp) => {
-        if (!timestamp) return '';
+const formatTime = (timestamp) => {
+    if (!timestamp) return '';
+    
+    const date = new Date(timestamp);
+    
+    if (isNaN(date.getTime())) {
+        console.error('Invalid timestamp:', timestamp);
+        return '';
+    }
 
-        const date = new Date(timestamp);
-
-        if (isNaN(date.getTime())) {
-            console.error('Invalid timestamp:', timestamp);
-            return '';
-        }
-
-        // 直接使用本地时间，不要手动加减小时
-        const hours = date.getHours().toString().padStart(2, '0');
-        const minutes = date.getMinutes().toString().padStart(2, '0');
-
-        return `${hours}:${minutes}`;
-    };
+    // 直接使用本地时间，不要手动加减小时
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    
+    return `${hours}:${minutes}`;
+};
 
     // 初次加载时标记未读消息为已读
     // 获取消息的函数（支持分页） - 提取到 useEffect 外部
@@ -395,31 +286,6 @@ useEffect(() => {
     // Socket 监听器
     useEffect(() => {
         const handleNewMessage = (newMessage) => {
-
-
-            // 检查是否是视频通话邀请
-            // 在 handleNewMessage 函数中修改
-// 在 socket.on('newMessage') 或消息处理中
-// 在 socket.on('newMessage') 中处理视频通话邀请
-if (newMessage.message_type === 'video_call_invitation') {
-    // 如果是发给当前用户的消息
-    if (newMessage.receiver_name === username && newMessage.sender_name === selectedFriend?.name) {
-        console.log('收到视频通话邀请:', newMessage);
-        
-        // 生成一个临时的通话ID（如果消息中没有）
-        const tempCallId = newMessage.call_id || Date.now().toString();
-        
-        setVideoCallInfo({
-            isIncoming: true,
-            callerName: newMessage.sender_name,
-            receiverName: newMessage.receiver_name,
-            callId: tempCallId,
-            callStatus: 'waiting'
-        });
-        setIsVideoCallModalOpen(true);
-    }
-}
-
             if (
                 (newMessage.sender_name === senderName && newMessage.receiver_name === receiverName) ||
                 (newMessage.sender_name === receiverName && newMessage.receiver_name === senderName)
@@ -475,171 +341,6 @@ if (newMessage.message_type === 'video_call_invitation') {
             socket.off('messagesRead');
         };
     }, [selectedFriend, username, senderName, receiverName, currentUsername, isAtBottom, fetchMessages]); // 添加 fetchMessages 依赖
-
-
-    // 接受视频通话
-    // 接受视频通话 - 确保正确发送 callId
-// 接受视频通话 - 确保从正确的来源获取 callId
-// 接受视频通话 - 使用用户名组合作为标识
-const acceptVideoCall = () => {
-    console.log('=== 接受视频通话 ===');
-    console.log('当前 videoCallInfo:', videoCallInfo);
-    
-    // 生成一个唯一的通话ID（如果还没有）
-    const finalCallId = videoCallInfo.callId || Date.now().toString();
-    
-    // 先发送 Socket 事件，使用用户名组合作为标识
-    socket.emit('video-call-accepted', {
-        callerName: videoCallInfo.callerName,
-        receiverName: videoCallInfo.receiverName,
-        callId: finalCallId
-    });
-    
-    console.log('已发送 video-call-accepted 事件');
-    
-    // 然后更新状态为已连接
-    setVideoCallInfo(prev => ({
-        ...prev,
-        callId: finalCallId,
-        callStatus: 'connected'
-    }));
-};
-
-    // 拒绝视频通话
-    const rejectVideoCall = () => {
-        console.log('=== 拒绝/取消视频通话 ===');
-        console.log('当前 videoCallInfo:', videoCallInfo);
-
-        // 通过 Socket 通知对方已拒绝/取消通话
-        if (videoCallInfo.callId) {
-            socket.emit('video-call-rejected', {
-                callId: videoCallInfo.callId,  // 确保 callId 存在
-                callerName: videoCallInfo.callerName,
-                receiverName: videoCallInfo.receiverName
-            });
-            console.log('已发送 video-call-rejected 事件，callId:', videoCallInfo.callId);
-        }
-
-        setIsVideoCallModalOpen(false);
-        setVideoCallInfo({
-            isIncoming: false,
-            callerName: '',
-            receiverName: '',
-            callId: null,
-            callStatus: 'waiting'
-        });
-    };
-
-    // 添加挂断视频通话的函数
-    const endVideoCall = () => {
-        console.log('=== 挂断视频通话 ===');
-
-        if (videoCallInfo.callId) {
-            socket.emit('video-call-ended', {
-                callId: videoCallInfo.callId,
-                callerName: videoCallInfo.callerName,
-                receiverName: videoCallInfo.receiverName
-            });
-        }
-
-        setIsVideoCallModalOpen(false);
-        setVideoCallInfo({
-            isIncoming: false,
-            callerName: '',
-            receiverName: '',
-            callId: null,
-            callStatus: 'waiting'
-        });
-    };
-
-    // 在现有的 useEffect 之后，添加一个新的 useEffect 专门处理视频通话的 Socket 事件
-
-// 视频通话 Socket 事件监听
-useEffect(() => {
-    // 监听对方接受视频通话 - 使用用户名组合匹配
-    const handleVideoCallAccepted = (data) => {
-        console.log('收到视频通话接受事件:', data);
-        
-        // 使用用户名组合来匹配通话
-        const isMatchingCall = 
-            (data.callerName === videoCallInfoRef.current.callerName && 
-             data.receiverName === videoCallInfoRef.current.receiverName) ||
-            (data.callerName === videoCallInfoRef.current.receiverName && 
-             data.receiverName === videoCallInfoRef.current.callerName);
-        
-        if (isMatchingCall) {
-            console.log('通话匹配成功，更新状态为 connected');
-            setVideoCallInfo(prev => ({
-                ...prev,
-                callStatus: 'connected'
-            }));
-            setIsVideoCallModalOpen(true);
-        } else {
-            console.log('通话不匹配，忽略事件', {
-                dataCaller: data.callerName,
-                dataReceiver: data.receiverName,
-                currentCaller: videoCallInfoRef.current.callerName,
-                currentReceiver: videoCallInfoRef.current.receiverName
-            });
-        }
-    };
-    
-    // 监听对方拒绝视频通话
-    const handleVideoCallRejected = (data) => {
-        console.log('收到视频通话拒绝事件:', data);
-        
-        const isMatchingCall = 
-            (data.callerName === videoCallInfoRef.current.callerName && 
-             data.receiverName === videoCallInfoRef.current.receiverName) ||
-            (data.callerName === videoCallInfoRef.current.receiverName && 
-             data.receiverName === videoCallInfoRef.current.callerName);
-        
-        if (isMatchingCall) {
-            alert(`${data.callerName === username ? data.receiverName : data.callerName} 拒绝了视频通话`);
-            setIsVideoCallModalOpen(false);
-            setVideoCallInfo({
-                isIncoming: false,
-                callerName: '',
-                receiverName: '',
-                callId: null,
-                callStatus: 'waiting'
-            });
-        }
-    };
-    
-    // 监听对方挂断通话
-    const handleVideoCallEnded = (data) => {
-        console.log('收到视频通话挂断事件:', data);
-        
-        const isMatchingCall = 
-            (data.callerName === videoCallInfoRef.current.callerName && 
-             data.receiverName === videoCallInfoRef.current.receiverName) ||
-            (data.callerName === videoCallInfoRef.current.receiverName && 
-             data.receiverName === videoCallInfoRef.current.callerName);
-        
-        if (isMatchingCall) {
-            alert('对方已挂断视频通话');
-            setIsVideoCallModalOpen(false);
-            setVideoCallInfo({
-                isIncoming: false,
-                callerName: '',
-                receiverName: '',
-                callId: null,
-                callStatus: 'waiting'
-            });
-        }
-    };
-    
-    socket.on('video-call-accepted', handleVideoCallAccepted);
-    socket.on('video-call-rejected', handleVideoCallRejected);
-    socket.on('video-call-ended', handleVideoCallEnded);
-    
-    return () => {
-        socket.off('video-call-accepted', handleVideoCallAccepted);
-        socket.off('video-call-rejected', handleVideoCallRejected);
-        socket.off('video-call-ended', handleVideoCallEnded);
-    };
-}, [username]);
 
     // Socket 监听器单独使用一个 useEffect
     useEffect(() => {
@@ -698,18 +399,7 @@ useEffect(() => {
             }
         }
     };
-    // 在组件中添加用户注册（放在所有 useEffect 之前或之后都可以）
-    useEffect(() => {
-        if (username) {
-            console.log('注册用户:', username);
-            socket.emit('register-user', username);
-        }
 
-        return () => {
-            // 可选：离开时注销
-            // socket.emit('unregister-user', username);
-        };
-    }, [username]);
     // 智能滚动：只在用户接近底部时自动滚动
     useEffect(() => {
         if (messageListRef.current && isAtBottom) {
@@ -1022,7 +712,7 @@ useEffect(() => {
                         {/* 加载更多指示器 */}
                         {isLoading && (
                             <div className="chat-loading-indicator">
-                                <Loading message="信息加载中..." />
+                                 <Loading message="信息加载中..." />
                                 {/* 加载中... */}
                             </div>
                         )}
@@ -1035,7 +725,7 @@ useEffect(() => {
                         )}  {/* 加载更多指示器 */}
                         {isLoading && (
                             <div className="chat-loading-indicator">
-                                <Loading message="信息加载中..." />
+                                 <Loading message="信息加载中..." />
                                 {/* 加载中... */}
                             </div>
                         )}
@@ -1134,66 +824,27 @@ useEffect(() => {
                     )}
 
                     <div className="chat-friendmanagement-chatwindow-input-container">
-                        {/* 悬浮菜单容器 */}
-                        <div className="chat-image-menu-container" ref={imageMenuRef}>
-                            {/* 主按钮 - 点击或悬浮时显示菜单 */}
-                            <button
-                                className="chat-friendmanagement-chatwindow-button"
-                                onClick={() => setShowImageMenu(!showImageMenu)}
-                                onMouseEnter={() => setShowImageMenu(true)}
-                            >
+                        {/* 图片上传按钮 */}
+                        <input
+                            type="file"
+                            id="image-upload"
+                            accept="image/*"
+                            style={{ display: 'none' }}
+                            onChange={handleImageUpload}
+                        />
+                        <button
+                            className="chat-friendmanagement-chatwindow-button"
+                            onClick={() => document.getElementById('image-upload').click()}
+                            disabled={isUploading}
+                        >
+                            {isUploading ? (
+                                  <Loading message="上传库加载中..."  size="small" />  
+                            ) : (
                                 <svg className="chat-friend-send-message-icon" aria-hidden="true">
                                     <use xlinkHref="#icon-tianjia" />
                                 </svg>
-                            </button>
-
-                            {/* 悬浮菜单 */}
-                            {showImageMenu && (
-                                <div
-                                    className="chat-image-menu"
-                                    onMouseLeave={() => setShowImageMenu(false)}
-                                >
-                                    <input
-                                        type="file"
-                                        id="image-upload"
-                                        accept="image/*"
-                                        style={{ display: 'none' }}
-                                        onChange={(e) => {
-                                            handleImageUpload(e);
-                                            setShowImageMenu(false);
-                                        }}
-                                    />
-                                    <button
-                                        className="chat-image-menu-item"
-                                        onClick={() => document.getElementById('image-upload').click()}
-                                        disabled={isUploading}
-                                    >
-                                        {isUploading ? (
-                                            <Loading message="上传中..." size="small" />
-                                        ) : (
-                                            <>
-                                                <svg className="chat-menu-icon" aria-hidden="true">
-                                                    <use xlinkHref="#icon-tupian" />
-                                                </svg>
-                                                <span>发送图片</span>
-                                            </>
-                                        )}
-                                    </button>
-
-
-                                    <button
-                                        className="chat-image-menu-item"
-                                        onClick={sendVideoCallInvitation}  // 添加这个
-                                    >
-                                        <svg className="chat-menu-icon" aria-hidden="true">
-                                            <use xlinkHref="#icon-tupian" />
-                                        </svg>
-                                        <span>视频通话</span>
-                                    </button>
-
-                                </div>
                             )}
-                        </div>
+                        </button>
 
                         {/* 文本输入框 */}
                         <input
@@ -1220,81 +871,7 @@ useEffect(() => {
                     </div>
                 </>
             )}
-            {/* 视频通话模态框 */}
-            {/* 视频通话模态框 */}
-            {isVideoCallModalOpen && (
-                <div className="chat-friendmanagement-chatwindow-modal">
-                    <div className="chat-video-call-modal-content">
-                        {videoCallInfo.callStatus === 'connected' ? (
-                            // 通话已连接，显示 VideoCall 组件
-                            <VideoCall
-                                callerName={videoCallInfo.callerName}
-                                receiverName={videoCallInfo.receiverName}
-                                callId={videoCallInfo.callId}
-                                isInitiator={!videoCallInfo.isIncoming}
-                                onClose={() => {
-                                    // 挂断通话时通知对方
-                                    endVideoCall();
-                                }}
-                            />
-                        ) : (
-                            // 等待接受状态
-                            <>
-                                <button
-                                    className="chat-friendmanagement-chatwindow-modal-close-button"
-                                    onClick={rejectVideoCall}
-                                >
-                                    ×
-                                </button>
-                                <div className="video-call-container">
-                                    {!videoCallInfo.isIncoming ? (
-                                        // 自己发出的邀请
-                                        <>
-                                            <div className="video-call-icon">
-                                                <svg className="video-call-svg" aria-hidden="true">
-                                                    <use xlinkHref="#icon-shipin" />
-                                                </svg>
-                                            </div>
-                                            <h3>等待对方接受视频通话...</h3>
-                                            <p>正在邀请: {videoCallInfo.receiverName}</p>
-                                            <button
-                                                className="video-call-cancel-btn"
-                                                onClick={rejectVideoCall}
-                                            >
-                                                取消
-                                            </button>
-                                        </>
-                                    ) : (
-                                        // 收到的邀请
-                                        <>
-                                            <div className="video-call-icon">
-                                                <svg className="video-call-svg" aria-hidden="true">
-                                                    <use xlinkHref="#icon-shipin" />
-                                                </svg>
-                                            </div>
-                                            <h3>{videoCallInfo.callerName} 邀请您进行视频通话</h3>
-                                            <div className="video-call-buttons">
-                                                <button
-                                                    className="video-call-accept-btn"
-                                                    onClick={acceptVideoCall}
-                                                >
-                                                    接受
-                                                </button>
-                                                <button
-                                                    className="video-call-reject-btn"
-                                                    onClick={rejectVideoCall}
-                                                >
-                                                    拒绝
-                                                </button>
-                                            </div>
-                                        </>
-                                    )}
-                                </div>
-                            </>
-                        )}
-                    </div>
-                </div>
-            )}
+
             {/* 图片模态框 */}
             {isModalOpen && (
                 <div className="chat-friendmanagement-chatwindow-modal">

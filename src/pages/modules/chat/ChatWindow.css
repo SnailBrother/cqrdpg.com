@@ -642,3 +642,204 @@ width: 25px;
 .chat-friendmanagement-chatwindow-friend-nickname {
     color: #000000;
 }
+
+
+/* #region start 图片切换*/
+/* #region 图片悬浮菜单样式 */
+.chat-image-menu-container {
+  position: relative;
+  display: inline-block;
+}
+
+.chat-image-menu {
+  position: absolute;
+  bottom: 50px;
+  left: 0;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  padding: 8px 0;
+  min-width: 120px;
+  z-index: 1000;
+  animation: menuFadeIn 0.2s ease;
+}
+
+.chat-image-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: none;
+  border: none;
+  width: 100%;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 14px;
+  color: #333;
+}
+
+.chat-image-menu-item:hover {
+  background-color: #f5f5f5;
+}
+
+.chat-image-menu-item:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.chat-menu-icon {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+@keyframes menuFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Popover 样式 */
+.chat-image-popover {
+  position: absolute;
+  bottom: 50px;
+  left: 0;
+  z-index: 1000;
+}
+
+.chat-image-popover-content {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  min-width: 140px;
+}
+
+.chat-image-popover-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  background: none;
+  border: none;
+  width: 100%;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 14px;
+  color: #333;
+}
+
+.chat-image-popover-item:hover {
+  background-color: #f0f0f0;
+}
+
+.chat-image-popover-item:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+/* #endregion */
+/*  #endregion end */
+/* #region start 视频通话*/
+/* 视频通话模态框样式 */
+.chat-video-call-modal-content {
+    position: relative;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    padding: 40px;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+    animation: contentSlideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.video-call-container {
+    color: white;
+}
+
+.video-call-icon {
+    margin-bottom: 20px;
+}
+
+.video-call-svg {
+    width: 80px;
+    height: 80px;
+    fill: white;
+}
+
+.video-call-container h3 {
+    margin: 20px 0 10px;
+    font-size: 24px;
+}
+
+.video-call-container p {
+    margin: 10px 0;
+    font-size: 16px;
+    opacity: 0.9;
+}
+
+.video-call-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.video-call-accept-btn,
+.video-call-reject-btn,
+.video-call-cancel-btn {
+    padding: 12px 30px;
+    border: none;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, opacity 0.2s;
+}
+
+.video-call-accept-btn {
+    background: #4CAF50;
+    color: white;
+}
+
+.video-call-accept-btn:hover {
+    background: #45a049;
+    transform: scale(1.05);
+}
+
+.video-call-reject-btn,
+.video-call-cancel-btn {
+    background: #f44336;
+    color: white;
+}
+
+.video-call-reject-btn:hover,
+.video-call-cancel-btn:hover {
+    background: #da190b;
+    transform: scale(1.05);
+}
+
+.video-call-accept-btn:active,
+.video-call-reject-btn:active,
+.video-call-cancel-btn:active {
+    transform: scale(0.95);
+}
+/* 让 VideoCall 组件在模态框中全屏显示 */
+.chat-video-call-modal-content:has(.video-call-component) {
+    padding: 0;
+    width: 90vw;
+    height: 80vh;
+    max-width: 1200px;
+    background: #1a1a1a;
+}
+
+.video-call-component {
+    width: 100%;
+    height: 100%;
+}
+/*  #endregion end */

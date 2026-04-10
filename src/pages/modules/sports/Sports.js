@@ -43,6 +43,7 @@ const Sports = () => {
   const [newSportIcon, setNewSportIcon] = useState('');
   const [isAddingSport, setIsAddingSport] = useState(false);
   const [addSportError, setAddSportError] = useState('');
+  
   const fetchSportsOptions = useCallback(async () => {
     try {
       const response = await fetch('/api/getSportsOptions');
@@ -62,25 +63,28 @@ const Sports = () => {
 
 
   // 获取运动选项
-  useEffect(() => {
-    const fetchSportsOptions = async () => {
-      try {
-        const response = await fetch('/api/getSportsOptions');
-        const data = await response.json();
-        setSportsTypes(data);
-        if (data.length > 0) {
-          setSelectedSport(data[0].sport_type_Options);
-          setSelectedSportName(data[0].sport_type_Options);
-          setSelectedSportIcon(data[0].icon_Options);
-          setTempSelectedSport(data[0].sport_type_Options);
-        }
-      } catch (error) {
-        console.error('获取运动选项失败:', error);
+// 获取运动选项 - 只在组件挂载时执行一次
+useEffect(() => {
+  const fetchSportsOptions = async () => {
+    try {
+      const response = await fetch('/api/getSportsOptions');
+      const data = await response.json();
+      setSportsTypes(data);
+      // 只在初始没有选中运动时才设置默认值
+      if (data.length > 0 && !selectedSport) {
+        setSelectedSport(data[0].sport_type_Options);
+        setSelectedSportName(data[0].sport_type_Options);
+        setSelectedSportIcon(data[0].icon_Options);
+        setTempSelectedSport(data[0].sport_type_Options);
       }
-    };
+    } catch (error) {
+      console.error('获取运动选项失败:', error);
+    }
+  };
 
-    fetchSportsOptions();
-  }, [fetchSportsOptions]);
+  fetchSportsOptions();
+}, []); // 空依赖数组，只在组件挂载时执行一次
+
   // 新增：添加运动类别
   const handleAddSport = async () => {
     // 验证必填项

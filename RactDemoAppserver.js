@@ -15588,122 +15588,122 @@ ORDER BY
 { //运动减肥app
 
     // 获取当前用户当天某个运动的最新组别
-app.get('/api/SportsAppWorkoutRecords/getMaxGroupNumber', async (req, res) => {
-  try {
-    const { username, sportname, sportdate } = req.query;
-    
-    // 验证必填参数
-    if (!username || !sportname) {
-      return res.status(400).json({ 
-        success: false, 
-        message: '缺少必填参数' 
-      });
-    }
-    
-    const pool = await sql.connect(config);
-    
-    // 使用传入的日期或当天日期
-    const targetDate = sportdate || new Date().toISOString().split('T')[0];
-    
-    const result = await pool.request()
-      .input('username', sql.NVarChar, username)
-      .input('sportname', sql.NVarChar, sportname)
-      .input('sportdate', sql.Date, targetDate)
-      .query(`
+    app.get('/api/SportsAppWorkoutRecords/getMaxGroupNumber', async (req, res) => {
+        try {
+            const { username, sportname, sportdate } = req.query;
+
+            // 验证必填参数
+            if (!username || !sportname) {
+                return res.status(400).json({
+                    success: false,
+                    message: '缺少必填参数'
+                });
+            }
+
+            const pool = await sql.connect(config);
+
+            // 使用传入的日期或当天日期
+            const targetDate = sportdate || new Date().toISOString().split('T')[0];
+
+            const result = await pool.request()
+                .input('username', sql.NVarChar, username)
+                .input('sportname', sql.NVarChar, sportname)
+                .input('sportdate', sql.Date, targetDate)
+                .query(`
         SELECT ISNULL(MAX(groupnumber), 0) as maxGroupNumber
         FROM SportsApp.dbo.WorkoutRecords
         WHERE username = @username 
           AND sportname = @sportname 
           AND sportdate = @sportdate
       `);
-    
-    res.status(200).json({
-      success: true,
-      maxGroupNumber: result.recordset[0].maxGroupNumber
+
+            res.status(200).json({
+                success: true,
+                maxGroupNumber: result.recordset[0].maxGroupNumber
+            });
+
+        } catch (error) {
+            console.error('获取最大组别失败:', error);
+            res.status(500).json({
+                success: false,
+                message: '服务器错误',
+                error: error.message
+            });
+        }
     });
-    
-  } catch (error) {
-    console.error('获取最大组别失败:', error);
-    res.status(500).json({ 
-      success: false, 
-      message: '服务器错误',
-      error: error.message 
-    });
-  }
-});
 
-// 后端 API - 保存运动记录
-app.post('/api/SportsAppWorkoutRecords/add', async (req, res) => {
-  try {
-    const { 
-      username, 
-      sportname, 
-      count, 
-      durationseconds, 
-      groupnumber, 
-      sportdate, 
-      remarks 
-    } = req.body;
+    // 后端 API - 保存运动记录
+    app.post('/api/SportsAppWorkoutRecords/add', async (req, res) => {
+        try {
+            const {
+                username,
+                sportname,
+                count,
+                durationseconds,
+                groupnumber,
+                sportdate,
+                remarks
+            } = req.body;
 
-    // 验证必填字段
-    if (!username || !sportname || !count || !durationseconds || !groupnumber) {
-      return res.status(400).json({ 
-        success: false, 
-        message: '缺少必填字段' 
-      });
-    }
+            // 验证必填字段
+            if (!username || !sportname || !count || !durationseconds || !groupnumber) {
+                return res.status(400).json({
+                    success: false,
+                    message: '缺少必填字段'
+                });
+            }
 
-    // 连接数据库
-    const pool = await sql.connect(config);
-    
-    // 插入记录
-    const result = await pool.request()
-      .input('username', sql.NVarChar, username)
-      .input('sportname', sql.NVarChar, sportname)
-      .input('count', sql.Int, count)
-      .input('durationseconds', sql.Int, durationseconds)
-      .input('groupnumber', sql.Int, groupnumber)
-      .input('sportdate', sql.Date, sportdate || new Date())
-      .input('remarks', sql.NVarChar, remarks || null)
-      .query(`
+            // 连接数据库
+            const pool = await sql.connect(config);
+
+            // 插入记录
+            const result = await pool.request()
+                .input('username', sql.NVarChar, username)
+                .input('sportname', sql.NVarChar, sportname)
+                .input('count', sql.Int, count)
+                .input('durationseconds', sql.Int, durationseconds)
+                .input('groupnumber', sql.Int, groupnumber)
+                .input('sportdate', sql.Date, sportdate || new Date())
+                .input('remarks', sql.NVarChar, remarks || null)
+                .query(`
         INSERT INTO SportsApp.dbo.WorkoutRecords 
         (username, sportname, count, durationseconds, groupnumber, sportdate, remarks)
         OUTPUT INSERTED.id
         VALUES (@username, @sportname, @count, @durationseconds, @groupnumber, @sportdate, @remarks)
       `);
 
-    const insertedId = result.recordset[0].id;
+            const insertedId = result.recordset[0].id;
 
-    // 简化的广播 - 像你的例子一样
-    io.emit('workout-record-update', { 
-      message: '运动记录已更新' 
+            // 简化的广播 - 像你的例子一样
+            io.emit('workout-record-update', {
+                message: '运动记录已更新'
+            });
+
+            res.status(200).json({
+                success: true,
+                message: '运动记录保存成功',
+                id: insertedId
+            });
+
+        } catch (error) {
+            console.error('保存运动记录失败:', error);
+            res.status(500).json({
+                success: false,
+                message: '服务器错误',
+                error: error.message
+            });
+        }
     });
 
-    res.status(200).json({
-      success: true,
-      message: '运动记录保存成功',
-      id: insertedId
-    });
+    // 获取用户的所有运动记录
+    app.get('/api/SportsAppWorkoutRecords/list/:username', async (req, res) => {
+        try {
+            const { username } = req.params;
 
-  } catch (error) {
-    console.error('保存运动记录失败:', error);
-    res.status(500).json({ 
-      success: false, 
-      message: '服务器错误', 
-      error: error.message 
-    });
-  }
-});
-
-// 获取用户的所有运动记录
-app.get('/api/SportsAppWorkoutRecords/list/:username', async (req, res) => {
-  try {
-    const { username } = req.params;
-    
-    const pool = await sql.connect(config);
-    const result = await pool.request()
-      .input('username', sql.NVarChar, username)
-      .query(`
+            const pool = await sql.connect(config);
+            const result = await pool.request()
+                .input('username', sql.NVarChar, username)
+                .query(`
         SELECT id, username, sportname, count, durationseconds, 
                groupnumber, CONVERT(DATE, sportdate) as sportdate, remarks
         FROM SportsApp.dbo.WorkoutRecords
@@ -15711,42 +15711,42 @@ app.get('/api/SportsAppWorkoutRecords/list/:username', async (req, res) => {
         ORDER BY sportdate DESC, id DESC
       `);
 
-    // 如果需要，也可以添加广播
-    // io.emit('workout-record-update', { 
-    //   message: '运动记录已查询' 
-    // });
+            // 如果需要，也可以添加广播
+            // io.emit('workout-record-update', { 
+            //   message: '运动记录已查询' 
+            // });
 
-    res.status(200).json({
-      success: true,
-      records: result.recordset
+            res.status(200).json({
+                success: true,
+                records: result.recordset
+            });
+
+        } catch (error) {
+            console.error('获取运动记录失败:', error);
+            res.status(500).json({
+                success: false,
+                message: '服务器错误',
+                error: error.message
+            });
+        }
     });
 
-  } catch (error) {
-    console.error('获取运动记录失败:', error);
-    res.status(500).json({ 
-      success: false, 
-      message: '服务器错误',
-      error: error.message 
-    });
-  }
-});
+    // 更新运动记录
+    app.put('/api/SportsAppWorkoutRecords/update/:id', async (req, res) => {
+        try {
+            const { id } = req.params;
+            const { sportname, count, durationseconds, groupnumber, sportdate, remarks } = req.body;
 
-// 更新运动记录
-app.put('/api/SportsAppWorkoutRecords/update/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { sportname, count, durationseconds, groupnumber, sportdate, remarks } = req.body;
-
-    const pool = await sql.connect(config);
-    await pool.request()
-      .input('id', sql.Int, id)
-      .input('sportname', sql.NVarChar, sportname)
-      .input('count', sql.Int, count)
-      .input('durationseconds', sql.Int, durationseconds)
-      .input('groupnumber', sql.Int, groupnumber)
-      .input('sportdate', sql.Date, sportdate)
-      .input('remarks', sql.NVarChar, remarks || null)
-      .query(`
+            const pool = await sql.connect(config);
+            await pool.request()
+                .input('id', sql.Int, id)
+                .input('sportname', sql.NVarChar, sportname)
+                .input('count', sql.Int, count)
+                .input('durationseconds', sql.Int, durationseconds)
+                .input('groupnumber', sql.Int, groupnumber)
+                .input('sportdate', sql.Date, sportdate)
+                .input('remarks', sql.NVarChar, remarks || null)
+                .query(`
         UPDATE SportsApp.dbo.WorkoutRecords 
         SET sportname = @sportname,
             count = @count,
@@ -15757,138 +15757,243 @@ app.put('/api/SportsAppWorkoutRecords/update/:id', async (req, res) => {
         WHERE id = @id
       `);
 
-    // 简化：只发送更新通知
-    io.emit('workout-record-update', { 
-      message: '运动记录已更新' 
+            // 简化：只发送更新通知
+            io.emit('workout-record-update', {
+                message: '运动记录已更新'
+            });
+
+            res.status(200).json({
+                success: true,
+                message: '更新成功'
+            });
+
+        } catch (error) {
+            console.error('更新运动记录失败:', error);
+            res.status(500).json({
+                success: false,
+                message: '服务器错误',
+                error: error.message
+            });
+        }
     });
 
-    res.status(200).json({
-      success: true,
-      message: '更新成功'
-    });
+    // 删除运动记录
+    app.delete('/api/SportsAppWorkoutRecords/delete/:id', async (req, res) => {
+        try {
+            const { id } = req.params;
 
-  } catch (error) {
-    console.error('更新运动记录失败:', error);
-    res.status(500).json({ 
-      success: false, 
-      message: '服务器错误',
-      error: error.message 
-    });
-  }
-});
-
-// 删除运动记录
-app.delete('/api/SportsAppWorkoutRecords/delete/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    const pool = await sql.connect(config);
-    await pool.request()
-      .input('id', sql.Int, id)
-      .query(`
+            const pool = await sql.connect(config);
+            await pool.request()
+                .input('id', sql.Int, id)
+                .query(`
         DELETE FROM SportsApp.dbo.WorkoutRecords 
         WHERE id = @id
       `);
 
-    // 简化：只发送更新通知
-    io.emit('workout-record-update', { 
-      message: '运动记录已删除' 
+            // 简化：只发送更新通知
+            io.emit('workout-record-update', {
+                message: '运动记录已删除'
+            });
+
+            res.status(200).json({
+                success: true,
+                message: '删除成功'
+            });
+
+        } catch (error) {
+            console.error('删除运动记录失败:', error);
+            res.status(500).json({
+                success: false,
+                message: '服务器错误',
+                error: error.message
+            });
+        }
     });
 
-    res.status(200).json({
-      success: true,
-      message: '删除成功'
-    });
+    //添加选项
+    // 添加运动类别的 API
+    app.post('/api/getSportsOptions/add', async (req, res) => {
+        const { sport_type_Options, icon_Options } = req.body;
 
-  } catch (error) {
-    console.error('删除运动记录失败:', error);
-    res.status(500).json({ 
-      success: false, 
-      message: '服务器错误',
-      error: error.message 
-    });
-  }
-});
+        // 验证必填字段
+        if (!sport_type_Options || sport_type_Options.trim() === '') {
+            return res.status(400).json({
+                success: false,
+                message: '运动类别名称不能为空'
+            });
+        }
 
-//添加选项
-// 添加运动类别的 API
-app.post('/api/getSportsOptions/add', async (req, res) => {
-  const { sport_type_Options, icon_Options } = req.body;
-  
-  // 验证必填字段
-  if (!sport_type_Options || sport_type_Options.trim() === '') {
-    return res.status(400).json({ 
-      success: false, 
-      message: '运动类别名称不能为空' 
-    });
-  }
-  
-  try {
-    const pool = await sql.connect(config);
-    
-    // 检查是否已存在
-    const checkQuery = `
+        try {
+            const pool = await sql.connect(config);
+
+            // 检查是否已存在
+            const checkQuery = `
       SELECT COUNT(*) as count 
       FROM SportsApp.dbo.SportsOptions 
       WHERE sport_type_Options = @sport_type_Options
     `;
-    const checkResult = await pool.request()
-      .input('sport_type_Options', sql.VarChar(50), sport_type_Options.trim())
-      .query(checkQuery);
-    
-    if (checkResult.recordset[0].count > 0) {
-      return res.status(400).json({ 
-        success: false, 
-        message: '该运动类别已存在' 
-      });
-    }
-    
-    // 设置默认图标
-    const finalIcon = icon_Options && icon_Options.trim() !== '' 
-      ? icon_Options.trim() 
-      : 'icon-liuyanmoban';
-    
-    // 插入新记录
-    const insertQuery = `
+            const checkResult = await pool.request()
+                .input('sport_type_Options', sql.VarChar(50), sport_type_Options.trim())
+                .query(checkQuery);
+
+            if (checkResult.recordset[0].count > 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: '该运动类别已存在'
+                });
+            }
+
+            // 设置默认图标
+            const finalIcon = icon_Options && icon_Options.trim() !== ''
+                ? icon_Options.trim()
+                : 'icon-liuyanmoban';
+
+            // 插入新记录
+            const insertQuery = `
       INSERT INTO SportsApp.dbo.SportsOptions (sport_type_Options, icon_Options)
       VALUES (@sport_type_Options, @icon_Options)
     `;
-    
-    await pool.request()
-      .input('sport_type_Options', sql.VarChar(50), sport_type_Options.trim())
-      .input('icon_Options', sql.VarChar(255), finalIcon)
-      .query(insertQuery);
-    
-    // 发送 WebSocket 更新通知（不能少）
-    if (io) {
-      io.emit('workout-record-update', { 
-        message: '运动记录已更新',
-        type: 'SPORT_ADDED',
-        data: {
-          sport_type_Options: sport_type_Options.trim(),
-          icon_Options: finalIcon
+
+            await pool.request()
+                .input('sport_type_Options', sql.VarChar(50), sport_type_Options.trim())
+                .input('icon_Options', sql.VarChar(255), finalIcon)
+                .query(insertQuery);
+
+            // 发送 WebSocket 更新通知（不能少）
+            if (io) {
+                io.emit('workout-record-update', {
+                    message: '运动记录已更新',
+                    type: 'SPORT_ADDED',
+                    data: {
+                        sport_type_Options: sport_type_Options.trim(),
+                        icon_Options: finalIcon
+                    }
+                });
+            }
+
+            res.json({
+                success: true,
+                message: '运动类别添加成功',
+                data: {
+                    sport_type_Options: sport_type_Options.trim(),
+                    icon_Options: finalIcon
+                }
+            });
+
+        } catch (error) {
+            console.error('添加运动类别失败:', error);
+            res.status(500).json({
+                success: false,
+                message: error.message || '服务器错误'
+            });
         }
-      });
-    }
-    
-    res.json({ 
-      success: true, 
-      message: '运动类别添加成功',
-      data: {
-        sport_type_Options: sport_type_Options.trim(),
-        icon_Options: finalIcon
-      }
     });
-    
-  } catch (error) {
-    console.error('添加运动类别失败:', error);
-    res.status(500).json({ 
-      success: false, 
-      message: error.message || '服务器错误' 
-    });
-  }
-});
 }
+{//视频监控实时更新
+    const userSocketMap = new Map();
+
+    function getUserSocketId(username) {
+        return userSocketMap.get(username);
+    }
+// 确保你的后端有完整的视频通话事件处理
+// 后端 socket.io 服务器代码
+io.on('connection', (socket) => {
+    console.log('New client connected:', socket.id);
+    
+    // 用户注册
+    socket.on('register-user', (username) => {
+        socket.username = username;
+        userSocketMap.set(username, socket.id);
+        console.log(`用户 ${username} 已注册，Socket ID: ${socket.id}`);
+        console.log('当前在线用户:', Array.from(userSocketMap.keys()));
+    });
+    
+    // 视频通话接受事件 - 简化版，主要使用用户名
+    socket.on('video-call-accepted', (data) => {
+        const { callerName, receiverName, callId } = data;
+        
+        console.log(`视频通话已接受: ${callerName} -> ${receiverName}, CallId: ${callId}`);
+        
+        // 通知发起方（caller）
+        const callerSocketId = getUserSocketId(callerName);
+        if (callerSocketId) {
+            io.to(callerSocketId).emit('video-call-accepted', {
+                callerName: callerName,
+                receiverName: receiverName,
+                callId: callId
+            });
+            console.log(`已通知发起方 ${callerName} 通话被接受`);
+        }
+        
+        // 同时也通知接收方自己已接受
+        const receiverSocketId = getUserSocketId(receiverName);
+        if (receiverSocketId && receiverSocketId !== callerSocketId) {
+            io.to(receiverSocketId).emit('video-call-accepted', {
+                callerName: callerName,
+                receiverName: receiverName,
+                callId: callId
+            });
+            console.log(`已通知接收方 ${receiverName} 自己接受了通话`);
+        }
+    });
+    
+    // 视频通话拒绝事件
+    socket.on('video-call-rejected', (data) => {
+        const { callerName, receiverName, callId } = data;
+        
+        console.log(`视频通话已拒绝: ${callerName} -> ${receiverName}`);
+        
+        // 通知发起方（caller）
+        const callerSocketId = getUserSocketId(callerName);
+        if (callerSocketId) {
+            io.to(callerSocketId).emit('video-call-rejected', {
+                callerName: callerName,
+                receiverName: receiverName,
+                callId: callId
+            });
+        }
+        
+        // 通知接收方自己已拒绝
+        const receiverSocketId = getUserSocketId(receiverName);
+        if (receiverSocketId && receiverSocketId !== callerSocketId) {
+            io.to(receiverSocketId).emit('video-call-rejected', {
+                callerName: callerName,
+                receiverName: receiverName,
+                callId: callId
+            });
+        }
+    });
+    
+    // 视频通话挂断事件
+    socket.on('video-call-ended', (data) => {
+        const { callerName, receiverName, callId } = data;
+        
+        console.log(`视频通话已挂断: ${callerName} -> ${receiverName}`);
+        
+        // 通知对方通话已挂断
+        const targetName = socket.username === callerName ? receiverName : callerName;
+        const targetSocketId = getUserSocketId(targetName);
+        if (targetSocketId) {
+            io.to(targetSocketId).emit('video-call-ended', {
+                callerName: callerName,
+                receiverName: receiverName,
+                callId: callId
+            });
+            console.log(`已通知 ${targetName} 通话已挂断`);
+        }
+    });
+    
+    // 用户断开连接
+    socket.on('disconnect', () => {
+        if (socket.username) {
+            userSocketMap.delete(socket.username);
+            console.log(`用户 ${socket.username} 已断开连接`);
+        }
+    });
+});
+
+}
+
 
 
 // 启动服务器

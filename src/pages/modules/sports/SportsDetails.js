@@ -22,7 +22,18 @@ const SportsDetails = () => {
   });
   const [deleteConfirmId, setDeleteConfirmId] = useState(null);
   const [message, setMessage] = useState({ show: false, text: '', type: '' });
-  
+  const [sportsOptions, setSportsOptions] = useState([]);
+  // 获取所有运动选项
+  const fetchSportsOptions = useCallback(async () => {
+    try {
+      const response = await fetch('/api/getSportsOptions');
+      const data = await response.json();
+      setSportsOptions(data);
+    } catch (error) {
+      console.error('获取运动选项失败:', error);
+    }
+  }, []);
+
   // 图表相关状态
   const [chartDataType, setChartDataType] = useState('count'); // 'count' 或 'duration'
   const [chartDays, setChartDays] = useState(7); // 默认显示近7天
@@ -51,12 +62,12 @@ const SportsDetails = () => {
   // 获取运动记录
   const fetchRecords = useCallback(async () => {
     if (!user?.username) return;
-    
+
     setLoading(true);
     try {
       const response = await fetch(`/api/SportsAppWorkoutRecords/list/${user.username}`);
       const result = await response.json();
-      
+
       if (result.success) {
         setRecords(result.records);
       }
@@ -71,14 +82,15 @@ const SportsDetails = () => {
   // 建立 Socket.io 连接并监听事件
   useEffect(() => {
     fetchRecords();
-
+    fetchSportsOptions(); // 添加这行
     const socket = io('http://121.4.22.55:5202');
-    
+
     socket.on('workout-record-update', () => {
       console.log('运动记录有变化，重新获取数据');
       fetchRecords();
+      fetchSportsOptions(); // 也在这里添加，确保数据同步
     });
-    
+
     return () => {
       socket.off('workout-record-update');
       socket.disconnect();
@@ -90,27 +102,27 @@ const SportsDetails = () => {
     const days = chartDays;
     const result = [];
     const today = new Date();
-    
+
     for (let i = days - 1; i >= 0; i--) {
       const date = new Date(today);
       date.setDate(today.getDate() - i);
       const dateStr = formatDate(date);
-      
+
       // 获取当天的所有记录
       const dayRecords = records.filter(record => {
         const recordDate = formatDate(record.sportdate);
         return recordDate === dateStr;
       });
-      
+
       // 计算当天的统计数据
       let totalCount = 0;
       let totalDuration = 0;
-      
+
       dayRecords.forEach(record => {
         totalCount += record.count;
         totalDuration += record.durationseconds;
       });
-      
+
       result.push({
         date: dateStr,
         label: `${date.getMonth() + 1}/${date.getDate()}`,
@@ -118,31 +130,31 @@ const SportsDetails = () => {
         duration: totalDuration
       });
     }
-    
+
     return result;
   }, [records, chartDays]);
 
   // 更新图表
   const updateChart = useCallback(() => {
     if (!chartRef.current) return;
-    
+
     const chartData = getChartData();
     const labels = chartData.map(d => d.label);
     const values = chartData.map(d => chartDataType === 'count' ? d.count : d.duration);
-    
+
     const yAxisLabel = chartDataType === 'count' ? '次数' : '时长(秒)';
     const datasetLabel = chartDataType === 'count' ? '运动次数' : '运动时长';
-    
+
     // 创建渐变填充
-// 在 updateChart 函数中，找到创建渐变填充的部分 背景渐变
-const gradientFill = chartRef.current.getContext('2d').createLinearGradient(0, 0, 0, 250);
-gradientFill.addColorStop(0, 'rgba(34, 197, 94, 0.8)');   // 顶部：绿色，0.6透明度
-gradientFill.addColorStop(1, 'rgba(34, 197, 94, 0.1)');   // 底部：绿色，0.1透明度
-    
+    // 在 updateChart 函数中，找到创建渐变填充的部分 背景渐变
+    const gradientFill = chartRef.current.getContext('2d').createLinearGradient(0, 0, 0, 250);
+    gradientFill.addColorStop(0, 'rgba(34, 197, 94, 0.8)');   // 顶部：绿色，0.6透明度
+    gradientFill.addColorStop(1, 'rgba(34, 197, 94, 0.1)');   // 底部：绿色，0.1透明度
+
     if (chartInstance.current) {
       chartInstance.current.destroy();
     }
-    
+
     chartInstance.current = new Chart(chartRef.current, {
       type: 'line',
       data: {
@@ -178,7 +190,7 @@ gradientFill.addColorStop(1, 'rgba(34, 197, 94, 0.1)');   // 底部：绿色，0
           },
           tooltip: {
             callbacks: {
-              label: function(context) {
+              label: function (context) {
                 let label = context.dataset.label || '';
                 let value = context.raw;
                 if (chartDataType === 'duration') {
@@ -218,7 +230,7 @@ gradientFill.addColorStop(1, 'rgba(34, 197, 94, 0.1)');   // 底部：绿色，0
             },
             ticks: {
               color: 'rgba(255, 255, 255, 0.7)',
-              callback: function(value) {
+              callback: function (value) {
                 if (chartDataType === 'duration') {
                   const minutes = Math.floor(value / 60);
                   if (minutes >= 60) {
@@ -259,7 +271,7 @@ gradientFill.addColorStop(1, 'rgba(34, 197, 94, 0.1)');   // 底部：绿色，0
   const getFilteredRecords = () => {
     const year = selectedDate.getFullYear();
     const month = selectedDate.getMonth();
-    
+
     return records.filter(record => {
       const recordDate = new Date(record.sportdate);
       if (viewType === 'month') {
@@ -274,7 +286,7 @@ gradientFill.addColorStop(1, 'rgba(34, 197, 94, 0.1)');   // 底部：绿色，0
   const groupRecordsByDate = () => {
     const filtered = getFilteredRecords();
     const grouped = {};
-    
+
     filtered.forEach(record => {
       const date = formatDate(record.sportdate);
       if (!grouped[date]) {
@@ -282,13 +294,13 @@ gradientFill.addColorStop(1, 'rgba(34, 197, 94, 0.1)');   // 底部：绿色，0
       }
       grouped[date].push(record);
     });
-    
+
     const sortedDates = Object.keys(grouped).sort().reverse();
     const sortedGrouped = {};
     sortedDates.forEach(date => {
       sortedGrouped[date] = grouped[date];
     });
-    
+
     return sortedGrouped;
   };
 
@@ -296,7 +308,7 @@ gradientFill.addColorStop(1, 'rgba(34, 197, 94, 0.1)');   // 底部：绿色，0
   const getDailyStats = () => {
     const grouped = groupRecordsByDate();
     const stats = {};
-    
+
     Object.keys(grouped).forEach(date => {
       const dayRecords = grouped[date];
       stats[date] = {
@@ -309,7 +321,7 @@ gradientFill.addColorStop(1, 'rgba(34, 197, 94, 0.1)');   // 底部：绿色，0
         }, {})
       };
     });
-    
+
     return stats;
   };
 
@@ -317,7 +329,7 @@ gradientFill.addColorStop(1, 'rgba(34, 197, 94, 0.1)');   // 底部：绿色，0
   const getMonthlyStats = () => {
     const filtered = getFilteredRecords();
     const monthlyStats = {};
-    
+
     filtered.forEach(record => {
       const date = formatDate(record.sportdate);
       const month = date.substring(0, 7);
@@ -332,7 +344,7 @@ gradientFill.addColorStop(1, 'rgba(34, 197, 94, 0.1)');   // 底部：绿色，0
       monthlyStats[month].totalDuration += record.durationseconds;
       monthlyStats[month].totalGroups += 1;
     });
-    
+
     return monthlyStats;
   };
 
@@ -342,7 +354,7 @@ gradientFill.addColorStop(1, 'rgba(34, 197, 94, 0.1)');   // 底部：绿色，0
       const response = await fetch(`/api/SportsAppWorkoutRecords/delete/${id}`, {
         method: 'DELETE'
       });
-      
+
       const result = await response.json();
       if (result.success) {
         showMessage('删除成功', 'success');
@@ -388,7 +400,7 @@ gradientFill.addColorStop(1, 'rgba(34, 197, 94, 0.1)');   // 底部：绿色，0
           groupnumber: parseInt(editFormData.groupnumber)
         })
       });
-      
+
       const result = await response.json();
       if (result.success) {
         showMessage('修改成功', 'success');
@@ -409,7 +421,7 @@ gradientFill.addColorStop(1, 'rgba(34, 197, 94, 0.1)');   // 底部：绿色，0
     const h = Math.floor(seconds / 3600);
     const m = Math.floor((seconds % 3600) / 60);
     const s = seconds % 60;
-    return h > 0 
+    return h > 0
       ? `${h}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
       : `${m}:${s.toString().padStart(2, '0')}`;
   };
@@ -458,13 +470,13 @@ gradientFill.addColorStop(1, 'rgba(34, 197, 94, 0.1)');   // 底部：绿色，0
       {/* 视图切换和日期选择 */}
       <div className={styles.controls}>
         <div className={styles.viewToggle}>
-          <button 
+          <button
             className={`${styles.viewBtn} ${viewType === 'month' ? styles.active : ''}`}
             onClick={() => setViewType('month')}
           >
             按月
           </button>
-          <button 
+          <button
             className={`${styles.viewBtn} ${viewType === 'year' ? styles.active : ''}`}
             onClick={() => setViewType('year')}
           >
@@ -512,23 +524,23 @@ gradientFill.addColorStop(1, 'rgba(34, 197, 94, 0.1)');   // 底部：绿色，0
       {/* 图表区域 - 新增 */}
       <div className={styles.chartSection}>
         <div className={styles.chartHeader}>
-          
+
           <div className={styles.chartControls}>
             {/* 日期范围选择 */}
             <div className={styles.chartDateSelect}>
-              <button 
+              <button
                 className={`${styles.chartDateBtn} ${chartDays === 7 ? styles.active : ''}`}
                 onClick={() => setChartDays(7)}
               >
                 近7天
               </button>
-              <button 
+              <button
                 className={`${styles.chartDateBtn} ${chartDays === 14 ? styles.active : ''}`}
                 onClick={() => setChartDays(14)}
               >
                 近14天
               </button>
-              <button 
+              <button
                 className={`${styles.chartDateBtn} ${chartDays === 30 ? styles.active : ''}`}
                 onClick={() => setChartDays(30)}
               >
@@ -537,13 +549,13 @@ gradientFill.addColorStop(1, 'rgba(34, 197, 94, 0.1)');   // 底部：绿色，0
             </div>
             {/* 数据类型选择 */}
             <div className={styles.chartTypeSelect}>
-              <button 
+              <button
                 className={`${styles.chartTypeBtn} ${chartDataType === 'count' ? styles.active : ''}`}
                 onClick={() => setChartDataType('count')}
               >
                 📊 次数
               </button>
-              <button 
+              <button
                 className={`${styles.chartTypeBtn} ${chartDataType === 'duration' ? styles.active : ''}`}
                 onClick={() => setChartDataType('duration')}
               >
@@ -575,7 +587,7 @@ gradientFill.addColorStop(1, 'rgba(34, 197, 94, 0.1)');   // 底部：绿色，0
                   <span>📊 组数: {dailyStats[date].totalGroups}</span>
                 </div>
               </div>
-              
+
               <div className={styles.recordsTable}>
                 <table>
                   <thead>
@@ -589,8 +601,8 @@ gradientFill.addColorStop(1, 'rgba(34, 197, 94, 0.1)');   // 底部：绿色，0
                   </thead>
                   <tbody>
                     {groupedRecords[date].map(record => (
-                      <tr 
-                        key={record.id} 
+                      <tr
+                        key={record.id}
                         onClick={() => handleRecordClick(record)}
                         className={styles.clickableRow}
                       >
@@ -636,68 +648,73 @@ gradientFill.addColorStop(1, 'rgba(34, 197, 94, 0.1)');   // 底部：绿色，0
               <h2>修改运动记录</h2>
               <button className={styles.closeBtn} onClick={() => setShowEditModal(false)}>×</button>
             </div>
-            
+
             <div className={styles.formGroup}>
               <label>运动类别</label>
-              <select 
+              <select
                 value={editFormData.sportname}
-                onChange={(e) => setEditFormData({...editFormData, sportname: e.target.value})}
+                onChange={(e) => setEditFormData({ ...editFormData, sportname: e.target.value })}
               >
-                <option value="俯卧撑">俯卧撑</option>
-                <option value="倒立">倒立</option>
-                <option value="仰卧起坐">仰卧起坐</option>
-                <option value="平板撑">平板撑</option>
+                {sportsOptions.length === 0 ? (
+                  <option value="">加载中...</option>
+                ) : (
+                  sportsOptions.map(sport => (
+                    <option key={sport.sport_type_Options} value={sport.sport_type_Options}>
+                      {sport.sport_type_Options}
+                    </option>
+                  ))
+                )}
               </select>
             </div>
-            
+
             <div className={styles.formGroup}>
               <label>完成次数</label>
-              <input 
+              <input
                 type="number"
                 value={editFormData.count}
-                onChange={(e) => setEditFormData({...editFormData, count: e.target.value})}
+                onChange={(e) => setEditFormData({ ...editFormData, count: e.target.value })}
               />
             </div>
-            
+
             <div className={styles.formGroup}>
               <label>运动时长(秒)</label>
-              <input 
+              <input
                 type="number"
                 value={editFormData.durationseconds}
-                onChange={(e) => setEditFormData({...editFormData, durationseconds: e.target.value})}
+                onChange={(e) => setEditFormData({ ...editFormData, durationseconds: e.target.value })}
               />
             </div>
-            
+
             <div className={styles.formGroup}>
               <label>组别</label>
-              <input 
+              <input
                 type="number"
                 value={editFormData.groupnumber}
-                onChange={(e) => setEditFormData({...editFormData, groupnumber: e.target.value})}
+                onChange={(e) => setEditFormData({ ...editFormData, groupnumber: e.target.value })}
               />
             </div>
-            
+
             <div className={styles.formGroup}>
               <label>运动日期</label>
-              <input 
+              <input
                 type="date"
                 value={editFormData.sportdate}
-                onChange={(e) => setEditFormData({...editFormData, sportdate: e.target.value})}
+                onChange={(e) => setEditFormData({ ...editFormData, sportdate: e.target.value })}
               />
             </div>
-            
+
             <div className={styles.formGroup}>
               <label>备注</label>
-              <textarea 
+              <textarea
                 value={editFormData.remarks}
-                onChange={(e) => setEditFormData({...editFormData, remarks: e.target.value})}
+                onChange={(e) => setEditFormData({ ...editFormData, remarks: e.target.value })}
                 rows="3"
               />
             </div>
-            
+
             <div className={styles.modalButtons}>
-              <button 
-                onClick={() => setDeleteConfirmId(editingRecord.id)} 
+              <button
+                onClick={() => setDeleteConfirmId(editingRecord.id)}
                 className={styles.deleteBtn}
               >
                 删除
