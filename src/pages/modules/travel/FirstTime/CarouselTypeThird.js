@@ -4,12 +4,12 @@ import './CarouselTypeThird.css';
 const CarouselTypeThird = () => {
     // 图片源保持在组件内部
     const images = [
-        'http://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeThird/1.jpg',
-        'http://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeThird/2.jpg',
-        'http://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeThird/3.jpg',
-        'http://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeThird/4.jpg',
-        'http://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeThird/5.jpg',
-        'http://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeThird/6.jpg',
+        'https://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeThird/1.jpg',
+        'https://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeThird/2.jpg',
+        'https://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeThird/3.jpg',
+        'https://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeThird/4.jpg',
+        'https://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeThird/5.jpg',
+        'https://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeThird/6.jpg',
     ];
 
     const [slides, setSlides] = useState([]);

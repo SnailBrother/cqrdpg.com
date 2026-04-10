@@ -70,7 +70,7 @@ const handleBack = () => {
 
             try {
                 const response = await axios.get(
-                    `http://121.4.22.55:5202/backend/api/lyrics/${encodeURIComponent(lrcFilename)}`,
+                    `https://cqrdpg.com:5202/backend/api/lyrics/${encodeURIComponent(lrcFilename)}`,
                     { responseType: 'text' }
                 );
 
@@ -155,7 +155,7 @@ const handleBack = () => {
 
                 <div className={styles.headerLeft}>
                     <img 
-                        src={currentSong.coverimage || 'http://www.cqrdpg.com/backend/musics/default.jpg'} 
+                        src={currentSong.coverimage || 'https://www.cqrdpg.com/backend/musics/default.jpg'} 
                         alt={currentSong.title}
                         className={styles.coverImage}
                     />

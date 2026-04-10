@@ -31,7 +31,7 @@ const TravelDetailsSeventh = () => {
         {/* 第一个项目 */}
         <div 
           className="traveldetailsseventh-item" 
-          style={{ backgroundImage: `url(http://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsSeventh/1.jpg)` }}
+          style={{ backgroundImage: `url(https://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsSeventh/1.jpg)` }}
         >
           <div className="traveldetailsseventh-content">
             <div className="traveldetailsseventh-name">山村</div>
@@ -43,7 +43,7 @@ const TravelDetailsSeventh = () => {
         {/* 第二个项目 */}
         <div 
           className="traveldetailsseventh-item" 
-          style={{ backgroundImage: `url(http://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsSeventh/2.jpg)` }}
+          style={{ backgroundImage: `url(https://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsSeventh/2.jpg)` }}
         >
           <div className="traveldetailsseventh-content">
             <div className="traveldetailsseventh-name">电竞房</div>
@@ -55,7 +55,7 @@ const TravelDetailsSeventh = () => {
         {/* 第三个项目 */}
         <div 
           className="traveldetailsseventh-item" 
-          style={{ backgroundImage: `url(http://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsSeventh/3.jpg)` }}
+          style={{ backgroundImage: `url(https://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsSeventh/3.jpg)` }}
         >
           <div className="traveldetailsseventh-content">
             <div className="traveldetailsseventh-name">灯笼</div>
@@ -67,7 +67,7 @@ const TravelDetailsSeventh = () => {
         {/* 第四个项目 */}
         <div 
           className="traveldetailsseventh-item" 
-          style={{ backgroundImage: `url(http://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsSeventh/4.jpg)` }}
+          style={{ backgroundImage: `url(https://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsSeventh/4.jpg)` }}
         >
           <div className="traveldetailsseventh-content">
             <div className="traveldetailsseventh-name">展览馆</div>
@@ -79,7 +79,7 @@ const TravelDetailsSeventh = () => {
         {/* 第五个项目 */}
         <div 
           className="traveldetailsseventh-item" 
-          style={{ backgroundImage: `url(http://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsSeventh/5.jpg)` }}
+          style={{ backgroundImage: `url(https://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsSeventh/5.jpg)` }}
         >
           <div className="traveldetailsseventh-content">
             <div className="traveldetailsseventh-name">古镇</div>
@@ -91,7 +91,7 @@ const TravelDetailsSeventh = () => {
         {/* 第六个项目 */}
         <div 
           className="traveldetailsseventh-item" 
-          style={{ backgroundImage: `url(http://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsSeventh/6.jpg)` }}
+          style={{ backgroundImage: `url(https://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsSeventh/6.jpg)` }}
         >
           <div className="traveldetailsseventh-content">
             <div className="traveldetailsseventh-name">温泉</div>

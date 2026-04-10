@@ -36,7 +36,7 @@ const ThemeSettings = () => {
     useEffect(() => {
         const loadThemeSettings = async () => {
             try {
-                const response = await axios.get('http://121.4.22.55:5202/api/getthemesettings', {
+                const response = await axios.get('https://cqrdpg.com:5202/api/getthemesettings', {
                     params: { username },
                 });
 
@@ -76,7 +76,7 @@ const ThemeSettings = () => {
             formData.append('navbarBackgroundColor', navbarBackgroundColor);
 
             // 保存主题设置
-            const themeResponse = await axios.post('http://121.4.22.55:5202/api/savethemesettings', formData, {
+            const themeResponse = await axios.post('https://cqrdpg.com:5202/api/savethemesettings', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -89,7 +89,7 @@ const ThemeSettings = () => {
                     imageFormData.append('username', username);
                     imageFormData.append('image', backgroundImage);
 
-                    const imageResponse = await axios.post(`http://121.4.22.55:5202/backend/api/uploadchatbackground?username=${username}`, imageFormData, {
+                    const imageResponse = await axios.post(`https://cqrdpg.com:5202/backend/api/uploadchatbackground?username=${username}`, imageFormData, {
                         headers: {
                             'Content-Type': 'multipart/form-data',
                         },

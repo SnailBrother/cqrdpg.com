@@ -39,7 +39,7 @@ const AccountingDetails = () => {
 
     // 初始化 WebSocket 连接
     useEffect(() => {
-        const newSocket = io('http://121.4.22.55:5202');
+        const newSocket = io('https://cqrdpg.com:5202');
         setSocket(newSocket);
 
         // 监听服务器事件
@@ -65,8 +65,8 @@ const AccountingDetails = () => {
             setError(null);
 
             const [recordsResponse, iconsResponse] = await Promise.all([
-                axios.get('http://121.4.22.55:5202/api/lifebookkeepinggetRecords'),
-                axios.get('http://121.4.22.55:5202/getCategoryIcons')
+                axios.get('https://cqrdpg.com:5202/api/lifebookkeepinggetRecords'),
+                axios.get('https://cqrdpg.com:5202/getCategoryIcons')
             ]);
 
             setRecords(recordsResponse.data);

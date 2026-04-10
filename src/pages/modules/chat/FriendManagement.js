@@ -3,7 +3,7 @@ import axios from 'axios';
 
 import './FriendManagement.css';
 import io from 'socket.io-client';
-const socket = io('http://121.4.22.55:5202'); // 与你的后端 socket 地址匹配
+const socket = io('https://cqrdpg.com:5202'); // 与你的后端 socket 地址匹配
 
 const FriendManagement = ({ username, refreshFriends }) => {
     const [friendRequests, setFriendRequests] = useState([]);
@@ -23,7 +23,7 @@ const FriendManagement = ({ username, refreshFriends }) => {
     // 定义获取好友请求的函数
     const fetchFriendRequests = async () => {
         try {
-            const response = await axios.get('http://121.4.22.55:5202/api/user-management');
+            const response = await axios.get('https://cqrdpg.com:5202/api/user-management');
 
             const requests = response.data
                 .filter(user =>
@@ -51,7 +51,7 @@ const FriendManagement = ({ username, refreshFriends }) => {
     // 定义获取当前好友列表的函数
     const fetchCurrentFriends = async () => {
         try {
-            const response = await axios.get('http://121.4.22.55:5202/api/user-management');
+            const response = await axios.get('https://cqrdpg.com:5202/api/user-management');
             const friends = response.data
                 .filter(user =>
                     user.is_friend_request_accepted &&
@@ -112,7 +112,7 @@ const FriendManagement = ({ username, refreshFriends }) => {
     // 获取用户头像的函数
     const fetchUserHeadImage = async () => {
         try {
-            const response = await axios.get('http://121.4.22.55:5202/api/getuserheadimage', {
+            const response = await axios.get('https://cqrdpg.com:5202/api/getuserheadimage', {
                 params: { username }
             });
             if (response.data.imageUrl) {
@@ -143,7 +143,7 @@ const FriendManagement = ({ username, refreshFriends }) => {
         setSearchError('');
         setSearchResults([]);
         try {
-            const response = await axios.get(`http://121.4.22.55:5202/api/validate-user/${searchQuery}`);
+            const response = await axios.get(`https://cqrdpg.com:5202/api/validate-user/${searchQuery}`);
             if (response.data.exists) {
                 if (currentFriends.includes(searchQuery)) {
                     setSearchError('该用户已经是你的好友，无需重复添加。');
@@ -164,13 +164,13 @@ const FriendManagement = ({ username, refreshFriends }) => {
             const isShowRequest = isFirstRequest ? true : false;
             isFirstRequest = false;
 
-            await axios.post('http://121.4.22.55:5202/api/user-management', {
+            await axios.post('https://cqrdpg.com:5202/api/user-management', {
                 username,
                 friend,
                 is_friend_request_accepted: false,
                 is_show_request: isShowRequest
             });
-            await axios.post('http://121.4.22.55:5202/api/user-management', {
+            await axios.post('https://cqrdpg.com:5202/api/user-management', {
                 username: friend,
                 friend: username,
                 is_friend_request_accepted: false,
@@ -194,8 +194,8 @@ const FriendManagement = ({ username, refreshFriends }) => {
             const currentRequest = friendRequests.find(req => req.id === requestId);
             if (currentRequest) {
                 const friendName = currentRequest.name;
-                await axios.put(`http://121.4.22.55:5202/api/user-management/${username}/${friendName}/accept`);
-                await axios.put(`http://121.4.22.55:5202/api/user-management/${friendName}/${username}/accept`);
+                await axios.put(`https://cqrdpg.com:5202/api/user-management/${username}/${friendName}/accept`);
+                await axios.put(`https://cqrdpg.com:5202/api/user-management/${friendName}/${username}/accept`);
             }
             fetchFriendRequests();
             fetchCurrentFriends();
@@ -214,7 +214,7 @@ const FriendManagement = ({ username, refreshFriends }) => {
             if (currentRequest) {
                 const friendName = currentRequest.name;
 
-                const allRequestsResponse = await axios.get('http://121.4.22.55:5202/api/user-management');
+                const allRequestsResponse = await axios.get('https://cqrdpg.com:5202/api/user-management');
                 const allRequests = allRequestsResponse.data;
 
                 const forwardRequest = allRequests.find(req => req.username === username && req.friend === friendName);
@@ -240,10 +240,10 @@ const FriendManagement = ({ username, refreshFriends }) => {
                 };
 
                 if (forwardRequest) {
-                    await retryDelete(`http://121.4.22.55:5202/api/user-management/${username}/${friendName}`);
+                    await retryDelete(`https://cqrdpg.com:5202/api/user-management/${username}/${friendName}`);
                 }
                 if (reverseRequest) {
-                    await retryDelete(`http://121.4.22.55:5202/api/user-management/${friendName}/${username}`);
+                    await retryDelete(`https://cqrdpg.com:5202/api/user-management/${friendName}/${username}`);
                 }
             }
             fetchFriendRequests();
@@ -259,8 +259,8 @@ const FriendManagement = ({ username, refreshFriends }) => {
 
     const handleDeleteFriend = async (friend) => {
         try {
-            await axios.delete(`http://121.4.22.55:5202/api/user-management/${username}/${friend}`);
-            await axios.delete(`http://121.4.22.55:5202/api/user-management/${friend}/${username}`);
+            await axios.delete(`https://cqrdpg.com:5202/api/user-management/${username}/${friend}`);
+            await axios.delete(`https://cqrdpg.com:5202/api/user-management/${friend}/${username}`);
             alert('好友已删除');
             fetchCurrentFriends();
             if (refreshFriends) {
@@ -283,7 +283,7 @@ const FriendManagement = ({ username, refreshFriends }) => {
     const saveNickname = async (friend) => {
         try {
             const newNickname = newNicknames[friend];
-            await axios.post('http://121.4.22.55:5202/api/update-nickname', {
+            await axios.post('https://cqrdpg.com:5202/api/update-nickname', {
                 username,
                 friend,
                 newNickname

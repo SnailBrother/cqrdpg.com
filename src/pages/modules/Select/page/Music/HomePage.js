@@ -8,7 +8,7 @@ const HomePage = () => {
   const firstPageContents = [
     {
       id: 0,
-      img: 'http://www.cqrdpg.com/backend/images/WebsiteHomepageImage/Music/小区定位.jpg',
+      img: 'https://www.cqrdpg.com/backend/images/WebsiteHomepageImage/Music/小区定位.jpg',
       texts: [
         '百度Api',
         'Sql-Server',
@@ -17,7 +17,7 @@ const HomePage = () => {
     },
     {
       id: 1,
-      img: 'http://www.cqrdpg.com/backend/images/WebsiteHomepageImage/Music/数据查询.jpg',
+      img: 'https://www.cqrdpg.com/backend/images/WebsiteHomepageImage/Music/数据查询.jpg',
       texts: [
         '数据统计',
         '历史数据一览无余'
@@ -25,7 +25,7 @@ const HomePage = () => {
     },
     {
       id: 2,
-      img: 'http://www.cqrdpg.com/backend/images/WebsiteHomepageImage/Music/房屋数据图片.jpg',
+      img: 'https://www.cqrdpg.com/backend/images/WebsiteHomepageImage/Music/房屋数据图片.jpg',
       texts: [
         '文字图像结合',
         '图文一览',
@@ -34,7 +34,7 @@ const HomePage = () => {
     },
     {
       id: 3,
-      img: 'http://www.cqrdpg.com/backend/images/WebsiteHomepageImage/Music/二维码备份.jpg',
+      img: 'https://www.cqrdpg.com/backend/images/WebsiteHomepageImage/Music/二维码备份.jpg',
       texts: [
         '安全性',
         '数据备份',
@@ -43,7 +43,7 @@ const HomePage = () => {
     },
     {
       id: 4,
-      img: 'http://www.cqrdpg.com/backend/images/WebsiteHomepageImage/Music/excel链接.jpg',
+      img: 'https://www.cqrdpg.com/backend/images/WebsiteHomepageImage/Music/excel链接.jpg',
       texts: [
         'Excel',
         '字段链接',
@@ -52,7 +52,7 @@ const HomePage = () => {
     },
     {
       id: 5,
-      img: 'http://www.cqrdpg.com/backend/images/WebsiteHomepageImage/Music/房屋数据统计.jpg',
+      img: 'https://www.cqrdpg.com/backend/images/WebsiteHomepageImage/Music/房屋数据统计.jpg',
       texts: [
         '一键查找',
         '在线搜索'
@@ -61,7 +61,7 @@ const HomePage = () => {
     },
     {
       id: 6,
-      img: 'http://www.cqrdpg.com/backend/images/WebsiteHomepageImage/Music/pdf合并.jpg',
+      img: 'https://www.cqrdpg.com/backend/images/WebsiteHomepageImage/Music/pdf合并.jpg',
       texts: [
         '附件合并',
         '快捷打印'
@@ -81,7 +81,7 @@ const HomePage = () => {
         <div className={styles.mainLeft}>
           <div className={`${styles.myPhoto} ${activeIndex === 0 ? styles.current : ''}`}>
             <a  >
-              <img src="http://www.cqrdpg.com/logo512.png" alt="ChenBaby" />
+              <img src="https://www.cqrdpg.com/logo512.png" alt="ChenBaby" />
               <h3>ChenBaby</h3>
               <p>取悦自己</p>
             </a>

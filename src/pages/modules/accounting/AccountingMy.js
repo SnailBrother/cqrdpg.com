@@ -28,7 +28,7 @@ const AccountingMy = () => {
             const formattedStart = startDate.toISOString().split('T')[0];
             const formattedEnd = endDate.toISOString().split('T')[0];
 
-            const response = await fetch(`http://121.4.22.55:5202/api/transactions?start=${formattedStart}&end=${formattedEnd}&username=${username}`, {
+            const response = await fetch(`https://cqrdpg.com:5202/api/transactions?start=${formattedStart}&end=${formattedEnd}&username=${username}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -109,7 +109,7 @@ const AccountingMy = () => {
                 <div className="accountingmy-profile-avatar">
                     {!imageError && username && (
                         <img
-                            src={`http://www.cqrdpg.com/backend/images/ChatApp/${username}/headpicture/avatar.png`}
+                            src={`https://www.cqrdpg.com/backend/images/ChatApp/${username}/headpicture/avatar.png`}
                             alt="Avatar"
                             onError={() => setImageError(true)}
                             style={{ width: '100%', height: '100%', borderRadius: '50%' }}

@@ -5,27 +5,27 @@ const TravelDetailsSecond = () => {
   const items = [
     {
       id: 1,
-      image: 'http://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsSecond/1.jpg',
+      image: 'https://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsSecond/1.jpg',
       title: '南天湖'
     },
     {
       id: 2,
-      image: 'http://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsSecond/2.jpg',
+      image: 'https://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsSecond/2.jpg',
       title: '山城步道'
     },
     {
       id: 3,
-      image: 'http://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsSecond/3.jpg',
+      image: 'https://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsSecond/3.jpg',
       title: '瑜伽'
     },
     {
       id: 4,
-      image: 'http://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsSecond/4.jpg',
+      image: 'https://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsSecond/4.jpg',
       title: '南滨路'
     },
     {
       id: 5,
-      image: 'http://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsSecond/5.jpg',
+      image: 'https://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsSecond/5.jpg',
       title: '矿山公园'
     }
   ];

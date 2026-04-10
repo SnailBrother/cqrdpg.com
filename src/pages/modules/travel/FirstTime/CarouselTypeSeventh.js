@@ -8,29 +8,29 @@ const CarouselTypeSeventh = () => {
         {
             title: '合川',
             subtitle: '涞滩古镇',
-            src: `http://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeSeventh/1.jpg`
+            src: `https://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeSeventh/1.jpg`
         },
         {
             title: '南川',
             subtitle: '山王坪',
-            src: `http://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeSeventh/2.jpg`
+            src: `https://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeSeventh/2.jpg`
         },
         {
             title: '恩施',
             subtitle: '双凤村',
-            src: `http://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeSeventh/3.jpg`
+            src: `https://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeSeventh/3.jpg`
         }
     ];
 
     // Second column top row carousel data (pairs of items)
     const subCarouselItems = [
         [
-            { title: '水上公路', src: `http://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeSeventh/4.jpg` },
-            { title: '贡水', src: `http://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeSeventh/5.jpg` }
+            { title: '水上公路', src: `https://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeSeventh/4.jpg` },
+            { title: '贡水', src: `https://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeSeventh/5.jpg` }
         ],
         [
-            { title: '山王坪', src: `http://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeSeventh/6.jpg` },
-            { title: '宣恩', src: `http://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeSeventh/7.jpg` }
+            { title: '山王坪', src: `https://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeSeventh/6.jpg` },
+            { title: '宣恩', src: `https://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeSeventh/7.jpg` }
 
         ]
     ];

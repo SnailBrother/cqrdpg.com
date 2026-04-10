@@ -4,7 +4,7 @@ import { useTheme } from './ThemeContext';
 
 const TravelHeader = () => {
   const [isPlaying, setIsPlaying] = useState(true);
-  const [audio] = useState(new Audio('http://www.cqrdpg.com/backend/images/OurHomePage/BackgroundMusic/BackgroundMusic.mp3'));
+  const [audio] = useState(new Audio('https://www.cqrdpg.com/backend/images/OurHomePage/BackgroundMusic/BackgroundMusic.mp3'));
   const { toggleTheme } = useTheme();
   const [isDarkMode, setIsDarkMode] = useState(true); // 默认是黑夜模式
   

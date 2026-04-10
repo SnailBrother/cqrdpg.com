@@ -11,13 +11,13 @@ const SiteLinks = () => {
 
   useEffect(() => {
     // 1. 初始化Socket连接
-    const newSocket = io('http://121.4.22.55:5202');
+    const newSocket = io('https://cqrdpg.com:5202');
     setSocket(newSocket);
 
     // 2. 初始数据获取
     const fetchData = async () => {
       try {
-        const response = await fetch('http://121.4.22.55:5202/api/getUsedWebsitesData');
+        const response = await fetch('https://cqrdpg.com:5202/api/getUsedWebsitesData');
         const data = await response.json();
         processLinksData(data);
       } catch (err) {

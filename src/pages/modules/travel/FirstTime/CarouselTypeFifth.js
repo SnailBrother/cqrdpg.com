@@ -10,8 +10,8 @@ const CarouselTypeFifth = () => {
       subtitle: '夏天',
       description: '那年我们一起去峡谷探险',
       images: [
-        { src: `http://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeFifth/1.jpg`, desc: '陈宝宝下车在和妈妈打电话' },
-        { src: `http://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeFifth/2.jpg`, desc: '陈宝宝刚出洞口' }
+        { src: `https://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeFifth/1.jpg`, desc: '陈宝宝下车在和妈妈打电话' },
+        { src: `https://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeFifth/2.jpg`, desc: '陈宝宝刚出洞口' }
       ],
       bgColor: '#4a6fa5'
     },
@@ -20,8 +20,8 @@ const CarouselTypeFifth = () => {
       subtitle: '冬天',
       description: '那年我们一起去滑雪',
       images: [
-        { src: `http://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeFifth/3.jpg`, desc: '羞涩的陈宝宝' },
-        { src: `http://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeFifth/4.jpg`, desc: '可爱的陈宝宝' }
+        { src: `https://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeFifth/3.jpg`, desc: '羞涩的陈宝宝' },
+        { src: `https://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeFifth/4.jpg`, desc: '可爱的陈宝宝' }
       ],
       bgColor: '#c45c4a'
     },
@@ -30,8 +30,8 @@ const CarouselTypeFifth = () => {
       subtitle: '夏天',
       description: '那年我们一起去爬山',
       images: [
-        { src: `http://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeFifth/5.jpg`, desc: '好大的瀑布' },
-        { src: `http://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeFifth/6.jpg`, desc: '陈宝宝被冷风吹' }
+        { src: `https://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeFifth/5.jpg`, desc: '好大的瀑布' },
+        { src: `https://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeFifth/6.jpg`, desc: '陈宝宝被冷风吹' }
       ],
       bgColor: '#5a8f69'
     }

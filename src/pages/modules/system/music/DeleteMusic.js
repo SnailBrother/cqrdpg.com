@@ -15,7 +15,7 @@ const DeleteMusic = () => {
     const imgErrorHandled = useRef(new Set());
     const observer = useRef();
     const pageSize = 12;
-    const baseUrl = 'http://www.cqrdpg.com/backend';
+    const baseUrl = 'https://www.cqrdpg.com/backend';
 
     const lastMusicElementRef = useCallback((node) => {
         if (loading) return;

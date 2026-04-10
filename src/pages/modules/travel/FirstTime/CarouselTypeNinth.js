@@ -5,11 +5,11 @@ const CarouselTypeNinth = () => {
   const firstRowItems = [
     {
       title: '南山夜景',
-      image: 'http://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeNinth/1.jpg'
+      image: 'https://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeNinth/1.jpg'
     },
     {
       title: '巴南农家乐',
-      image: 'http://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeNinth/6.jpg'
+      image: 'https://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeNinth/6.jpg'
     }
   ];
 
@@ -21,19 +21,19 @@ const CarouselTypeNinth = () => {
   const secondRowItems = [
     {
       title: '赖床',
-      image: 'http://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeNinth/2.jpg'
+      image: 'https://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeNinth/2.jpg'
     },
     {
       title: '八喜',
-      image: 'http://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeNinth/3.jpg'
+      image: 'https://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeNinth/3.jpg'
     },
     {
       title: '葛优瘫',
-      image: 'http://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeNinth/4.jpg'
+      image: 'https://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeNinth/4.jpg'
     },
     {
       title: '胖丁',
-      image: 'http://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeNinth/5.jpg'
+      image: 'https://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeNinth/5.jpg'
     }
   ];
 

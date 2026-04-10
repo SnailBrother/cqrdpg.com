@@ -3,7 +3,7 @@ import axios from 'axios';
 import './UploadMusic.css';
 import io from 'socket.io-client';
 // 初始化 socket 连接
-const socket = io('http://121.4.22.55:5202'); // 添加这行
+const socket = io('https://cqrdpg.com:5202'); // 添加这行
 
 const UploadMusic = () => {
     const [title, setTitle] = useState('');
@@ -88,7 +88,7 @@ const UploadMusic = () => {
         }
 
         try {
-            const response = await axios.post('http://121.4.22.55:5202/backend/api/uploadmusic', formData);
+            const response = await axios.post('https://cqrdpg.com:5202/backend/api/uploadmusic', formData);
             setMessage({ text: '音乐上传成功!', type: 'success' });
             console.log('Upload response:', response.data);
             // 通知所有客户端音乐列表已更新

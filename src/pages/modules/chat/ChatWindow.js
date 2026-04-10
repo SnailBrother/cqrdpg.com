@@ -7,7 +7,16 @@ import { Loading } from '../../../components/UI';
 import VideoCall from './VideoCall'; // 根据实际路径调整
 
 import Circularrotatingtext from './.././../../components/Animation/Circularrotatingtext'; // 加载动画里面的环形旋转文字
-const socket = io('http://121.4.22.55:5202');
+const socket = io('https://cqrdpg.com:5202');
+
+// 在文件顶部，import 之后添加
+const playInvitationSound = () => {
+    const audio = new Audio('https://www.cqrdpg.com/backend/musics/AnswerThePhone.mp3');
+    audio.play().catch(error => {
+        console.log('播放邀请声音失败:', error);
+        // 浏览器可能因为自动播放策略而失败，但不影响主要功能
+    });
+};
 
 const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) => {
     const [messages, setMessages] = useState([]);
@@ -34,6 +43,36 @@ const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) 
     const [totalUnread, setTotalUnread] = useState(0); // 未读消息总数
     const [hasNewMessages, setHasNewMessages] = useState(false); // 新增：是否有新消息 针对滚动条不是在顶部的提示
     const [isAtBottom, setIsAtBottom] = useState(true); // 新增：是否在底部
+    // 添加音频元素引用
+    const invitationAudioRef = useRef(null);
+    // 修改播放声音函数，保存音频引用
+    const playInvitationSound = () => {
+        // 如果已经有音频在播放，先停止
+        if (invitationAudioRef.current) {
+            invitationAudioRef.current.pause();
+            invitationAudioRef.current = null;
+        }
+
+        const audio = new Audio('https://www.cqrdpg.com/backend/musics/AnswerThePhone.mp3');
+        invitationAudioRef.current = audio;
+
+        // 设置循环播放（可选，让邀请声音持续播放）
+        audio.loop = true;
+
+        audio.play().catch(error => {
+            console.log('播放邀请声音失败:', error);
+        });
+    };
+
+    // 添加停止播放声音的函数
+    const stopInvitationSound = () => {
+        if (invitationAudioRef.current) {
+            invitationAudioRef.current.pause();
+            invitationAudioRef.current.currentTime = 0; // 重置到开始
+            invitationAudioRef.current = null;
+            console.log('已停止播放邀请声音');
+        }
+    };
     //添加视频通话状态管理 
 
 
@@ -52,75 +91,76 @@ const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) 
     }, [videoCallInfo]);
     //添加发送视频通话邀请的函数
     // 在组件中添加发送视频通话邀请的函数
-// 发送视频通话邀请
-const sendVideoCallInvitation = async () => {
-    if (!selectedFriend) {
-        alert('请先选择聊天对象');
-        return;
-    }
+    // 发送视频通话邀请
+    const sendVideoCallInvitation = async () => {
+        if (!selectedFriend) {
+            alert('请先选择聊天对象');
+            return;
+        }
 
-    try {
-        // 使用时间戳作为唯一标识
-        const callId = Date.now().toString();
-        console.log('发送视频通话邀请, callId:', callId);
+        try {
+            // 使用时间戳作为唯一标识
+            const callId = Date.now().toString();
+            console.log('发送视频通话邀请, callId:', callId);
 
-        // 发送视频通话邀请消息
-        const response = await axios.post('http://121.4.22.55:5202/api/messages', {
-            message_text: `您的好友 ${username} 邀请您进行视频通话`,
-            sender_name: username,
-            receiver_name: selectedFriend.name,
-            message_type: 'video_call_invitation',
-            call_id: callId  // 仍然保存到数据库，但前端匹配时不依赖它
-        });
-        
-        console.log('邀请发送响应:', response.data);
+            // 发送视频通话邀请消息
+            const response = await axios.post('https://cqrdpg.com:5202/api/messages', {
+                message_text: `您的好友 ${username} 邀请您进行视频通话`,
+                sender_name: username,
+                receiver_name: selectedFriend.name,
+                message_type: 'video_call_invitation',
+                call_id: callId  // 仍然保存到数据库，但前端匹配时不依赖它
+            });
 
-        // 打开自己的视频通话模态框
-        setVideoCallInfo({
-            isIncoming: false,
-            callerName: username,
-            receiverName: selectedFriend.name,
-            callId: callId,
-            callStatus: 'waiting'
-        });
-        setIsVideoCallModalOpen(true);
-        
-        console.log('视频通话模态框已打开，callId:', callId);
+            console.log('邀请发送响应:', response.data);
+            // ✅ 播放邀请声音（发送方）
+            playInvitationSound();
+            // 打开自己的视频通话模态框
+            setVideoCallInfo({
+                isIncoming: false,
+                callerName: username,
+                receiverName: selectedFriend.name,
+                callId: callId,
+                callStatus: 'waiting'
+            });
+            setIsVideoCallModalOpen(true);
 
-    } catch (error) {
-        console.error('发送视频通话邀请失败:', error);
-        alert('发送视频通话邀请失败: ' + (error.response?.data?.error || error.message));
-    }
-};
+            console.log('视频通话模态框已打开，callId:', callId);
 
-// 添加 Socket 连接状态监听
-useEffect(() => {
-    const onConnect = () => {
-        console.log('Socket connected successfully');
-        // 重新注册用户
-        if (username) {
-            socket.emit('register-user', username);
+        } catch (error) {
+            console.error('发送视频通话邀请失败:', error);
+            alert('发送视频通话邀请失败: ' + (error.response?.data?.error || error.message));
         }
     };
-    
-    const onDisconnect = () => {
-        console.log('Socket disconnected');
-    };
-    
-    const onConnectError = (error) => {
-        console.error('Socket connection error:', error);
-    };
-    
-    socket.on('connect', onConnect);
-    socket.on('disconnect', onDisconnect);
-    socket.on('connect_error', onConnectError);
-    
-    return () => {
-        socket.off('connect', onConnect);
-        socket.off('disconnect', onDisconnect);
-        socket.off('connect_error', onConnectError);
-    };
-}, [username]);
+
+    // 添加 Socket 连接状态监听
+    useEffect(() => {
+        const onConnect = () => {
+            console.log('Socket connected successfully');
+            // 重新注册用户
+            if (username) {
+                socket.emit('register-user', username);
+            }
+        };
+
+        const onDisconnect = () => {
+            console.log('Socket disconnected');
+        };
+
+        const onConnectError = (error) => {
+            console.error('Socket connection error:', error);
+        };
+
+        socket.on('connect', onConnect);
+        socket.on('disconnect', onDisconnect);
+        socket.on('connect_error', onConnectError);
+
+        return () => {
+            socket.off('connect', onConnect);
+            socket.off('disconnect', onDisconnect);
+            socket.off('connect_error', onConnectError);
+        };
+    }, [username]);
 
     //添加图片及视频通话悬浮
     // 添加状态控制菜单显示
@@ -187,7 +227,7 @@ useEffect(() => {
                 file_size: file.size
             });
 
-            const response = await axios.post('http://121.4.22.55:5202/api/messages/uploadImage', formData, {
+            const response = await axios.post('https://cqrdpg.com:5202/api/messages/uploadImage', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 },
@@ -217,7 +257,7 @@ useEffect(() => {
 
     // 获取图片URL
     const getImageUrl = (senderName, filename) => {
-        return `http://www.cqrdpg.com/backend/images/ChatImages/${senderName}/${filename}`;
+        return `https://www.cqrdpg.com/backend/images/ChatImages/${senderName}/${filename}`;
     };
 
     // 渲染消息内容
@@ -267,7 +307,7 @@ useEffect(() => {
     // 获取未读消息总数（排除当前选中好友）
     const fetchUnreadCounts = async () => {
         try {
-            const response = await axios.get('http://121.4.22.55:5202/api/messages');
+            const response = await axios.get('https://cqrdpg.com:5202/api/messages');
             const allMessages = response.data;
 
             const unreadCounts = {};
@@ -329,7 +369,7 @@ useEffect(() => {
 
         setIsLoading(true);
         try {
-            const response = await axios.get('http://121.4.22.55:5202/api/messages/chat', {
+            const response = await axios.get('https://cqrdpg.com:5202/api/messages/chat', {
                 params: {
                     senderName: username,
                     receiverName: selectedFriend.name,
@@ -399,26 +439,26 @@ useEffect(() => {
 
             // 检查是否是视频通话邀请
             // 在 handleNewMessage 函数中修改
-// 在 socket.on('newMessage') 或消息处理中
-// 在 socket.on('newMessage') 中处理视频通话邀请
-if (newMessage.message_type === 'video_call_invitation') {
-    // 如果是发给当前用户的消息
-    if (newMessage.receiver_name === username && newMessage.sender_name === selectedFriend?.name) {
-        console.log('收到视频通话邀请:', newMessage);
-        
-        // 生成一个临时的通话ID（如果消息中没有）
-        const tempCallId = newMessage.call_id || Date.now().toString();
-        
-        setVideoCallInfo({
-            isIncoming: true,
-            callerName: newMessage.sender_name,
-            receiverName: newMessage.receiver_name,
-            callId: tempCallId,
-            callStatus: 'waiting'
-        });
-        setIsVideoCallModalOpen(true);
-    }
-}
+
+            // 在 socket.on('newMessage') 中处理视频通话邀请
+            if (newMessage.message_type === 'video_call_invitation') {
+                // 如果是发给当前用户的消息
+                if (newMessage.receiver_name === username && newMessage.sender_name === selectedFriend?.name) {
+                    console.log('收到视频通话邀请:', newMessage);
+                    playInvitationSound();
+                    // 生成一个临时的通话ID（如果消息中没有）
+                    const tempCallId = newMessage.call_id || Date.now().toString();
+
+                    setVideoCallInfo({
+                        isIncoming: true,
+                        callerName: newMessage.sender_name,
+                        receiverName: newMessage.receiver_name,
+                        callId: tempCallId,
+                        callStatus: 'waiting'
+                    });
+                    setIsVideoCallModalOpen(true);
+                }
+            }
 
             if (
                 (newMessage.sender_name === senderName && newMessage.receiver_name === receiverName) ||
@@ -479,37 +519,39 @@ if (newMessage.message_type === 'video_call_invitation') {
 
     // 接受视频通话
     // 接受视频通话 - 确保正确发送 callId
-// 接受视频通话 - 确保从正确的来源获取 callId
-// 接受视频通话 - 使用用户名组合作为标识
-const acceptVideoCall = () => {
-    console.log('=== 接受视频通话 ===');
-    console.log('当前 videoCallInfo:', videoCallInfo);
-    
-    // 生成一个唯一的通话ID（如果还没有）
-    const finalCallId = videoCallInfo.callId || Date.now().toString();
-    
-    // 先发送 Socket 事件，使用用户名组合作为标识
-    socket.emit('video-call-accepted', {
-        callerName: videoCallInfo.callerName,
-        receiverName: videoCallInfo.receiverName,
-        callId: finalCallId
-    });
-    
-    console.log('已发送 video-call-accepted 事件');
-    
-    // 然后更新状态为已连接
-    setVideoCallInfo(prev => ({
-        ...prev,
-        callId: finalCallId,
-        callStatus: 'connected'
-    }));
-};
+    // 接受视频通话 - 确保从正确的来源获取 callId
+    // 接受视频通话 - 使用用户名组合作为标识
+    const acceptVideoCall = () => {
+        console.log('=== 接受视频通话 ===');
+        console.log('当前 videoCallInfo:', videoCallInfo);
+        // 停止播放声音（接收方）
+        stopInvitationSound();
+        // 生成一个唯一的通话ID（如果还没有）
+        const finalCallId = videoCallInfo.callId || Date.now().toString();
+
+        // 先发送 Socket 事件，使用用户名组合作为标识
+        socket.emit('video-call-accepted', {
+            callerName: videoCallInfo.callerName,
+            receiverName: videoCallInfo.receiverName,
+            callId: finalCallId
+        });
+
+        console.log('已发送 video-call-accepted 事件');
+
+        // 然后更新状态为已连接
+        setVideoCallInfo(prev => ({
+            ...prev,
+            callId: finalCallId,
+            callStatus: 'connected'
+        }));
+    };
 
     // 拒绝视频通话
     const rejectVideoCall = () => {
         console.log('=== 拒绝/取消视频通话 ===');
         console.log('当前 videoCallInfo:', videoCallInfo);
-
+        // 停止播放声音（接收方取消或发送方取消）
+        stopInvitationSound();
         // 通过 Socket 通知对方已拒绝/取消通话
         if (videoCallInfo.callId) {
             socket.emit('video-call-rejected', {
@@ -533,7 +575,8 @@ const acceptVideoCall = () => {
     // 添加挂断视频通话的函数
     const endVideoCall = () => {
         console.log('=== 挂断视频通话 ===');
-
+        // 停止播放声音
+        stopInvitationSound();
         if (videoCallInfo.callId) {
             socket.emit('video-call-ended', {
                 callId: videoCallInfo.callId,
@@ -554,93 +597,106 @@ const acceptVideoCall = () => {
 
     // 在现有的 useEffect 之后，添加一个新的 useEffect 专门处理视频通话的 Socket 事件
 
-// 视频通话 Socket 事件监听
-useEffect(() => {
-    // 监听对方接受视频通话 - 使用用户名组合匹配
-    const handleVideoCallAccepted = (data) => {
-        console.log('收到视频通话接受事件:', data);
-        
-        // 使用用户名组合来匹配通话
-        const isMatchingCall = 
-            (data.callerName === videoCallInfoRef.current.callerName && 
-             data.receiverName === videoCallInfoRef.current.receiverName) ||
-            (data.callerName === videoCallInfoRef.current.receiverName && 
-             data.receiverName === videoCallInfoRef.current.callerName);
-        
-        if (isMatchingCall) {
-            console.log('通话匹配成功，更新状态为 connected');
-            setVideoCallInfo(prev => ({
-                ...prev,
-                callStatus: 'connected'
-            }));
-            setIsVideoCallModalOpen(true);
-        } else {
-            console.log('通话不匹配，忽略事件', {
-                dataCaller: data.callerName,
-                dataReceiver: data.receiverName,
-                currentCaller: videoCallInfoRef.current.callerName,
-                currentReceiver: videoCallInfoRef.current.receiverName
-            });
-        }
-    };
-    
-    // 监听对方拒绝视频通话
-    const handleVideoCallRejected = (data) => {
-        console.log('收到视频通话拒绝事件:', data);
-        
-        const isMatchingCall = 
-            (data.callerName === videoCallInfoRef.current.callerName && 
-             data.receiverName === videoCallInfoRef.current.receiverName) ||
-            (data.callerName === videoCallInfoRef.current.receiverName && 
-             data.receiverName === videoCallInfoRef.current.callerName);
-        
-        if (isMatchingCall) {
-            alert(`${data.callerName === username ? data.receiverName : data.callerName} 拒绝了视频通话`);
-            setIsVideoCallModalOpen(false);
-            setVideoCallInfo({
-                isIncoming: false,
-                callerName: '',
-                receiverName: '',
-                callId: null,
-                callStatus: 'waiting'
-            });
-        }
-    };
-    
-    // 监听对方挂断通话
-    const handleVideoCallEnded = (data) => {
-        console.log('收到视频通话挂断事件:', data);
-        
-        const isMatchingCall = 
-            (data.callerName === videoCallInfoRef.current.callerName && 
-             data.receiverName === videoCallInfoRef.current.receiverName) ||
-            (data.callerName === videoCallInfoRef.current.receiverName && 
-             data.receiverName === videoCallInfoRef.current.callerName);
-        
-        if (isMatchingCall) {
-            alert('对方已挂断视频通话');
-            setIsVideoCallModalOpen(false);
-            setVideoCallInfo({
-                isIncoming: false,
-                callerName: '',
-                receiverName: '',
-                callId: null,
-                callStatus: 'waiting'
-            });
-        }
-    };
-    
-    socket.on('video-call-accepted', handleVideoCallAccepted);
-    socket.on('video-call-rejected', handleVideoCallRejected);
-    socket.on('video-call-ended', handleVideoCallEnded);
-    
-    return () => {
-        socket.off('video-call-accepted', handleVideoCallAccepted);
-        socket.off('video-call-rejected', handleVideoCallRejected);
-        socket.off('video-call-ended', handleVideoCallEnded);
-    };
-}, [username]);
+    // 视频通话 Socket 事件监听
+    useEffect(() => {
+        // 监听对方接受视频通话 - 使用用户名组合匹配
+        const handleVideoCallAccepted = (data) => {
+            console.log('收到视频通话接受事件:', data);
 
+            // 使用用户名组合来匹配通话
+            const isMatchingCall =
+                (data.callerName === videoCallInfoRef.current.callerName &&
+                    data.receiverName === videoCallInfoRef.current.receiverName) ||
+                (data.callerName === videoCallInfoRef.current.receiverName &&
+                    data.receiverName === videoCallInfoRef.current.callerName);
+
+            if (isMatchingCall) {
+                console.log('通话匹配成功，更新状态为 connected');
+                // 对方接受了，停止播放声音（发送方）
+                stopInvitationSound();
+
+                setVideoCallInfo(prev => ({
+                    ...prev,
+                    callStatus: 'connected'
+                }));
+                setIsVideoCallModalOpen(true);
+            } else {
+                console.log('通话不匹配，忽略事件', {
+                    dataCaller: data.callerName,
+                    dataReceiver: data.receiverName,
+                    currentCaller: videoCallInfoRef.current.callerName,
+                    currentReceiver: videoCallInfoRef.current.receiverName
+                });
+            }
+        };
+
+        // 监听对方拒绝视频通话
+        const handleVideoCallRejected = (data) => {
+            console.log('收到视频通话拒绝事件:', data);
+
+            const isMatchingCall =
+                (data.callerName === videoCallInfoRef.current.callerName &&
+                    data.receiverName === videoCallInfoRef.current.receiverName) ||
+                (data.callerName === videoCallInfoRef.current.receiverName &&
+                    data.receiverName === videoCallInfoRef.current.callerName);
+
+            if (isMatchingCall) {
+                // 对方拒绝了，停止播放声音（发送方）
+                stopInvitationSound();
+                alert(`${data.callerName === username ? data.receiverName : data.callerName} 拒绝了视频通话`);
+                setIsVideoCallModalOpen(false);
+                setVideoCallInfo({
+                    isIncoming: false,
+                    callerName: '',
+                    receiverName: '',
+                    callId: null,
+                    callStatus: 'waiting'
+                });
+            }
+        };
+
+        // 监听对方挂断通话
+        const handleVideoCallEnded = (data) => {
+            console.log('收到视频通话挂断事件:', data);
+
+            const isMatchingCall =
+                (data.callerName === videoCallInfoRef.current.callerName &&
+                    data.receiverName === videoCallInfoRef.current.receiverName) ||
+                (data.callerName === videoCallInfoRef.current.receiverName &&
+                    data.receiverName === videoCallInfoRef.current.callerName);
+
+            if (isMatchingCall) {
+                // 对方挂断了，停止播放声音
+                stopInvitationSound();
+                alert('对方已挂断视频通话');
+                setIsVideoCallModalOpen(false);
+                setVideoCallInfo({
+                    isIncoming: false,
+                    callerName: '',
+                    receiverName: '',
+                    callId: null,
+                    callStatus: 'waiting'
+                });
+            }
+        };
+
+        socket.on('video-call-accepted', handleVideoCallAccepted);
+        socket.on('video-call-rejected', handleVideoCallRejected);
+        socket.on('video-call-ended', handleVideoCallEnded);
+
+        return () => {
+            socket.off('video-call-accepted', handleVideoCallAccepted);
+            socket.off('video-call-rejected', handleVideoCallRejected);
+            socket.off('video-call-ended', handleVideoCallEnded);
+        };
+    }, [username]);
+    // 组件卸载时停止播放声音
+    useEffect(() => {
+        return () => {
+            // 组件卸载时停止播放声音
+            stopInvitationSound();
+        };
+    }, []);
     // Socket 监听器单独使用一个 useEffect
     useEffect(() => {
         const handleNewMessage = (newMessage) => {
@@ -722,7 +778,7 @@ useEffect(() => {
         if (!selectedFriend || !username) return; // 如果没有选中好友或用户未登录，直接返回
 
         try {
-            await axios.put('http://121.4.22.55:5202/api/messages/markAllAsRead', {
+            await axios.put('https://cqrdpg.com:5202/api/messages/markAllAsRead', {
                 sender_name: selectedFriend.name, // 好友的用户名
                 receiver_name: username // 当前用户的用户名
             });
@@ -759,7 +815,7 @@ useEffect(() => {
 
         try {
             // 发送消息
-            await axios.post('http://121.4.22.55:5202/api/messages', {
+            await axios.post('https://cqrdpg.com:5202/api/messages', {
                 message_text: messageText,
                 sender_name: senderName,
                 receiver_name: receiverName
@@ -824,7 +880,7 @@ useEffect(() => {
         if (!confirmDelete) return;
 
         try {
-            await axios.delete('http://121.4.22.55:5202/api/messages', {
+            await axios.delete('https://cqrdpg.com:5202/api/messages', {
                 data: { messageIds: selectedMessages }
             });
 
@@ -901,7 +957,7 @@ useEffect(() => {
         if (messageIds.length === 0) return;
 
         try {
-            await axios.put('http://121.4.22.55:5202/api/messages/read', { messageIds });
+            await axios.put('https://cqrdpg.com:5202/api/messages/read', { messageIds });
             setMessages((prevMessages) =>
                 prevMessages.map((msg) =>
                     messageIds.includes(msg.message_id) ? { ...msg, is_read: 1 } : msg
@@ -933,7 +989,7 @@ useEffect(() => {
             style={{
                 backgroundColor: themeSettings.backgroundColor,
                 backgroundImage: themeSettings.useBackgroundImage
-                    ? `url(http://www.cqrdpg.com/backend/images/ChatApp/${username}/chatbackgroundimage/backgroundimage.jpg)`
+                    ? `url(https://www.cqrdpg.com/backend/images/ChatApp/${username}/chatbackgroundimage/backgroundimage.jpg)`
                     : 'none',
                 backgroundRepeat: 'no-repeat', // 背景图片不重复
                 backgroundPosition: 'center center', // 背景图片居中

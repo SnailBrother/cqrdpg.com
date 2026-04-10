@@ -22,7 +22,7 @@ http {
         }
      # API 代理
     location /api/ {
-        proxy_pass http://121.4.22.55:5202;   #proxy_pass http://121.4.22.55:5202/api/;
+        proxy_pass https://cqrdpg.com:5202;   #proxy_pass https://cqrdpg.com:5202/api/;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection 'upgrade';
@@ -48,17 +48,17 @@ app.get('/api/GetHousePricePictures',
 const response = await axios.get('/api/GetHousePricePictures',
 然后通过 Nginx 反向代理，将请求转发到指定地址
 location /api/
-proxy_pass http://121.4.22.55:5202; 
+proxy_pass https://cqrdpg.com:5202; 
 
 前端就实现了类似
-app.get('http://121.4.22.55:5202/api/GetHousePricePictures',
+app.get('https://cqrdpg.com:5202/api/GetHousePricePictures',
 
 
 前端代码:
 axios.get('/api/GetHousePricePictures')
         ↓
 浏览器实际请求:
-GET http://121.4.22.55:5202/api/GetHousePricePictures
+GET https://cqrdpg.com:5202/api/GetHousePricePictures
         ↓
 Nginx 服务器接收到请求
 (当前端和 Nginx 同域时)
@@ -66,7 +66,7 @@ Nginx 服务器接收到请求
 Nginx 匹配 location /api/
         ↓
 Nginx 转发请求到:
-http://121.4.22.55:5202/api/GetHousePricePictures
+https://cqrdpg.com:5202/api/GetHousePricePictures
         ↓
 后端服务器处理:
 app.get('/api/GetHousePricePictures', ...)
@@ -74,5 +74,5 @@ app.get('/api/GetHousePricePictures', ...)
 nginx
 # Nginx 配置
 location /api/ {
-    proxy_pass http://121.4.22.55:5202;  # 注意：这里没有斜杠！
+    proxy_pass https://cqrdpg.com:5202;  # 注意：这里没有斜杠！
 }

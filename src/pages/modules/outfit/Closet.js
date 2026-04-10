@@ -29,7 +29,7 @@ const Closet = () => {
     useEffect(() => {
         const fetchWardrobeData = async () => {
             try {
-                const response = await fetch('http://121.4.22.55:5202/api/getWardrobeStewardData');
+                const response = await fetch('https://cqrdpg.com:5202/api/getWardrobeStewardData');
                 const data = await response.json();
                 if (data.success) {
                     setWardrobeData(data.data);

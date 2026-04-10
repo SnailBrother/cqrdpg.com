@@ -5,27 +5,27 @@ const CarouselTypeSixth = () => {
   const items = [
     {
       title: '园博园',
-      src: `http://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeSixth/1.jpg`
+      src: `https://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeSixth/1.jpg`
     },
     {
       title: '地心谷',
-      src: `http://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeSixth/2.jpg`
+      src: `https://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeSixth/2.jpg`
     },
     {
       title: '双凤村',
-      src: `http://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeSixth/3.jpg`
+      src: `https://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeSixth/3.jpg`
     },
     {
       title: '习水',
-      src: `http://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeSixth/4.jpg`
+      src: `https://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeSixth/4.jpg`
     },
     {
       title: '女儿城',
-      src: `http://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeSixth/5.jpg`
+      src: `https://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeSixth/5.jpg`
     },
     {
       title: '丹霞谷',
-      src: `http://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeSixth/6.jpg`
+      src: `https://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeSixth/6.jpg`
     }
   ];
 

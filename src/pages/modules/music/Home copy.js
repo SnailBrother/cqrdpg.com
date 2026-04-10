@@ -10,7 +10,7 @@ import { Loading } from '../../../components/UI';
 import io from 'socket.io-client';
 
 // 创建 Socket.IO 实例
-const socket = io('http://121.4.22.55:5202');
+const socket = io('https://cqrdpg.com:5202');
 
 // 编码处理辅助函数
 const encodeForURL = (str) => {
@@ -252,10 +252,10 @@ const Home = () => {
                     artist: song.artist,
                     genre: song.genre,
                     liked: song.liked || false,
-                    src: `http://www.cqrdpg.com/backend/musics/${song.src}`,
+                    src: `https://www.cqrdpg.com/backend/musics/${song.src}`,
                     coverimage: song.coverimage
-                        ? `http://www.cqrdpg.com/backend/musics/${song.coverimage}`
-                        : 'http://www.cqrdpg.com/backend/musics/default.jpg',
+                        ? `https://www.cqrdpg.com/backend/musics/${song.coverimage}`
+                        : 'https://www.cqrdpg.com/backend/musics/default.jpg',
                 }));
                 setMusics(prev => {
                     const all = page === 1 ? newMusics : [...prev, ...newMusics];

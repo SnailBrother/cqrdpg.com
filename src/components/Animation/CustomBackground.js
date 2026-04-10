@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext'; // 使用 useAuth hook
 import { useTheme } from '../../context/ThemeContext';
 import io from 'socket.io-client';
 
-const socket = io('http://121.4.22.55:5202', {
+const socket = io('https://cqrdpg.com:5202', {
   transports: ['websocket', 'polling']
 });
 
@@ -24,13 +24,13 @@ const CustomBackground = () => {
 
     if (user?.email && activeTheme?.id) {
       // 使用动态的 themeId 而不是硬编码的 6
-      const userImageUrl = `http://www.cqrdpg.com/backend/images/ReactDemoUserThemeSettings/${user.email}/${activeTheme.id}/CustomBackground.jpg?t=${imageTimestamp}`;
+      const userImageUrl = `https://www.cqrdpg.com/backend/images/ReactDemoUserThemeSettings/${user.email}/${activeTheme.id}/CustomBackground.jpg?t=${imageTimestamp}`;
       
       checkImageExists(userImageUrl, (exists) => {
         if (exists) {
           setImageSrc(userImageUrl);
         } else {
-          setImageSrc('http://www.cqrdpg.com/backend/images/ReactDemoUserThemeSettings/default/CustomBackground.jpg');
+          setImageSrc('https://www.cqrdpg.com/backend/images/ReactDemoUserThemeSettings/default/CustomBackground.jpg');
         }
       });
     }
@@ -61,7 +61,7 @@ const CustomBackground = () => {
           alt="Custom Background" 
           className="customBackground-image"
           onError={(e) => {
-            e.target.src = 'http://www.cqrdpg.com/backend/images/ReactDemoUserThemeSettings/default/CustomBackground.jpg';
+            e.target.src = 'https://www.cqrdpg.com/backend/images/ReactDemoUserThemeSettings/default/CustomBackground.jpg';
           }}
         />
       )}
@@ -71,4 +71,4 @@ const CustomBackground = () => {
 
 export default CustomBackground;
 
-// src="http://www.cqrdpg.com/backend/images/SystemThemesettings/李中敬/CustomBackground.jpg"
+// src="https://www.cqrdpg.com/backend/images/SystemThemesettings/李中敬/CustomBackground.jpg"

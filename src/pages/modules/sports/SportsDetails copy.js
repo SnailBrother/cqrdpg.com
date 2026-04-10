@@ -65,7 +65,7 @@ const SportsDetails = () => {
   useEffect(() => {
     fetchRecords();
 
-    const socket = io('http://121.4.22.55:5202');
+    const socket = io('https://cqrdpg.com:5202');
     
     socket.on('workout-record-update', () => {
       console.log('运动记录有变化，重新获取数据');

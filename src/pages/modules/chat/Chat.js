@@ -9,7 +9,7 @@ import ThemeSettings from './ThemeSettings';
 import AvatarSettings from './AvatarSettings';
 import io from 'socket.io-client';
 import './Chat.css';
-const socket = io('http://121.4.22.55:5202');
+const socket = io('https://cqrdpg.com:5202');
 
 const Chat = () => {
     const { user, logout } = useAuth();
@@ -56,7 +56,7 @@ const Chat = () => {
     useEffect(() => {
         const fetchPendingRequests = async () => {
             try {
-                const response = await axios.get('http://121.4.22.55:5202/api/user-management');
+                const response = await axios.get('https://cqrdpg.com:5202/api/user-management');
                 const requests = response.data
                     .filter(user =>
                         user.friend === username &&
@@ -95,7 +95,7 @@ const Chat = () => {
     const fetchUserHeadImage = useCallback(async () => {
         if (isHeadImageLoaded.current) return;
         try {
-            const response = await axios.get('http://121.4.22.55:5202/api/getuserheadimage', {
+            const response = await axios.get('https://cqrdpg.com:5202/api/getuserheadimage', {
                 params: { username }
             });
             if (response.data.imageUrl) {
@@ -110,7 +110,7 @@ const Chat = () => {
     useEffect(() => {
         const loadThemeSettings = async () => {
             try {
-                const response = await axios.get('http://121.4.22.55:5202/api/getthemesettings', {
+                const response = await axios.get('https://cqrdpg.com:5202/api/getthemesettings', {
                     params: { username },
                 });
 
@@ -167,7 +167,7 @@ const Chat = () => {
         setRefreshFriendsList(prev => !prev);
         const fetchPendingRequests = async () => {
             try {
-                const response = await axios.get('http://121.4.22.55:5202/api/user-management');
+                const response = await axios.get('https://cqrdpg.com:5202/api/user-management');
                 const requests = response.data
                     .filter(user =>
                         user.friend === username &&

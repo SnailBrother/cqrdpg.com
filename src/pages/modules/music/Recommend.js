@@ -106,8 +106,8 @@ const Recommend = () => {
                 title: song.title || '未知标题',
                 artist: song.artist || '未知艺术家',
                 genre: song.genre || '未知类型',
-                src: song.src || `http://www.cqrdpg.com/backend/musics/${song.src}`,
-                coverimage: song.coverimage || 'http://www.cqrdpg.com/backend/musics/default.jpg',
+                src: song.src || `https://www.cqrdpg.com/backend/musics/${song.src}`,
+                coverimage: song.coverimage || 'https://www.cqrdpg.com/backend/musics/default.jpg',
                 playcount: song.playcount || 0,
                 rank: song.rank,
                 duration: song.duration || 0,
@@ -161,7 +161,7 @@ const Recommend = () => {
             artist: songToPlay.artist || '未知艺术家',
             genre: songToPlay.genre || '未知类型',
             src: songToPlay.src,
-            coverimage: songToPlay.coverimage || 'http://www.cqrdpg.com/backend/musics/default.jpg',
+            coverimage: songToPlay.coverimage || 'https://www.cqrdpg.com/backend/musics/default.jpg',
             playcount: songToPlay.playcount || 0
         };
 
@@ -175,7 +175,7 @@ const Recommend = () => {
                     artist: song.artist || '未知艺术家',
                     genre: song.genre || '未知类型',
                     src: song.src,
-                    coverimage: song.coverimage || 'http://www.cqrdpg.com/backend/musics/default.jpg'
+                    coverimage: song.coverimage || 'https://www.cqrdpg.com/backend/musics/default.jpg'
                 })),
                 index: actualIndex,
             }
@@ -189,7 +189,7 @@ const Recommend = () => {
             artist: songToPlay.artist || '未知艺术家',
             genre: songToPlay.genre || '未知类型',
             src: songToPlay.src,
-            coverimage: songToPlay.coverimage || 'http://www.cqrdpg.com/backend/musics/default.jpg'
+            coverimage: songToPlay.coverimage || 'https://www.cqrdpg.com/backend/musics/default.jpg'
         };
 
         dispatch({
@@ -205,7 +205,7 @@ const Recommend = () => {
     const handleLike = async (e, musicId) => {
         e.stopPropagation();
         try {
-            await axios.post('http://121.4.22.55:5202/backend/api/favorites', {
+            await axios.post('https://cqrdpg.com:5202/backend/api/favorites', {
                 username: user.username,
                 musicId: musicId
             });

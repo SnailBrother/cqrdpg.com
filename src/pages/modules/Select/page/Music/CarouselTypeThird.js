@@ -4,12 +4,12 @@ import './CarouselTypeThird.css';
 const CarouselTypeThird = () => {
     // 图片源保持在组件内部
     const images = [
-        'http://www.cqrdpg.com/backend/images/WebsiteHomepageImage/Music/歌词评论.jpg',
-       'http://www.cqrdpg.com/backend/images/WebsiteHomepageImage/Music/收藏记录.jpg',
-        'http://www.cqrdpg.com/backend/images/WebsiteHomepageImage/Music/一听听歌.jpg',
-        'http://www.cqrdpg.com/backend/images/WebsiteHomepageImage/Music/音乐听歌.jpg',
-        'http://www.cqrdpg.com/backend/images/WebsiteHomepageImage/Music/音乐推荐.jpg',
-        'http://www.cqrdpg.com/backend/images/WebsiteHomepageImage/Music/音乐欣赏.jpg',
+        'https://www.cqrdpg.com/backend/images/WebsiteHomepageImage/Music/歌词评论.jpg',
+       'https://www.cqrdpg.com/backend/images/WebsiteHomepageImage/Music/收藏记录.jpg',
+        'https://www.cqrdpg.com/backend/images/WebsiteHomepageImage/Music/一听听歌.jpg',
+        'https://www.cqrdpg.com/backend/images/WebsiteHomepageImage/Music/音乐听歌.jpg',
+        'https://www.cqrdpg.com/backend/images/WebsiteHomepageImage/Music/音乐推荐.jpg',
+        'https://www.cqrdpg.com/backend/images/WebsiteHomepageImage/Music/音乐欣赏.jpg',
     ];
 
     const [slides, setSlides] = useState([]);

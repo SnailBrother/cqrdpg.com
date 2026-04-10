@@ -22,7 +22,7 @@ const MusicGridView = ({ musics, onPlayMusic, onPlaySingle, onLike, lastMusicEle
                                 loading="lazy"
                                 onError={(e) => {
                                     e.target.onerror = null;
-                                    e.target.src = 'http://www.cqrdpg.com/backend/musics/default.jpg'
+                                    e.target.src = 'https://www.cqrdpg.com/backend/musics/default.jpg'
                                 }}
                             />
                             <div className={styles.playIconOverlay}>

@@ -3,7 +3,7 @@ import axios from 'axios';
 import io from 'socket.io-client';
 import './AddNewSpecialtips.css';
 
-const socket = io('http://121.4.22.55:5202');
+const socket = io('https://cqrdpg.com:5202');
 
 const AddNewSpecialtips = () => {
     const [assetType, setAssetType] = useState('');
@@ -18,7 +18,7 @@ const AddNewSpecialtips = () => {
         setErrorMessage('');
 
         try {
-            const response = await axios.post('http://121.4.22.55:5202/api/addSpecialTip', {
+            const response = await axios.post('https://cqrdpg.com:5202/api/addSpecialTip', {
                 asset_type: assetType,
                 tip_content: tipContent,
                 remark: remark

@@ -1,7 +1,7 @@
 {
   "name": "react-demo",
   "version": "0.1.0",
-  "proxy": "http://121.4.22.55:5202",
+  "proxy": "https://www.cqrdpg.com:5202",
   "dependencies": {
     "@cyntler/react-doc-viewer": "^1.17.1",
     "@handsontable/react": "^16.2.0",
@@ -37,6 +37,7 @@
     "react-router-dom": "^6.30.1",
     "react-scripts": "5.0.1",
     "recharts": "^3.4.1",
+    "simple-peer": "^9.11.1",
     "slick-carousel": "^1.8.1",
     "socket.io-client": "^4.8.1",
     "ua-parser-js": "^2.0.9",
@@ -44,7 +45,7 @@
     "xlsx": "^0.18.5"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "set HTTPS=true&&react-scripts start",
     "build": "react-scripts build && react-snap",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

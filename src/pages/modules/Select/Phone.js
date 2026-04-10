@@ -96,7 +96,7 @@ const Phone = () => {
         <div className={styles.avatarcontainer}>
           <div className={styles.headerrowtavatar}>
             <img
-              src="http://www.cqrdpg.com/logo192.png"
+              src="https://www.cqrdpg.com/logo192.png"
               alt="头像"
               className={styles.avatarimg}
             />

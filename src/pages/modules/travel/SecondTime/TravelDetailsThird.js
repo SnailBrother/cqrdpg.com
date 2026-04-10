@@ -5,27 +5,27 @@ const TravelDetailsThird = () => {
   const [items, setItems] = useState([
     {
       title: '丰都',
-      image: 'http://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsThird/1.jpg',
+      image: 'https://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsThird/1.jpg',
       pos: '0'
     },
     {
       title: '万州',
-      image: 'http://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsThird/2.jpg',
+      image: 'https://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsThird/2.jpg',
       pos: '1'
     },
     {
       title: '解放碑',
-      image: 'http://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsThird/3.jpg',
+      image: 'https://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsThird/3.jpg',
       pos: '2'
     },
     {
       title: '石笋河',
-      image: 'http://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsThird/4.jpg',
+      image: 'https://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsThird/4.jpg',
       pos: '3'
     },
     {
       title: '南川',
-      image: 'http://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsThird/5.jpg',
+      image: 'https://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsThird/5.jpg',
       pos: '4'
     }
   ]);

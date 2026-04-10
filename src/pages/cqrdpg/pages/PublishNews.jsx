@@ -3,7 +3,7 @@ import styles from './PublishNews.module.css';
 
 const API_BASE = '/api/publish-news';
 // 定义服务器基础地址
-const SERVER_BASE_URL = 'http://www.cqrdpg.com/backend';
+const SERVER_BASE_URL = 'https://www.cqrdpg.com/backend';
 // 定义默认图片的完整路径
 const DEFAULT_IMAGE_URL = `${SERVER_BASE_URL}/images/PublishNewsPictures/Defaultbackground.jpg`;
 

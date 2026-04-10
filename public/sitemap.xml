@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <!-- 首页 -->
   <url>
-    <loc>http://www.cqrdpg.com/</loc>
+    <loc>https://www.cqrdpg.com/</loc>
     <lastmod>2026-03-13</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
@@ -10,7 +10,7 @@
   
   <!-- 关于我们 -->
   <url>
-    <loc>http://www.cqrdpg.com/home</loc>
+    <loc>https://www.cqrdpg.com/home</loc>
     <lastmod>2026-03-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>

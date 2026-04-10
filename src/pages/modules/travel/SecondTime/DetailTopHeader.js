@@ -3,7 +3,7 @@ import './DetailTopHeader.css';
 
 const DetailTopHeader = () => {
   const [isPlaying, setIsPlaying] = useState(true);
-  const [audio] = useState(new Audio('http://www.cqrdpg.com/backend/images/OurHomePage/BackgroundMusic/BackgroundMusic.mp3'));
+  const [audio] = useState(new Audio('https://www.cqrdpg.com/backend/images/OurHomePage/BackgroundMusic/BackgroundMusic.mp3'));
 
   useEffect(() => {
     // Try to autoplay when component mounts

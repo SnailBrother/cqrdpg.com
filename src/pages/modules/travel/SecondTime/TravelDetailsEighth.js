@@ -2,12 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import './TravelDetailsEighth.css';
 
 const images = [
-  { id: 1, url: "http://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsEighth/1.jpg" },
-  { id: 2, url: "http://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsEighth/2.jpg" },
-  { id: 3, url: "http://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsEighth/3.jpg" },
-  { id: 4, url: "http://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsEighth/4.jpg" },
-  { id: 5, url: "http://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsEighth/5.jpg" },
-  { id: 6, url: "http://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsEighth/6.jpg" }
+  { id: 1, url: "https://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsEighth/1.jpg" },
+  { id: 2, url: "https://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsEighth/2.jpg" },
+  { id: 3, url: "https://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsEighth/3.jpg" },
+  { id: 4, url: "https://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsEighth/4.jpg" },
+  { id: 5, url: "https://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsEighth/5.jpg" },
+  { id: 6, url: "https://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsEighth/6.jpg" }
 ];
 
 const TravelDetailsEighth = () => {

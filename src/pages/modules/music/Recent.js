@@ -78,10 +78,10 @@ const Recent = () => {
                 title: song.title,
                 artist: song.artist,
                 genre: song.genre,
-                src: `http://www.cqrdpg.com/backend/musics/${song.src}`,
+                src: `https://www.cqrdpg.com/backend/musics/${song.src}`,
                 coverimage: song.coverimage
-                    ? `http://www.cqrdpg.com/backend/musics/${song.coverimage}`
-                    : 'http://www.cqrdpg.com/backend/musics/default.jpg',
+                    ? `https://www.cqrdpg.com/backend/musics/${song.coverimage}`
+                    : 'https://www.cqrdpg.com/backend/musics/default.jpg',
                 playtime: song.playtime,
                 play_count: song.play_count || 0
             }));

@@ -22,4 +22,4 @@ Disallow: /admin/
 Disallow: /*?*
 
 # 站点地图位置
-Sitemap: http://www.cqrdpg.com/sitemap.xml
+Sitemap: https://www.cqrdpg.com/sitemap.xml

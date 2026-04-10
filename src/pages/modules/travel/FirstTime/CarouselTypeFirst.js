@@ -3,11 +3,11 @@ import React, { useState, useEffect, useRef } from'react';
 import './CarouselTypeFirst.css';
 
 const images = [
-  { id: 0, src: 'http://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeFirst/1.jpg', alt: 'Image 0' },
-  { id: 1, src: 'http://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeFirst/2.jpg', alt: 'Image 1' },
-  { id: 2, src: 'http://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeFirst/3.jpg', alt: 'Image 2' },
-  { id: 3, src: 'http://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeFirst/4.jpg', alt: 'Image 3' },
-  { id: 4, src: 'http://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeFirst/5.jpg', alt: 'Image 4' },
+  { id: 0, src: 'https://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeFirst/1.jpg', alt: 'Image 0' },
+  { id: 1, src: 'https://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeFirst/2.jpg', alt: 'Image 1' },
+  { id: 2, src: 'https://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeFirst/3.jpg', alt: 'Image 2' },
+  { id: 3, src: 'https://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeFirst/4.jpg', alt: 'Image 3' },
+  { id: 4, src: 'https://www.cqrdpg.com/backend/images/OurHomePage/CarouselTypeFirst/5.jpg', alt: 'Image 4' },
 ];
 
 const CarouselTypeFirst = () => {

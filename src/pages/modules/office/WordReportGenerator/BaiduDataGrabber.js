@@ -5,7 +5,7 @@ import axios from 'axios';
 import './BaiduDataGrabber.css';
 import { useAuth } from '../../../../context/AuthContext';
 
-const API_CONFIG_URL = 'http://121.4.22.55:5202/api/getApiDatabas';
+const API_CONFIG_URL = 'https://cqrdpg.com:5202/api/getApiDatabas';
 
 const CATEGORY_LIST = [
   { key: "bank", label: "银行" },

@@ -188,7 +188,7 @@ const ReportQrCodePage = () => {
         }
 
         // 步骤2: 调用API查询数据库中的数据
-        //const response = await axios.get(`http://121.4.22.55:5202/api/searchWordReportsReportQrCode/${reportsID}`);
+        //const response = await axios.get(`https://cqrdpg.com:5202/api/searchWordReportsReportQrCode/${reportsID}`);
         const response = await axios.get(`/api/searchWordReportsReportQrCode/${reportsID}`);
         if (!response.data) {
           throw new Error('API返回数据为空');

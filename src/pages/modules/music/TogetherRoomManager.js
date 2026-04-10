@@ -9,7 +9,7 @@ import styles from './TogetherRoomManager.module.css';
 import io from 'socket.io-client';
 
 // 创建 Socket.IO 实例
-const socket = io('http://121.4.22.55:5202');
+const socket = io('https://cqrdpg.com:5202');
 
 const TogetherRoomManager = () => {
     const [rooms, setRooms] = useState([]);

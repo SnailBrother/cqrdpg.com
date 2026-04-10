@@ -6,17 +6,6 @@ const app = express();
 const port = 5202;
 const { PDFDocument } = require('pdf-lib');
 
-// HTTPS 配置 - 读取证书文件
-const fs = require('fs');
-const path = require('path');
-const privateKey = fs.readFileSync('cqrdpg.com.key', 'utf8');
-const certificate = fs.readFileSync('cqrdpg.com_bundle.crt', 'utf8');
-
-const credentials = {
-    key: privateKey,
-    cert: certificate
-};
-
 // SQL Server 配置
 const config = {
     user: 'sa',
@@ -31,45 +20,57 @@ const config = {
             min: 0,  // 最小连接数
             idleTimeoutMillis: 30000 // 空闲连接超时时间
         }
+
     }
 };
 
-// 使用全局连接池 这是最佳实践
+//使用全局连接池 这是最佳实践 搜索哪些使用了这个，直接关键字搜索：使用全局连接池 这是最佳实践 👇 2.1
+//不需要手动关闭连接，连接池会自动管理
 const pool = new sql.ConnectionPool(config);
-const poolConnect = pool.connect();
+const poolConnect = pool.connect(); // 启动连接但不等待
+// 确保应用启动时连接成功
 poolConnect.then(() => {
     console.log('Connected to SQL Server');
 }).catch(err => {
     console.error('Database connection failed:', err);
     process.exit(1);
 });
+//使用全局连接池 这是最佳实践 搜索哪些使用了这个，直接关键字搜索：使用全局连接池 这是最佳实践 👆 2.1
 
-// Socket.io 配置 - 需要使用 HTTPS 服务器
-const https = require('https');
-const httpServer = https.createServer(credentials, app);
-const io = require('socket.io')(httpServer, {
+
+//实时接受消息 socket.io
+
+
+const http = require('http').Server(app);
+const io = require('socket.io')(http, {
     cors: {
         origin: '*',
         methods: ['GET', 'POST', 'PUT', 'DELETE'],
     }
 });
 
-// 下载相关
+//下载
+const path = require('path');
+const fs = require('fs');
 const archiver = require('archiver');
 
-// 图片上传
+//图片上传
+//const express = require("express");
 const multer = require("multer");
+//const fs = require("fs");
+//const path = require("path");
 
-const JSZip = require('jszip');
+const JSZip = require('jszip');  // 添加这行 JSZip 但没有正确导
 
 app.use(cors());
-app.use(express.json({ limit: '1mb' }));
+app.use(express.json()); // 解析 JSON 请求体
+app.use(express.json({ limit: '1mb' })); // 增加负载限制以防长 URL
+
 
 // 根路径处理
 app.get('/', (req, res) => {
     res.send('API is running...');
 });
-
 
 
 
@@ -15996,8 +15997,8 @@ io.on('connection', (socket) => {
 
 
 // 启动服务器
-httpServer.listen(port, () => {
-    console.log(`Server is running on https://localhost:${port}`);
+http.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
 });
 
 // 监听 Socket.IO 连接 实时更新

@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import io from 'socket.io-client';
 
-const socket = io('http://121.4.22.55:5202');
+const socket = io('https://cqrdpg.com:5202');
 
 const useSocketEvents = (callbacks) => {
   useEffect(() => {

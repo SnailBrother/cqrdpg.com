@@ -34,7 +34,7 @@ const AccountingAdd = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const response = await axios.get('http://121.4.22.55:5202/getCategoryIcons');
+                const response = await axios.get('https://cqrdpg.com:5202/getCategoryIcons');
                 if (response.data) {
                     setCategories(response.data);
                 }
@@ -86,7 +86,7 @@ const AccountingAdd = () => {
 
         try {
             const response = await axios.post(
-                'http://121.4.22.55:5202/api/lifebookkeepingaddRecord',
+                'https://cqrdpg.com:5202/api/lifebookkeepingaddRecord',
                 submitData,
                 { headers: { 'Content-Type': 'application/json' } }
             );

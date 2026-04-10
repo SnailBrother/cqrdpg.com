@@ -4,7 +4,7 @@ import { useAuth } from '../../../context/AuthContext';
 import io from 'socket.io-client';
 import styles from './SongReview.module.css'; // 假设您已将CSS转换为模块
 
-const socket = io('http://121.4.22.55:5202');
+const socket = io('https://cqrdpg.com:5202');
 
 /**
  * 【时间格式化核心函数】

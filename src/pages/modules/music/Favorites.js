@@ -64,7 +64,7 @@ const handleKeyDown = (e) => {
         setLoading(true);
         setError(null);
         try {
-            const response = await axios.get('http://121.4.22.55:5202/backend/api/reactdemofavorites', {
+            const response = await axios.get('https://cqrdpg.com:5202/backend/api/reactdemofavorites', {
                 params: {
                     username: user.username,
                     page: page,
@@ -77,10 +77,10 @@ const handleKeyDown = (e) => {
                 id: song.id,
                 title: song.title,
                 artist: song.artist,
-                src: `http://www.cqrdpg.com/backend/musics/${song.src}`,
+                src: `https://www.cqrdpg.com/backend/musics/${song.src}`,
                 coverimage: song.coverimage
-                            ? `http://www.cqrdpg.com/backend/musics/${song.coverimage}`
-                            : 'http://www.cqrdpg.com/backend/musics/default.jpg',
+                            ? `https://www.cqrdpg.com/backend/musics/${song.coverimage}`
+                            : 'https://www.cqrdpg.com/backend/musics/default.jpg',
                 play_count: song.play_count
             }));
 

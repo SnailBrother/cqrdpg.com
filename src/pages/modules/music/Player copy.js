@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom'; // 添加导入
 import io from 'socket.io-client';
 
 // 创建 Socket.IO 实例
-const socket = io('http://121.4.22.55:5202');
+const socket = io('https://cqrdpg.com:5202');
 
 // 辅助函数：格式化时间
 const formatTime = (seconds) => {
@@ -219,7 +219,7 @@ const Player = ({ className = '' }) => {
 
   const checkIfLiked = async () => {
     try {
-      const response = await axios.get('http://121.4.22.55:5202/backend/api/reactdemofavorites', {
+      const response = await axios.get('https://cqrdpg.com:5202/backend/api/reactdemofavorites', {
         params: {
           username: user.username,
           search: currentSong.title // 通过歌曲名搜索
@@ -335,7 +335,7 @@ const Player = ({ className = '' }) => {
     try {
       if (isLiked) {
         // 取消收藏
-        await axios.delete('http://121.4.22.55:5202/backend/api/favorites', {
+        await axios.delete('https://cqrdpg.com:5202/backend/api/favorites', {
           data: {
             user_name: user.username,  // 对应数据库的 user_name
             song_name: currentSong.title  // 对应数据库的 song_name
@@ -345,7 +345,7 @@ const Player = ({ className = '' }) => {
         console.log('取消收藏成功');
       } else {
         // 添加收藏
-        await axios.post('http://121.4.22.55:5202/backend/api/favorites', {
+        await axios.post('https://cqrdpg.com:5202/backend/api/favorites', {
           user_name: user.username,    // 对应数据库的 user_name
           song_name: currentSong.title, // 对应数据库的 song_name
           artist: currentSong.artist,  // 对应数据库的 artist
@@ -416,11 +416,11 @@ const Player = ({ className = '' }) => {
         {/* --- 第一列：歌曲封面 --- */}
         <div className={styles.column1}>
           <img
-            src={currentSong.coverimage || 'http://www.cqrdpg.com/backend/musics/default.jpg'}
+            src={currentSong.coverimage || 'https://www.cqrdpg.com/backend/musics/default.jpg'}
             alt={currentSong.title}
             className={styles.playerArtwork}
             onClick={showMusicMenu} 
-            onError={(e) => { e.target.onerror = null; e.target.src = 'http://www.cqrdpg.com/backend/musics/default.jpg' }}
+            onError={(e) => { e.target.onerror = null; e.target.src = 'https://www.cqrdpg.com/backend/musics/default.jpg' }}
           />
         </div>
 

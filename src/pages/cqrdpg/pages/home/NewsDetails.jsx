@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import styles from './NewsDetails.module.css';
 
 const API_BASE_URL = '/api/publish-news';
-const SERVER_BASE_URL = 'http://www.cqrdpg.com/backend';
+const SERVER_BASE_URL = 'https://www.cqrdpg.com/backend';
 const DEFAULT_IMAGE = `${SERVER_BASE_URL}/images/PublishNewsPictures/Defaultbackground.jpg`;
 
 const NewsDetails = () => {

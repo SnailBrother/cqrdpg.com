@@ -5,15 +5,15 @@ const TravelDetailsFourth = () => {
   const images = [
     {
       title: '南坪',
-      src: 'http://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsFourth/1.jpg'
+      src: 'https://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsFourth/1.jpg'
     },
     {
       title: '武隆',
-      src: 'http://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsFourth/2.jpg'
+      src: 'https://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsFourth/2.jpg'
     },
     {
       title: '弹子石',
-      src: 'http://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsFourth/3.jpg'
+      src: 'https://www.cqrdpg.com/backend/images/OurHomePage/Details/TravelDetailsFourth/3.jpg'
     }
   ];
 
