@@ -617,8 +617,20 @@ function Login() {
                   {submitError}
                 </div>
               )}
-
               <button
+                type="submit"
+                className={styles.submitButton}
+                disabled={loading}
+              >
+                {/* 保留4个动画边框，不让布局变形 */}
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+
+                {loading ? '登录中...' : '登 录'}
+              </button>
+              {/* <button
                 type="submit"
                 className={styles.submitButton}
                 disabled={loading}
@@ -634,7 +646,7 @@ function Login() {
                     登 录
                   </>
                 )}
-              </button>
+              </button> */}
             </form>
 
             <div className={styles.loginFooter}>
