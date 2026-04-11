@@ -51,7 +51,7 @@ const AccountingCharts = () => {
             try {
                 setLoading(true);
                 setError(null);
-                const response = await axios.get('https://cqrdpg.com:5202/api/lifebookkeepinggetRecords');
+                const response = await axios.get('https://www.cqrdpg.com:5202/api/lifebookkeepinggetRecords');
                 setData(response.data);
             } catch (err) {
                 console.error('获取数据失败:', err);

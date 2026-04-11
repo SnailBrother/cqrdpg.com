@@ -6,6 +6,125 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "5431279",
+      "name": "拒绝",
+      "font_class": "jujue",
+      "unicode": "eb51",
+      "unicode_decimal": 60241
+    },
+    {
+      "icon_id": "11838041",
+      "name": "接受",
+      "font_class": "jieshou",
+      "unicode": "eb52",
+      "unicode_decimal": 60242
+    },
+    {
+      "icon_id": "18537375",
+      "name": "视频通话",
+      "font_class": "shipintonghua",
+      "unicode": "eb53",
+      "unicode_decimal": 60243
+    },
+    {
+      "icon_id": "21754072",
+      "name": "挂断-带圆形",
+      "font_class": "guaduan-daiyuanxing",
+      "unicode": "eb54",
+      "unicode_decimal": 60244
+    },
+    {
+      "icon_id": "37424691",
+      "name": "视频通话_48",
+      "font_class": "shipintonghua_48",
+      "unicode": "eb55",
+      "unicode_decimal": 60245
+    },
+    {
+      "icon_id": "2685193",
+      "name": "已康复患者",
+      "font_class": "yikangfuhuanzhe",
+      "unicode": "eb46",
+      "unicode_decimal": 60230
+    },
+    {
+      "icon_id": "4795258",
+      "name": "17",
+      "font_class": "icon-test11",
+      "unicode": "eb81",
+      "unicode_decimal": 60289
+    },
+    {
+      "icon_id": "4795297",
+      "name": "53",
+      "font_class": "icon-test13",
+      "unicode": "eb8d",
+      "unicode_decimal": 60301
+    },
+    {
+      "icon_id": "5149146",
+      "name": "哑铃",
+      "font_class": "yaling",
+      "unicode": "eb47",
+      "unicode_decimal": 60231
+    },
+    {
+      "icon_id": "6169397",
+      "name": "跳高",
+      "font_class": "tiaogao",
+      "unicode": "eb48",
+      "unicode_decimal": 60232
+    },
+    {
+      "icon_id": "6172646",
+      "name": "跆拳道",
+      "font_class": "taiquandao",
+      "unicode": "eb49",
+      "unicode_decimal": 60233
+    },
+    {
+      "icon_id": "11829831",
+      "name": "平板支撑",
+      "font_class": "pingbanzhicheng-",
+      "unicode": "eb4a",
+      "unicode_decimal": 60234
+    },
+    {
+      "icon_id": "36162750",
+      "name": "undraw_mindfulness_8gqa",
+      "font_class": "undraw_mindfulness_8gqa",
+      "unicode": "eb4b",
+      "unicode_decimal": 60235
+    },
+    {
+      "icon_id": "41614104",
+      "name": "拥抱",
+      "font_class": "yongbao",
+      "unicode": "eb4d",
+      "unicode_decimal": 60237
+    },
+    {
+      "icon_id": "46696061",
+      "name": "力量训练-哑铃颈后臂屈伸右侧",
+      "font_class": "liliangxunlian-yalingjinghoubiqushenyouce",
+      "unicode": "eb4e",
+      "unicode_decimal": 60238
+    },
+    {
+      "icon_id": "46699310",
+      "name": "负重引体向上",
+      "font_class": "fuzhongyintixiangshang",
+      "unicode": "eb4f",
+      "unicode_decimal": 60239
+    },
+    {
+      "icon_id": "46748392",
+      "name": "平板支撑",
+      "font_class": "pingbanzhicheng",
+      "unicode": "eb50",
+      "unicode_decimal": 60240
+    },
+    {
       "icon_id": "46696037",
       "name": "靠墙静蹲",
       "font_class": "kaoqiangjingdun",

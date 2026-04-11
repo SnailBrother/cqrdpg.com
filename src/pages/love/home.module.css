@@ -560,3 +560,100 @@
     top: 60%;
   }
 }
+/* #region start  手机模式的卡片*/
+/* 在home.module.css文件末尾添加以下样式 */
+
+/* ========= 手机功能卡片网格 ========= */
+.mobileFeaturesGrid {
+  display: none; /* 默认隐藏，只在手机端显示 */
+  padding: 20px 16px 40px;
+  background: #fff;
+}
+
+.sectionTitle {
+  font-size: 22px;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.sectionTitle::before,
+.sectionTitle::after {
+  content: '❤️';
+  position: absolute;
+  font-size: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.sectionTitle::before {
+  left: 20%;
+}
+
+.sectionTitle::after {
+  right: 20%;
+}
+
+.featuresGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.gridCard {
+  background: linear-gradient(145deg, #fff5f7, #ffeef2);
+  border-radius: 20px;
+  padding: 20px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border: 1px solid rgba(255, 107, 107, 0.15);
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.08);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.gridCard:active {
+  transform: scale(0.96);
+  background: linear-gradient(145deg, #ffeef2, #ffe0e6);
+  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.12);
+}
+
+.gridIcon {
+  font-size: 40px;
+  margin-bottom: 8px;
+  filter: drop-shadow(2px 4px 6px rgba(255, 107, 107, 0.15));
+}
+
+.gridTitle {
+  font-size: 18px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 4px;
+}
+
+.gridDesc {
+  font-size: 12px;
+  color: #999;
+  font-weight: 400;
+}
+
+/* 响应式：手机端显示网格，隐藏旋转木马 */
+@media (max-width: 768px) {
+  .mobileFeaturesGrid {
+    display: block;
+  }
+
+  .carouselSection {
+    display: none; /* 手机端隐藏旋转木马 */
+  }
+}
+/*  #endregion end */

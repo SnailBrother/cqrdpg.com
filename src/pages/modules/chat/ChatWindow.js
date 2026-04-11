@@ -7,7 +7,7 @@ import { Loading } from '../../../components/UI';
 import VideoCall from './VideoCall'; // 根据实际路径调整
 
 import Circularrotatingtext from './.././../../components/Animation/Circularrotatingtext'; // 加载动画里面的环形旋转文字
-const socket = io('https://cqrdpg.com:5202');
+const socket = io('https://www.cqrdpg.com:5202');
 
 // 在文件顶部，import 之后添加
 const playInvitationSound = () => {
@@ -104,7 +104,7 @@ const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) 
             console.log('发送视频通话邀请, callId:', callId);
 
             // 发送视频通话邀请消息
-            const response = await axios.post('https://cqrdpg.com:5202/api/messages', {
+            const response = await axios.post('https://www.cqrdpg.com:5202/api/messages', {
                 message_text: `您的好友 ${username} 邀请您进行视频通话`,
                 sender_name: username,
                 receiver_name: selectedFriend.name,
@@ -227,7 +227,7 @@ const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) 
                 file_size: file.size
             });
 
-            const response = await axios.post('https://cqrdpg.com:5202/api/messages/uploadImage', formData, {
+            const response = await axios.post('https://www.cqrdpg.com:5202/api/messages/uploadImage', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 },
@@ -307,7 +307,7 @@ const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) 
     // 获取未读消息总数（排除当前选中好友）
     const fetchUnreadCounts = async () => {
         try {
-            const response = await axios.get('https://cqrdpg.com:5202/api/messages');
+            const response = await axios.get('https://www.cqrdpg.com:5202/api/messages');
             const allMessages = response.data;
 
             const unreadCounts = {};
@@ -369,7 +369,7 @@ const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) 
 
         setIsLoading(true);
         try {
-            const response = await axios.get('https://cqrdpg.com:5202/api/messages/chat', {
+            const response = await axios.get('https://www.cqrdpg.com:5202/api/messages/chat', {
                 params: {
                     senderName: username,
                     receiverName: selectedFriend.name,
@@ -778,7 +778,7 @@ const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) 
         if (!selectedFriend || !username) return; // 如果没有选中好友或用户未登录，直接返回
 
         try {
-            await axios.put('https://cqrdpg.com:5202/api/messages/markAllAsRead', {
+            await axios.put('https://www.cqrdpg.com:5202/api/messages/markAllAsRead', {
                 sender_name: selectedFriend.name, // 好友的用户名
                 receiver_name: username // 当前用户的用户名
             });
@@ -815,7 +815,7 @@ const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) 
 
         try {
             // 发送消息
-            await axios.post('https://cqrdpg.com:5202/api/messages', {
+            await axios.post('https://www.cqrdpg.com:5202/api/messages', {
                 message_text: messageText,
                 sender_name: senderName,
                 receiver_name: receiverName
@@ -880,7 +880,7 @@ const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) 
         if (!confirmDelete) return;
 
         try {
-            await axios.delete('https://cqrdpg.com:5202/api/messages', {
+            await axios.delete('https://www.cqrdpg.com:5202/api/messages', {
                 data: { messageIds: selectedMessages }
             });
 
@@ -957,7 +957,7 @@ const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) 
         if (messageIds.length === 0) return;
 
         try {
-            await axios.put('https://cqrdpg.com:5202/api/messages/read', { messageIds });
+            await axios.put('https://www.cqrdpg.com:5202/api/messages/read', { messageIds });
             setMessages((prevMessages) =>
                 prevMessages.map((msg) =>
                     messageIds.includes(msg.message_id) ? { ...msg, is_read: 1 } : msg
@@ -1242,7 +1242,7 @@ const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) 
                                         onClick={sendVideoCallInvitation}  // 添加这个
                                     >
                                         <svg className="chat-menu-icon" aria-hidden="true">
-                                            <use xlinkHref="#icon-tupian" />
+                                            <use xlinkHref="#icon-shipintonghua_48" />
                                         </svg>
                                         <span>视频通话</span>
                                     </button>

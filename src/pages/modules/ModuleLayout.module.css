@@ -160,7 +160,7 @@
 .headerContainer {
  border-bottom: 1px solid var(--border_color); 
   
-  z-index: 999;
+  z-index: 1000;
   /* 确保 Header 在最上层，不会被内容遮挡 */
 }
 

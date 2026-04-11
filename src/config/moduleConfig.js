@@ -10,7 +10,7 @@ import ChatChat from '../pages/modules/chat/Chat';
 import Musicplayer from '../pages/modules/music/Player';
 import SystemThemeSettings from '../pages/modules/system/SystemThemeSettings';
 import SystemReadExcelData from '../pages/modules/system/ReadExcelData';
- 
+
 // 非核心页面 - 懒加载（不常用页面）
 const AccountingAdd = lazy(() => import('../pages/modules/accounting/AccountingAdd'));
 const AccountingCharts = lazy(() => import('../pages/modules/accounting/AccountingCharts'));
@@ -83,6 +83,15 @@ const MusicplayerLyrics = lazy(() => import('../pages/modules/music/MusicplayerL
 const MusicPlaylist = lazy(() => import('../pages/modules/music/MusicPlaylist'));
 const MusicSongReview = lazy(() => import('../pages/modules/music/SongReview'));
 
+
+
+
+//综合显示
+const TogetherAccounting = lazy(() => import('../pages/modules/together/accounting'));
+const TogetherChat = lazy(() => import('../pages/modules/together/chat'));
+const TogetherMusic = lazy(() => import('../pages/modules/together/music'));
+const TogetherSports = lazy(() => import('../pages/modules/together/sports'));
+
 export const moduleConfig = {
   accounting: {
     label: '记账',
@@ -105,11 +114,11 @@ export const moduleConfig = {
       { key: 'favorites', label: '喜欢', icon: '#icon-xihuan11', component: MusicFavorites, showInTabs: false, showInNavigation: true },
       { key: 'musictogetherroommanager', label: '一起听', icon: '#icon-kefu', component: MusicTogetherRoomManager, showInTabs: false, showInNavigation: true },
 
-      
-     // { key: 'fluteSheetMusic', label: '音符', icon: '#icon-kefu', component: FluteSheetMusic, showInTabs: false, showInNavigation: true },
-     
+
+      // { key: 'fluteSheetMusic', label: '音符', icon: '#icon-kefu', component: FluteSheetMusic, showInTabs: false, showInNavigation: true },
+
       // 隐藏的路由 - 不显示在导航中
-            { key: 'musicMenu', label: '快捷键', icon: '#icon-kefu', component: MusicMenu, showInTabs: false, showInNavigation: false },
+      { key: 'musicMenu', label: '快捷键', icon: '#icon-kefu', component: MusicMenu, showInTabs: false, showInNavigation: false },
       { key: 'musicplayerlyrics', label: '歌词', component: MusicplayerLyrics, showInTabs: false, showInNavigation: false },
       { key: 'musicplayer', label: '播放器', component: Musicplayer, showInTabs: false, showInNavigation: false },
       { key: 'musicplaylist', label: '播放列表', component: MusicPlaylist, showInTabs: false, showInNavigation: false },
@@ -131,24 +140,24 @@ export const moduleConfig = {
     label: '办公',
     defaultRoute: 'SearchPrice',
     routes: [
-        { key: 'SearchPrice', label: '价格查询', icon: '#icon-chakantupian4', component: OfficeSearchPrice, showInNavigation: true, showInTabs: false },
-        { key: 'OfficeSearchPdfFileView', label: '资料查找', icon: '#icon-pdf2', component: OfficeSearchPdfFileView, showInNavigation: true, showInTabs: false  },
-        // { key: 'TemplateManagement', label: '模板下载', icon: '#icon-a-bianzu10', component: OfficeTemplateManagement, showInNavigation: true, showInTabs: false },
-        { key: 'PublicNews', label: '消息通知', icon: '#icon-tongzhi4', component: OfficePublicNews, showInNavigation: true, showInTabs: false },
-     // { key: 'PriceConsultationDialog', label: '价格咨询', icon: '#icon-dingwei-xiaoquzuola', component: OfficePriceConsultationDialog, showInNavigation: true, showInTabs: false  },
+      { key: 'SearchPrice', label: '价格查询', icon: '#icon-chakantupian4', component: OfficeSearchPrice, showInNavigation: true, showInTabs: false },
+      { key: 'OfficeSearchPdfFileView', label: '资料查找', icon: '#icon-pdf2', component: OfficeSearchPdfFileView, showInNavigation: true, showInTabs: false },
+      // { key: 'TemplateManagement', label: '模板下载', icon: '#icon-a-bianzu10', component: OfficeTemplateManagement, showInNavigation: true, showInTabs: false },
+      { key: 'PublicNews', label: '消息通知', icon: '#icon-tongzhi4', component: OfficePublicNews, showInNavigation: true, showInTabs: false },
+      // { key: 'PriceConsultationDialog', label: '价格咨询', icon: '#icon-dingwei-xiaoquzuola', component: OfficePriceConsultationDialog, showInNavigation: true, showInTabs: false  },
       //{ key: 'NeighborhoodFinder', label: '小区查询', icon: '#icon-stock', component: OfficeNeighborhoodFinder, showInNavigation: true, showInTabs: false  },
       // { key: 'MessageDetail/:messageId', label: '消息详情', icon: '#icon-yinliang2',  component: OfficeMessageDetail, showInNavigation: false, showInTabs: false },
       // { key: 'MessageDetail', label: '消息通知', icon: '#icon-yinliang2', component: OfficeMessageDetail,  showInNavigation: false, showInTabs: false },
-    
-      { key: 'LookHousePricePicture', label: '查看图片', icon: '#icon-chakantupian4', component: OfficeLookHousePricePicture, showInNavigation: false, showInTabs: false  },
-      { key: 'LookBuildingsPricePicture', label: '查看图片', icon: '#icon-chakantupian4', component: OfficeLookBuildingsPricePicture, showInNavigation: false, showInTabs: false  },
-      { key: 'UploadHousePricePicture', label: '上传图片', icon: '#icon-chakantupian4', component: OfficeUploadHousePricePicture, showInNavigation: false, showInTabs: false  },
+
+      { key: 'LookHousePricePicture', label: '查看图片', icon: '#icon-chakantupian4', component: OfficeLookHousePricePicture, showInNavigation: false, showInTabs: false },
+      { key: 'LookBuildingsPricePicture', label: '查看图片', icon: '#icon-chakantupian4', component: OfficeLookBuildingsPricePicture, showInNavigation: false, showInTabs: false },
+      { key: 'UploadHousePricePicture', label: '上传图片', icon: '#icon-chakantupian4', component: OfficeUploadHousePricePicture, showInNavigation: false, showInTabs: false },
       //{ key: 'OfficeMergePrintPdf', label: '资料打印', icon: '#icon-pdf2', component: OfficeMergePrintPdf, showInNavigation: true, showInTabs: false  },
-     
+
       { key: 'Specialtips', label: '特别提示', icon: '#icon-tishi', component: OfficeSpecialtips, showInNavigation: true, showInTabs: false },
       { key: 'SiteLinks', label: '常用网站', icon: '#icon-web', component: OfficeSiteLinks, showInNavigation: true, showInTabs: false },
       { key: 'FeeCalculation', label: '收费计算', icon: '#icon-jisuanji', component: OfficeFeeCalculation, showInNavigation: true, showInTabs: false },
-     // { key: 'EvaluationFilePreview', label: '参考文献', icon: '#icon-bendiwenjianziyuan', component: OfficeEvaluationFilePreview, showInNavigation: true, showInTabs: false },
+      // { key: 'EvaluationFilePreview', label: '参考文献', icon: '#icon-bendiwenjianziyuan', component: OfficeEvaluationFilePreview, showInNavigation: true, showInTabs: false },
       { key: 'WordReportGenerator', label: '撰写报告', icon: '#icon-xiti', component: OfficeWordReportGenerator, showInNavigation: true, showInTabs: false },
     ]
   },
@@ -176,13 +185,13 @@ export const moduleConfig = {
     routes: [
       { key: 'theme', label: '主题设置', icon: '#icon-zhuti1', component: SystemThemeSettings, showInNavigation: true },
       { key: 'profile', label: '个人资料', icon: '#icon-user-01', component: SystemProfile, showInNavigation: true },
-       { key: 'WordEditing', label: 'word编辑', icon: '#icon-word', component: SystemWordEditing, showInNavigation: true },
-       { key: 'ExcelEditing', label: 'Excel编辑', icon: '#icon-excel4', component: SystemExcelEditing, showInNavigation: true },
-       { key: 'ReadExcelData', label: 'Excel读取', icon: '#icon-excel4', component: SystemReadExcelData, showInNavigation: true },
-       
+      { key: 'WordEditing', label: 'word编辑', icon: '#icon-word', component: SystemWordEditing, showInNavigation: true },
+      { key: 'ExcelEditing', label: 'Excel编辑', icon: '#icon-excel4', component: SystemExcelEditing, showInNavigation: true },
+      { key: 'ReadExcelData', label: 'Excel读取', icon: '#icon-excel4', component: SystemReadExcelData, showInNavigation: true },
+
       { key: 'BackendSettings', label: '数据更新', icon: '#icon-gongjuxuanzhong', component: SystemBackendSettings, showInNavigation: true },
       { key: 'UploadBuildingsPricePicture', label: '更新建筑物图片', icon: '#icon-gongjuxuanzhong', component: SystemUploadBuildingsPricePicture, showInTabs: false, showInNavigation: false },
-     
+
     ]
   },
   tool: {
@@ -191,23 +200,35 @@ export const moduleConfig = {
     routes: [
       { key: 'imagecompressiontool', label: '图片压缩', icon: '#icon-gongju1', component: ToolImageCompressionTool, showInNavigation: true },
       { key: 'doublechromosphere', label: '双色球', icon: '#icon-shuangseqiu', component: ToolDoubleChromosphere, showInNavigation: true },
-       { key: 'deepseekai', label: 'AI', icon: '#icon-Ai', component: ToolDeepseekAi, showInNavigation: true },
+      { key: 'deepseekai', label: 'AI', icon: '#icon-Ai', component: ToolDeepseekAi, showInNavigation: true },
       // { key: 'aliyunAi', label: '阿里百炼', icon: '#icon-yigui1', component: ToolAliyunAi, showInNavigation: true },
       { key: 'auntflo', label: '经期', icon: '#icon-tianjiabiao', component: ToolAuntFlo, showInNavigation: true },
       { key: 'fungames', label: '游戏', icon: '#icon-yigui1', component: ToolFunGames, showInNavigation: true },
-     
+
     ]
   },
-    sport: {
+  sport: {
     label: '运动',
     defaultRoute: 'sport',
     routes: [
       { key: 'sport', label: '运动', icon: '#icon-ticao2', component: Sport, showInTabs: false, showInNavigation: true },
-       { key: 'sportsdetails', label: '详情', icon: '#icon-yuqiequanxuanzhong', component: SportsDetails, showInTabs: false, showInNavigation: true },
-        { key: 'sportsManual', label: '教程', icon: '#icon-dr_yxyz', component: SportsManual, showInTabs: false, showInNavigation: true },
-      
+      { key: 'sportsdetails', label: '详情', icon: '#icon-yuqiequanxuanzhong', component: SportsDetails, showInTabs: false, showInNavigation: true },
+      { key: 'sportsManual', label: '教程', icon: '#icon-dr_yxyz', component: SportsManual, showInTabs: false, showInNavigation: true },
+
     ]
   },
+  together: {
+    label: '综合',
+    defaultRoute: 'accounting',
+    routes: [
+      { key: 'accounting', label: '记账', icon: '#icon-icon-zhangben', component: TogetherAccounting, showInTabs: false, showInNavigation: true },
+      { key: 'chat', label: '聊天', icon: '#icon-liaotian12', component: TogetherChat, showInTabs: false, showInNavigation: true },
+      { key: 'music', label: '音乐', icon: '#icon-kefu', component: TogetherMusic, showInTabs: false, showInNavigation: true },
+      { key: 'sports', label: '运动', icon: '#icon-dr_yxyz', component: TogetherSports, showInTabs: false, showInNavigation: true },
+    ]
+  },
+
+
 };
 
 // 导出用于 ModuleLayout 的菜单数据 - 只包含 showInNavigation 为 true 的路由

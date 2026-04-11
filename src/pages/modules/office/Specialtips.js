@@ -3,7 +3,7 @@ import axios from 'axios';
 import io from 'socket.io-client';
 import './Specialtips.css';
 import { Loading } from '../../../components/UI';
-const socket = io('https://cqrdpg.com:5202'); // 请根据实际情况修改服务器地址
+const socket = io('https://www.cqrdpg.com:5202'); // 请根据实际情况修改服务器地址
 
 export default function Specialtips() {
     const [tips, setTips] = useState([]);

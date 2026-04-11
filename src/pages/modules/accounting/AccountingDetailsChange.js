@@ -64,7 +64,7 @@ const AccountingDetailsChange = ({ record, onClose, onUpdateSuccess, onDeleteSuc
 
         try {
             const response = await axios.put(
-                `https://cqrdpg.com:5202/api/lifebookkeepingupdateRecord/${record.transaction_id}`,
+                `https://www.cqrdpg.com:5202/api/lifebookkeepingupdateRecord/${record.transaction_id}`,
                 formData
             );
             onUpdateSuccess(response.data);
@@ -83,7 +83,7 @@ const AccountingDetailsChange = ({ record, onClose, onUpdateSuccess, onDeleteSuc
 
         try {
             await axios.delete(
-                `https://cqrdpg.com:5202/api/lifebookkeepingdeleteRecord/${record.transaction_id}`
+                `https://www.cqrdpg.com:5202/api/lifebookkeepingdeleteRecord/${record.transaction_id}`
             );
             onDeleteSuccess();
         } catch (err) {

@@ -33,7 +33,7 @@ const NeighborhoodFinder = () => {
   useEffect(() => {
     const fetchBaiduMapAK = async () => {
       try {
-        const response = await axios.get('https://cqrdpg.com:5202/api/getApiDatabas');
+        const response = await axios.get('https://www.cqrdpg.com:5202/api/getApiDatabas');
         const activeApi = response.data.find(item =>
           item.apiUsername === username && item.remark === '正在使用'
         );
@@ -111,7 +111,7 @@ const NeighborhoodFinder = () => {
     try {
       setCurrentProgress('正在查询指定地点数据...');
 
-      const response = await axios.post('https://cqrdpg.com:5202/api/BatchSearchNeighborhoods', {
+      const response = await axios.post('https://www.cqrdpg.com:5202/api/BatchSearchNeighborhoods', {
         neighborhoods: [], // 传空数组表示只按location查询
         location: locationName
       });
@@ -131,7 +131,7 @@ const NeighborhoodFinder = () => {
     try {
       setCurrentProgress('正在查询数据...');
 
-      const response = await axios.post('https://cqrdpg.com:5202/api/BatchSearchNeighborhoods', {
+      const response = await axios.post('https://www.cqrdpg.com:5202/api/BatchSearchNeighborhoods', {
         neighborhoods: neighborhoodNames,
         location: locationName
       });

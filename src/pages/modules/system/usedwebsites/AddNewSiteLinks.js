@@ -24,7 +24,7 @@ const AddNewSiteLinks = () => {
     setMessage({ text: '', type: '' });
 
     try {
-      const response = await fetch('https://cqrdpg.com:5202/api/updateWebsites', {
+      const response = await fetch('https://www.cqrdpg.com:5202/api/updateWebsites', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

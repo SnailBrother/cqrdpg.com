@@ -59,13 +59,18 @@ const Home = () => {
 
   // 功能模块数据 - 用于3D旋转木马
   const features = [
-    { icon: '🎵', title: '听歌', desc: '共享每一首喜欢的歌', path: '/app/music/home' },
-    { icon: '💰', title: '记账', desc: '记录我们的小日常开销', path: '/app/accounting/AccountingAdd' },
-    { icon: '✈️', title: '旅游', desc: '一起去看遍山川湖海', path: '/app/chat/ChatDressingGuidelines' },
-    { icon: '✨', title: '愿望', desc: '许下我们的小小心愿', path: '/app/music/favorites' },
-    { icon: '👕', title: '穿搭', desc: '每天都要精致又好看', path: '/app/chat/ChatDressingGuidelines' },
-    { icon: '💞', title: '关于', desc: '属于我们的专属故事', path: '/app/office/SearchPrice' },
-     { icon: '🏃', title: '运动', desc: '一起挥洒汗水，健康生活', path: '/app/sport/sport' }
+ 
+  { icon: '🎵', title: '听歌', desc: '共享每一首喜欢的歌', path: '/app/music/home' },
+ 
+  { icon: '💰', title: '记账', desc: '记录我们的小日常开销', path: '/app/accounting/AccountingAdd' },
+ 
+  { icon: '🏃', title: '运动', desc: '一起挥洒汗水，健康生活', path: '/app/sport/sport' },
+ 
+  { icon: '💬', title: '聊天', desc: '随时分享日常与心情', path: '/app/chat/ChatChat' },
+ 
+  { icon: '📊', title: '办公', desc: '高效协作与数据管理', path: '/app/office/SearchPrice' },
+ 
+ 
   ];
 
   const goToPage = (path) => {
@@ -144,7 +149,24 @@ const Home = () => {
         </p>
       </div>
 
-
+ 
+      {/* 手机端功能卡片网格 */}
+      <div className={styles.mobileFeaturesGrid}>
+        <h3 className={styles.sectionTitle}>我们的点滴</h3>
+        <div className={styles.featuresGrid}>
+          {features.map((item, index) => (
+            <div
+              key={index}
+              className={styles.gridCard}
+              onClick={() => goToPage(item.path)}
+            >
+              <div className={styles.gridIcon}>{item.icon}</div>
+              <div className={styles.gridTitle}>{item.title}</div>
+              <div className={styles.gridDesc}>{item.desc}</div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };

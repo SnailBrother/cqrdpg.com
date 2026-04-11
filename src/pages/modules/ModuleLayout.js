@@ -43,7 +43,9 @@ const ModuleLayout = ({ moduleKey, onLogout }) => {
   const [showPublicMessage, setShowPublicMessage] = useState(true);
   const { activeTheme, loading: themeLoading } = useTheme();
   const { state: musicState } = useMusic();
-  const shouldShowPlayer = moduleKey === 'music' && musicState.currentSong;
+  const shouldShowPlayer = 
+  (moduleKey === 'music' || moduleKey === 'together') && 
+  musicState.currentSong;
 
   const location = useLocation();
   const navigate = useNavigate();

@@ -70,7 +70,7 @@ const handleBack = () => {
 
             try {
                 const response = await axios.get(
-                    `https://cqrdpg.com:5202/backend/api/lyrics/${encodeURIComponent(lrcFilename)}`,
+                    `https://www.cqrdpg.com:5202/backend/api/lyrics/${encodeURIComponent(lrcFilename)}`,
                     { responseType: 'text' }
                 );
 

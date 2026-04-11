@@ -20,7 +20,7 @@ function Equipment() {
   const fetchEquipmentData = async () => {
     try {
       // 发送 GET 请求获取设备数据
-      const response = await axios.get("https://cqrdpg.com:5202/api/getMachineryEquipmentPricesTable");
+      const response = await axios.get("https://www.cqrdpg.com:5202/api/getMachineryEquipmentPricesTable");
       setEquipmentData(response.data); // 更新所有设备数据
       setFilteredEquipment(response.data); // 更新过滤后的设备数据
     } catch (error) {
@@ -81,10 +81,10 @@ function Equipment() {
     try {
       if (selectedEquipment) {
         // 更新设备
-        await axios.put(`https://cqrdpg.com:5202/api/updateMachineryEquipmentPricesTable/${selectedEquipment.id}`, newEquipment);
+        await axios.put(`https://www.cqrdpg.com:5202/api/updateMachineryEquipmentPricesTable/${selectedEquipment.id}`, newEquipment);
       } else {
         // 添加新设备
-        await axios.post("https://cqrdpg.com:5202/api/addMachineryEquipmentPricesTable", newEquipment);
+        await axios.post("https://www.cqrdpg.com:5202/api/addMachineryEquipmentPricesTable", newEquipment);
       }
       fetchEquipmentData(); // 刷新设备列表
       closeModal(); // 关闭模态框
@@ -96,7 +96,7 @@ function Equipment() {
   // 删除设备的函数
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`https://cqrdpg.com:5202/api/deleteMachineryEquipmentPricesTable/${id}`);
+      await axios.delete(`https://www.cqrdpg.com:5202/api/deleteMachineryEquipmentPricesTable/${id}`);
       fetchEquipmentData(); // 刷新设备列表
     } catch (error) {
       console.error("删除失败:", error); // 捕获并打印错误

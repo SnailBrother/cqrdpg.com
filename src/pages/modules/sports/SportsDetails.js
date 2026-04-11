@@ -83,7 +83,7 @@ const SportsDetails = () => {
   useEffect(() => {
     fetchRecords();
     fetchSportsOptions(); // 添加这行
-    const socket = io('https://cqrdpg.com:5202');
+    const socket = io('https://www.cqrdpg.com:5202');
 
     socket.on('workout-record-update', () => {
       console.log('运动记录有变化，重新获取数据');

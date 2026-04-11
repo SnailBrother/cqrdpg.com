@@ -35,7 +35,7 @@ const PreviewWardrobe = () => {
     const fetchWardrobeItems = async () => {
         try {
             setLoading(true);
-            const response = await axios.get(`https://cqrdpg.com:5202/api/Reactwardrobe/items?username=${user.username}`);
+            const response = await axios.get(`https://www.cqrdpg.com:5202/api/Reactwardrobe/items?username=${user.username}`);
             setWardrobeItems(response.data.items || []);
             setError('');
         } catch (error) {
@@ -48,7 +48,7 @@ const PreviewWardrobe = () => {
     };
 
     const getImageUrl = (item, isEffect = false) => {
-        const baseUrl = 'https://cqrdpg.com:5202/images/ReactWardrobeStewar';
+        const baseUrl = 'https://www.cqrdpg.com:5202/images/ReactWardrobeStewar';
         const suffix = isEffect ? 'effect' : '';
         const pngUrl = `${baseUrl}/${item.username}/${item.category}/${item.item_code}${suffix}.png`;
         const jpgUrl = `${baseUrl}/${item.username}/${item.category}/${item.item_code}${suffix}.jpg`;

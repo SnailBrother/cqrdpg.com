@@ -244,7 +244,7 @@ duration：时间字段，存储运动时长，格式为时：分：秒。
 participant：运动人员字段，存储参与运动的人员名字。
 
 
-https://cqrdpg.com:5202/api/getUsedWebsitesData
+https://www.cqrdpg.com:5202/api/getUsedWebsitesData
 
 CREATE TABLE ChatApp.dbo.ChatMessages (
     message_id BIGINT IDENTITY(1,1) PRIMARY KEY,          -- 唯一标识符，自增，主键

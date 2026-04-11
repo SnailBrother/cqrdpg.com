@@ -1,10 +1,10 @@
 /* VideoCall.module.css - 微信风格视频通话界面 */
 .container {
   position: relative;
-  width: 100%;
+  width: calc(100dvw -100px);
   height: calc(100dvh - 80px);
   background: #000;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+   
   overflow-x: hidden;
 }
 
@@ -55,12 +55,12 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 85%;
-  max-width: 340px;
+  width: calc(100dvw - 200px);
+  /* max-width: 340px; */
   background: rgba(255,255,255,0.95);
   border-radius: 32px;
   padding: 28px 24px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  /* box-shadow: 0 20px 40px rgba(0,0,0,0.3); */
   text-align: center;
   backdrop-filter: blur(10px);
   z-index: 10;

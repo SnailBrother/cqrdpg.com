@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 4797853 */
-  src: url('iconfont.woff2?t=1775382191812') format('woff2'),
-       url('iconfont.woff?t=1775382191812') format('woff'),
-       url('iconfont.ttf?t=1775382191812') format('truetype');
+  src: url('iconfont.woff2?t=1775917080556') format('woff2'),
+       url('iconfont.woff?t=1775917080556') format('woff'),
+       url('iconfont.ttf?t=1775917080556') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,74 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-jujue:before {
+  content: "\eb51";
+}
+
+.icon-jieshou:before {
+  content: "\eb52";
+}
+
+.icon-shipintonghua:before {
+  content: "\eb53";
+}
+
+.icon-guaduan-daiyuanxing:before {
+  content: "\eb54";
+}
+
+.icon-shipintonghua_48:before {
+  content: "\eb55";
+}
+
+.icon-yikangfuhuanzhe:before {
+  content: "\eb46";
+}
+
+.icon-icon-test11:before {
+  content: "\eb81";
+}
+
+.icon-icon-test13:before {
+  content: "\eb8d";
+}
+
+.icon-yaling:before {
+  content: "\eb47";
+}
+
+.icon-tiaogao:before {
+  content: "\eb48";
+}
+
+.icon-taiquandao:before {
+  content: "\eb49";
+}
+
+.icon-pingbanzhicheng-:before {
+  content: "\eb4a";
+}
+
+.icon-undraw_mindfulness_8gqa:before {
+  content: "\eb4b";
+}
+
+.icon-yongbao:before {
+  content: "\eb4d";
+}
+
+.icon-liliangxunlian-yalingjinghoubiqushenyouce:before {
+  content: "\eb4e";
+}
+
+.icon-fuzhongyintixiangshang:before {
+  content: "\eb4f";
+}
+
+.icon-pingbanzhicheng:before {
+  content: "\eb50";
 }
 
 .icon-kaoqiangjingdun:before {

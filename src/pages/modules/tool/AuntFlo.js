@@ -40,7 +40,7 @@ const AuntFlo = () => {
       const endDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
       
       const response = await fetch(
-        `https://cqrdpg.com:5202/api/auntflo/records?username=${encodeURIComponent(username)}&startDate=${formatDate(startDate)}&endDate=${formatDate(endDate)}`
+        `https://www.cqrdpg.com:5202/api/auntflo/records?username=${encodeURIComponent(username)}&startDate=${formatDate(startDate)}&endDate=${formatDate(endDate)}`
       );
       
       if (!response.ok) {
@@ -82,7 +82,7 @@ const AuntFlo = () => {
     setLoading(true);
     try {
       const dateString = formatDate(selectedDate);
-      const response = await fetch('https://cqrdpg.com:5202/api/auntflo/records', {
+      const response = await fetch('https://www.cqrdpg.com:5202/api/auntflo/records', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -120,7 +120,7 @@ const AuntFlo = () => {
     setLoading(true);
     try {
       const dateString = formatDate(selectedDate);
-      const response = await fetch('https://cqrdpg.com:5202/api/auntflo/records', {
+      const response = await fetch('https://www.cqrdpg.com:5202/api/auntflo/records', {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

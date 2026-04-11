@@ -4,7 +4,7 @@ import io from 'socket.io-client';
 import SimplePeer from 'simple-peer';
 import styles from './VideoCall.module.css';
 
-const SERVER_URL = 'https://cqrdpg.com:8443';
+const SERVER_URL = 'https://www.cqrdpg.com:8443';
 const SOCKET_URL = SERVER_URL;
 
 const VideoCall = ({ callerName, receiverName, callId, isInitiator, onClose }) => {

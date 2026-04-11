@@ -6,7 +6,9 @@
     margin-bottom: 0px;
     padding: 0;
     height: calc(100dvh - 60px);
-    box-sizing: border-box;
+     box-sizing: border-box;
+    overflow: hidden;
+     scrollbar-width: none; 
 }
 
 /* 平板手机设备 */
@@ -172,10 +174,12 @@
 /* 好友列表容器显示与隐藏样式 */
 .chat-container-friendslist-container.visible {
     display: block;
+      overflow: hidden;
 }
 
 .chat-container-friendslist-container.hidden {
     display: none;
+    overflow: hidden;
 }
 
 /* #region start 模拟框样式 */

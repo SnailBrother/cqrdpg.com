@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 
 // 创建 Socket.IO 实例
-const socket = io('https://cqrdpg.com:5202');
+const socket = io('https://www.cqrdpg.com:5202');
 
 // 辅助函数：格式化时间
 const formatTime = (seconds) => {
@@ -216,7 +216,7 @@ const Player = ({ className = '' }) => {
 
   const checkIfLiked = async () => {
     try {
-      const response = await axios.get('https://cqrdpg.com:5202/backend/api/reactdemofavorites', {
+      const response = await axios.get('https://www.cqrdpg.com:5202/backend/api/reactdemofavorites', {
         params: {
           username: user.username,
           search: currentSong.title
@@ -316,7 +316,7 @@ const Player = ({ className = '' }) => {
     setLoading(true);
     try {
       if (isLiked) {
-        await axios.delete('https://cqrdpg.com:5202/backend/api/favorites', {
+        await axios.delete('https://www.cqrdpg.com:5202/backend/api/favorites', {
           data: {
             user_name: user.username,
             song_name: currentSong.title
@@ -325,7 +325,7 @@ const Player = ({ className = '' }) => {
         setIsLiked(false);
         console.log('取消收藏成功');
       } else {
-        await axios.post('https://cqrdpg.com:5202/backend/api/favorites', {
+        await axios.post('https://www.cqrdpg.com:5202/backend/api/favorites', {
           user_name: user.username,
           song_name: currentSong.title,
           artist: currentSong.artist,

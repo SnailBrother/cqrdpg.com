@@ -15,7 +15,7 @@ const AvatarSettings = () => {
     // 获取用户头像
     const fetchUserHeadImage = useCallback(async () => {
         try {
-            const response = await axios.get('https://cqrdpg.com:5202/api/getuserheadimage', {
+            const response = await axios.get('https://www.cqrdpg.com:5202/api/getuserheadimage', {
                 params: { username }
             });
             if (response.data.imageUrl) {
@@ -75,7 +75,7 @@ const AvatarSettings = () => {
 
                 // 上传图片到服务器
                 const response = await axios.post(
-                    `https://cqrdpg.com:5202/backend/api/uploaduserheadimage?username=${username}`,
+                    `https://www.cqrdpg.com:5202/backend/api/uploaduserheadimage?username=${username}`,
                     formData,
                     {
                         headers: {

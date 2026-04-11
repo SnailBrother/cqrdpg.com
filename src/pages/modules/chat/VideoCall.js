@@ -7,7 +7,7 @@ import styles from './VideoCall.module.css';
 
  
 // 后端服务器地址
-const SERVER_URL = 'https://cqrdpg.com:8443';
+const SERVER_URL = 'https://www.cqrdpg.com:8443';
 const SOCKET_URL = SERVER_URL;
 
 export default function VideoCall() {

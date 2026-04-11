@@ -42,7 +42,7 @@ const { Option } = Select;
 
 // 评论组件（现在作为内部组件）
 const DressingComment = ({ weatherdata_id, date }) => {
-    const API_BASE_URL = 'https://cqrdpg.com:5202/api';
+    const API_BASE_URL = 'https://www.cqrdpg.com:5202/api';
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
     const [loading, setLoading] = useState(false);
@@ -53,7 +53,7 @@ const DressingComment = ({ weatherdata_id, date }) => {
 
     // 初始化Socket连接
     useEffect(() => {
-        const newSocket = io('https://cqrdpg.com:5202');
+        const newSocket = io('https://www.cqrdpg.com:5202');
         setSocket(newSocket);
 
         return () => {
@@ -182,7 +182,7 @@ const DressingComment = ({ weatherdata_id, date }) => {
 
 // 主组件
 const DressingGuidelines = () => {
-    const API_BASE_URL = 'https://cqrdpg.com:5202/api';
+    const API_BASE_URL = 'https://www.cqrdpg.com:5202/api';
     const [currentDate] = useState(dayjs().format('YYYY-MM-DD'));
     const [searchDate, setSearchDate] = useState('');
     const [searchWeather, setSearchWeather] = useState('');
