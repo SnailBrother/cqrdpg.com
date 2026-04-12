@@ -11,7 +11,7 @@ import { Navigate } from 'react-router-dom';
 
 // --- 2. 非核心/低频页面 (懒加载 - Lazy Loading) ---
 // 这些页面只有用户点击特定链接才会访问，拆分出去减小主包体积
-//const Home = lazy(() => import('../pages/cqrdpg/pages/Home'));//评估官网
+const CompanyHome = lazy(() => import('../pages/cqrdpg/pages/Home'));//评估官网
 const Home = lazy(() => import('../pages/love/home'));
 
 const Login = lazy(() => import('../pages/cqrdpg/pages/Login'));
@@ -42,6 +42,12 @@ export const publicRouteConfig = [
   {
     path: '/home',
     component: Home,
+    requiresAuth: false, // 根据你的注释，Home 似乎不需要强制登录保护，或者保护逻辑在组件内？
+    // 如果需要强制登录保护，可以在 index.js 渲染时包裹 ProtectedRoute
+  },
+  {
+    path: '/companyhome',
+    component: CompanyHome,
     requiresAuth: false, // 根据你的注释，Home 似乎不需要强制登录保护，或者保护逻辑在组件内？
     // 如果需要强制登录保护，可以在 index.js 渲染时包裹 ProtectedRoute
   },
