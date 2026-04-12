@@ -253,11 +253,37 @@ CREATE TABLE ChatApp.dbo.ChatMessages (
     receiver_name VARCHAR(100) NOT NULL,                    -- 接收者的用户名
     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP           -- 消息发送时间戳
     is_read BIT DEFAULT 0;  -- 新增是否已读字段，默认值为 0（未读）
+    roomId INT NULL;   -- 视频房间号
 );
+ALTER TABLE ChatApp.dbo.ChatMessages 
+ADD roomId INT NULL;
+
+
+
 
 ALTER TABLE ChatApp.dbo.ChatMessages
 ADD message_type VARCHAR(50) DEFAULT 'text',  -- 消息类型，默认是文字类型
     image_filename VARCHAR(255) NULL;          -- 图片文件名，允许为空，存储图片文件名
+
+--聊天房间号
+CREATE TABLE ChatApp.dbo.ChatRoomNumber (
+    roomId BIGINT IDENTITY(1,1) PRIMARY KEY,          -- 唯一标识符，自增，主键
+    sender_name VARCHAR(100) NOT NULL,                      -- 发送者的用户名
+    receiver_name VARCHAR(100) NOT NULL,                    -- 接收者的用户名
+);
+
+-- 创建房间号表 没用
+CREATE TABLE ChatApp.dbo.ChatRoomNumber (
+    room_id BIGINT IDENTITY(1,1) PRIMARY KEY,
+    sender_name VARCHAR(100) NOT NULL,
+    receiver_name VARCHAR(100) NOT NULL,
+    created_at DATETIME DEFAULT GETDATE(), -- 建议添加创建时间
+    CONSTRAINT UQ_ChatRoom UNIQUE (sender_name, receiver_name) -- 确保同一对用户只有一个房间
+);
+
+-- 创建索引以提高查询性能
+CREATE INDEX IX_ChatRoomNumber_Users ON ChatApp.dbo.ChatRoomNumber(sender_name, receiver_name);
+
 
 
 CREATE TABLE ChatApp.dbo.UserManagement (

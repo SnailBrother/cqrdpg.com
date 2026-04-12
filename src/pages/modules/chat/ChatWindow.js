@@ -4,19 +4,13 @@ import io from 'socket.io-client';
 import { useAuth } from '../../../context/AuthContext';
 import './ChatWindow.css';
 import { Loading } from '../../../components/UI';
-import VideoCall from './VideoCall'; // 根据实际路径调整
+import VideoCall from './VideoCall';
+import GroupVideoCall from './GroupVideoCall';
 
 import Circularrotatingtext from './.././../../components/Animation/Circularrotatingtext'; // 加载动画里面的环形旋转文字
 const socket = io('https://www.cqrdpg.com:5202');
 
-// 在文件顶部，import 之后添加
-const playInvitationSound = () => {
-    const audio = new Audio('https://www.cqrdpg.com/backend/musics/AnswerThePhone.mp3');
-    audio.play().catch(error => {
-        console.log('播放邀请声音失败:', error);
-        // 浏览器可能因为自动播放策略而失败，但不影响主要功能
-    });
-};
+ 
 
 const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) => {
     const [messages, setMessages] = useState([]);
@@ -43,6 +37,8 @@ const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) 
     const [totalUnread, setTotalUnread] = useState(0); // 未读消息总数
     const [hasNewMessages, setHasNewMessages] = useState(false); // 新增：是否有新消息 针对滚动条不是在顶部的提示
     const [isAtBottom, setIsAtBottom] = useState(true); // 新增：是否在底部
+    // 群通话状态管理
+    const [isGroupVideoCallModalOpen, setIsGroupVideoCallModalOpen] = useState(false);
     // 添加音频元素引用
     const invitationAudioRef = useRef(null);
     // 修改播放声音函数，保存音频引用
@@ -81,7 +77,7 @@ const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) 
         isIncoming: false, // 是否是收到的邀请
         callerName: '', // 邀请者名称
         receiverName: '', // 被邀请者名称
-        callId: null, // 通话ID
+        roomId: null,  // 改为 roomId
         callStatus: 'waiting' // 通话状态: 'waiting', 'connected', 'rejected'
     });
     const videoCallInfoRef = useRef(videoCallInfo);
@@ -90,8 +86,8 @@ const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) 
         videoCallInfoRef.current = videoCallInfo;
     }, [videoCallInfo]);
     //添加发送视频通话邀请的函数
-    // 在组件中添加发送视频通话邀请的函数
-    // 发送视频通话邀请
+
+    // 替换原来的 sendVideoCallInvitation 函数
     const sendVideoCallInvitation = async () => {
         if (!selectedFriend) {
             alert('请先选择聊天对象');
@@ -99,40 +95,62 @@ const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) 
         }
 
         try {
-            // 使用时间戳作为唯一标识
-            const callId = Date.now().toString();
-            console.log('发送视频通话邀请, callId:', callId);
+            // 先获取或创建房间号
+            const roomResponse = await axios.post('https://www.cqrdpg.com:5202/api/chatRoom/getOrCreateRoom', {
+                sender_name: username,
+                receiver_name: selectedFriend.name
+            });
 
-            // 发送视频通话邀请消息
+            if (!roomResponse.data.success) {
+                throw new Error(roomResponse.data.error || '获取房间号失败');
+            }
+
+            const roomId = roomResponse.data.roomId;
+            console.log('获取到房间号:', roomId);
+
+            // 发送视频通话邀请消息，携带 roomId
             const response = await axios.post('https://www.cqrdpg.com:5202/api/messages', {
                 message_text: `您的好友 ${username} 邀请您进行视频通话`,
                 sender_name: username,
                 receiver_name: selectedFriend.name,
                 message_type: 'video_call_invitation',
-                call_id: callId  // 仍然保存到数据库，但前端匹配时不依赖它
+                roomId: roomId  //  
             });
 
             console.log('邀请发送响应:', response.data);
-            // ✅ 播放邀请声音（发送方）
+
+            // 播放邀请声音（发送方）
             playInvitationSound();
+
             // 打开自己的视频通话模态框
             setVideoCallInfo({
                 isIncoming: false,
                 callerName: username,
                 receiverName: selectedFriend.name,
-                callId: callId,
+                roomId: roomId,  // 使用 roomId
                 callStatus: 'waiting'
             });
             setIsVideoCallModalOpen(true);
 
-            console.log('视频通话模态框已打开，callId:', callId);
+            console.log('视频通话模态框已打开，roomId:', roomId);
 
         } catch (error) {
             console.error('发送视频通话邀请失败:', error);
             alert('发送视频通话邀请失败: ' + (error.response?.data?.error || error.message));
         }
     };
+    // 2. 添加打开群通话的函数
+    // 添加在 sendVideoCallInvitation 函数后面
+    const openGroupVideoCall = () => {
+        console.log('打开群通话');
+        setIsGroupVideoCallModalOpen(true);
+    };
 
+    // 3. 添加关闭群通话的函数
+    const closeGroupVideoCall = () => {
+        console.log('关闭群通话');
+        setIsGroupVideoCallModalOpen(false);
+    };
     // 添加 Socket 连接状态监听
     useEffect(() => {
         const onConnect = () => {
@@ -441,22 +459,34 @@ const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) 
             // 在 handleNewMessage 函数中修改
 
             // 在 socket.on('newMessage') 中处理视频通话邀请
+            // 在 socket.on('newMessage') 中处理视频通话邀请
             if (newMessage.message_type === 'video_call_invitation') {
                 // 如果是发给当前用户的消息
                 if (newMessage.receiver_name === username && newMessage.sender_name === selectedFriend?.name) {
                     console.log('收到视频通话邀请:', newMessage);
+                    console.log('邀请中的 roomId:', newMessage.roomId); // ✅ 添加日志
+
+                    // 检查 roomId 是否存在
+                    if (!newMessage.roomId) {
+                        console.error('收到的视频邀请中没有 roomId');
+                        alert('收到的视频邀请无效，缺少房间号');
+                        return;
+                    }
+
                     playInvitationSound();
-                    // 生成一个临时的通话ID（如果消息中没有）
-                    const tempCallId = newMessage.call_id || Date.now().toString();
+
+                    const roomId = newMessage.roomId;
 
                     setVideoCallInfo({
                         isIncoming: true,
                         callerName: newMessage.sender_name,
                         receiverName: newMessage.receiver_name,
-                        callId: tempCallId,
+                        roomId: roomId,
                         callStatus: 'waiting'
                     });
                     setIsVideoCallModalOpen(true);
+
+                    console.log('设置 videoCallInfo 完成，roomId:', roomId);
                 }
             }
 
@@ -518,30 +548,36 @@ const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) 
 
 
     // 接受视频通话
-    // 接受视频通话 - 确保正确发送 callId
-    // 接受视频通话 - 确保从正确的来源获取 callId
-    // 接受视频通话 - 使用用户名组合作为标识
+
     const acceptVideoCall = () => {
         console.log('=== 接受视频通话 ===');
         console.log('当前 videoCallInfo:', videoCallInfo);
-        // 停止播放声音（接收方）
-        stopInvitationSound();
-        // 生成一个唯一的通话ID（如果还没有）
-        const finalCallId = videoCallInfo.callId || Date.now().toString();
+        console.log('当前 videoCallInfoRef.current:', videoCallInfoRef.current);
 
-        // 先发送 Socket 事件，使用用户名组合作为标识
+        // 停止播放声音
+        stopInvitationSound();
+
+        const roomId = videoCallInfoRef.current.roomId;
+
+        if (!roomId) {
+            console.error('roomId 为空，无法接受视频通话');
+            return;
+        }
+
+        console.log('接受视频通话，roomId:', roomId);
+
+        // 发送 Socket 事件
         socket.emit('video-call-accepted', {
             callerName: videoCallInfo.callerName,
             receiverName: videoCallInfo.receiverName,
-            callId: finalCallId
+            roomId: roomId
         });
 
-        console.log('已发送 video-call-accepted 事件');
+        console.log('已发送 video-call-accepted 事件, roomId:', roomId);
 
-        // 然后更新状态为已连接
+        // 更新状态为已连接
         setVideoCallInfo(prev => ({
             ...prev,
-            callId: finalCallId,
             callStatus: 'connected'
         }));
     };
@@ -550,16 +586,16 @@ const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) 
     const rejectVideoCall = () => {
         console.log('=== 拒绝/取消视频通话 ===');
         console.log('当前 videoCallInfo:', videoCallInfo);
-        // 停止播放声音（接收方取消或发送方取消）
+
         stopInvitationSound();
-        // 通过 Socket 通知对方已拒绝/取消通话
-        if (videoCallInfo.callId) {
+
+        if (videoCallInfo.roomId) {
             socket.emit('video-call-rejected', {
-                callId: videoCallInfo.callId,  // 确保 callId 存在
+                roomId: videoCallInfo.roomId,  // 使用 roomId
                 callerName: videoCallInfo.callerName,
                 receiverName: videoCallInfo.receiverName
             });
-            console.log('已发送 video-call-rejected 事件，callId:', videoCallInfo.callId);
+            console.log('已发送 video-call-rejected 事件，roomId:', videoCallInfo.roomId);
         }
 
         setIsVideoCallModalOpen(false);
@@ -567,7 +603,7 @@ const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) 
             isIncoming: false,
             callerName: '',
             receiverName: '',
-            callId: null,
+            roomId: null,  // 使用 roomId
             callStatus: 'waiting'
         });
     };
@@ -575,11 +611,11 @@ const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) 
     // 添加挂断视频通话的函数
     const endVideoCall = () => {
         console.log('=== 挂断视频通话 ===');
-        // 停止播放声音
         stopInvitationSound();
-        if (videoCallInfo.callId) {
+
+        if (videoCallInfo.roomId) {
             socket.emit('video-call-ended', {
-                callId: videoCallInfo.callId,
+                roomId: videoCallInfo.roomId,  // 使用 roomId
                 callerName: videoCallInfo.callerName,
                 receiverName: videoCallInfo.receiverName
             });
@@ -590,7 +626,7 @@ const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) 
             isIncoming: false,
             callerName: '',
             receiverName: '',
-            callId: null,
+            roomId: null,  // 使用 roomId
             callStatus: 'waiting'
         });
     };
@@ -631,6 +667,7 @@ const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) 
         };
 
         // 监听对方拒绝视频通话
+        // 监听对方拒绝视频通话
         const handleVideoCallRejected = (data) => {
             console.log('收到视频通话拒绝事件:', data);
 
@@ -649,12 +686,13 @@ const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) 
                     isIncoming: false,
                     callerName: '',
                     receiverName: '',
-                    callId: null,
+                    roomId: null,  // ✅ 修复：改为 roomId
                     callStatus: 'waiting'
                 });
             }
         };
 
+        // 监听对方挂断通话
         // 监听对方挂断通话
         const handleVideoCallEnded = (data) => {
             console.log('收到视频通话挂断事件:', data);
@@ -674,7 +712,7 @@ const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) 
                     isIncoming: false,
                     callerName: '',
                     receiverName: '',
-                    callId: null,
+                    roomId: null,  // ✅ 修复：改为 roomId
                     callStatus: 'waiting'
                 });
             }
@@ -1247,6 +1285,19 @@ const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) 
                                         <span>视频通话</span>
                                     </button>
 
+                                    <button
+                                        className="chat-image-menu-item"
+                                        onClick={() => {
+                                            openGroupVideoCall();
+                                            setShowImageMenu(false); // 点击后关闭菜单
+                                        }}
+                                    >
+                                        <svg className="chat-menu-icon" aria-hidden="true">
+                                            <use xlinkHref="#icon-shipintonghua_48" />
+                                        </svg>
+                                        <span>群通话</span>
+                                    </button>
+
                                 </div>
                             )}
                         </div>
@@ -1277,7 +1328,7 @@ const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) 
                 </>
             )}
             {/* 视频通话模态框 */}
-            {/* 视频通话模态框 */}
+
             {isVideoCallModalOpen && (
                 <div className="chat-friendmanagement-chatwindow-modal">
                     <div className="chat-video-call-modal-content">
@@ -1286,11 +1337,19 @@ const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) 
                             <VideoCall
                                 callerName={videoCallInfo.callerName}
                                 receiverName={videoCallInfo.receiverName}
-                                callId={videoCallInfo.callId}
+                                roomId={videoCallInfo.roomId}  // 改为 roomId
                                 isInitiator={!videoCallInfo.isIncoming}
                                 onClose={() => {
-                                    // 挂断通话时通知对方
-                                    endVideoCall();
+                                    // 清理所有视频通话相关的状态
+                                    stopInvitationSound();
+                                    setIsVideoCallModalOpen(false);
+                                    setVideoCallInfo({
+                                        isIncoming: false,
+                                        callerName: '',
+                                        receiverName: '',
+                                        roomId: null,
+                                        callStatus: 'waiting'
+                                    });
                                 }}
                             />
                         ) : (
@@ -1351,6 +1410,23 @@ const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) 
                     </div>
                 </div>
             )}
+            {/* 群通话模态框 */}
+            {isGroupVideoCallModalOpen && (
+                <div className="chat-friendmanagement-chatwindow-modal">
+                    <div className="chat-video-call-modal-content">
+                        <button
+                            className="chat-friendmanagement-chatwindow-modal-close-button"
+                            onClick={closeGroupVideoCall}
+                        >
+                            ×
+                        </button>
+                        <GroupVideoCall
+                            onClose={closeGroupVideoCall}
+                        />
+                    </div>
+                </div>
+            )}
+
             {/* 图片模态框 */}
             {isModalOpen && (
                 <div className="chat-friendmanagement-chatwindow-modal">

@@ -21,7 +21,7 @@ const credentials = {
 const config = {
     user: 'sa',
     password: 'Alan944926',
-    server: '121.4.22.55',
+    server: '81.71.88.191',
     database: 'BillingApp',
     options: {
         encrypt: false,
@@ -2662,6 +2662,116 @@ app.get('/api/checkImageExists', (req, res) => {
     );
     //聊天界面上传图片功能 👆
 
+    //处理视频聊天房间号
+
+
+    app.post('/api/chatRoom/getOrCreateRoom', async (req, res) => {
+        const { sender_name, receiver_name } = req.body;
+
+        if (!sender_name || !receiver_name) {
+            return res.status(400).json({
+                success: false,
+                error: '发送者和接收者用户名不能为空'
+            });
+        }
+
+        try {
+
+            const pool = await sql.connect(config);
+
+
+            const query = `
+            SELECT roomId 
+            FROM ChatApp.dbo.ChatRoomNumber 
+            WHERE (sender_name = @sender_name AND receiver_name = @receiver_name)
+               OR (sender_name = @receiver_name AND receiver_name = @sender_name)
+        `;
+
+            const result = await pool.request()
+                .input('sender_name', sql.VarChar(100), sender_name)
+                .input('receiver_name', sql.VarChar(100), receiver_name)
+                .query(query);
+
+            let roomId;
+
+            if (result.recordset.length > 0) {
+                // 房间已存在
+                roomId = result.recordset[0].roomId;
+                console.log(`房间已存在: ${roomId}`);
+            } else {
+                // 创建新房间
+                const insertQuery = `
+                INSERT INTO ChatApp.dbo.ChatRoomNumber (sender_name, receiver_name)
+                OUTPUT INSERTED.roomId
+                VALUES (@sender_name, @receiver_name)
+            `;
+
+                const insertResult = await pool.request()
+                    .input('sender_name', sql.VarChar(100), sender_name)
+                    .input('receiver_name', sql.VarChar(100), receiver_name)
+                    .query(insertQuery);
+
+                roomId = insertResult.recordset[0].roomId;
+                console.log(`创建新房间: ${roomId}`);
+            }
+
+            res.json({
+                success: true,
+                roomId: roomId,
+                sender_name: sender_name,
+                receiver_name: receiver_name
+            });
+
+        } catch (error) {
+            console.error('获取/创建房间号失败:', error);
+            res.status(500).json({
+                success: false,
+                error: '服务器错误: ' + error.message
+            });
+        }
+    });
+
+    // 根据房间号获取房间信息
+    app.get('/api/chatRoom/room/:roomId', async (req, res) => {
+        const roomId = req.params.roomId;
+
+        try {
+            const pool = await sql.connect(config);
+
+            const query = `
+            SELECT room_id, sender_name, receiver_name 
+            FROM ChatApp.dbo.ChatRoomNumber 
+            WHERE roomId = @roomId
+        `;
+
+            const result = await pool.request()
+                .input('roomId', sql.BigInt, roomId)
+                .query(query);
+
+            if (result.recordset.length > 0) {
+                res.json({
+                    success: true,
+                    room: result.recordset[0]
+                });
+            } else {
+                res.status(404).json({
+                    success: false,
+                    error: '房间不存在'
+                });
+            }
+
+        } catch (error) {
+            console.error('获取房间信息失败:', error);
+            res.status(500).json({
+                success: false,
+                error: '服务器错误'
+            });
+        }
+    });
+
+
+
+
 
     // 获取消息
     app.get('/api/messages', async (req, res) => {
@@ -2771,51 +2881,59 @@ app.get('/api/checkImageExists', (req, res) => {
     });
     // 发送消息
     // 发送消息（修改支持消息类型）
-    app.post('/api/messages', async (req, res) => {
-        const { message_text, sender_name, receiver_name, message_type = 'text', image_filename = null } = req.body;
-        try {
-            const pool = await sql.connect(config);
+app.post('/api/messages', async (req, res) => {
+    const { 
+        message_text, 
+        sender_name, 
+        receiver_name, 
+        message_type = 'text', 
+        image_filename = null,
+        roomId = null  // 添加 roomId 参数
+    } = req.body;
+    
+    try {
+        const pool = await sql.connect(config);
+        const now = new Date();
 
-            // 使用当前时间，让数据库存储正确的时间戳
-            const now = new Date();
-
-            const result = await pool.request()
-                .input('message_text', sql.Text, message_text)
-                .input('sender_name', sql.VarChar(100), sender_name)
-                .input('receiver_name', sql.VarChar(100), receiver_name)
-                .input('message_type', sql.VarChar(50), message_type)
-                .input('image_filename', sql.VarChar(255), image_filename)
-                .input('timestamp', sql.DateTime, now) // 使用当前时间对象
-                .query(`
+        const result = await pool.request()
+            .input('message_text', sql.Text, message_text)
+            .input('sender_name', sql.VarChar(100), sender_name)
+            .input('receiver_name', sql.VarChar(100), receiver_name)
+            .input('message_type', sql.VarChar(50), message_type)
+            .input('image_filename', sql.VarChar(255), image_filename)
+            .input('roomId', sql.Int, roomId)  // 添加 roomId 参数
+            .input('timestamp', sql.DateTime, now)
+            .query(`
                 INSERT INTO ChatApp.dbo.ChatMessages 
-                (message_text, sender_name, receiver_name, message_type, image_filename, timestamp) 
-                VALUES (@message_text, @sender_name, @receiver_name, @message_type, @image_filename, @timestamp); 
+                (message_text, sender_name, receiver_name, message_type, image_filename, roomId, timestamp) 
+                VALUES (@message_text, @sender_name, @receiver_name, @message_type, @image_filename, @roomId, @timestamp); 
                 SELECT SCOPE_IDENTITY() as message_id;
             `);
 
-            const messageId = result.recordset[0].message_id;
+        const messageId = result.recordset[0].message_id;
 
-            res.status(201).send('Message added');
+        res.status(201).send('Message added');
 
-            // 发送消息通知给接收者 - 使用 ISO 字符串格式
-            io.emit('newMessage', {
-                message_id: messageId,
-                message_text,
-                sender_name,
-                receiver_name,
-                message_type,
-                image_filename,
-                timestamp: now.toISOString() // 使用 ISO 格式
-            });
+        // 发送消息通知时也要包含 roomId
+        io.emit('newMessage', {
+            message_id: messageId,
+            message_text,
+            sender_name,
+            receiver_name,
+            message_type,
+            image_filename,
+            roomId: roomId,  // 添加 roomId
+            timestamp: now.toISOString()
+        });
 
-            // 触发消息已读事件和未读消息计数更新事件
-            io.emit('messagesRead', [messageId]);
-            io.emit('unreadCountsUpdated');
+        io.emit('messagesRead', [messageId]);
+        io.emit('unreadCountsUpdated');
 
-        } catch (err) {
-            res.status(500).send(err.message);
-        }
-    });
+    } catch (err) {
+        console.error('发送消息失败:', err);
+        res.status(500).send(err.message);
+    }
+});
     // 标记消息为已读
     // 标记消息为已读
     app.put('/api/messages/read', async (req, res) => {
@@ -15894,102 +16012,102 @@ ORDER BY
     function getUserSocketId(username) {
         return userSocketMap.get(username);
     }
-// 确保你的后端有完整的视频通话事件处理
-// 后端 socket.io 服务器代码
-io.on('connection', (socket) => {
-    console.log('New client connected:', socket.id);
-    
-    // 用户注册
-    socket.on('register-user', (username) => {
-        socket.username = username;
-        userSocketMap.set(username, socket.id);
-        console.log(`用户 ${username} 已注册，Socket ID: ${socket.id}`);
-        console.log('当前在线用户:', Array.from(userSocketMap.keys()));
+    // 确保你的后端有完整的视频通话事件处理
+    // 后端 socket.io 服务器代码
+    io.on('connection', (socket) => {
+        console.log('New client connected:', socket.id);
+
+        // 用户注册
+        socket.on('register-user', (username) => {
+            socket.username = username;
+            userSocketMap.set(username, socket.id);
+            console.log(`用户 ${username} 已注册，Socket ID: ${socket.id}`);
+            console.log('当前在线用户:', Array.from(userSocketMap.keys()));
+        });
+
+        // 视频通话接受事件 - 简化版，主要使用用户名
+        socket.on('video-call-accepted', (data) => {
+            const { callerName, receiverName, callId } = data;
+
+            console.log(`视频通话已接受: ${callerName} -> ${receiverName}, CallId: ${callId}`);
+
+            // 通知发起方（caller）
+            const callerSocketId = getUserSocketId(callerName);
+            if (callerSocketId) {
+                io.to(callerSocketId).emit('video-call-accepted', {
+                    callerName: callerName,
+                    receiverName: receiverName,
+                    callId: callId
+                });
+                console.log(`已通知发起方 ${callerName} 通话被接受`);
+            }
+
+            // 同时也通知接收方自己已接受
+            const receiverSocketId = getUserSocketId(receiverName);
+            if (receiverSocketId && receiverSocketId !== callerSocketId) {
+                io.to(receiverSocketId).emit('video-call-accepted', {
+                    callerName: callerName,
+                    receiverName: receiverName,
+                    callId: callId
+                });
+                console.log(`已通知接收方 ${receiverName} 自己接受了通话`);
+            }
+        });
+
+        // 视频通话拒绝事件
+        socket.on('video-call-rejected', (data) => {
+            const { callerName, receiverName, callId } = data;
+
+            console.log(`视频通话已拒绝: ${callerName} -> ${receiverName}`);
+
+            // 通知发起方（caller）
+            const callerSocketId = getUserSocketId(callerName);
+            if (callerSocketId) {
+                io.to(callerSocketId).emit('video-call-rejected', {
+                    callerName: callerName,
+                    receiverName: receiverName,
+                    callId: callId
+                });
+            }
+
+            // 通知接收方自己已拒绝
+            const receiverSocketId = getUserSocketId(receiverName);
+            if (receiverSocketId && receiverSocketId !== callerSocketId) {
+                io.to(receiverSocketId).emit('video-call-rejected', {
+                    callerName: callerName,
+                    receiverName: receiverName,
+                    callId: callId
+                });
+            }
+        });
+
+        // 视频通话挂断事件
+        socket.on('video-call-ended', (data) => {
+            const { callerName, receiverName, callId } = data;
+
+            console.log(`视频通话已挂断: ${callerName} -> ${receiverName}`);
+
+            // 通知对方通话已挂断
+            const targetName = socket.username === callerName ? receiverName : callerName;
+            const targetSocketId = getUserSocketId(targetName);
+            if (targetSocketId) {
+                io.to(targetSocketId).emit('video-call-ended', {
+                    callerName: callerName,
+                    receiverName: receiverName,
+                    callId: callId
+                });
+                console.log(`已通知 ${targetName} 通话已挂断`);
+            }
+        });
+
+        // 用户断开连接
+        socket.on('disconnect', () => {
+            if (socket.username) {
+                userSocketMap.delete(socket.username);
+                console.log(`用户 ${socket.username} 已断开连接`);
+            }
+        });
     });
-    
-    // 视频通话接受事件 - 简化版，主要使用用户名
-    socket.on('video-call-accepted', (data) => {
-        const { callerName, receiverName, callId } = data;
-        
-        console.log(`视频通话已接受: ${callerName} -> ${receiverName}, CallId: ${callId}`);
-        
-        // 通知发起方（caller）
-        const callerSocketId = getUserSocketId(callerName);
-        if (callerSocketId) {
-            io.to(callerSocketId).emit('video-call-accepted', {
-                callerName: callerName,
-                receiverName: receiverName,
-                callId: callId
-            });
-            console.log(`已通知发起方 ${callerName} 通话被接受`);
-        }
-        
-        // 同时也通知接收方自己已接受
-        const receiverSocketId = getUserSocketId(receiverName);
-        if (receiverSocketId && receiverSocketId !== callerSocketId) {
-            io.to(receiverSocketId).emit('video-call-accepted', {
-                callerName: callerName,
-                receiverName: receiverName,
-                callId: callId
-            });
-            console.log(`已通知接收方 ${receiverName} 自己接受了通话`);
-        }
-    });
-    
-    // 视频通话拒绝事件
-    socket.on('video-call-rejected', (data) => {
-        const { callerName, receiverName, callId } = data;
-        
-        console.log(`视频通话已拒绝: ${callerName} -> ${receiverName}`);
-        
-        // 通知发起方（caller）
-        const callerSocketId = getUserSocketId(callerName);
-        if (callerSocketId) {
-            io.to(callerSocketId).emit('video-call-rejected', {
-                callerName: callerName,
-                receiverName: receiverName,
-                callId: callId
-            });
-        }
-        
-        // 通知接收方自己已拒绝
-        const receiverSocketId = getUserSocketId(receiverName);
-        if (receiverSocketId && receiverSocketId !== callerSocketId) {
-            io.to(receiverSocketId).emit('video-call-rejected', {
-                callerName: callerName,
-                receiverName: receiverName,
-                callId: callId
-            });
-        }
-    });
-    
-    // 视频通话挂断事件
-    socket.on('video-call-ended', (data) => {
-        const { callerName, receiverName, callId } = data;
-        
-        console.log(`视频通话已挂断: ${callerName} -> ${receiverName}`);
-        
-        // 通知对方通话已挂断
-        const targetName = socket.username === callerName ? receiverName : callerName;
-        const targetSocketId = getUserSocketId(targetName);
-        if (targetSocketId) {
-            io.to(targetSocketId).emit('video-call-ended', {
-                callerName: callerName,
-                receiverName: receiverName,
-                callId: callId
-            });
-            console.log(`已通知 ${targetName} 通话已挂断`);
-        }
-    });
-    
-    // 用户断开连接
-    socket.on('disconnect', () => {
-        if (socket.username) {
-            userSocketMap.delete(socket.username);
-            console.log(`用户 ${socket.username} 已断开连接`);
-        }
-    });
-});
 
 }
 

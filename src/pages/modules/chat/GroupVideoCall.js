@@ -5,20 +5,14 @@ import SimplePeer from 'simple-peer';
 import styles from './VideoCall.module.css';
 
 
-
+ 
 // 后端服务器地址
 const SERVER_URL = 'https://www.cqrdpg.com:8443';
 const SOCKET_URL = SERVER_URL;
 
-export default function VideoCall({
-  callerName,
-  receiverName,
-  roomId: propRoomId,  // 重命名传入的 prop
-  isInitiator,
-  onClose
-}) {
-  // 使用传入的 roomId 作为房间号
-  const [roomId, setRoomId] = useState(propRoomId || '');
+export default function VideoCall() {
+
+  const [roomId, setRoomId] = useState('');
   const [isInRoom, setIsInRoom] = useState(false);
   const [users, setUsers] = useState([]);
   const [connectedPeers, setConnectedPeers] = useState(new Set());
@@ -44,20 +38,6 @@ export default function VideoCall({
   const connectionEstablishedRef = useRef(new Set());
   const roomJoinTimeRef = useRef(null);
 
-  // 添加自动加入房间的 useEffect
-  useEffect(() => {
-    if (propRoomId) {
-      setRoomId(propRoomId);
-      // 延迟一小段时间确保 DOM 渲染完成
-      const timer = setTimeout(() => {
-        addDebugLog(`🚀 自动加入房间: ${propRoomId}`);
-        joinRoom();
-      }, 100);
-
-      return () => clearTimeout(timer);
-    }
-  }, [propRoomId]); // 当 propRoomId 变化时自动加入
-
   // 添加调试日志函数
   const addDebugLog = useCallback((message) => {
     console.log(message);
@@ -81,82 +61,27 @@ export default function VideoCall({
     return userId;
   };
   // 添加打开原生摄像头选择器的函数
-  const openDevicePicker = useCallback(async () => {
-    addDebugLog(`打开系统摄像头选择器...`);
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: false
-      });
+const openDevicePicker = useCallback(async () => {
+  addDebugLog(`打开系统摄像头选择器...`);
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: true,
+      audio: false
+    });
 
-      const oldVideoTrack = localStreamRef.current?.getVideoTracks()[0];
-      const newVideoTrack = stream.getVideoTracks()[0];
+    const oldVideoTrack = localStreamRef.current?.getVideoTracks()[0];
+    const newVideoTrack = stream.getVideoTracks()[0];
 
-      if (oldVideoTrack && newVideoTrack) {
-        // 停止旧轨道
-        oldVideoTrack.stop();
-        localStreamRef.current.removeTrack(oldVideoTrack);
-
-        // 添加新轨道到本地流
-        localStreamRef.current.addTrack(newVideoTrack);
-
-        // ==============================================
-        // 🔥 关键修复：给所有连接替换轨道（对面就能看到了）
-        // ==============================================
-        Object.values(peerInstancesRef.current).forEach(peer => {
-          if (!peer || peer.destroyed || !peer._pc) return;
-          try {
-            const senders = peer._pc.getSenders();
-            const videoSender = senders.find(s => s.track?.kind === 'video');
-            if (videoSender) {
-              videoSender.replaceTrack(newVideoTrack).catch(() => { });
-            }
-          } catch (e) { }
-        });
-
-        // 更新本地 UI
-        if (localVideoRef.current) {
-          localVideoRef.current.srcObject = localStreamRef.current;
-        }
-        if (featuredUserId === null && featuredVideoRef.current) {
-          featuredVideoRef.current.srcObject = localStreamRef.current;
-        }
-
-        addDebugLog(`✅ 摄像头切换成功: ${newVideoTrack.label}`);
-      }
-    } catch (err) {
-      addDebugLog(`用户取消或选择失败: ${err.message}`);
-    }
-  }, [featuredUserId, addDebugLog]);
-  // 切换摄像头
-  // 切换摄像头（修复版）
-  // 切换摄像头（完全修复版 - 支持所有设备）
-  const switchCamera = useCallback(async () => {
-    if (!localStreamRef.current) {
-      addDebugLog('❌ 没有本地流，无法切换摄像头');
-      return;
-    }
-
-    const newFacingMode = facingMode === 'user' ? 'environment' : 'user';
-    addDebugLog(`🔄 切换摄像头: ${facingMode} -> ${newFacingMode}`);
-
-    try {
-      // 停止旧视频轨道
-      const oldVideoTrack = localStreamRef.current.getVideoTracks()[0];
+    if (oldVideoTrack && newVideoTrack) {
+      // 停止旧轨道
       oldVideoTrack.stop();
       localStreamRef.current.removeTrack(oldVideoTrack);
 
-      // 获取新视频流
-      const newStream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: newFacingMode },
-        audio: false
-      });
-
-      const newVideoTrack = newStream.getVideoTracks()[0];
+      // 添加新轨道到本地流
       localStreamRef.current.addTrack(newVideoTrack);
 
       // ==============================================
-      // 🔥 关键修复：同步给所有对方连接替换轨道
+      // 🔥 关键修复：给所有连接替换轨道（对面就能看到了）
       // ==============================================
       Object.values(peerInstancesRef.current).forEach(peer => {
         if (!peer || peer.destroyed || !peer._pc) return;
@@ -164,12 +89,12 @@ export default function VideoCall({
           const senders = peer._pc.getSenders();
           const videoSender = senders.find(s => s.track?.kind === 'video');
           if (videoSender) {
-            videoSender.replaceTrack(newVideoTrack).catch(() => { });
+            videoSender.replaceTrack(newVideoTrack).catch(() => {});
           }
-        } catch (e) { }
+        } catch (e) {}
       });
 
-      // 更新本地显示
+      // 更新本地 UI
       if (localVideoRef.current) {
         localVideoRef.current.srcObject = localStreamRef.current;
       }
@@ -177,13 +102,68 @@ export default function VideoCall({
         featuredVideoRef.current.srcObject = localStreamRef.current;
       }
 
-      setFacingMode(newFacingMode);
-      addDebugLog(`✅ 摄像头切换成功`);
-
-    } catch (err) {
-      addDebugLog(`❌ 切换失败: ${err.message}`);
+      addDebugLog(`✅ 摄像头切换成功: ${newVideoTrack.label}`);
     }
-  }, [facingMode, featuredUserId, addDebugLog]);
+  } catch (err) {
+    addDebugLog(`用户取消或选择失败: ${err.message}`);
+  }
+}, [featuredUserId, addDebugLog]);
+  // 切换摄像头
+  // 切换摄像头（修复版）
+  // 切换摄像头（完全修复版 - 支持所有设备）
+const switchCamera = useCallback(async () => {
+  if (!localStreamRef.current) {
+    addDebugLog('❌ 没有本地流，无法切换摄像头');
+    return;
+  }
+
+  const newFacingMode = facingMode === 'user' ? 'environment' : 'user';
+  addDebugLog(`🔄 切换摄像头: ${facingMode} -> ${newFacingMode}`);
+
+  try {
+    // 停止旧视频轨道
+    const oldVideoTrack = localStreamRef.current.getVideoTracks()[0];
+    oldVideoTrack.stop();
+    localStreamRef.current.removeTrack(oldVideoTrack);
+
+    // 获取新视频流
+    const newStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: newFacingMode },
+      audio: false
+    });
+
+    const newVideoTrack = newStream.getVideoTracks()[0];
+    localStreamRef.current.addTrack(newVideoTrack);
+
+    // ==============================================
+    // 🔥 关键修复：同步给所有对方连接替换轨道
+    // ==============================================
+    Object.values(peerInstancesRef.current).forEach(peer => {
+      if (!peer || peer.destroyed || !peer._pc) return;
+      try {
+        const senders = peer._pc.getSenders();
+        const videoSender = senders.find(s => s.track?.kind === 'video');
+        if (videoSender) {
+          videoSender.replaceTrack(newVideoTrack).catch(() => {});
+        }
+      } catch (e) {}
+    });
+
+    // 更新本地显示
+    if (localVideoRef.current) {
+      localVideoRef.current.srcObject = localStreamRef.current;
+    }
+    if (featuredUserId === null && featuredVideoRef.current) {
+      featuredVideoRef.current.srcObject = localStreamRef.current;
+    }
+
+    setFacingMode(newFacingMode);
+    addDebugLog(`✅ 摄像头切换成功`);
+
+  } catch (err) {
+    addDebugLog(`❌ 切换失败: ${err.message}`);
+  }
+}, [facingMode, featuredUserId, addDebugLog]);
 
   // 绑定远程视频流
   const bindRemoteStream = useCallback((userId, stream) => {
@@ -206,47 +186,47 @@ export default function VideoCall({
       return false;
     }
   }, [featuredUserId, addDebugLog]);
-  // 进入房间后，确保放大区域显示本地视频
-  useEffect(() => {
-    if (isInRoom && localStreamRef.current && featuredVideoRef.current && featuredUserId === null) {
-      addDebugLog('🎯 进入房间后同步本地流到放大区域');
-      featuredVideoRef.current.srcObject = localStreamRef.current;
-      featuredVideoRef.current.play().catch(e => addDebugLog(`播放失败: ${e.message}`));
-    }
-  }, [isInRoom, featuredUserId, addDebugLog]);
+// 进入房间后，确保放大区域显示本地视频
+useEffect(() => {
+  if (isInRoom && localStreamRef.current && featuredVideoRef.current && featuredUserId === null) {
+    addDebugLog('🎯 进入房间后同步本地流到放大区域');
+    featuredVideoRef.current.srcObject = localStreamRef.current;
+    featuredVideoRef.current.play().catch(e => addDebugLog(`播放失败: ${e.message}`));
+  }
+}, [isInRoom, featuredUserId, addDebugLog]);
   // 设置本地视频显示
-  // 设置本地视频显示（已修复：刚进房间自动显示顶部大画面）
-  // 设置本地视频显示
-  const setupLocalVideo = useCallback((stream) => {
-    if (localVideoRef.current) {
-      addDebugLog('✅ 本地视频元素已绑定');
-      localVideoRef.current.srcObject = stream;
-      localVideoRef.current.onloadedmetadata = () => {
-        localVideoRef.current.play().catch(e => addDebugLog(`本地视频播放失败: ${e.message}`));
+// 设置本地视频显示（已修复：刚进房间自动显示顶部大画面）
+// 设置本地视频显示
+const setupLocalVideo = useCallback((stream) => {
+  if (localVideoRef.current) {
+    addDebugLog('✅ 本地视频元素已绑定');
+    localVideoRef.current.srcObject = stream;
+    localVideoRef.current.onloadedmetadata = () => {
+      localVideoRef.current.play().catch(e => addDebugLog(`本地视频播放失败: ${e.message}`));
+    };
+  }
+  
+  // 🔥 修复：延迟执行，确保 featuredVideoRef 已经绑定到 DOM
+  setTimeout(() => {
+    if (featuredVideoRef.current) {
+      addDebugLog('🔥 自动设置顶部放大区域为本地画面（默认显示自己）');
+      featuredVideoRef.current.srcObject = stream;
+      featuredVideoRef.current.onloadedmetadata = () => {
+        featuredVideoRef.current.play().catch(e => addDebugLog(`顶部视频播放失败: ${e.message}`));
       };
+    } else {
+      addDebugLog('⚠️ featuredVideoRef 尚未绑定，重试中...');
+      // 再次重试
+      setTimeout(() => {
+        if (featuredVideoRef.current) {
+          featuredVideoRef.current.srcObject = stream;
+          featuredVideoRef.current.play().catch(e => {});
+          addDebugLog('✅ 延迟重试成功');
+        }
+      }, 100);
     }
-
-    // 🔥 修复：延迟执行，确保 featuredVideoRef 已经绑定到 DOM
-    setTimeout(() => {
-      if (featuredVideoRef.current) {
-        addDebugLog('🔥 自动设置顶部放大区域为本地画面（默认显示自己）');
-        featuredVideoRef.current.srcObject = stream;
-        featuredVideoRef.current.onloadedmetadata = () => {
-          featuredVideoRef.current.play().catch(e => addDebugLog(`顶部视频播放失败: ${e.message}`));
-        };
-      } else {
-        addDebugLog('⚠️ featuredVideoRef 尚未绑定，重试中...');
-        // 再次重试
-        setTimeout(() => {
-          if (featuredVideoRef.current) {
-            featuredVideoRef.current.srcObject = stream;
-            featuredVideoRef.current.play().catch(e => { });
-            addDebugLog('✅ 延迟重试成功');
-          }
-        }, 100);
-      }
-    }, 50);
-  }, [addDebugLog]);
+  }, 50);
+}, [addDebugLog]);
 
   // 获取本地媒体流（支持指定摄像头方向）
   // 获取本地媒体流（改进版 - 更好的设备检测）
@@ -663,7 +643,9 @@ const leaveRoom = useCallback(() => {
   Object.values(peerInstancesRef.current).forEach(peer => {
     if (peer && !peer.destroyed) {
       try {
+        // 移除所有事件监听器
         peer.removeAllListeners();
+        // 销毁连接
         peer.destroy();
       } catch (err) {
         addDebugLog(`销毁 Peer 错误: ${err.message}`);
@@ -713,7 +695,7 @@ const leaveRoom = useCallback(() => {
   // 清理视频元素
   if (localVideoRef.current) {
     localVideoRef.current.srcObject = null;
-    localVideoRef.current.load();
+    localVideoRef.current.load(); // 重置视频元素
   }
   if (featuredVideoRef.current) {
     featuredVideoRef.current.srcObject = null;
@@ -729,12 +711,7 @@ const leaveRoom = useCallback(() => {
   });
   
   addDebugLog('✅ 房间清理完成');
-  
-  // ✅ 添加这一行：调用 onClose 关闭模态框
-  if (onClose) {
-    onClose();
-  }
-}, [addDebugLog, onClose]); // 添加 onClose 到依赖数组
+}, [addDebugLog]);
 
   // 切换音频
   const toggleAudio = useCallback(() => {
