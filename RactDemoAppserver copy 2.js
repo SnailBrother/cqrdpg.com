@@ -1,3 +1,5 @@
+//没有优化连接池的备份
+
 const express = require('express');
 const cors = require('cors');
 const sql = require('mssql');
@@ -89,10 +91,10 @@ app.get('/api/LazyBeewebsites', async (req, res) => {
 // 获取 Records 表数据
 app.get('/api/getRecords', async (req, res) => {
     try {
-        //let first//pool = await sql.connect(config);
+        let firstpool = await sql.connect(config);
         let RecordsResult = await firstpool.request().query('SELECT * FROM Records');
         res.json(RecordsResult.recordset);
-        //first//pool.close();
+        firstpool.close();
     } catch (err) {
         console.error(err);
         res.status(500).send('Server Error');
@@ -102,10 +104,10 @@ app.get('/api/getRecords', async (req, res) => {
 // 获取 Music 表数据
 app.get('/api/getMusicData', async (req, res) => {
     try {
-        //let first//pool = await sql.connect(config);
+        let firstpool = await sql.connect(config);
         let musicResult = await firstpool.request().query('SELECT * FROM Music');
         res.json({ music: musicResult.recordset });
-        //first//pool.close();
+        firstpool.close();
     } catch (err) {
         console.error(err);
         res.status(500).send('Server Error');
@@ -115,10 +117,10 @@ app.get('/api/getMusicData', async (req, res) => {
 // 获取 RealEstate 表数据
 app.get('/api/getRealEstateData', async (req, res) => {
     try {
-        //let first//pool = await sql.connect(config);
+        let firstpool = await sql.connect(config);
         let realEstateResult = await firstpool.request().query('SELECT * FROM RealEstate');
         res.json({ RealEstate: realEstateResult.recordset });
-        //first//pool.close();
+        firstpool.close();
     } catch (err) {
         console.error(err);
         res.status(500).send('Server Error');
@@ -128,10 +130,10 @@ app.get('/api/getRealEstateData', async (req, res) => {
 // 获取 AccountLogin 表数据
 app.get('/api/getAccountLoginData', async (req, res) => {
     try {
-        //let first//pool = await sql.connect(config);
+        let firstpool = await sql.connect(config);
         let accountLoginResult = await firstpool.request().query('SELECT * FROM AccountLogin');
         res.json({ AccountLogin: accountLoginResult.recordset });
-        //first//pool.close();
+        firstpool.close();
     } catch (err) {
         console.error(err);
         res.status(500).send('Server Error');
@@ -142,13 +144,13 @@ app.get('/api/getAccountLoginData', async (req, res) => {
 app.post('/api/checkUsernameExists', async (req, res) => {
     const { username } = req.body;
     try {
-        //let first//pool = await sql.connect(config);
+        let firstpool = await sql.connect(config);
         const result = await firstpool.request()
             .input('username', sql.NVarChar(50), username)
             .query('SELECT COUNT(*) as count FROM AccountLogin WHERE username = @username');
         const exists = result.recordset[0].count > 0;
         res.json({ exists });
-        //first//pool.close();
+        firstpool.close();
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: '检查账号是否存在时发生错误' });
@@ -158,14 +160,14 @@ app.post('/api/checkUsernameExists', async (req, res) => {
 app.post('/api/register', async (req, res) => {
     const { username, password } = req.body;
     try {
-        //let first//pool = await sql.connect(config);
+        let firstpool = await sql.connect(config);
         // 再次在后端检查账号是否已存在
         const checkResult = await firstpool.request()
             .input('username', sql.NVarChar(50), username)
             .query('SELECT COUNT(*) as count FROM AccountLogin WHERE username = @username');
         if (checkResult.recordset[0].count > 0) {
             res.status(400).json({ message: '该账号已存在，请选择其他用户名' });
-            //first//pool.close();
+            firstpool.close();
             return;
         }
 
@@ -174,7 +176,7 @@ app.post('/api/register', async (req, res) => {
             .input('password', sql.NVarChar(255), password)
             .query('INSERT INTO AccountLogin (username, password) VALUES (@username, @password)');
         res.status(201).json({ message: '注册成功' });
-        //first//pool.close();
+        firstpool.close();
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: '注册失败' });
@@ -184,7 +186,7 @@ app.post('/api/register', async (req, res) => {
 app.delete('/api/deleteAccount', async (req, res) => {
     const { username, password } = req.body;
     try {
-        //let first//pool = await sql.connect(config);
+        let firstpool = await sql.connect(config);
         const result = await firstpool.request()
             .input('username', sql.NVarChar(50), username)
             .input('password', sql.NVarChar(255), password)
@@ -194,7 +196,7 @@ app.delete('/api/deleteAccount', async (req, res) => {
         } else {
             res.status(400).json({ message: '密码错误，注销失败' });
         }
-        //first//pool.close();
+        firstpool.close();
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: '注销账号失败' });
@@ -204,7 +206,7 @@ app.delete('/api/deleteAccount', async (req, res) => {
 app.put('/api/changePassword', async (req, res) => {
     const { username, oldPassword, newPassword } = req.body;
     try {
-        //let first//pool = await sql.connect(config);
+        let firstpool = await sql.connect(config);
         const checkResult = await firstpool.request()
             .input('username', sql.NVarChar(50), username)
             .input('oldPassword', sql.NVarChar(255), oldPassword)
@@ -218,7 +220,7 @@ app.put('/api/changePassword', async (req, res) => {
         } else {
             res.status(400).json({ message: '原密码错误，修改失败' });
         }
-        //first//pool.close();
+        firstpool.close();
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: '密码修改失败' });
@@ -231,10 +233,10 @@ app.put('/api/changePassword', async (req, res) => {
     // 获取 TravelExpenseReimbursement 报销表数据
     app.get('/api/getTravelExpenseReimbursementData', async (req, res) => {
         try {
-            //let first//pool = await sql.connect(config);
+            let firstpool = await sql.connect(config);
             let travelExpenseReimbursementResult = await firstpool.request().query('SELECT * FROM TravelExpenseReimbursement');
             res.json({ TravelExpenseReimbursement: travelExpenseReimbursementResult.recordset });
-            //first//pool.close();
+            firstpool.close();
         } catch (err) {
             console.error(err);
             res.status(500).send('Server Error');
@@ -245,7 +247,7 @@ app.put('/api/changePassword', async (req, res) => {
     app.post('/api/addTravelExpense', async (req, res) => {
         const { ProjectCode, ProjectName, Location, Amount, BusinessTripDate, ReimbursementDate, Remarks, ReimbursedBy, Whetherover } = req.body;
         try {
-             //let pool = await sql.connect(config);
+            let pool = await sql.connect(config);
             const result = await pool.request()
                 .input('ProjectCode', sql.NVarChar, ProjectCode)
                 .input('ProjectName', sql.NVarChar, ProjectName)
@@ -259,7 +261,7 @@ app.put('/api/changePassword', async (req, res) => {
                 .query('INSERT INTO TravelExpenseReimbursement (ProjectCode, ProjectName, Location, Amount, BusinessTripDate, ReimbursementDate, Remarks, ReimbursedBy, Whetherover) OUTPUT INSERTED.ID VALUES (@ProjectCode, @ProjectName, @Location, @Amount, @BusinessTripDate, @ReimbursementDate, @Remarks, @ReimbursedBy, @Whetherover)');
 
             res.json({ ID: result.recordset[0].ID });
-            //pool.close();
+            pool.close();
         } catch (err) {
             console.error(err);
             res.status(500).send('Server Error');
@@ -271,7 +273,7 @@ app.put('/api/changePassword', async (req, res) => {
         const { id } = req.params;
         const { ProjectCode, ProjectName, Location, Amount, BusinessTripDate, ReimbursementDate, Remarks, ReimbursedBy, Whetherover } = req.body;
         try {
-             //let pool = await sql.connect(config);
+            let pool = await sql.connect(config);
             await pool.request()
                 .input('ID', sql.Int, id)
                 .input('ProjectCode', sql.NVarChar, ProjectCode)
@@ -286,7 +288,7 @@ app.put('/api/changePassword', async (req, res) => {
                 .query('UPDATE TravelExpenseReimbursement SET ProjectCode = @ProjectCode, ProjectName = @ProjectName, Location = @Location, Amount = @Amount, BusinessTripDate = @BusinessTripDate, ReimbursementDate = @ReimbursementDate, Remarks = @Remarks, ReimbursedBy = @ReimbursedBy, Whetherover = @Whetherover WHERE ID = @ID');
 
             res.sendStatus(204); // No content
-            //pool.close();
+            pool.close();
         } catch (err) {
             console.error(err);
             res.status(500).send('Server Error');
@@ -299,7 +301,7 @@ app.put('/api/changePassword', async (req, res) => {
         const { id } = req.params;
         const { ProjectCode, ProjectName, Location, Amount, BusinessTripDate, ReimbursementDate, Remarks, ReimbursedBy, Whetherover } = req.body;
         try {
-             //let pool = await sql.connect(config);
+            let pool = await sql.connect(config);
             await pool.request()
                 .input('ID', sql.Int, id)
                 .input('ProjectCode', sql.NVarChar, ProjectCode)
@@ -314,7 +316,7 @@ app.put('/api/changePassword', async (req, res) => {
                 .query('UPDATE TravelExpenseReimbursement SET ProjectCode = @ProjectCode, ProjectName = @ProjectName, Location = @Location, Amount = @Amount, BusinessTripDate = @BusinessTripDate, ReimbursementDate = @ReimbursementDate, Remarks = @Remarks, ReimbursedBy = @ReimbursedBy, Whetherover = @Whetherover WHERE ID = @ID');
 
             res.sendStatus(204); // No content
-            //pool.close();
+            pool.close();
         } catch (err) {
             console.error(err);
             res.status(500).send('Server Error');
@@ -325,13 +327,13 @@ app.put('/api/changePassword', async (req, res) => {
     app.delete('/api/deleteTravelExpense/:id', async (req, res) => {
         const { id } = req.params;
         try {
-             //let pool = await sql.connect(config);
+            let pool = await sql.connect(config);
             await pool.request()
                 .input('ID', sql.Int, id)
                 .query('DELETE FROM TravelExpenseReimbursement WHERE ID = @ID');
 
             res.sendStatus(204); // No content
-            //pool.close();
+            pool.close();
         } catch (err) {
             console.error(err);
             res.status(500).send('Server Error');
@@ -342,10 +344,10 @@ app.put('/api/changePassword', async (req, res) => {
     // 获取  绩效表表数据
     app.get('/api/getAchievementsData', async (req, res) => {
         try {
-            //let first//pool = await sql.connect(config);
+            let firstpool = await sql.connect(config);
             let achievementsResult = await firstpool.request().query('SELECT * FROM Achievements');
             res.json({ Achievements: achievementsResult.recordset });
-            //first//pool.close();
+            firstpool.close();
         } catch (err) {
             console.error(err);
             res.status(500).send('Server Error');
@@ -356,7 +358,7 @@ app.put('/api/changePassword', async (req, res) => {
     app.post('/api/addAchievement', async (req, res) => {
         const { ProjectCode, ReportNumber, ProjectName, ChargeAmount, ChargeDate, AchievementAmount, SignedAmount, CommissionDate, Notes, PerformancePerson, Whetherticheng } = req.body;
         try {
-             //let pool = await sql.connect(config);
+            let pool = await sql.connect(config);
             const result = await pool.request()
                 .input('ProjectCode', sql.VarChar, ProjectCode)
                 .input('ReportNumber', sql.VarChar, ReportNumber)
@@ -372,7 +374,7 @@ app.put('/api/changePassword', async (req, res) => {
                 .query('INSERT INTO Achievements (ProjectCode, ReportNumber, ProjectName, ChargeAmount, ChargeDate, AchievementAmount, SignedAmount, CommissionDate, Notes, PerformancePerson, Whetherticheng) OUTPUT INSERTED.ID VALUES (@ProjectCode, @ReportNumber, @ProjectName, @ChargeAmount, @ChargeDate, @AchievementAmount, @SignedAmount, @CommissionDate, @Notes, @PerformancePerson, @Whetherticheng)');
 
             res.json({ ID: result.recordset[0].ID });
-            //pool.close();
+            pool.close();
         } catch (err) {
             console.error(err);
             res.status(500).send('Server Error');
@@ -384,7 +386,7 @@ app.put('/api/changePassword', async (req, res) => {
         const { id } = req.params;
         const { ProjectCode, ReportNumber, ProjectName, ChargeAmount, ChargeDate, AchievementAmount, SignedAmount, CommissionDate, Notes, PerformancePerson, Whetherticheng } = req.body;
         try {
-             //let pool = await sql.connect(config);
+            let pool = await sql.connect(config);
             await pool.request()
                 .input('ID', sql.Int, id)
                 .input('ProjectCode', sql.VarChar, ProjectCode)
@@ -401,7 +403,7 @@ app.put('/api/changePassword', async (req, res) => {
                 .query('UPDATE Achievements SET ProjectCode = @ProjectCode, ReportNumber = @ReportNumber, ProjectName = @ProjectName, ChargeAmount = @ChargeAmount, ChargeDate = @ChargeDate, AchievementAmount = @AchievementAmount, SignedAmount = @SignedAmount, CommissionDate = @CommissionDate, Notes = @Notes, PerformancePerson = @PerformancePerson, Whetherticheng = @Whetherticheng WHERE ID = @ID');
 
             res.sendStatus(204); // No content
-            //pool.close();
+            pool.close();
         } catch (err) {
             console.error(err);
             res.status(500).send('Server Error');
@@ -412,13 +414,13 @@ app.put('/api/changePassword', async (req, res) => {
     app.delete('/api/deleteAchievement/:id', async (req, res) => {
         const { id } = req.params;
         try {
-             //let pool = await sql.connect(config);
+            let pool = await sql.connect(config);
             await pool.request()
                 .input('ID', sql.Int, id)
                 .query('DELETE FROM Achievements WHERE ID = @ID');
 
             res.sendStatus(204); // No content
-            //pool.close();
+            pool.close();
         } catch (err) {
             console.error(err);
             res.status(500).send('Server Error');
@@ -432,7 +434,7 @@ app.put('/api/changePassword', async (req, res) => {
         let pool;
         try {
             // 1. 首先获取数据库数据
-            //pool = await sql.connect(config);
+            pool = await sql.connect(config);
             const result = await pool.request().query('SELECT * FROM Special_Tips');
 
             // 2. 立即向所有客户端广播更新
@@ -445,7 +447,7 @@ app.put('/api/changePassword', async (req, res) => {
             res.status(500).send('Server Error');
         } finally {
             if (pool) {
-                //pool.close();
+                pool.close();
             }
         }
     });
@@ -460,7 +462,7 @@ app.put('/api/changePassword', async (req, res) => {
 
         let pool;
         try {
-            //pool = await sql.connect(config);
+            pool = await sql.connect(config);
 
             // 插入新记录
             const insertResult = await pool.request()
@@ -485,7 +487,7 @@ app.put('/api/changePassword', async (req, res) => {
             res.status(500).json({ error: '添加特殊提示失败' });
         } finally {
             if (pool) {
-                //pool.close();
+                pool.close();
             }
         }
     });
@@ -499,7 +501,7 @@ app.put('/api/changePassword', async (req, res) => {
         let pool;
         try {
             // 1. 首先获取数据库数据
-            //pool = await sql.connect(config);
+            pool = await sql.connect(config);
             const result = await pool.request().query('SELECT * FROM MessageDetail ORDER BY time DESC'); // 添加ORDER BY time DESC
 
             // 2. 立即向所有客户端广播更新
@@ -512,7 +514,7 @@ app.put('/api/changePassword', async (req, res) => {
             res.status(500).send('Server Error');
         } finally {
             if (pool) {
-                //pool.close();
+                pool.close();
             }
         }
     });
@@ -527,7 +529,7 @@ app.put('/api/changePassword', async (req, res) => {
 
         let pool;
         try {
-            //pool = await sql.connect(config);
+            pool = await sql.connect(config);
 
             // 插入新记录
             const insertResult = await pool.request()
@@ -551,7 +553,7 @@ app.put('/api/changePassword', async (req, res) => {
             res.status(500).json({ error: '添加公告失败' });
         } finally {
             if (pool) {
-                //pool.close();
+                pool.close();
             }
         }
     });
@@ -567,7 +569,7 @@ app.put('/api/changePassword', async (req, res) => {
         let pool;
 
         try {
-            //pool = await sql.connect(config);
+            pool = await sql.connect(config);
             const query = `
             INSERT INTO Structures (name, structure, area, unit, price, notes) 
             OUTPUT INSERTED.*
@@ -593,7 +595,7 @@ app.put('/api/changePassword', async (req, res) => {
             console.error(err);
             res.status(500).json({ error: 'Server Error' });
         } finally {
-            //if (pool)  pool.close();
+            if (pool) pool.close();
         }
     });
 
@@ -604,7 +606,7 @@ app.put('/api/changePassword', async (req, res) => {
         let pool;
 
         try {
-            //pool = await sql.connect(config);
+            pool = await sql.connect(config);
             const query = `
             UPDATE Structures 
             SET name = @name, structure = @structure, area = @area, 
@@ -637,7 +639,7 @@ app.put('/api/changePassword', async (req, res) => {
             console.error(err);
             res.status(500).send('Server Error');
         } finally {
-            //if (pool)  pool.close();
+            if (pool) pool.close();
         }
     });
 
@@ -647,7 +649,7 @@ app.put('/api/changePassword', async (req, res) => {
         let pool;
 
         try {
-            //pool = await sql.connect(config);
+            pool = await sql.connect(config);
             const query = 'DELETE FROM Structures WHERE id = @id';
 
             const result = await pool.request()
@@ -666,7 +668,7 @@ app.put('/api/changePassword', async (req, res) => {
             console.error(err);
             res.status(500).send('Server Error');
         } finally {
-            //if (pool)  pool.close();
+            if (pool) pool.close();
         }
     });
 
@@ -675,14 +677,14 @@ app.put('/api/changePassword', async (req, res) => {
         let pool;
 
         try {
-            //pool = await sql.connect(config);
+            pool = await sql.connect(config);
             let structuresResult = await pool.request().query('SELECT TOP 4 * FROM Structures ORDER BY NEWID()');
             res.json({ Structures: structuresResult.recordset });
         } catch (err) {
             console.error(err);
             res.status(500).send('Server Error');
         } finally {
-            //if (pool)  pool.close();
+            if (pool) pool.close();
         }
     });
 
@@ -710,7 +712,7 @@ app.put('/api/changePassword', async (req, res) => {
         }
 
         try {
-            //pool = await sql.connect(config);
+            pool = await sql.connect(config);
 
             // 获取总数
             const countResult = await pool.request()
@@ -735,7 +737,7 @@ app.put('/api/changePassword', async (req, res) => {
             console.error(err);
             res.status(500).send('Server Error');
         } finally {
-            //if (pool)  pool.close();
+            if (pool) pool.close();
         }
     });
 
@@ -761,7 +763,7 @@ app.put('/api/changePassword', async (req, res) => {
         }
 
         try {
-            //pool = await sql.connect(config);
+            pool = await sql.connect(config);
 
             // 获取总数
             const countQuery = `
@@ -806,7 +808,7 @@ app.put('/api/changePassword', async (req, res) => {
             console.error(err);
             res.status(500).send('Server Error');
         } finally {
-            //if (pool)  pool.close();
+            if (pool) pool.close();
         }
     });
 
@@ -825,7 +827,7 @@ app.put('/api/changePassword', async (req, res) => {
         let pool;
 
         try {
-            //pool = await sql.connect(config);
+            pool = await sql.connect(config);
             const query = `
             INSERT INTO ChatApp.dbo.TreeDB (name, diameter, height, crown_width, ground_diameter, price, region, species, notes) 
             OUTPUT INSERTED.*
@@ -854,7 +856,7 @@ app.put('/api/changePassword', async (req, res) => {
             console.error(err);
             res.status(500).json({ error: 'Server Error' });
         } finally {
-            //if (pool)  pool.close();
+            if (pool) pool.close();
         }
     });
 
@@ -865,7 +867,7 @@ app.put('/api/changePassword', async (req, res) => {
         let pool;
 
         try {
-            //pool = await sql.connect(config);
+            pool = await sql.connect(config);
             const query = `
             UPDATE ChatApp.dbo.TreeDB 
             SET name = @name, diameter = @diameter, height = @height, 
@@ -902,7 +904,7 @@ app.put('/api/changePassword', async (req, res) => {
             console.error(err);
             res.status(500).send('Server Error');
         } finally {
-            //if (pool)  pool.close();
+            if (pool) pool.close();
         }
     });
 
@@ -912,7 +914,7 @@ app.put('/api/changePassword', async (req, res) => {
         let pool;
 
         try {
-            //pool = await sql.connect(config);
+            pool = await sql.connect(config);
             const query = 'DELETE FROM ChatApp.dbo.TreeDB WHERE id = @id';
 
             const result = await pool.request()
@@ -931,7 +933,7 @@ app.put('/api/changePassword', async (req, res) => {
             console.error(err);
             res.status(500).send('Server Error');
         } finally {
-            //if (pool)  pool.close();
+            if (pool) pool.close();
         }
     });
 
@@ -940,14 +942,14 @@ app.put('/api/changePassword', async (req, res) => {
         let pool;
 
         try {
-            //pool = await sql.connect(config);
+            pool = await sql.connect(config);
             let treesResult = await pool.request().query('SELECT TOP 4 * FROM ChatApp.dbo.TreeDB ORDER BY NEWID()');
             res.json({ Trees: treesResult.recordset });
         } catch (err) {
             console.error(err);
             res.status(500).send('Server Error');
         } finally {
-            //if (pool)  pool.close();
+            if (pool) pool.close();
         }
     });
 
@@ -976,7 +978,7 @@ app.put('/api/changePassword', async (req, res) => {
         }
 
         try {
-            //pool = await sql.connect(config);
+            pool = await sql.connect(config);
 
             // 获取总数
             const countQuery = `
@@ -1019,7 +1021,7 @@ app.put('/api/changePassword', async (req, res) => {
             console.error(err);
             res.status(500).send('Server Error');
         } finally {
-            //if (pool)  pool.close();
+            if (pool) pool.close();
         }
     });
 
@@ -1033,7 +1035,7 @@ app.put('/api/changePassword', async (req, res) => {
         }
 
         try {
-            //pool = await sql.connect(config);
+            pool = await sql.connect(config);
             let successCount = 0;
             let errorCount = 0;
             const errors = [];
@@ -1100,7 +1102,7 @@ app.put('/api/changePassword', async (req, res) => {
                 message: '服务器处理数据时出错'
             });
         } finally {
-            //if (pool)  pool.close();
+            if (pool) pool.close();
         }
     });
 
@@ -1116,7 +1118,7 @@ app.put('/api/changePassword', async (req, res) => {
     app.post('/api/addRecord', async (req, res) => {
         const { category, subcategory, amount, date, person } = req.body;
         try {
-            //let first//pool = await sql.connect(config);
+            let firstpool = await sql.connect(config);
             await firstpool.request()
                 .input('category', sql.NVarChar, category)
                 .input('subcategory', sql.NVarChar, subcategory)
@@ -1125,7 +1127,7 @@ app.put('/api/changePassword', async (req, res) => {
                 .input('person', sql.NVarChar, person)
                 .query('INSERT INTO Records (Category, Subcategory, Amount, Date, Person) VALUES (@category, @subcategory, @amount, @date, @person)');
             res.status(201).send('Record added successfully');
-            //first//pool.close();
+            firstpool.close();
         } catch (err) {
             console.error(err);
             res.status(500).send('Server Error');
@@ -1137,7 +1139,7 @@ app.put('/api/changePassword', async (req, res) => {
         const { id } = req.params;
         const { category, subcategory, amount, date, person } = req.body;
         try {
-            //let first//pool = await sql.connect(config);
+            let firstpool = await sql.connect(config);
             await firstpool.request()
                 .input('id', sql.Int, id)
                 .input('category', sql.NVarChar, category)
@@ -1147,7 +1149,7 @@ app.put('/api/changePassword', async (req, res) => {
                 .input('person', sql.NVarChar, person)
                 .query('UPDATE Records SET Category = @category, Subcategory = @subcategory, Amount = @amount, Date = @date, Person = @person WHERE Id = @id');
             res.send('Record updated successfully');
-            //first//pool.close();
+            firstpool.close();
         } catch (err) {
             console.error(err);
             res.status(500).send('Server Error');
@@ -1158,12 +1160,12 @@ app.put('/api/changePassword', async (req, res) => {
     app.delete('/api/deleteRecord/:id', async (req, res) => {
         const { id } = req.params;
         try {
-            //let first//pool = await sql.connect(config);
+            let firstpool = await sql.connect(config);
             await firstpool.request()
                 .input('id', sql.Int, id)
                 .query('DELETE FROM Records WHERE Id = @id');
             res.send('Record deleted successfully');
-            //first//pool.close();
+            firstpool.close();
         } catch (err) {
             console.error(err);
             res.status(500).send('Server Error');
@@ -1174,7 +1176,7 @@ app.put('/api/changePassword', async (req, res) => {
     app.post('/api/addRealEstateData', async (req, res) => {
         const { location, area, building_area, interior_area, community_name, property_usage, house_structure, market_price, market_rent, base_date, remarks, house_type, construction_year, floor } = req.body;
         try {
-            //let first//pool = await sql.connect(config);
+            let firstpool = await sql.connect(config);
             let result = await firstpool.request()
                 .input('location', sql.NVarChar, location)
                 .input('area', sql.NVarChar, area)
@@ -1193,7 +1195,7 @@ app.put('/api/changePassword', async (req, res) => {
                 .query('INSERT INTO RealEstate (location, area, building_area, interior_area, community_name, property_usage, house_structure, market_price, market_rent, base_date, remarks, house_type, construction_year, floor) OUTPUT INSERTED.* VALUES (@location, @area, @building_area, @interior_area, @community_name, @property_usage, @house_structure, @market_price, @market_rent, @base_date, @remarks, @house_type, @construction_year, @floor)');
 
             res.json(result.recordset[0]);
-            //first//pool.close();
+            firstpool.close();
         } catch (err) {
             console.error(err);
             res.status(500).send('Server Error');
@@ -1207,7 +1209,7 @@ app.put('/api/updateRealEstateData/:id', async (req, res) => {
     const { id } = req.params;
     const { location, area, building_area, interior_area, community_name, property_usage, house_structure, market_price, market_rent, base_date, remarks, house_type, construction_year, floor } = req.body;
     try {
-        //let first//pool = await sql.connect(config);
+        let firstpool = await sql.connect(config);
         await firstpool.request()
             .input('id', sql.Int, id)
             .input('location', sql.NVarChar, location)
@@ -1227,7 +1229,7 @@ app.put('/api/updateRealEstateData/:id', async (req, res) => {
             .query('UPDATE RealEstate SET location = @location, area = @area, building_area = @building_area, interior_area = @interior_area, community_name = @community_name, property_usage = @property_usage, house_structure = @house_structure, market_price = @market_price, market_rent = @market_rent, base_date = @base_date, remarks = @remarks, house_type = @house_type, construction_year = @construction_year, floor = @floor WHERE id = @id');
 
         res.send('RealEstate updated successfully');
-        //first//pool.close();
+        firstpool.close();
     } catch (err) {
         console.error(err);
         res.status(500).send('Server Error');
@@ -1239,12 +1241,12 @@ app.put('/api/updateRealEstateData/:id', async (req, res) => {
 app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
     const { id } = req.params;
     try {
-        //let first//pool = await sql.connect(config);
+        let firstpool = await sql.connect(config);
         await firstpool.request()
             .input('id', sql.Int, id)
             .query('DELETE FROM RealEstate WHERE id = @id');
         res.send('RealEstate deleted successfully');
-        //first//pool.close();
+        firstpool.close();
     } catch (err) {
         console.error(err);
         res.status(500).send('Server Error');
@@ -1259,10 +1261,10 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
     // 获取 Template 表数据
     app.get('/api/getTemplateData', async (req, res) => {
         try {
-            //let first//pool = await sql.connect(config);
+            let firstpool = await sql.connect(config);
             let templateResult = await firstpool.request().query('SELECT * FROM Report_Template');
             res.json({ Template: templateResult.recordset });
-            //first//pool.close();
+            firstpool.close();
         } catch (err) {
             console.error(err);
             res.status(500).send('Server Error');
@@ -1326,7 +1328,7 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
         const { fileName } = req.params;
         console.log('Received fileName:', fileName); // 打印接收到的文件名
         try {
-            //let first//pool = await sql.connect(config);
+            let firstpool = await sql.connect(config);
             const query = `
             SELECT share_view_link, share_download_link, internal_edit_link 
             FROM ReportTemplate_Link 
@@ -1341,7 +1343,7 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
             } else {
                 res.status(404).send('Link not found');
             }
-            //first//pool.close();
+            firstpool.close();
         } catch (err) {
             console.error(err);
             res.status(500).send('Server Error');
@@ -1355,7 +1357,7 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
         let pool;
         try {
             // 1. 首先获取数据库数据
-            //pool = await sql.connect(config);
+            pool = await sql.connect(config);
             const result = await pool.request().query('SELECT * FROM UsedWebsites');
 
             // 2. 立即向所有客户端广播更新
@@ -1369,7 +1371,7 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
             res.status(500).send('Server Error');
         } finally {
             if (pool) {
-                //pool.close();
+                pool.close();
             }
         }
     });
@@ -1384,7 +1386,7 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
 
         let pool;
         try {
-            //pool = await sql.connect(config);
+            pool = await sql.connect(config);
 
             // 插入新记录
             const insertResult = await pool.request()
@@ -1409,7 +1411,7 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
             res.status(500).json({ error: '添加网站链接失败' });
         } finally {
             if (pool) {
-                //pool.close();
+                pool.close();
             }
         }
     });
@@ -1420,10 +1422,10 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
     // 获取所有派单记录
     app.get('/api/getProjectDispatchData', async (req, res) => {
         try {
-             //let pool = await sql.connect(config);
+            let pool = await sql.connect(config);
             const result = await pool.request().query('SELECT * FROM ProjectDispatchForm');
             res.status(200).json({ ProjectDispatchForm: result.recordset });
-            //pool.close();
+            pool.close();
         } catch (err) {
             console.error(err);
             res.status(500).send('Server Error');
@@ -1442,7 +1444,7 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
         } = req.body;
 
         try {
-             //let pool = await sql.connect(config);
+            let pool = await sql.connect(config);
             const result = await pool.request()
                 .input('ProjectName', sql.NVarChar, ProjectName)
                 .input('Branch', sql.NVarChar, Branch)
@@ -1487,7 +1489,7 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
                 );
             `);
             res.status(201).json({ ID: result.rowsAffected[0] });
-            //pool.close();
+            pool.close();
         } catch (err) {
             console.error(err);
             res.status(500).send('Server Error');
@@ -1507,7 +1509,7 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
         } = req.body;
 
         try {
-             //let pool = await sql.connect(config);
+            let pool = await sql.connect(config);
             const result = await pool.request()
                 .input('id', sql.Int, id)
                 .input('ProjectName', sql.NVarChar, ProjectName)
@@ -1566,7 +1568,7 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
             }
 
             res.status(200).json({ message: '派单记录更新成功' });
-            //pool.close();
+            pool.close();
         } catch (err) {
             console.error(err);
             res.status(500).send('Server Error');
@@ -1578,7 +1580,7 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
         const { id } = req.params;
 
         try {
-             //let pool = await sql.connect(config);
+            let pool = await sql.connect(config);
             const result = await pool.request()
                 .input('id', sql.Int, id)
                 .query('DELETE FROM ProjectDispatchForm WHERE id = @id');
@@ -1588,7 +1590,7 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
             }
 
             res.status(200).json({ message: '派单记录删除成功' });
-            //pool.close();
+            pool.close();
         } catch (err) {
             console.error(err);
             res.status(500).send('Server Error');
@@ -1602,7 +1604,7 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
     // 获取所有报告
     app.get('/api/getReportNumbers', async (req, res) => {
         try {
-             //let pool = await sql.connect(config);
+            let pool = await sql.connect(config);
             let result = await pool.request().query('SELECT * FROM ReportNumberTable');
             res.json(result.recordset);
         } catch (error) {
@@ -1615,7 +1617,7 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
     app.post('/api/addReportNumbers', async (req, res) => {
         const { asset_region, report_type, total_assessment_value, asset_usage, unit_assessment_price, assessment_area, report_count, issue_date, report_number, remarks } = req.body;
         try {
-             //let pool = await sql.connect(config);
+            let pool = await sql.connect(config);
             await pool.request()
                 .input('asset_region', sql.NVarChar, asset_region)
                 .input('report_type', sql.NVarChar, report_type)
@@ -1642,7 +1644,7 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
         const { asset_region, report_type, total_assessment_value, asset_usage, unit_assessment_price, assessment_area, report_count, issue_date, report_number, remarks } = req.body;
         try {
             //console.log('Issue Date:', issue_date); // 检查 issue_date 的值
-             //let pool = await sql.connect(config);
+            let pool = await sql.connect(config);
             await pool.request()
                 .input('id', sql.Int, id)
                 .input('asset_region', sql.NVarChar, asset_region)
@@ -1668,7 +1670,7 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
     app.delete('/api/deleteReportNumbers/:id', async (req, res) => {
         const { id } = req.params;
         try {
-             //let pool = await sql.connect(config);
+            let pool = await sql.connect(config);
             await pool.request()
                 .input('id', sql.Int, id)
                 .query('DELETE FROM ReportNumberTable WHERE id = @id');
@@ -1685,7 +1687,7 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
     // 获取所有费用记录
     app.get('/api/getAssessProjectFees', async (req, res) => {
         try {
-             //let pool = await sql.connect(config);
+            let pool = await sql.connect(config);
             const result = await pool.request().query('SELECT * FROM AssessprojectfeesTable');
             res.json(result.recordset);
         } catch (error) {
@@ -1698,7 +1700,7 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
     app.post('/api/addAssessProjectFees', async (req, res) => {
         const { project_id, fee_amount, fee_date, fee_type, remarks } = req.body;
         try {
-             //let pool = await sql.connect(config);
+            let pool = await sql.connect(config);
             await pool.request()
                 .input('project_id', sql.NVarChar, project_id)
                 .input('fee_amount', sql.Decimal(18, 2), fee_amount)
@@ -1718,7 +1720,7 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
         const { id } = req.params;
         const { project_id, fee_amount, fee_date, fee_type, remarks } = req.body;
         try {
-             //let pool = await sql.connect(config);
+            let pool = await sql.connect(config);
             await pool.request()
                 .input('id', sql.Int, id)
                 .input('project_id', sql.NVarChar, project_id)
@@ -1738,7 +1740,7 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
     app.delete('/api/deleteAssessProjectFees/:id', async (req, res) => {
         const { id } = req.params;
         try {
-             //let pool = await sql.connect(config);
+            let pool = await sql.connect(config);
             await pool.request()
                 .input('id', sql.Int, id)
                 .query('DELETE FROM AssessprojectfeesTable WHERE id = @id');
@@ -1755,7 +1757,7 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
     app.get('/api/getEvaluateworklogTable', async (req, res) => {
         const { project_id } = req.query; // 从查询参数获取项目编号
         try {
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
             const result = await pool.request()
                 .query(`SELECT * FROM EvaluateworklogTable ${project_id ? `WHERE project_id = @project_id` : ''}`);
 
@@ -1764,7 +1766,7 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
             }
 
             res.json(result.recordset);
-            //pool.close();
+            pool.close();
         } catch (err) {
             console.error(err);
             res.status(500).send('Server Error');
@@ -1775,7 +1777,7 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
     app.post('/api/addEvaluateworklogTable', async (req, res) => {
         const { project_id, communication_record, contact_time } = req.body;
         try {
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
             const result = await pool.request()
                 .input('project_id', sql.NVarChar, project_id)
                 .input('communication_record', sql.NVarChar, communication_record)
@@ -1783,7 +1785,7 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
                 .query('INSERT INTO EvaluateworklogTable (project_id, communication_record, contact_time) VALUES (@project_id, @communication_record, @contact_time)');
 
             res.status(201).json({ ID: result.rowsAffected[0] });
-            //pool.close();
+            pool.close();
         } catch (err) {
             console.error(err);
             res.status(500).send('Server Error');
@@ -1795,7 +1797,7 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
         const { id } = req.params;
         const { project_id, communication_record, contact_time } = req.body;
         try {
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
             await pool.request()
                 .input('id', sql.Int, id)
                 .input('project_id', sql.NVarChar, project_id)
@@ -1804,7 +1806,7 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
                 .query('UPDATE EvaluateworklogTable SET project_id = @project_id, communication_record = @communication_record, contact_time = @contact_time WHERE id = @id');
 
             res.send('工作日志更新成功');
-            //pool.close();
+            pool.close();
         } catch (err) {
             console.error(err);
             res.status(500).send('Server Error');
@@ -1815,13 +1817,13 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
     app.delete('/api/deleteEvaluateworklogTable/:id', async (req, res) => {
         const { id } = req.params;
         try {
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
             await pool.request()
                 .input('id', sql.Int, id)
                 .query('DELETE FROM EvaluateworklogTable WHERE id = @id');
 
             res.status(204).send(); // No Content
-            //pool.close();
+            pool.close();
         } catch (err) {
             console.error(err);
             res.status(500).send('Server Error');
@@ -1834,10 +1836,10 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
     // 获取所有设备
     app.get('/api/getMachineryEquipmentPricesTable', async (req, res) => {
         try {
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
             const result = await pool.request().query('SELECT * FROM MachineryEquipmentPricesTable');
             res.json(result.recordset);
-            //pool.close();
+            pool.close();
         } catch (err) {
             console.error(err);
             res.status(500).send('Server Error');
@@ -1848,7 +1850,7 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
     app.post('/api/addMachineryEquipmentPricesTable', async (req, res) => {
         const { name, model, manufacturer, unit, price } = req.body;
         try {
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
             const result = await pool.request()
                 .input('name', sql.NVarChar, name)
                 .input('model', sql.NVarChar, model)
@@ -1858,7 +1860,7 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
                 .query('INSERT INTO MachineryEquipmentPricesTable (name, model, manufacturer, unit, price) OUTPUT INSERTED.id VALUES (@name, @model, @manufacturer, @unit, @price)');
 
             res.status(201).json({ ID: result.recordset[0].id });
-            //pool.close();
+            pool.close();
         } catch (err) {
             console.error(err);
             res.status(500).send('Server Error');
@@ -1870,7 +1872,7 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
         const { id } = req.params;
         const { name, model, manufacturer, unit, price } = req.body;
         try {
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
             await pool.request()
                 .input('id', sql.Int, id)
                 .input('name', sql.NVarChar, name)
@@ -1881,7 +1883,7 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
                 .query('UPDATE MachineryEquipmentPricesTable SET name = @name, model = @model, manufacturer = @manufacturer, unit = @unit, price = @price WHERE id = @id');
 
             res.sendStatus(204); // No Content
-            //pool.close();
+            pool.close();
         } catch (err) {
             console.error(err);
             res.status(500).send('Server Error');
@@ -1892,13 +1894,13 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
     app.delete('/api/deleteMachineryEquipmentPricesTable/:id', async (req, res) => {
         const { id } = req.params;
         try {
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
             await pool.request()
                 .input('id', sql.Int, id)
                 .query('DELETE FROM MachineryEquipmentPricesTable WHERE id = @id');
 
             res.sendStatus(204); // No Content
-            //pool.close();
+            pool.close();
         } catch (err) {
             console.error(err);
             res.status(500).send('Server Error');
@@ -1912,7 +1914,7 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
     //  
     app.get('/api/getSportsOptions', async (req, res) => {
         try {
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
             const result = await pool.request()
                 .query('SELECT * FROM SportsApp.dbo.SportsOptions');
 
@@ -1930,7 +1932,7 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
     app.get('/api/getSportsCategories', async (req, res) => {
         try {
             const { username } = req.query;
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
             const result = await pool.request()
                 .input('username', sql.VarChar, username)
                 .query(`
@@ -1956,7 +1958,7 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
     app.get('/api/getUserSportsStats', async (req, res) => {
         try {
             const { username, period = 'today' } = req.query;
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
 
             let query = '';
             if (period === 'today') {
@@ -1993,7 +1995,7 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
     app.get('/api/getSportsTypeList', async (req, res) => {
         try {
             const { username } = req.query;
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
 
             const result = await pool.request()
                 .input('username', sql.VarChar, username)
@@ -2015,10 +2017,10 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
     // 获取运动记录
     app.get('/api/getSportsRecordingTable', async (req, res) => {
         try {
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
             const result = await pool.request().query('SELECT * FROM SportsApp.dbo.SportsRecordingTable ORDER BY date DESC, id DESC');
             res.json(result.recordset);
-            // //pool.close();
+            // pool.close();
         } catch (err) {
             console.error(err);
             res.status(500).send('Server Error');
@@ -2036,7 +2038,7 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
         }
 
         try {
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
             const result = await pool.request()
                 .input('sport_type', sql.VarChar, sport_type)
                 .input('unit', sql.VarChar, unit)
@@ -2088,7 +2090,7 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
         }
 
         try {
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
 
             const result = await pool.request()
                 .input('id', sql.Int, id)
@@ -2288,7 +2290,7 @@ app.get('/api/getrealestatepicturecarouselimages', (req, res) => {
 // 获取所有收入记录
 app.get('/api/incomerecords', async (req, res) => {
     try {
-         //let pool = await sql.connect(config);
+        let pool = await sql.connect(config);
         let result = await pool.request().query('SELECT * FROM IncomeRecords');
         res.json(result.recordset);
     } catch (err) {
@@ -2300,7 +2302,7 @@ app.get('/api/incomerecords', async (req, res) => {
 app.post('/api/incomerecords', async (req, res) => {
     const { Person, IncomeDate, Amount, Source, Description } = req.body;
     try {
-         //let pool = await sql.connect(config);
+        let pool = await sql.connect(config);
         await pool.request()
             .input('Person', sql.NVarChar, Person)
             .input('IncomeDate', sql.Date, IncomeDate)
@@ -2319,7 +2321,7 @@ app.put('/api/incomerecords/:id', async (req, res) => {
     const { id } = req.params;
     const { Person, IncomeDate, Amount, Source, Description } = req.body;
     try {
-         //let pool = await sql.connect(config);
+        let pool = await sql.connect(config);
         await pool.request()
             .input('ID', sql.Int, id)
             .input('Person', sql.NVarChar, Person)
@@ -2338,7 +2340,7 @@ app.put('/api/incomerecords/:id', async (req, res) => {
 app.delete('/api/incomerecords/:id', async (req, res) => {
     const { id } = req.params;
     try {
-         //let pool = await sql.connect(config);
+        let pool = await sql.connect(config);
         await pool.request()
             .input('ID', sql.Int, id)
             .query('DELETE FROM IncomeRecords WHERE ID = @ID');
@@ -2374,7 +2376,7 @@ app.get('/api/checkImageExists', (req, res) => {
     // 获取聊天所有用户管理数据
     app.get('/api/user-management', async (req, res) => {
         try {
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
             const result = await pool.request().query('SELECT * FROM ChatApp.dbo.UserManagement');
             res.json(result.recordset);
         } catch (err) {
@@ -2386,7 +2388,7 @@ app.get('/api/checkImageExists', (req, res) => {
     app.post('/api/update-nickname', async (req, res) => {
         try {
             const { username, friend, newNickname } = req.body;
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
             const result = await pool.request()
                 .input('username', sql.NVarChar(50), username)
                 .input('friend', sql.NVarChar(50), friend)
@@ -2415,7 +2417,7 @@ app.get('/api/checkImageExists', (req, res) => {
     app.get('/api/validate-user/:username', async (req, res) => {
         const { username } = req.params;
         try {
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
             const result = await pool.request()
                 .input('username', sql.NVarChar(50), username)
                 .query('SELECT * FROM AccountLogin WHERE username = @username');
@@ -2435,7 +2437,7 @@ app.get('/api/checkImageExists', (req, res) => {
     app.post('/api/user-management', async (req, res) => {
         try {
             const { username, friend, is_friend_request_accepted = false, is_show_request = true } = req.body;
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
             const query = `
             INSERT INTO ChatApp.dbo.UserManagement (username, friend, is_friend_request_accepted, is_show_request)
             VALUES (@username, @friend, @is_friend_request_accepted, @is_show_request)
@@ -2461,7 +2463,7 @@ app.get('/api/checkImageExists', (req, res) => {
     app.put('/api/user-management/:username/:friend/accept', async (req, res) => {
         try {
             const { username, friend } = req.params;
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
             const query = `
             UPDATE ChatApp.dbo.UserManagement
             SET is_friend_request_accepted = 1
@@ -2487,7 +2489,7 @@ app.get('/api/checkImageExists', (req, res) => {
     app.delete('/api/user-management/:username/:friend', async (req, res) => {
         try {
             const { username, friend } = req.params;
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
             const query = `
             DELETE FROM ChatApp.dbo.UserManagement
             WHERE (username = @username AND friend = @friend)
@@ -2511,7 +2513,7 @@ app.get('/api/checkImageExists', (req, res) => {
     app.delete('/api/user-management/:username/:friend', async (req, res) => {
         try {
             const { username, friend } = req.params;
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
             const query = `
             DELETE FROM ChatApp.dbo.UserManagement
             WHERE username = @username AND friend = @friend
@@ -2602,7 +2604,7 @@ app.get('/api/checkImageExists', (req, res) => {
                 // 将文件从临时目录移动到最终目录
                 fs.renameSync(req.file.path, finalPath);
 
-                //const //pool = await sql.connect(config);
+                //const pool = await sql.connect(config);
 
                 // 插入消息记录到数据库
                 const result = await pool.request()
@@ -2677,7 +2679,7 @@ app.get('/api/checkImageExists', (req, res) => {
 
         try {
 
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
 
 
             const query = `
@@ -2736,7 +2738,7 @@ app.get('/api/checkImageExists', (req, res) => {
         const roomId = req.params.roomId;
 
         try {
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
 
             const query = `
             SELECT room_id, sender_name, receiver_name 
@@ -2776,7 +2778,7 @@ app.get('/api/checkImageExists', (req, res) => {
     // 获取消息
     app.get('/api/messages', async (req, res) => {
         try {
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
             const result = await pool.request().query('SELECT * FROM ChatApp.dbo.ChatMessages');
             res.json(result.recordset);
         } catch (err) {
@@ -2792,7 +2794,7 @@ app.get('/api/checkImageExists', (req, res) => {
                 return res.status(400).json({ error: '用户名参数缺失' });
             }
 
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
             const result = await pool.request()
                 .input('username', sql.VarChar(100), username)
                 .query(`
@@ -2817,7 +2819,7 @@ app.get('/api/checkImageExists', (req, res) => {
         }
 
         try {
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
             const query = `
             SELECT * 
             FROM ChatApp.dbo.ChatMessages 
@@ -2844,7 +2846,7 @@ app.get('/api/checkImageExists', (req, res) => {
         }
 
         try {
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
             const offset = (page - 1) * pageSize;
 
             const query = `
@@ -2892,7 +2894,7 @@ app.post('/api/messages', async (req, res) => {
     } = req.body;
     
     try {
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
         const now = new Date();
 
         const result = await pool.request()
@@ -2939,7 +2941,7 @@ app.post('/api/messages', async (req, res) => {
     app.put('/api/messages/read', async (req, res) => {
         const { messageIds } = req.body;
         try {
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
             for (const id of messageIds) {
                 await pool.request()
                     .input('message_id', sql.BigInt, id)
@@ -2959,7 +2961,7 @@ app.post('/api/messages', async (req, res) => {
     app.put('/api/messages/markAllAsRead', async (req, res) => {
         const { sender_name, receiver_name } = req.body;
         try {
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
 
             // 更新所有符合条件的消息为已读
             const result = await pool.request()
@@ -2989,7 +2991,7 @@ app.post('/api/messages', async (req, res) => {
     app.delete('/api/messages', async (req, res) => {
         const { messageIds } = req.body;
         try {
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
 
             // 先查询要删除的消息，获取图片文件名
             const idList = messageIds.map(id => `'${id}'`).join(',');
@@ -3021,7 +3023,7 @@ app.post('/api/messages', async (req, res) => {
     app.delete('/api/messages/:messageId', async (req, res) => {
         const { messageId } = req.params;
         try {
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
 
             // 先查询要删除的消息
             const queryResult = await pool.request()
@@ -3081,7 +3083,7 @@ app.post('/api/messages', async (req, res) => {
     app.delete('/api/messages/user/:username/images', async (req, res) => {
         const { username } = req.params;
         try {
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
 
             // 查询用户的所有图片消息
             const queryResult = await pool.request()
@@ -3117,7 +3119,7 @@ app.post('/api/messages', async (req, res) => {
     app.get('/api/messages/search', async (req, res) => {
         const { keyword } = req.query;
         try {
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
             const result = await pool.request()
                 .input('keyword', sql.NVarChar, `%${keyword}%`)
                 .query('SELECT * FROM ChatApp.dbo.ChatMessages WHERE message_text LIKE @keyword');
@@ -3153,7 +3155,7 @@ app.post('/api/messages', async (req, res) => {
         }
 
         try {
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
             // 检查好友IP是否存在
             const checkFriendQuery = `SELECT * FROM ChatApp.dbo.UserManagement WHERE username = '${friend_ip}'`;
             const friendResult = await pool.request().query(checkFriendQuery);
@@ -3351,7 +3353,7 @@ app.get('/api/getthemesettings', async (req, res) => {
     const { username } = req.query;
     try {
         // 连接到 SQL Server
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
         const query = `
             SELECT 
                 their_font_color,
@@ -3375,7 +3377,7 @@ app.get('/api/getthemesettings', async (req, res) => {
             res.json({ success: false, message: '未找到主题设置。' });
         }
         // 关闭连接
-         //await pool.close();
+        await pool.close();
     } catch (error) {
         console.error('获取主题设置时出错:', error);
         res.status(500).json({ success: false, message: '获取主题设置失败。' });
@@ -3396,7 +3398,7 @@ app.post('/api/savethemesettings', upload.none(), async (req, res) => {
         navbarBackgroundColor  // 新增参数
     } = req.body;
     try {
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
         const query = `
             UPDATE AccountLogin
             SET 
@@ -3422,7 +3424,7 @@ app.post('/api/savethemesettings', upload.none(), async (req, res) => {
         request.input('navbarBackgroundColor', sql.NVarChar, navbarBackgroundColor);  // 新增输入参数
         await request.query(query);
         res.json({ success: true, message: '主题设置保存成功！' });
-         //await pool.close();
+        await pool.close();
     } catch (error) {
         console.error('保存主题设置时出错:', error);
         res.status(500).json({ success: false, message: '保存失败，请重试。' });
@@ -4008,7 +4010,7 @@ app.post('/api/leave-room', async (req, res) => {
 // 转让房主 API 👇
 // 定义需要的函数
 async function getRoomInfo(room_name) {
-    //const //pool = await sql.connect(config);
+    //const pool = await sql.connect(config);
     const result = await pool.request()
         .input('room_name', sql.NVarChar, room_name)
         .query(`
@@ -4031,7 +4033,7 @@ async function getRoomInfo(room_name) {
 }
 
 async function getRoomUsers(room_name) {
-    //const //pool = await sql.connect(config);
+    //const pool = await sql.connect(config);
     const result = await pool.request()
         .input('room_name', sql.NVarChar, room_name)
         .query(`
@@ -4046,7 +4048,7 @@ app.post('/api/transfer-host', async (req, res) => {
     const { room_name, current_host, new_host } = req.body;
 
     try {
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
 
         // 1. 验证当前请求者是房主
         const checkHost = await pool.request()
@@ -4119,7 +4121,7 @@ app.post('/api/transfer-host', async (req, res) => {
 // 获取房间消息
 app.get('/api/room-messages/:room_name', async (req, res) => {
     try {
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
         const result = await pool.request()
             .input('room_name', sql.NVarChar, req.params.room_name)
             .query(`
@@ -4147,7 +4149,7 @@ app.post('/api/send-message', async (req, res) => {
     }
 
     try {
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
         await pool.request()
             .input('room_name', sql.NVarChar, room_name)
             .input('user_name', sql.NVarChar, user_name)
@@ -4699,7 +4701,7 @@ app.get('/backend/api/play-history/:user_name', async (req, res) => {
 // 新增随机获取穿搭数据的API 今日穿搭的时候随机找一条推荐
 app.get('/api/dressing-guidelines/random', async (req, res) => {
     try {
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
 
         // 1. 首先获取所有有穿搭记录的日期
         const datesResult = await pool.request()
@@ -4768,7 +4770,7 @@ app.get('/api/dressing-guidelines/random', async (req, res) => {
 app.get('/api/dressing-guidelines/today', async (req, res) => {
     try {
         const today = new Date().toISOString().split('T')[0];
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
 
         // 获取今日天气数据
         const weatherResult = await pool.request()
@@ -4821,7 +4823,7 @@ app.get('/api/dressing-guidelines/today', async (req, res) => {
 app.get('/api/dressing-guidelines/search', async (req, res) => {
     try {
         const { mode, date, weather, minTemp, maxTemp, keyword } = req.query;
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
 
         let query = '';
         let request = pool.request();
@@ -4922,7 +4924,7 @@ app.get('/api/dressing-guidelines/search', async (req, res) => {
 // 在API中添加新端点
 app.get('/api/dressing-guidelines/dates', async (req, res) => {
     try {
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
         const result = await pool.request()
             .query(`
                 SELECT DISTINCT CONVERT(varchar(10), date, 120) as date 
@@ -4946,7 +4948,7 @@ app.get('/api/dressing-guidelines/dates', async (req, res) => {
 app.get('/api/dressing-comments/:weatherdata_id', async (req, res) => {
     try {
         const { weatherdata_id } = req.params;
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
 
         const result = await pool.request()
             .input('weatherdata_id', sql.Int, weatherdata_id)
@@ -4980,7 +4982,7 @@ app.post('/api/dressing-comments', async (req, res) => {
             return res.status(400).json({ error: '缺少必要参数' });
         }
 
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
 
         const result = await pool.request()
             .input('weatherdata_id', sql.Int, weatherdata_id)
@@ -5009,7 +5011,7 @@ app.post('/api/dressing-comments', async (req, res) => {
 });
 // 辅助函数：获取穿搭信息
 async function getOutfitInfo(dressingGuidelineId) {
-    //const //pool = await sql.connect(config);
+    //const pool = await sql.connect(config);
     const result = await pool.request()
         .input('id', sql.Int, dressingGuidelineId)
         .query(`
@@ -5131,7 +5133,7 @@ app.post('/api/dressing-guidelines/upload',
             }
 
             // 连接到数据库
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
 
             // 插入或更新天气数据
             const weatherRequest = new sql.Request(pool);
@@ -5214,7 +5216,7 @@ app.post('/api/dressing-guidelines/upload',
 // 获取所有 Bug
 app.get('/api/bugs', async (req, res) => {
     try {
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
         const result = await pool.request()
             .query(`
                 SELECT 
@@ -5247,7 +5249,7 @@ app.post('/api/bugs', async (req, res) => {
             severity
         } = req.body;
 
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
         const result = await pool.request()
             .input('bug_description', sql.NVarChar, bug_description)
             .input('reported_by', sql.NVarChar, reported_by)
@@ -5305,7 +5307,7 @@ app.put('/api/bugs/:id', async (req, res) => {
             comments
         } = req.body;
 
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
         await pool.request()
             .input('id', sql.Int, id)
             .input('status', sql.NVarChar, status)
@@ -5358,7 +5360,7 @@ app.delete('/api/bugs/:id', async (req, res) => {
     try {
         const { id } = req.params;
 
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
         await pool.request()
             .input('id', sql.Int, id)
             .query('DELETE FROM ChatApp.dbo.BugTrackingData WHERE id = @id');
@@ -5381,7 +5383,7 @@ app.delete('/api/bugs/:id', async (req, res) => {
 // 获取所有新的记账记录的API
 app.get('/api/lifebookkeepinggetRecords', async (req, res) => {
     try {
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
         const result = await pool.request().query('SELECT * FROM ChatApp.dbo.LifeBookkeepingData');
         res.status(200).json(result.recordset);
     } catch (error) {
@@ -5437,7 +5439,7 @@ app.post('/api/lifebookkeepingaddRecord', async (req, res) => {
     let pool;
     try {
         // 连接数据库
-        //pool = await sql.connect(config);
+        pool = await sql.connect(config);
         console.log('数据库连接成功');
 
         // 构建SQL查询
@@ -5522,7 +5524,7 @@ app.post('/api/lifebookkeepingaddRecord', async (req, res) => {
         // 确保释放连接
         if (pool) {
             try {
-                 //await pool.close();
+                await pool.close();
                 console.log('数据库连接已释放');
             } catch (closeError) {
                 console.error('关闭连接时出错:', closeError);
@@ -5546,7 +5548,7 @@ app.put('/api/lifebookkeepingupdateRecord/:id', async (req, res) => {
             updated_by
         } = req.body;
 
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
         await pool.request()
             .input('id', sql.Int, id)
             .input('transaction_date', sql.Date, transaction_date)
@@ -5588,7 +5590,7 @@ app.put('/api/lifebookkeepingupdateRecord/:id', async (req, res) => {
 app.delete('/api/lifebookkeepingdeleteRecord/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
         await pool.request()
             .input('id', sql.Int, id)
             .query('DELETE FROM ChatApp.dbo.LifeBookkeepingData WHERE transaction_id = @id');
@@ -5607,7 +5609,7 @@ app.delete('/api/lifebookkeepingdeleteRecord/:id', async (req, res) => {
 // 获取分类图标API
 app.get('/getCategoryIcons', async (req, res) => {
     try {
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
         const result = await pool.request()
             .query('SELECT icon_name, unicode, icon_type FROM ChatApp.dbo.ChatAppIconFot');
 
@@ -5822,7 +5824,7 @@ app.delete('/projectapi/projects/:id', async (req, res) => {
 // 获取特定项目的所有报销信息
 app.get('/projectapi/projects/:projectId/reimbursements', async (req, res) => {
     try {
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
         const result = await pool.request()
             .input('projectId', sql.VarChar(50), req.params.projectId)
             .query(`
@@ -5841,7 +5843,7 @@ app.post('/projectapi/projects/:projectId/reimbursements', async (req, res) => {
     const { project_id, project_name, Location, Amount, BusinessTripDate, ReimbursementDate, Remarks, ReimbursedBy } = req.body;
 
     try {
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
         const result = await pool.request()
             .input('project_id', sql.VarChar(50), project_id)
             .input('project_name', sql.VarChar(255), project_name)
@@ -5873,7 +5875,7 @@ app.put('/projectapi/projects/reimbursements/:id', async (req, res) => {
     const { Location, Amount, BusinessTripDate, ReimbursementDate, Remarks, ReimbursedBy, Whetherover } = req.body;
 
     try {
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
         await pool.request()
             .input('id', sql.Int, req.params.id)
             .input('Location', sql.NVarChar(100), Location)
@@ -5905,7 +5907,7 @@ app.put('/projectapi/projects/reimbursements/:id', async (req, res) => {
 // 删除报销信息
 app.delete('/projectapi/projects/reimbursements/:id', async (req, res) => {
     try {
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
         await pool.request()
             .input('id', sql.Int, req.params.id)
             .query('DELETE FROM ProjectManagementDB.dbo.ProjectsReimbursement WHERE id = @id');
@@ -5927,7 +5929,7 @@ app.get('/projectcommission/personnelinformation/info', async (req, res) => {
     let pool;
     try {
         // 获取连接池
-        //pool = await sql.connect(config);
+        pool = await sql.connect(config);
 
         const query = `
             SELECT *
@@ -5948,7 +5950,7 @@ app.get('/projectcommission/personnelinformation/info', async (req, res) => {
         // 确保连接被关闭
         if (pool) {
             try {
-                 //await pool.close();
+                await pool.close();
             } catch (err) {
                 console.error('关闭连接池失败:', err);
             }
@@ -5963,7 +5965,7 @@ app.get('/hqprojectcommission/projects/:project_id/info', async (req, res) => {
         const { project_id } = req.params;
 
         // 添加连接池获取
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
 
         const query = `
             SELECT *
@@ -5988,7 +5990,7 @@ app.get('/hqprojectcommission/projects/:project_id/info', async (req, res) => {
 // 获取项目的提成列表
 app.get('/projectapi/projects/:projectId/commissions', async (req, res) => {
     try {
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
         const result = await pool.request()
             .input('projectId', sql.VarChar(50), req.params.projectId)
             .query(`
@@ -6034,7 +6036,7 @@ app.post('/projectapi/projects/:projectId/commissions', async (req, res) => {
     } = req.body;
 
     try {
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
         const result = await pool.request()
             .input('project_id', sql.VarChar(50), project_id)
             .input('project_name', sql.VarChar(255), project_name)
@@ -6118,7 +6120,7 @@ app.put('/projectapi/projects/commissions/:id', async (req, res) => {
     } = req.body;
 
     try {
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
         await pool.request()
             .input('id', sql.Int, req.params.id)
             .input('ReportNumber', sql.VarChar(50), ReportNumber)
@@ -6187,7 +6189,7 @@ app.put('/projectapi/projects/commissions/:id', async (req, res) => {
 app.put('/projectapi/projects/commissions/:id/status', async (req, res) => {
     try {
         const { Whetherticheng } = req.body;
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
 
         await pool.request()
             .input('id', sql.Int, req.params.id)
@@ -6207,7 +6209,7 @@ app.put('/projectapi/projects/commissions/:id/status', async (req, res) => {
 // 删除提成信息
 app.delete('/projectapi/projects/commissions/:id', async (req, res) => {
     try {
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
         await pool.request()
             .input('id', sql.Int, req.params.id)
             .query('DELETE FROM ProjectManagementDB.dbo.ProjectsAchievements WHERE ID = @id');
@@ -6230,7 +6232,7 @@ app.delete('/projectapi/projects/commissions/:id', async (req, res) => {
 // 获取指定项目的工作日志
 app.get('/projectapi/projects/:project_id/logs', async (req, res) => {
     try {
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
         const result = await pool.request()
             .input('project_id', sql.VarChar(50), req.params.project_id)
             .query('SELECT * FROM ProjectManagementDB.dbo.ProjectsWorklogTable WHERE project_id = @project_id');
@@ -6244,7 +6246,7 @@ app.get('/projectapi/projects/:project_id/logs', async (req, res) => {
 // 添加工作日志
 app.post('/projectapi/projects/:project_id/logs', async (req, res) => {
     try {
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
         const { project_name, project_leader, communication_record, contact_time } = req.body;
         const result = await pool.request()
             .input('project_id', sql.VarChar(50), req.params.project_id)
@@ -6264,7 +6266,7 @@ app.post('/projectapi/projects/:project_id/logs', async (req, res) => {
 // 更新工作日志
 app.put('/projectapi/projects/logs/:id', async (req, res) => {
     try {
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
         const log_id = req.params.id;
         const { project_name, project_leader, communication_record, contact_time } = req.body;
         const result = await pool.request()
@@ -6285,7 +6287,7 @@ app.put('/projectapi/projects/logs/:id', async (req, res) => {
 // 删除工作日志
 app.delete('/projectapi/projects/logs/:id', async (req, res) => {
     try {
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
         await pool.request()
             .input('id', sql.Int, req.params.id)
             .query('DELETE FROM ProjectManagementDB.dbo.ProjectsWorklogTable WHERE id = @id');
@@ -6306,7 +6308,7 @@ app.get('/projectapi/countreimbursements', async (req, res) => {
     try {
         const { projectId, projectName, reimbursedBy, status, startDate, endDate } = req.query;
 
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
         let query = `
             SELECT * FROM ProjectManagementDB.dbo.ProjectsReimbursement 
             WHERE 1=1
@@ -6337,7 +6339,7 @@ app.post('/projectapi/countreimbursements', async (req, res) => {
     const { project_id, project_name, Location, Amount, BusinessTripDate, ReimbursementDate, Remarks, ReimbursedBy, Whetherover } = req.body;
 
     try {
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
         const result = await pool.request()
             .input('project_id', sql.VarChar(50), project_id)
             .input('project_name', sql.VarChar(255), project_name)
@@ -6369,7 +6371,7 @@ app.put('/projectapi/countreimbursements/:id', async (req, res) => {
     const { project_id, project_name, Location, Amount, BusinessTripDate, ReimbursementDate, Remarks, ReimbursedBy, Whetherover } = req.body;
 
     try {
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
         await pool.request()
             .input('id', sql.Int, req.params.id)
             .input('project_id', sql.VarChar(50), project_id)
@@ -6407,7 +6409,7 @@ app.put('/projectapi/countreimbursements/:id/status', async (req, res) => {
     const { Whetherover } = req.body;
 
     try {
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
         await pool.request()
             .input('id', sql.Int, req.params.id)
             .input('Whetherover', sql.Bit, Whetherover)
@@ -6426,7 +6428,7 @@ app.put('/projectapi/countreimbursements/:id/status', async (req, res) => {
 // 删除报销信息
 app.delete('/projectapi/countreimbursements/:id', async (req, res) => {
     try {
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
         await pool.request()
             .input('id', sql.Int, req.params.id)
             .query('DELETE FROM ProjectManagementDB.dbo.ProjectsReimbursement WHERE id = @id');
@@ -6456,7 +6458,7 @@ app.get('/projectapi/searchcountprojectcommissions', async (req, res) => {
         // console.log('startDate:', startDate);
         // console.log('endDate:', endDate);
 
-        //pool = await sql.connect(config);
+        pool = await sql.connect(config);
 
         let query = `
             SELECT * FROM ProjectManagementDB.dbo.ProjectsAchievements 
@@ -6508,7 +6510,7 @@ app.get('/projectapi/searchcountprojectcommissions', async (req, res) => {
         // 确保连接被释放
         if (pool) {
             try {
-                 //await pool.close();
+                await pool.close();
             } catch (closeErr) {
                 console.error('关闭连接时出错:', closeErr);
             }
@@ -6520,7 +6522,7 @@ app.get('/projectapi/searchcountprojectcommissions', async (req, res) => {
 app.get('/projectapi/countprojectcommissions/:id', async (req, res) => {
     let pool; // 声明在 try 外部，以便 finally 可以访问
     try {
-        //pool = await sql.connect(config); // 建立连接
+        pool = await sql.connect(config); // 建立连接
         const result = await pool.request()
             .input('id', sql.Int, req.params.id)
             .query('SELECT * FROM ProjectManagementDB.dbo.ProjectsAchievements WHERE ID = @id');
@@ -6536,7 +6538,7 @@ app.get('/projectapi/countprojectcommissions/:id', async (req, res) => {
         // 无论成功或失败，都确保关闭连接
         if (pool) {
             try {
-                 //await pool.close(); // 显式关闭连接
+                await pool.close(); // 显式关闭连接
             } catch (closeErr) {
                 console.error('关闭数据库连接时出错:', closeErr);
             }
@@ -6556,7 +6558,7 @@ app.post('/projectapi/countprojectcommissions', async (req, res) => {
     } = req.body;
 
     try {
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
         const result = await pool.request()
             .input('project_id', sql.VarChar(50), project_id)
             .input('project_name', sql.VarChar(255), project_name)
@@ -6627,7 +6629,7 @@ app.put('/projectapi/countprojectcommissions/:id', async (req, res) => {
 
     let pool;
     try {
-        //pool = await sql.connect(config);
+        pool = await sql.connect(config);
         await pool.request()
             .input('id', sql.Int, req.params.id)
             .input('project_id', sql.VarChar(50), project_id)
@@ -6701,7 +6703,7 @@ app.put('/projectapi/countprojectcommissions/:id', async (req, res) => {
     } finally {
         if (pool) {
             try {
-                 //await pool.close();
+                await pool.close();
             } catch (closeErr) {
                 console.error('关闭数据库连接时出错:', closeErr);
             }
@@ -6715,7 +6717,7 @@ app.put('/projectapi/countprojectcommissions/:id/status', async (req, res) => {
     let pool;
 
     try {
-        //pool = await sql.connect(config);
+        pool = await sql.connect(config);
         await pool.request()
             .input('id', sql.Int, req.params.id)
             .input('Whetherticheng', sql.Bit, Whetherticheng)
@@ -6733,7 +6735,7 @@ app.put('/projectapi/countprojectcommissions/:id/status', async (req, res) => {
         // 确保连接池在最后被关闭
         if (pool) {
             try {
-                 //await pool.close();
+                await pool.close();
             } catch (closeErr) {
                 console.error('关闭连接池时出错:', closeErr.message);
             }
@@ -6782,7 +6784,7 @@ app.get('/api/projects/chartachievements', async (req, res) => {
             return res.status(400).json({ error: '需要提供负责人参数' });
         }
 
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
         const result = await pool.request()
             .input('leader', sql.VarChar, leader)
             .query(`
@@ -6813,7 +6815,7 @@ app.get('/api/projects/dailyachievements', async (req, res) => {
             return res.status(400).json({ error: '需要提供月份和负责人参数' });
         }
 
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
         const result = await pool.request()
             .input('month', sql.VarChar, month)
             .input('leader', sql.VarChar, leader)
@@ -6841,7 +6843,7 @@ app.get('/api/projects/dailyachievements', async (req, res) => {
 // 报销管理
 // app.get('/projectapi/homereimbursements/stats', async (req, res) => {
 //     try {
-//         //const //pool = await sql.connect(config);
+//         //const pool = await sql.connect(config);
 //         const result = await pool.request()
 //             .query(`
 //                 SELECT 
@@ -6877,7 +6879,7 @@ app.get('/projectapi/homereimbursements/stats', async (req, res) => {
 //  
 // app.get('/projectapi/homeachievements/stats', async (req, res) => {
 //     try {
-//         //const //pool = await sql.connect(config);
+//         //const pool = await sql.connect(config);
 //         const result = await pool.request()
 //             .query(`
 //                 SELECT 
@@ -7310,7 +7312,7 @@ app.delete('/api/auntflo/records', async (req, res) => {
 //获取
 app.get('/api/getTemplateManagement', async (req, res) => {
     try {
-        //let first//pool = await sql.connect(config);
+        let firstpool = await sql.connect(config);
         let templateResult = await firstpool.request().query('SELECT * FROM ChatApp.dbo.TemplateManagement');
 
         // Transform the data to match frontend structure
@@ -7323,7 +7325,7 @@ app.get('/api/getTemplateManagement', async (req, res) => {
         }));
 
         res.json({ Template: transformedData });
-        //first//pool.close();
+        firstpool.close();
     } catch (err) {
         console.error(err);
         res.status(500).send('Server Error');
@@ -7490,7 +7492,7 @@ app.get('/api/getEvaluationFilePreview', async (req, res) => {
 
 
 
-         //let pool = await sql.connect(config);
+        let pool = await sql.connect(config);
         console.log('数据库连接成功');
         let result = await pool.request()
             .query('SELECT CategoryName, FileName, Remarks FROM ChatApp.dbo.EvaluationFilePreview ORDER BY CategoryName, FileName');
@@ -7535,7 +7537,7 @@ app.get('/api/getEvaluationFilePreview', async (req, res) => {
 // 应用关闭时关闭连接池
 process.on('SIGINT', async () => {
     try {
-         //await pool.close();
+        await pool.close();
         console.log('Connection pool closed');
         process.exit(0);
     } catch (err) {
@@ -7552,7 +7554,7 @@ process.on('SIGINT', async () => {
 //  获取网页报告编写的配套ai对应的api 
 app.get('/api/getApiDatabas', async (req, res) => {
     try {
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
         const result = await pool.request().query('SELECT * FROM WebWordReports.dbo.ApiDatabas');
         res.status(200).json(result.recordset);
     } catch (error) {
@@ -7565,7 +7567,7 @@ app.get('/api/getApiDatabas', async (req, res) => {
 // 4.1 获取网页报告编写的数据库的选项
 app.get('/api/getWordReportOptions', async (req, res) => {
     try {
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
         const result = await pool.request().query('SELECT * FROM WebWordReports.dbo.WordReportOptions');
         res.status(200).json(result.recordset);
     } catch (error) {
@@ -8529,7 +8531,7 @@ const uploadUploadHousePricePicture = multer({
     //             return res.status(400).json({ error: '报告ID必须提供' });
     //         }
 
-    //         //const //pool = await sql.connect(config);
+    //         //const pool = await sql.connect(config);
     //         const request = new sql.Request(pool);
 
     //         const query = `
@@ -8562,7 +8564,7 @@ const uploadUploadHousePricePicture = multer({
     //             return res.status(400).json({ error: 'ID必须提供' });
     //         }
 
-    //         //const //pool = await sql.connect(config);
+    //         //const pool = await sql.connect(config);
     //         const request = new sql.Request(pool);
 
     //         const query = `
@@ -8613,7 +8615,7 @@ app.post('/api/UploadHousePricePicture',
             }
 
             // 连接到数据库
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
 
             // 获取已存在的图片文件名
             const checkRequest = new sql.Request(pool);
@@ -8712,7 +8714,7 @@ app.get('/api/GetHousePricePictures', async (req, res) => {
         }
 
         // 连接到数据库
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
         const request = new sql.Request(pool);
 
         // 查询该报告的所有图片
@@ -8752,7 +8754,7 @@ app.get('/api/GetHousePricePicturesWordReportInfo', async (req, res) => {
             });
         }
 
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
         const request = new sql.Request(pool);
 
         // 查询报告详细信息
@@ -8827,7 +8829,7 @@ app.get('/api/theme/:username', async (req, res) => {
     const { username } = req.params;
 
     try {
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
         const result = await pool.request()
             .input('username', sql.NVarChar(100), username)
             .query('SELECT * FROM WebWordReports.dbo.SystemThemeDB WHERE username = @username');
@@ -8887,7 +8889,7 @@ app.post('/api/theme', async (req, res) => {
     }
 
     try {
-        //const //pool = await sql.connect(config);
+        //const pool = await sql.connect(config);
 
         // 首先检查用户是否已有主题设置
         const checkResult = await pool.request()
@@ -11034,14 +11036,14 @@ app.post('/api/auth/register', async (req, res) => {
 app.post('/api/ChatRegister', async (req, res) => {
     const { username, password } = req.body;
     try {
-        //let first//pool = await sql.connect(config);
+        let firstpool = await sql.connect(config);
         // 再次在后端检查账号是否已存在
         const checkResult = await firstpool.request()
             .input('username', sql.NVarChar(50), username)
             .query('SELECT COUNT(*) as count FROM AccountLogin WHERE username = @username');
         if (checkResult.recordset[0].count > 0) {
             res.status(400).json({ message: '该账号已存在，请选择其他用户名' });
-            //first//pool.close();
+            firstpool.close();
             return;
         }
 
@@ -11050,7 +11052,7 @@ app.post('/api/ChatRegister', async (req, res) => {
             .input('password', sql.NVarChar(255), password)
             .query('INSERT INTO AccountLogin (username, password) VALUES (@username, @password)');
         res.status(201).json({ message: '注册成功' });
-        //first//pool.close();
+        firstpool.close();
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: '注册失败' });
@@ -11540,7 +11542,7 @@ app.get('/api/react-demo/background-image/:email/:themeId', (req, res) => {
                 });
             }
 
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
 
             let query = `
             SELECT TOP ${pageSize}
@@ -11621,7 +11623,7 @@ app.get('/api/react-demo/background-image/:email/:themeId', (req, res) => {
                 });
             }
 
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
 
             // 创建临时表来存储要查询的小区名
             let query = `
@@ -11722,7 +11724,7 @@ app.get('/api/react-demo/background-image/:email/:themeId', (req, res) => {
                 });
             }
 
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
 
             let query = '';
             const request = pool.request();
@@ -11873,7 +11875,7 @@ app.get('/api/react-demo/background-image/:email/:themeId', (req, res) => {
                 });
             }
 
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
 
             const query = `
             SELECT 
@@ -11924,7 +11926,7 @@ app.get('/api/react-demo/background-image/:email/:themeId', (req, res) => {
                 });
             }
 
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
 
             let query = `
             SELECT TOP ${limit}
@@ -12041,7 +12043,7 @@ app.get('/api/react-demo/background-image/:email/:themeId', (req, res) => {
 
         let pool;
         try {
-            //pool = await sql.connect(config);
+            pool = await sql.connect(config);
 
             // 插入新记录
             const insertResult = await pool.request()
@@ -12071,7 +12073,7 @@ app.get('/api/react-demo/background-image/:email/:themeId', (req, res) => {
             res.status(500).json({ error: '添加建筑造价数据失败' });
         } finally {
             if (pool) {
-                //pool.close();
+                pool.close();
             }
         }
     });
@@ -12093,7 +12095,7 @@ app.get('/api/react-demo/background-image/:email/:themeId', (req, res) => {
 
         let pool;
         try {
-            //pool = await sql.connect(config);
+            pool = await sql.connect(config);
 
             // 构建查询条件
             let whereClause = 'WHERE 1=1';
@@ -12196,7 +12198,7 @@ app.get('/api/react-demo/background-image/:email/:themeId', (req, res) => {
             });
         } finally {
             if (pool) {
-                //pool.close();
+                pool.close();
             }
         }
     });
@@ -12207,7 +12209,7 @@ app.get('/api/react-demo/background-image/:email/:themeId', (req, res) => {
 
         let pool;
         try {
-            //pool = await sql.connect(config);
+            pool = await sql.connect(config);
 
             const result = await pool.request()
                 .input('id', sql.Int, id)
@@ -12251,7 +12253,7 @@ app.get('/api/react-demo/background-image/:email/:themeId', (req, res) => {
             });
         } finally {
             if (pool) {
-                //pool.close();
+                pool.close();
             }
         }
     });
@@ -12267,7 +12269,7 @@ app.get('/api/react-demo/background-image/:email/:themeId', (req, res) => {
 
         let pool;
         try {
-            //pool = await sql.connect(config);
+            pool = await sql.connect(config);
 
             const result = await pool.request()
                 .input('id', sql.Int, id)
@@ -12303,7 +12305,7 @@ app.get('/api/react-demo/background-image/:email/:themeId', (req, res) => {
             });
         } finally {
             if (pool) {
-                //pool.close();
+                pool.close();
             }
         }
     });
@@ -12314,7 +12316,7 @@ app.get('/api/react-demo/background-image/:email/:themeId', (req, res) => {
 
         let pool;
         try {
-            //pool = await sql.connect(config);
+            pool = await sql.connect(config);
 
             const result = await pool.request()
                 .input('id', sql.Int, id)
@@ -12338,7 +12340,7 @@ app.get('/api/react-demo/background-image/:email/:themeId', (req, res) => {
             });
         } finally {
             if (pool) {
-                //pool.close();
+                pool.close();
             }
         }
     });
@@ -12364,7 +12366,7 @@ app.get('/api/react-demo/background-image/:email/:themeId', (req, res) => {
             }
 
             // 连接到数据库
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
             const request = new sql.Request(pool);
 
             // 查询该建筑物的所有图片
@@ -12460,7 +12462,7 @@ app.get('/api/react-demo/background-image/:email/:themeId', (req, res) => {
                 }
 
                 // 连接到数据库
-                //const //pool = await sql.connect(config);
+                //const pool = await sql.connect(config);
 
                 // 获取已存在的图片文件名
                 const checkRequest = new sql.Request(pool);
@@ -12559,7 +12561,7 @@ app.get('/api/react-demo/background-image/:email/:themeId', (req, res) => {
             }
 
             // 连接到数据库
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
             const request = new sql.Request(pool);
 
             const query = `
@@ -12620,7 +12622,7 @@ app.get('/api/react-demo/background-image/:email/:themeId', (req, res) => {
                 return res.status(400).json({ error: '请提供用户名或邮箱' });
             }
 
-             //let pool = await sql.connect(config);
+            let pool = await sql.connect(config);
             let query;
             let request = pool.request();
 
@@ -12647,7 +12649,7 @@ app.get('/api/react-demo/background-image/:email/:themeId', (req, res) => {
                 });
             }
 
-            //pool.close();
+            pool.close();
         } catch (err) {
             console.error('获取用户公司信息错误:', err);
             res.status(500).json({ error: '获取公司信息失败' });
@@ -12668,7 +12670,7 @@ app.get('/api/react-demo/background-image/:email/:themeId', (req, res) => {
 
             console.log('获取PDF文件列表，公司:', company);
 
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
             const request = pool.request();
 
             // 根据公司名称查询对应的文件
@@ -12703,7 +12705,7 @@ ORDER BY
 
             // 返回查询结果
             res.json(result.recordset);
-            //pool.close();
+            pool.close();
         } catch (err) {
             console.error('Database query failed:', err);
             res.status(500).json({ error: 'Database query failed' });
@@ -15595,7 +15597,7 @@ ORDER BY
             }
 
             try {
-                //const //pool = await sql.connect(config);
+                //const pool = await sql.connect(config);
 
                 const request = pool.request();
                 request.input('id', sql.Int, parseInt(id));
@@ -15634,7 +15636,7 @@ ORDER BY
             let pool;
             try {
                 // 1. 连接数据库
-                //pool = await sql.connect(config);
+                pool = await sql.connect(config);
 
                 // 2. 查询新闻详情
                 const request = pool.request();
@@ -15692,7 +15694,7 @@ ORDER BY
                     // 注意：如果你在全局使用了单例连接池，请不要在这里 close，否则后续请求会失败
                     // 只有当你每次都是 await sql.connect(config) 时才需要 close
                     // 鉴于你的代码写法是每次 connect，建议保留关闭，或者改为全局单例池
-                     //await pool.close();
+                    await pool.close();
                 }
             }
         });
@@ -15717,7 +15719,7 @@ ORDER BY
                 });
             }
 
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
 
             // 使用传入的日期或当天日期
             const targetDate = sportdate || new Date().toISOString().split('T')[0];
@@ -15771,7 +15773,7 @@ ORDER BY
             }
 
             // 连接数据库
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
 
             // 插入记录
             const result = await pool.request()
@@ -15817,7 +15819,7 @@ ORDER BY
         try {
             const { username } = req.params;
 
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
             const result = await pool.request()
                 .input('username', sql.NVarChar, username)
                 .query(`
@@ -15854,7 +15856,7 @@ ORDER BY
             const { id } = req.params;
             const { sportname, count, durationseconds, groupnumber, sportdate, remarks } = req.body;
 
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
             await pool.request()
                 .input('id', sql.Int, id)
                 .input('sportname', sql.NVarChar, sportname)
@@ -15899,7 +15901,7 @@ ORDER BY
         try {
             const { id } = req.params;
 
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
             await pool.request()
                 .input('id', sql.Int, id)
                 .query(`
@@ -15941,7 +15943,7 @@ ORDER BY
         }
 
         try {
-            //const //pool = await sql.connect(config);
+            //const pool = await sql.connect(config);
 
             // 检查是否已存在
             const checkQuery = `
