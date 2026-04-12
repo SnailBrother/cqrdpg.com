@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styles from './chat.module.css';
 import Home from '../music/Home';
-import Player from '../music/Player';
+ 
 import AccountingDetails from '../accounting/AccountingDetails';
 import AccountingHomePage from '../accounting/AccountingHomePage';
 
@@ -55,9 +55,7 @@ const MusicMenu = () => {
                 <div className={styles.slidePage}>
                     <Home />
                 </div>
-                <div className={styles.slidePage}>
-                    <Player />
-                </div>
+                
                 <div className={styles.slidePage}>
                     <AccountingDetails />
                 </div>

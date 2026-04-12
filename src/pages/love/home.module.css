@@ -515,7 +515,7 @@
   height: 200px; /* 单帧高度，根据你的精灵图实际高度调整 */
   top: 100px;
   left: 50%;
-  background: url(./movetest.png) no-repeat;
+  /* background: url(./movetest.png) no-repeat; */
   /* 关键修改1：背景尺寸 - 总宽度改为 11帧 × 单帧宽度 = 550px */
   background-size: 4000px auto; 
   /* 关键修改2：steps(2) 改为 steps(11)，对应11帧 */

@@ -87,7 +87,7 @@ const Home = () => {
 
       {/* banner */}
       <div className={styles.banner}>
-        <div className={styles.west01}></div>
+        {/* <div className={styles.west01}></div> */}
         <img src={bgImage} alt="情侣背景" className={styles.bannerBg} />
 
         <div className={styles.coupleCard}>
