@@ -1,5 +1,3 @@
-/* #region 基础容器样式 */
-
 /* 全屏加载样式 */
 .fullscreenLoading {
     position: fixed;
@@ -7,20 +5,23 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(26, 25, 25, 0.616);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+      background-color: rgba(26, 25, 25, 0.616);  
+      backdrop-filter: blur(10px); /* 磨砂效果 */
+      -webkit-backdrop-filter: blur(10px); /* Safari 支持 */
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 9999;
+    backdrop-filter: blur(4px);
 }
+
+ 
 
 /* 容器样式 */
 .outContainer {
     width: 100%;
     min-height: 100%;
-    background-color: var(--background-color);
+      background-color: var(--background-color);  
     padding: 5px;
     box-sizing: border-box;
     position: relative;
@@ -29,18 +30,16 @@
 .container {
     max-width: 1400px;
     margin: 0 auto;
+    /* background-color: white; */
     border-radius: 12px;
+    /* box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); */
     padding: 20px;
     min-height: 600px;
 }
 
-/* #endregion */
-
-/* #region 搜索区域样式 */
-
+/* 搜索区域 */
 .searchSection {
     margin-bottom: 20px;
-    position: relative;
 }
 
 .searchForm {
@@ -53,13 +52,12 @@
     gap: 12px;
     max-width: 800px;
     margin: 0 auto;
-    position: relative;
 }
 
 .searchInput {
     flex: 1;
     padding: 10px 10px;
-    border: 1px solid var(--border_color, rgba(214, 24, 24, 0));
+    border: 1px solid var(--border_color,rgba(214, 24, 24, 0));
     border-radius: 10px;
     font-size: 16px;
     transition: all 0.3s ease;
@@ -104,15 +102,435 @@
     box-shadow: none;
 }
 
-/* #endregion */
+/* 错误提示 */
+.error {
+    background-color: #fff2f0;
+    border: 1px solid #ffccc7;
+    color: #ff4d4f;
+    padding: 12px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
 
-/* #region 联想词下拉框样式 */
+/* 加载状态 */
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 0;
+}
 
-.suggestionsDropdown {
+/* 统计数据 */
+.stats {
+    padding: 12px 0;
+    margin-bottom: 20px;
+    color:var(--secondary-font-color);
+    font-size: 14px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+/* 记录卡片 */
+.recordCard {
+    background: var(--background-color);
+    border-radius: 12px;
+    margin-bottom: 16px;
+    padding: 24px;
+    border: 1px solid #f0f0f0;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.recordCard:hover {
+    border-color: #1890ff;
+    box-shadow: 0 4px 16px rgba(24, 144, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+/* 三列布局 */
+.cardContent {
+    display: flex;
+    gap: 15px;
+    align-items: stretch;
+    min-height: 140px;
+}
+
+/* 左侧：图片列 */
+.leftColumn {
+    flex: 0 0 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.imageContainer {
+    width: 200px;
+    height: 150px;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+    background-color: #f8f9fa;
+    border: 1px solid #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.imageContainer.hasImage:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.imageContainer.hasImage:hover::after {
+    content: '点击查看全部图片';
     position: absolute;
-    top: 100%;
+    bottom: 0;
     left: 0;
     right: 0;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 8px;
+    font-size: 12px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.previewImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.noImagePlaceholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f5f7fa, #e4e7ed);
+}
+
+.noImageIcon {
+    width: 50px;
+    height: 50px;
+    color: #bdc3c7;
+}
+
+/* 中间：主要信息列 */
+.middleColumn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-width: 0; /* 防止内容溢出 */
+}
+
+/* 坐落区域 */
+.locationSection {
+    margin-bottom: 12px;
+}
+
+.locationLabel {
+    color: var(--font-color);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.locationValue {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--font-color);
+    line-height: 1.4;
+    display: block;
+    margin-top: 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+/* 小区区域 */
+.communitySection {
+    margin-bottom: 16px;
+}
+
+.communityLabel {
+    color: var(--font-color);
+    font-size: 14px;
+}
+
+.communityValue {
+    color: var(--font-color);
+    font-size: 16px;
+    font-weight: 500;
+    margin-left: 4px;
+}
+
+/* 信息行 */
+.row {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+    margin-top: auto;
+}
+
+.infoItem {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.infoLabel {
+    color: var(--font-color);
+    font-size: 14px;
+    min-width: 40px;
+}
+
+.infoValue {
+    color: var(--font-color);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* 右侧：价格列 */
+.rightColumn {
+    flex: 0 0 220px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-left: 1px solid #f0f0f0;
+    padding-left: 20px;
+}
+
+.priceSection {
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+    align-items: center;
+    justify-content: center;
+}
+
+.priceLabel {
+    color: #666;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+/* 评估总价样式 */
+.totalPriceValue {
+    color: #f00e12;
+    font-size: 20px;
+    font-weight: 700;
+    margin-top: 5px;
+}
+
+/* 单价和租金样式 */
+.priceValue {
+    /* color: #2e2d2d; */
+    color: var(--font-color);
+    font-size: 12px;
+    font-weight: 600;
+    margin-top: 2px;
+}
+
+/* 加载更多 */
+.loadingMore {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 0;
+    color: #666;
+    gap: 12px;
+}
+
+.loadingSpinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #1890ff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* 没有更多数据 */
+.noMoreData {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0;
+    color:var(--secondary-font-color);
+    gap: 5px;
+}
+
+.noMoreIcon {
+    width: 50px;
+    height: 50px;
+}
+
+/* 无数据提示 */
+.noData, .tips {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 0;
+    color: #999;
+    gap: 20px;
+}
+
+.suggestIcon {
+    width: 100px;
+    height: 100px;
+    color: #d9d9d9;
+}
+
+.noData span, .tips span {
+    font-size: 16px;
+    color: #666;
+}
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
+    .container {
+        padding: 20px;
+    }
+    
+    .cardContent {
+        gap: 16px;
+    }
+    
+    .leftColumn {
+        flex: 0 0 160px;
+    }
+    
+    .imageContainer {
+        width: 160px;
+        height: 120px;
+    }
+    
+    .rightColumn {
+        flex: 0 0 180px;
+        padding-left: 16px;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+        margin: 10px;
+    }
+    
+  
+    
+    .cardContent {
+        gap: 16px;
+    }
+    
+    .leftColumn {
+        width: 100%;
+    }
+    
+    .imageContainer {
+        width: 100%;
+        height: 200px;
+    }
+    
+    .rightColumn {
+        width: 100%;
+        border-left: none;
+        border-top: 1px solid #f0f0f0;
+        padding-left: 0;
+        padding-top: 16px;
+    }
+    
+    .row {
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+    }
+}
+
+/* 打印样式 */
+@media print {
+    .searchSection,
+    .searchButton,
+    .imageContainer,
+    .fullscreenLoading {
+        display: none;
+    }
+    
+    .recordCard {
+        border: 1px solid #ddd;
+        page-break-inside: avoid;
+    }
+}
+/* #region start */
+
+
+/* 搜索框相关样式 */
+.searchSection {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.searchInputGroup {
+    position: relative;
+    display: flex;
+    gap: 10px;
+}
+
+.searchInput {
+    flex: 1;
+    padding: 12px 16px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.searchInput:focus {
+    outline: none;
+    border-color: #1890ff;
+    box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
+}
+
+.searchButton {
+    padding: 12px 24px;
+    background-color: #1890ff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.searchButton:hover {
+    background-color: #40a9ff;
+}
+
+.searchButton:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* 联想词下拉框样式 */
+.suggestionsDropdown {
+    position: absolute;
+    top: 100%; /* 在输入框正下方 */
+    left: 0;
+    right: 0; /* 与输入框同宽 */
     background: white;
     border: 1px solid #e8e8e8;
     border-radius: 8px;
@@ -190,588 +608,4 @@
     100% { transform: rotate(360deg); }
 }
 
-/* #endregion */
-
-/* #region 错误提示和加载状态 */
-
-.error {
-    background-color: #fff2f0;
-    border: 1px solid #ffccc7;
-    color: #ff4d4f;
-    padding: 12px 20px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    font-size: 14px;
-}
-
-.loading {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 60px 0;
-}
-
-.stats {
-    padding: 12px 0;
-    margin-bottom: 20px;
-    color: var(--secondary-font-color);
-    font-size: 14px;
-    border-bottom: 1px solid #f0f0f0;
-}
-
-/* #endregion */
-
-/* #region 记录卡片样式 */
-
-.recordCard {
-    background: var(--background-color);
-    border-radius: 12px;
-    margin-bottom: 16px;
-    padding: 24px;
-    border: 1px solid #f0f0f0;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-}
-
-.recordCard:hover {
-    border-color: #1890ff;
-    box-shadow: 0 4px 16px rgba(24, 144, 255, 0.15);
-    transform: translateY(-2px);
-}
-
-/* 三列布局 */
-.cardContent {
-    display: flex;
-    gap: 15px;
-    align-items: stretch;
-    min-height: 140px;
-}
-
-/* #endregion */
-
-/* #region 左侧图片列样式 */
-
-.leftColumn {
-    flex: 0 0 200px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-}
-
-.imageContainer {
-    width: 200px;
-    height: 150px;
-    border-radius: 8px;
-    overflow: hidden;
-    cursor: pointer;
-    position: relative;
-    background-color: #f8f9fa;
-    border: 1px solid #f0f0f0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-.imageContainer.hasImage:hover {
-    transform: scale(1.02);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
-}
-
-.imageContainer.hasImage:hover::after {
-    content: '点击查看全部图片';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
-    padding: 8px;
-    font-size: 12px;
-    text-align: center;
-    transition: all 0.3s ease;
-}
-
-.previewImage {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
-}
-
-.noImagePlaceholder {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #f5f7fa, #e4e7ed);
-}
-
-.noImageIcon {
-    width: 50px;
-    height: 50px;
-    color: #bdc3c7;
-}
-
-/* #endregion */
-
-/* #region 中间信息列样式 */
-
-.middleColumn {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    min-width: 0;
-}
-
-.locationSection {
-    margin-bottom: 12px;
-}
-
-.locationLabel {
-    color: var(--font-color);
-    font-size: 14px;
-    font-weight: 500;
-}
-
-.locationValue {
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--font-color);
-    line-height: 1.4;
-    display: block;
-    margin-top: 4px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-}
-
-.communitySection {
-    margin-bottom: 16px;
-}
-
-.communityLabel {
-    color: var(--font-color);
-    font-size: 14px;
-}
-
-.communityValue {
-    color: var(--font-color);
-    font-size: 16px;
-    font-weight: 500;
-    margin-left: 4px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.row {
-    display: flex;
-    gap: 40px;
-    align-items: center;
-    margin-top: auto;
-    flex-wrap: nowrap;
-}
-
-.infoItem {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    white-space: nowrap;
-    flex-shrink: 0;
-}
-
-.infoLabel {
-    color: var(--font-color);
-    font-size: 14px;
-    min-width: 40px;
-}
-
-.infoValue {
-    color: var(--font-color);
-    font-size: 14px;
-    font-weight: 500;
-}
-
-/* #endregion */
-
-/* #region 右侧价格列样式 */
-
-.rightColumn {
-    flex: 0 0 220px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    border-left: 1px solid #f0f0f0;
-    padding-left: 20px;
-}
-
-.priceSection {
-    display: flex;
-    flex-direction: row;
-    gap: 4px;
-    align-items: center;
-    justify-content: center;
-    white-space: nowrap;
-}
-
-.priceLabel {
-    color: #666;
-    font-size: 14px;
-    white-space: nowrap;
-}
-
-.totalPriceValue {
-    color: #f00e12;
-    font-size: 20px;
-    font-weight: 700;
-    margin-top: 5px;
-    white-space: nowrap;
-}
-
-.priceValue {
-    color: var(--font-color);
-    font-size: 12px;
-    font-weight: 600;
-    margin-top: 2px;
-    white-space: nowrap;
-}
-
-/* #endregion */
-
-/* #region 加载更多和无数据样式 */
-
-.loadingMore {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 30px 0;
-    color: #666;
-    gap: 12px;
-}
-
-.loadingSpinner {
-    width: 40px;
-    height: 40px;
-    border: 3px solid #f3f3f3;
-    border-top: 3px solid #1890ff;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-.noMoreData {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 10px 0;
-    color: var(--secondary-font-color);
-    gap: 5px;
-}
-
-.noMoreIcon {
-    width: 50px;
-    height: 50px;
-}
-
-.noData,
-.tips {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 80px 0;
-    color: #999;
-    gap: 20px;
-}
-
-.suggestIcon {
-    width: 100px;
-    height: 100px;
-    color: #d9d9d9;
-}
-
-.noData span,
-.tips span {
-    font-size: 16px;
-    color: #666;
-}
-
-/* #endregion */
-
-/* #region 电脑端响应式（1024px以下） */
-
-@media (max-width: 1024px) {
-    .container {
-        padding: 20px;
-    }
-
-    .cardContent {
-        gap: 16px;
-    }
-
-    .leftColumn {
-        flex: 0 0 160px;
-    }
-
-    .imageContainer {
-        width: 160px;
-        height: 120px;
-    }
-
-    .rightColumn {
-        flex: 0 0 180px;
-        padding-left: 16px;
-    }
-}
-
-/* #endregion */
-
-/* #region 手机端样式 - 保持相同比例，整体缩小 */
-
-@media (max-width: 768px) {
-    .container {
-        padding: 12px;
-    }
-
-    .recordCard {
-        padding: 12px;
-        margin-bottom: 12px;
-    }
-
-    .cardContent {
-        gap: 10px;
-        min-height: 100px;
-    }
-
-    /* 左侧图片 - 等比缩小到原来的40% */
-    .leftColumn {
-        flex: 0 0 80px;
-    }
-
-    .imageContainer {
-        width: 80px;
-        height: 60px;
-    }
-
-    .noImageIcon {
-        width: 30px;
-        height: 30px;
-    }
-
-    /* 中间信息 - 字体等比缩小 */
-    .locationValue {
-        font-size: 12px;
-        margin-top: 2px;
-    }
-
-    .communityValue {
-        font-size: 11px;
-    }
-
-    .infoLabel {
-        font-size: 10px;
-        min-width: 30px;
-    }
-
-    .infoValue {
-        font-size: 10px;
-    }
-
-    .row {
-        gap: 15px;
-    }
-
-    .infoItem {
-        gap: 3px;
-    }
-
-    /* 右侧价格 - 等比缩小 */
-    .rightColumn {
-        flex: 0 0 110px;
-        padding-left: 10px;
-    }
-
-    .priceLabel {
-        font-size: 10px;
-    }
-
-    .totalPriceValue {
-        font-size: 12px;
-    }
-
-    .priceValue {
-        font-size: 9px;
-    }
-
-    .priceSection {
-        gap: 2px;
-    }
-
-    /* 统计信息 */
-    .stats {
-        font-size: 11px;
-        padding: 6px 0;
-    }
-
-    /* 搜索框调整 */
-    .searchInputGroup {
-        gap: 8px;
-    }
-
-    .searchInput {
-        padding: 8px 10px;
-        font-size: 14px;
-    }
-
-    .searchButton {
-        padding: 8px 12px;
-        font-size: 14px;
-        width: 70px;
-    }
-
-    /* 联想词 */
-    .suggestionText {
-        font-size: 12px;
-    }
-
-    .suggestionItem {
-        padding: 8px 12px;
-    }
-
-    /* 无数据提示 */
-    .suggestIcon {
-        width: 60px;
-        height: 60px;
-    }
-
-    .noData span,
-    .tips span {
-        font-size: 12px;
-    }
-
-    .loadingMore span {
-        font-size: 11px;
-    }
-
-    .loadingSpinner {
-        width: 30px;
-        height: 30px;
-    }
-}
-
-/* #endregion */
-
-/* #region 超小手机端（iPhone SE等，宽度<480px）- 进一步等比缩小 */
-
-@media (max-width: 480px) {
-    .container {
-        padding: 8px;
-    }
-
-    .recordCard {
-        padding: 8px;
-        margin-bottom: 8px;
-    }
-
-    .cardContent {
-        gap: 8px;
-        min-height: 80px;
-    }
-
-    /* 左侧图片 - 缩小到原来的30% */
-    .leftColumn {
-        flex: 0 0 60px;
-    }
-
-    .imageContainer {
-        width: 60px;
-        height: 45px;
-    }
-
-    .noImageIcon {
-        width: 25px;
-        height: 25px;
-    }
-
-    /* 中间信息 - 进一步缩小字体 */
-    .locationValue {
-        font-size: 10px;
-    }
-
-    .communityValue {
-        font-size: 9px;
-    }
-
-    .infoLabel {
-        font-size: 9px;
-        min-width: 25px;
-    }
-
-    .infoValue {
-        font-size: 9px;
-    }
-
-    .row {
-        gap: 10px;
-    }
-
-    /* 右侧价格 - 进一步缩小 */
-    .rightColumn {
-        flex: 0 0 85px;
-        padding-left: 6px;
-    }
-
-    .priceLabel {
-        font-size: 8px;
-    }
-
-    .totalPriceValue {
-        font-size: 10px;
-    }
-
-    .priceValue {
-        font-size: 8px;
-    }
-
-    /* 搜索框 */
-    .searchInput {
-        padding: 6px 8px;
-        font-size: 12px;
-    }
-
-    .searchButton {
-        padding: 6px 10px;
-        font-size: 12px;
-        width: 60px;
-    }
-
-    .stats {
-        font-size: 10px;
-    }
-}
-
-/* #endregion */
-
-/* #region 打印样式 */
-
-@media print {
-    .searchSection,
-    .searchButton,
-    .imageContainer,
-    .fullscreenLoading {
-        display: none;
-    }
-
-    .recordCard {
-        border: 1px solid #ddd;
-        page-break-inside: avoid;
-    }
-}
-
-/* #endregion */
+/*  #endregion end */

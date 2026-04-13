@@ -6,8 +6,6 @@ import { useAuth } from './AuthContext';
 
 const MonitorContext = createContext();
 
-const API_URL = '/api/website/record';
-
 export const WebsiteMonitorProvider = ({ children }) => {
   const location = useLocation();
   // 2. 获取认证上下文
@@ -63,9 +61,9 @@ export const WebsiteMonitorProvider = ({ children }) => {
       const blob = new Blob([JSON.stringify(recordData)], { type: 'application/json' });
       
       if (navigator.sendBeacon) {
-        navigator.sendBeacon(API_URL, blob);
+        navigator.sendBeacon('/api/website/record', blob);
       } else {
-        fetch(API_URL, {
+        fetch('/api/website/record', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(recordData),

@@ -34,7 +34,7 @@ const AccountingAdd = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const response = await axios.get('https://www.cqrdpg.com:5202/getCategoryIcons');
+                const response = await axios.get('/api/getCategoryIcons');
                 if (response.data) {
                     setCategories(response.data);
                 }

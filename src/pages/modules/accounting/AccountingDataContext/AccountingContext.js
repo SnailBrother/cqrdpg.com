@@ -53,8 +53,8 @@ export const AccountingProvider = ({ children }) => {
             setError(null);
             
             const [recordsResponse, iconsResponse] = await Promise.all([
-                axios.get('https://www.cqrdpg.com:5202/api/lifebookkeepinggetRecords'),
-                axios.get('https://www.cqrdpg.com:5202/getCategoryIcons')
+                axios.get('/api/lifebookkeepinggetRecords'),
+                axios.get('/api/getCategoryIcons')
             ]);
 
             setRecords(recordsResponse.data);

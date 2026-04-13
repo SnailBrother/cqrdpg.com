@@ -11,7 +11,7 @@ import { MessageProvider } from './components/UI/Message';
 import AppRoutes from './routes';
 import './assets/styles/variables.css';
 import styles from './App.module.css';
-import { TravelThemeProvider } from './pages/modules/travel/ThemeContext'; // 根据你的实际路径调整
+import { TravelThemeProvider } from './pages/modules/travel/ThemeContext';  
 import { AccountingProvider } from './pages/modules/accounting/AccountingDataContext/AccountingContext';//记账配置
 import { WebsiteMonitorProvider } from './context/WebsiteMonitorContext'; //访问监控
 
