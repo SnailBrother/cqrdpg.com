@@ -47,6 +47,11 @@ const OfficeWordReportGenerator = lazy(() => import('../pages/modules/office/Wor
 //const OfficePriceConsultationDialog = lazy(() => import('../pages/modules/office/PriceConsultationDialog'));
 //const OfficeNeighborhoodFinder = lazy(() => import('../pages/modules/office/NeighborhoodFinder'));
 const OfficeSearchPdfFileView = lazy(() => import('../pages/modules/office/SearchPdfFileView'));
+const OfficeQuickCopy = lazy(() => import('../pages/modules/office/QuickCopy'));
+
+
+
+
 //------------------------------聊天------------------------------
 const ChatDressingGuidelines = lazy(() => import('../pages/modules/chat/DressingGuidelines'));
 const ChatUpdateWear = lazy(() => import('../pages/modules/chat/UpdateWear'));
@@ -143,22 +148,26 @@ export const moduleConfig = {
       { key: 'SearchPrice', label: '价格查询', icon: '#icon-chakantupian4', component: OfficeSearchPrice, showInNavigation: true, showInTabs: false },
       { key: 'OfficeSearchPdfFileView', label: '资料查找', icon: '#icon-pdf2', component: OfficeSearchPdfFileView, showInNavigation: true, showInTabs: false },
       // { key: 'TemplateManagement', label: '模板下载', icon: '#icon-a-bianzu10', component: OfficeTemplateManagement, showInNavigation: true, showInTabs: false },
-      { key: 'PublicNews', label: '消息通知', icon: '#icon-tongzhi4', component: OfficePublicNews, showInNavigation: true, showInTabs: false },
+     // { key: 'PublicNews', label: '消息通知', icon: '#icon-tongzhi4', component: OfficePublicNews, showInNavigation: true, showInTabs: false },
       // { key: 'PriceConsultationDialog', label: '价格咨询', icon: '#icon-dingwei-xiaoquzuola', component: OfficePriceConsultationDialog, showInNavigation: true, showInTabs: false  },
       //{ key: 'NeighborhoodFinder', label: '小区查询', icon: '#icon-stock', component: OfficeNeighborhoodFinder, showInNavigation: true, showInTabs: false  },
       // { key: 'MessageDetail/:messageId', label: '消息详情', icon: '#icon-yinliang2',  component: OfficeMessageDetail, showInNavigation: false, showInTabs: false },
       // { key: 'MessageDetail', label: '消息通知', icon: '#icon-yinliang2', component: OfficeMessageDetail,  showInNavigation: false, showInTabs: false },
+     
+      { key: 'OfficeQuickCopy', label: '快捷复制', icon: '#icon-tongzhi4', component: OfficeQuickCopy, showInNavigation: true, showInTabs: false },
 
       { key: 'LookHousePricePicture', label: '查看图片', icon: '#icon-chakantupian4', component: OfficeLookHousePricePicture, showInNavigation: false, showInTabs: false },
       { key: 'LookBuildingsPricePicture', label: '查看图片', icon: '#icon-chakantupian4', component: OfficeLookBuildingsPricePicture, showInNavigation: false, showInTabs: false },
       { key: 'UploadHousePricePicture', label: '上传图片', icon: '#icon-chakantupian4', component: OfficeUploadHousePricePicture, showInNavigation: false, showInTabs: false },
       //{ key: 'OfficeMergePrintPdf', label: '资料打印', icon: '#icon-pdf2', component: OfficeMergePrintPdf, showInNavigation: true, showInTabs: false  },
 
-      { key: 'Specialtips', label: '特别提示', icon: '#icon-tishi', component: OfficeSpecialtips, showInNavigation: true, showInTabs: false },
-      { key: 'SiteLinks', label: '常用网站', icon: '#icon-web', component: OfficeSiteLinks, showInNavigation: true, showInTabs: false },
+      //{ key: 'Specialtips', label: '特别提示', icon: '#icon-tishi', component: OfficeSpecialtips, showInNavigation: true, showInTabs: false },
+     // { key: 'SiteLinks', label: '常用网站', icon: '#icon-web', component: OfficeSiteLinks, showInNavigation: true, showInTabs: false },
       { key: 'FeeCalculation', label: '收费计算', icon: '#icon-jisuanji', component: OfficeFeeCalculation, showInNavigation: true, showInTabs: false },
       // { key: 'EvaluationFilePreview', label: '参考文献', icon: '#icon-bendiwenjianziyuan', component: OfficeEvaluationFilePreview, showInNavigation: true, showInTabs: false },
       { key: 'WordReportGenerator', label: '撰写报告', icon: '#icon-xiti', component: OfficeWordReportGenerator, showInNavigation: true, showInTabs: false },
+      
+      
     ]
   },
   chat: {
