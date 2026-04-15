@@ -28,14 +28,8 @@ const MusicMenu = () => {
                 pages={pages}
                 labels={labels}
                 navType="text" // 改为 "dots" 就可以切换回点状导航
-                navPosition="floating"
                 defaultIndex={0}
                 onPageChange={handlePageChange}
-                showIndicator={true}
-                activeColor="#05f024"
-                containerStyle={{ 
-                    height: 'calc(100dvh - 150px)'
-                }}
                 className={styles.menuContainer}
             />
         </div>

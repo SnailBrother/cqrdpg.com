@@ -1,9 +1,11 @@
 /* MusicMenu.module.css - 简化后的样式 */
 .musicMenu {
-  position: relative;
+  /* position: relative; */
   width: 100%;
-  height: calc(100dvh - 150px);
-  overflow: hidden;
+  height: calc(100dvh - 64px);
+  box-sizing: border-box;
+  background-color: chartreuse;
+  /* overflow: hidden; */
 }
 
 .menuContainer {
@@ -13,6 +15,6 @@
 
 @media (max-width: 768px) {
   .musicMenu {
-      height: calc(100dvh - 140px);
+      height: calc(100dvh - 65px);
   }
 }

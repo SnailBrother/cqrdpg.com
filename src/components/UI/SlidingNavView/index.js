@@ -8,17 +8,13 @@ const SlidingNavView = ({
     
     // 导航配置
     navType = 'dots', // 'dots' 或 'text'
-    navPosition = 'floating', // 'floating' 或 'inline'
     
     // 文字导航配置
     labels = [], // 导航文字标签数组
-    activeColor = '#05f024',
-    inactiveColor = 'rgba(206, 205, 205, 0.527)',
     
     // 自定义样式
     containerStyle = {},
     contentStyle = {},
-    navStyle = {},
     
     // 初始页面索引
     defaultIndex = 0,
@@ -26,12 +22,8 @@ const SlidingNavView = ({
     // 回调函数
     onPageChange = () => {},
     
-    // 是否显示页面指示器
-    // showIndicator = true,
-    
     // 自定义渲染导航
     renderNav,
-   // renderIndicator,
     
     // 滑动灵敏度
     swipeThreshold = 50,
@@ -116,10 +108,6 @@ const SlidingNavView = ({
                             key={index}
                             className={`${styles.navButton} ${activeIndex === index ? styles.active : ''}`}
                             onClick={() => handlePageChange(index)}
-                            style={{
-                                '--active-color': activeColor,
-                                '--inactive-color': inactiveColor
-                            }}
                         >
                             <div className={styles.line}></div>
                         </button>
@@ -141,10 +129,6 @@ const SlidingNavView = ({
                             key={index}
                             className={`${styles.textNavButton} ${activeIndex === index ? styles.active : ''}`}
                             onClick={() => handlePageChange(index)}
-                            style={{
-                                '--active-color': activeColor,
-                                '--inactive-color': 'rgba(255, 255, 255, 0.7)'
-                            }}
                         >
                             <span>{label}</span>
                             <div className={styles.activeLine}></div>
@@ -155,41 +139,19 @@ const SlidingNavView = ({
         );
     };
 
-    // 渲染页面指示器
-    // const renderPageIndicator = () => {
-    //     if (!showIndicator) return null;
-        
-    //     return (
-    //         <div className={styles.pageIndicator}>
-    //             {pages.map((_, index) => (
-    //                 <div
-    //                     key={index}
-    //                     className={`${styles.indicatorDot} ${index === activeIndex ? styles.active : ''}`}
-    //                     onClick={() => handlePageChange(index)}
-    //                     style={{
-    //                         '--active-color': activeColor
-    //                     }}
-    //                 />
-    //             ))}
-    //         </div>
-    //     );
-    // };
-
     return (
         <div 
             className={`${styles.slidingNavView} ${className}`}
             style={containerStyle}
         >
             {/* 导航栏 */}
-            {navPosition === 'inline' && (
-                <div className={styles.inlineNav} style={navStyle}>
-                    {renderNav ? renderNav(activeIndex, handlePageChange) : (
-                        navType === 'dots' ? renderDotsNav() : renderTextNav()
-                    )}
-                </div>
-            )}
+            <div className={styles.navWrapper}>
+                {renderNav ? renderNav(activeIndex, handlePageChange) : (
+                    navType === 'dots' ? renderDotsNav() : renderTextNav()
+                )}
+            </div>
 
-            {/* 全屏内容区域 - 支持滑动 */}
+            {/* 内容区域 - 支持滑动 */}
             <div 
                 className={styles.fullscreenContent}
                 ref={contentRef}
@@ -200,18 +162,6 @@ const SlidingNavView = ({
             >
                 {renderPages()}
             </div>
-
-            {/* 悬浮导航栏 */}
-            {navPosition === 'floating' && (
-                <div className={styles.floatingNav} style={navStyle}>
-                    {renderNav ? renderNav(activeIndex, handlePageChange) : (
-                        navType === 'dots' ? renderDotsNav() : renderTextNav()
-                    )}
-                </div>
-            )}
-
-            {/* 页面指示器 */}
-            {/* {renderIndicator ? renderIndicator(activeIndex, handlePageChange) : renderPageIndicator()} */}
         </div>
     );
 };
