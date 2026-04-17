@@ -79,7 +79,7 @@ const TogetherRoomManager = () => {
     const fetchRooms = useCallback(async () => {
         if (!isAuthenticated) return;
         try {
-            const response = await axios.get('/api/ReactDemomusic-rooms');
+            const response = await axios.get('/api/music/ReactDemomusic-rooms');
             setRooms(response.data);
         } catch (err) {
             console.error('获取房间列表失败:', err);
@@ -134,7 +134,7 @@ const TogetherRoomManager = () => {
         setLoading(true);
         setError('');
         try {
-            const response = await axios.post('/api/ReactDemomusic-rooms', {
+            const response = await axios.post('/api/music/ReactDemomusic-rooms', {
                 room_name: roomName.trim(),
                 password: password || null,
                 host: user.email,
@@ -161,7 +161,7 @@ const TogetherRoomManager = () => {
         setLoading(true);
         setError('');
         try {
-            const response = await axios.post('/api/ReactDemomusic-rooms/join', {
+            const response = await axios.post('/api/music/ReactDemomusic-rooms/join', {
                 room_name: joinRoomName,
                 password: joinPassword || null,
                 email: user.email
@@ -183,7 +183,7 @@ const TogetherRoomManager = () => {
 
     const deleteRoom = async (roomName) => {
         try {
-            await axios.delete(`/api/ReactDemomusic-rooms/${roomName}`, {
+            await axios.delete(`/api/music/ReactDemomusic-rooms/${roomName}`, {
                 data: { email: user.email }
             });
             // 解散成功后，Socket.IO 会自动广播 rooms-updated 和 room-dissolved 事件
@@ -196,7 +196,7 @@ const TogetherRoomManager = () => {
 
     const leaveRoom = async (roomName) => {
         try {
-            await axios.post('/api/ReactDemomusic-rooms/leave', {
+            await axios.post('/api/music/ReactDemomusic-rooms/leave', {
                 room_name: roomName,
                 email: user.email
             });

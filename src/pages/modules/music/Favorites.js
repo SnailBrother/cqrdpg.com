@@ -1,4 +1,3 @@
-// src/components/modules/music/Favorites.js 我的喜欢
 // src/components/modules/music/Favorites.js
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import axios from 'axios';
@@ -8,6 +7,9 @@ import styles from './Favorites.module.css';
 import MusicTableView from './homlistviews/MusicTableView';
 import MusicGridView from './homlistviews/MusicGridView';
 import { Loading } from '../../../components/UI';
+import io from 'socket.io-client';
+
+const socket = io('https://www.cqrdpg.com:5202');
 
 const Favorites = () => {
     const { user, isAuthenticated } = useAuth();
@@ -18,25 +20,57 @@ const Favorites = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
-    const [searchInput, setSearchInput] = useState(''); // 新增：输入框临时值
-
+    const [searchInput, setSearchInput] = useState('');
     const [viewMode, setViewMode] = useState('table');
+    const [refreshTrigger, setRefreshTrigger] = useState(0);
 
     const observer = useRef();
-// 处理搜索提交
-const handleSearchSubmit = () => {
-  setSearchTerm(searchInput); // 只有提交时才更新搜索词
-  setPage(1);
-  setFavorites([]);
-  setHasMore(true);
-};
 
-// 处理回车键
-const handleKeyDown = (e) => {
-  if (e.key === 'Enter') {
-    handleSearchSubmit();
-  }
-};
+    // ✅ 监听收藏更新事件
+    useEffect(() => {
+        const handleFavoritesUpdated = (data) => {
+            console.log('📡 Favorites 收到广播:', data);
+            console.log('当前用户:', user?.username);
+            
+            if (data.user_name === user?.username) {
+                console.log('✅ 用户匹配，触发刷新');
+                setRefreshTrigger(prev => prev + 1);
+            }
+        };
+
+        socket.on('favoritesUpdated', handleFavoritesUpdated);
+        socket.on('favoriteChanged', handleFavoritesUpdated);
+
+        return () => {
+            socket.off('favoritesUpdated', handleFavoritesUpdated);
+            socket.off('favoriteChanged', handleFavoritesUpdated);
+        };
+    }, [user?.username]);
+
+    // ✅ 当 refreshTrigger 变化时，重新加载
+    useEffect(() => {
+        if (refreshTrigger > 0 && isAuthenticated && user?.username) {
+            console.log('🔄 触发刷新，重新加载第一页');
+            setPage(1);
+            setFavorites([]);
+            setHasMore(true);
+            fetchFavorites(1);
+        }
+    }, [refreshTrigger]);
+
+    const handleSearchSubmit = () => {
+        setSearchTerm(searchInput);
+        setPage(1);
+        setFavorites([]);
+        setHasMore(true);
+    };
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            handleSearchSubmit();
+        }
+    };
+
     const lastMusicElementRef = useCallback(node => {
         if (loading) return;
         if (observer.current) observer.current.disconnect();
@@ -49,25 +83,27 @@ const handleKeyDown = (e) => {
     }, [loading, hasMore]);
 
     useEffect(() => {
-        setFavorites([]);
-        setPage(1);
-        setHasMore(true);
+        if (searchTerm) {
+            setPage(1);
+            setFavorites([]);
+            setHasMore(true);
+        }
     }, [searchTerm]);
 
     useEffect(() => {
         if (isAuthenticated && user?.username) {
-            fetchFavorites();
+            fetchFavorites(page);
         }
     }, [page, searchTerm, isAuthenticated, user?.username]);
 
-    const fetchFavorites = async () => {
+    const fetchFavorites = async (currentPage = page) => {
         setLoading(true);
         setError(null);
         try {
-            const response = await axios.get('https://www.cqrdpg.com:5202/backend/api/reactdemofavorites', {
+            const response = await axios.get('/api/music/favorites', {
                 params: {
                     username: user.username,
-                    page: page,
+                    page: currentPage,
                     pageSize: 20,
                     search: searchTerm
                 }
@@ -75,23 +111,31 @@ const handleKeyDown = (e) => {
             
             const newFavorites = response.data.data.map(song => ({
                 id: song.id,
-                title: song.title,
+                music_id: song.music_id,
+                title: song.title || song.song_name,
                 artist: song.artist,
-                src: `https://www.cqrdpg.com/backend/musics/${song.src}`,
+                genre: song.genre || '',
+                src: song.src 
+                    ? (song.src.startsWith('http') 
+                        ? song.src 
+                        : `https://www.cqrdpg.com/backend/musics/${song.src}`)
+                    : '',
                 coverimage: song.coverimage
-                            ? `https://www.cqrdpg.com/backend/musics/${song.coverimage}`
-                            : 'https://www.cqrdpg.com/backend/musics/default.jpg',
+                    ? (song.coverimage.startsWith('http')
+                        ? song.coverimage
+                        : `https://www.cqrdpg.com/backend/musics/${song.coverimage}`)
+                    : 'https://www.cqrdpg.com/backend/musics/default.jpg',
                 play_count: song.play_count
             }));
 
-            console.log('收藏歌曲数据:', newFavorites);
+            console.log('🔄 加载收藏列表，第', currentPage, '页，共', newFavorites.length, '条');
 
             setFavorites(prev => {
-                const all = page === 1 ? newFavorites : [...prev, ...newFavorites];
-                const unique = Array.from(new Set(all.map(m => m.id))).map(id => all.find(m => m.id === id));
+                const all = currentPage === 1 ? newFavorites : [...prev, ...newFavorites];
+                const unique = Array.from(new Map(all.map(item => [item.id, item])).values());
                 return unique;
             });
-            
+
             setHasMore(response.data.data.length > 0 && response.data.page < response.data.totalPages);
 
         } catch (err) {
@@ -101,10 +145,10 @@ const handleKeyDown = (e) => {
             setLoading(false);
         }
     };
-    
+
     const handlePlayMusic = (songToPlay) => {
         const actualIndex = favorites.findIndex(music => music.id === songToPlay.id);
-        
+
         dispatch({
             type: 'PLAY_SONG',
             payload: {
@@ -115,12 +159,45 @@ const handleKeyDown = (e) => {
         });
     };
 
-    const handleLike = (e, musicId) => {
+    // ✅ 修复：Favorites 中的取消收藏功能
+    const handleLike = async (e, musicId) => {
         e.stopPropagation();
-        console.log('取消喜欢歌曲:', musicId);
+        
+        if (!isAuthenticated || !user?.username) {
+            alert('请先登录');
+            return;
+        }
+
+        // 找到要删除的歌曲
+        const songToRemove = favorites.find(m => m.id === musicId);
+        
+        if (!songToRemove) {
+            console.error('找不到要删除的歌曲');
+            return;
+        }
+
+        try {
+            await axios.delete('/api/music/favorites', {
+                data: {
+                    user_name: user.username,
+                    music_id: songToRemove.music_id,
+                    song_name: songToRemove.title
+                }
+            });
+            
+            // 乐观更新：立即从列表中移除
+            setFavorites(prev => prev.filter(music => music.id !== musicId));
+            console.log('取消收藏成功:', songToRemove.title);
+            
+            // 注意：后端会自动广播 favoritesUpdated 事件
+            // 但我们已经做了乐观更新，所以不需要等待广播
+            
+        } catch (err) {
+            console.error('取消收藏失败:', err);
+            alert('取消收藏失败，请重试');
+        }
     };
 
-    // 初始加载时显示全屏加载动画
     const isInitialLoading = loading && favorites.length === 0 && page === 1;
     if (isInitialLoading) {
         return (
@@ -132,7 +209,6 @@ const handleKeyDown = (e) => {
         );
     }
 
-    // 如果未登录，显示提示
     if (!isAuthenticated) {
         return (
             <div className={styles.home}>
@@ -148,29 +224,24 @@ const handleKeyDown = (e) => {
     return (
         <div className={styles.home}>
             <div className={styles.allMusicSection}>
-                {/* 【修改】: 使用和 Home.js 相同的顶部布局结构 */}
                 <div className={styles.sectionHeader}>
-                    {/* 1. 标题 - 固定在左侧 */}
                     <h2 className={styles.sectionTitle}>收藏 ({favorites.length})</h2>
 
-                    {/* 2. 右侧容器 - 搜索框和视图切换右对齐 */}
                     <div className={styles.sectionHeaderRight}>
-                        {/* 搜索框 */}
                         <div className={styles.searchContainer}>
                             <svg className={styles.searchIcon} viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M10 18a7.952 7.952 0 0 0 4.897-1.688l4.396 4.396 1.414-1.414-4.396-4.396A7.952 7.952 0 0 0 18 10c0-4.411-3.589-8-8-8s-8 3.589-8 8 3.589 8 8 8zm0-14c3.309 0 6 2.691 6 6s-2.691 6-6 6-6-2.691-6-6 2.691-6 6-6z"></path>
                             </svg>
-                           <input
-  type="text"
-  placeholder="搜索收藏的歌曲、艺术家..."
-  className={styles.searchInput}
-  value={searchInput} // 绑定临时值
-  onChange={(e) => setSearchInput(e.target.value)} // 只更新临时值
-  onKeyDown={handleKeyDown} // 监听回车键
-/>
+                            <input
+                                type="text"
+                                placeholder="搜索收藏的歌曲、艺术家..."
+                                className={styles.searchInput}
+                                value={searchInput}
+                                onChange={(e) => setSearchInput(e.target.value)}
+                                onKeyDown={handleKeyDown}
+                            />
                         </div>
 
-                        {/* 视图切换 */}
                         <div className={styles.viewModeToggle}>
                             <button
                                 className={`${styles.viewModeButton} ${viewMode === 'table' ? styles.active : ''}`}
@@ -178,7 +249,7 @@ const handleKeyDown = (e) => {
                                 title="列表视图"
                             >
                                 <svg viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/>
+                                    <path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z" />
                                 </svg>
                             </button>
                             <button
@@ -187,7 +258,7 @@ const handleKeyDown = (e) => {
                                 title="网格视图"
                             >
                                 <svg viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M3 3h8v8H3V3zm0 10h8v8H3v-8zm10 0h8v8h-8v-8zm0-10h8v8h-8V3z"/>
+                                    <path d="M3 3h8v8H3V3zm0 10h8v8H3v-8zm10 0h8v8h-8v-8zm0-10h8v8h-8V3z" />
                                 </svg>
                             </button>
                         </div>
@@ -196,14 +267,12 @@ const handleKeyDown = (e) => {
 
                 {error && <div className={styles.error}>{error}</div>}
 
-                {/* 搜索或首次加载时的加载状态 */}
                 {loading && favorites.length === 0 && (
                     <div className={styles.loadingOverlay}>
                         <Loading message={searchTerm ? `正在搜索 "${searchTerm}"...` : "正在加载收藏列表..."} />
                     </div>
                 )}
 
-                {/* 内容区域 */}
                 <div className={styles.contentArea}>
                     {viewMode === 'table' ? (
                         <MusicTableView
@@ -211,7 +280,7 @@ const handleKeyDown = (e) => {
                             onPlayMusic={handlePlayMusic}
                             onLike={handleLike}
                             lastMusicElementRef={lastMusicElementRef}
-                            showLikeButton={false}
+                            showLikeButton={true}
                             currentSong={currentSong}
                         />
                     ) : (
@@ -220,13 +289,12 @@ const handleKeyDown = (e) => {
                             onPlayMusic={handlePlayMusic}
                             onLike={handleLike}
                             lastMusicElementRef={lastMusicElementRef}
-                            showLikeButton={false}
+                            showLikeButton={true}
                             currentSong={currentSong}
                         />
                     )}
                 </div>
 
-                {/* 滚动加载时的加载提示 */}
                 {loading && favorites.length > 0 && (
                     <div className={styles.loadingMore}>
                         <Loading message="正在加载更多收藏..." />

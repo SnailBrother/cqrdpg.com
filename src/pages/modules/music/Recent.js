@@ -64,7 +64,7 @@ const Recent = () => {
         setLoading(true);
         setError(null);
         try {
-            const response = await axios.get('/api/reactdemoRecentlyPlayedmusic', {
+            const response = await axios.get('/api/Music/MusicRecentlyPlayed', {
                 params: {
                     email: user.email, // 修改：改为传递 email
                     page: page,
@@ -126,7 +126,7 @@ const Recent = () => {
         e.stopPropagation();
         try {
             // 注意：这里需要创建对应的删除 API，也需要改为使用 email
-            await axios.delete('/api/reactdemoRecentlyPlayedmusic', {
+            await axios.delete('/api/Music/MusicRecentlyPlayed', {
                 data: {
                     email: user.email, // 修改：改为传递 email
                     musicId: musicId

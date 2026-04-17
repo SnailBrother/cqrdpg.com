@@ -172,19 +172,31 @@ const Player = ({ className = '' }) => {
       return;
     }
 
+    // ✅ 正确获取歌曲 ID
+    // 优先使用 music_id（来自收藏列表等），否则使用 id（来自音乐库）
+    const songId = song.music_id || song.id;
+
+    console.log('记录播放历史 - 歌曲信息:', {
+      id: song.id,
+      music_id: song.music_id,
+      title: song.title,
+      使用的歌曲ID: songId
+    });
+
     try {
       const coverimageFileName = generateFileName(song.title, song.artist, 'jpg');
       const srcFileName = generateFileName(song.title, song.artist, 'mp3');
 
-      await axios.post('/api/reactdemoRecentlyPlayedmusic', {
+      await axios.post('/api/Music/MusicRecentlyPlayed', {
         email: user.email,
+        music_id: songId,  // ✅ 使用正确的歌曲 ID
         title: song.title,
         artist: song.artist,
         coverimage: coverimageFileName,
         src: srcFileName,
         genre: song.genre || ''
       });
-      console.log('播放记录保存成功');
+      console.log('播放记录保存成功，music_id:', songId);
     } catch (err) {
       console.error('保存播放记录失败:', err);
     }
@@ -215,20 +227,45 @@ const Player = ({ className = '' }) => {
   }, [currentSong, isAuthenticated, user?.username]);
 
   const checkIfLiked = async () => {
+    if (!currentSong || !isAuthenticated || !user?.username) {
+      setIsLiked(false);
+      return;
+    }
+
+    // ✅ 获取正确的歌曲 ID
+    const songId = currentSong.music_id || currentSong.id;
+
     try {
-      const response = await axios.get('/api/reactdemofavorites', {
+      const response = await axios.get('/api/music/favorites', {
         params: {
-          username: user.username,
-          search: currentSong.title
+          username: user.username
         }
       });
 
-      const isSongLiked = response.data.data.some(favorite =>
-        favorite.title === currentSong.title && favorite.artist === currentSong.artist
-      );
+      let favoritesList = [];
+      if (Array.isArray(response.data)) {
+        favoritesList = response.data;
+      } else if (response.data && Array.isArray(response.data.data)) {
+        favoritesList = response.data.data;
+      }
+
+      // ✅ 优先用 music_id 判断
+      const isSongLiked = favoritesList.some(favorite => {
+        // 方式1：通过 music_id 判断（最准确）
+        if (songId && favorite.music_id === songId) {
+          return true;
+        }
+        // 方式2：通过歌名和歌手判断（降级方案）
+        const favTitle = favorite.song_name || favorite.title;
+        return favTitle === currentSong.title && favorite.artist === currentSong.artist;
+      });
+
       setIsLiked(isSongLiked);
+      console.log(`歌曲 "${currentSong.title}" (ID: ${songId}) 收藏状态:`, isSongLiked);
+
     } catch (err) {
       console.error('检查收藏状态失败:', err);
+      setIsLiked(false);
     }
   };
 
@@ -305,42 +342,66 @@ const Player = ({ className = '' }) => {
   };
 
   // --- 喜欢功能 ---
-  const handleLike = async () => {
-    if (!isAuthenticated || !user?.username) {
-      alert('请先登录');
-      return;
-    }
+// --- 喜欢功能 ---
+// --- 喜欢功能 ---
+const handleLike = async () => {
+  if (!isAuthenticated || !user?.username) {
+    alert('请先登录');
+    return;
+  }
 
-    if (!currentSong) return;
+  if (!currentSong) return;
 
-    setLoading(true);
-    try {
-      if (isLiked) {
-        await axios.delete('/api/music/favorites', {
-          data: {
-            user_name: user.username,
-            song_name: currentSong.title
-          }
-        });
-        setIsLiked(false);
-        console.log('取消收藏成功');
-      } else {
-        await axios.post('/api/music/favorites', {
+  const songId = currentSong.music_id || currentSong.id;
+
+  setLoading(true);
+  try {
+    if (isLiked) {
+      await axios.delete('/api/music/favorites', {
+        data: {
           user_name: user.username,
-          song_name: currentSong.title,
-          artist: currentSong.artist,
-          play_count: 1
-        });
-        setIsLiked(true);
-        console.log('添加收藏成功');
-      }
-    } catch (err) {
-      console.error('操作收藏失败:', err);
-      alert('操作失败，请重试');
-    } finally {
-      setLoading(false);
+          music_id: songId,
+          song_name: currentSong.title
+        }
+      });
+      setIsLiked(false);
+      
+      socket.emit('favoriteChanged', {
+        user_name: user.username,
+        action: 'remove',
+        music_id: songId,
+        song_name: currentSong.title,
+        artist: currentSong.artist
+      });
+      
+      console.log('取消收藏成功');
+    } else {
+      await axios.post('/api/music/favorites', {
+        user_name: user.username,
+        music_id: songId,
+        song_name: currentSong.title,
+        artist: currentSong.artist,
+        play_count: 1
+      });
+      setIsLiked(true);
+      
+      socket.emit('favoriteChanged', {
+        user_name: user.username,
+        action: 'add',
+        music_id: songId,
+        song_name: currentSong.title,
+        artist: currentSong.artist
+      });
+      
+      console.log('添加收藏成功');
     }
-  };
+  } catch (err) {
+    console.error('操作收藏失败:', err);
+    alert('操作失败，请重试');
+  } finally {
+    setLoading(false);
+  }
+};
 
   // 导航函数
   const showComments = () => {
@@ -468,7 +529,7 @@ const Player = ({ className = '' }) => {
             </button>
 
             <button className={styles.controlButton} onClick={playNext} title="下一首" disabled={queue.length === 0}>⏭</button>
-            
+
             <div className={styles.volumeControlWrapper} ref={volumeSliderRef}>
               <button
                 className={styles.controlButton}
@@ -476,7 +537,7 @@ const Player = ({ className = '' }) => {
                 title="音量"
               >
                 {volume === 0 ? '🔊' : volume < 0.5 ? '🔊' : '🔊'}
-                 {/* {volume === 0 ? '🔇' : volume < 0.5 ? '🔈' : '🔊'} */}
+                {/* {volume === 0 ? '🔇' : volume < 0.5 ? '🔈' : '🔊'} */}
               </button>
 
               {showVolumeSlider && (
