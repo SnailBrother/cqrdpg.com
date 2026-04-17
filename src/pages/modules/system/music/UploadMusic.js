@@ -88,7 +88,7 @@ const UploadMusic = () => {
         }
 
         try {
-            const response = await axios.post('https://www.cqrdpg.com:5202/backend/api/uploadmusic', formData);
+            const response = await axios.post('/api/uploadmusic', formData);
             setMessage({ text: '音乐上传成功!', type: 'success' });
             console.log('Upload response:', response.data);
             // 通知所有客户端音乐列表已更新

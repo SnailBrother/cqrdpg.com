@@ -89,7 +89,7 @@ const ThemeSettings = () => {
                     imageFormData.append('username', username);
                     imageFormData.append('image', backgroundImage);
 
-                    const imageResponse = await axios.post(`https://www.cqrdpg.com:5202/backend/api/uploadchatbackground?username=${username}`, imageFormData, {
+                    const imageResponse = await axios.post(`/api/themesettings/uploadchatbackground?username=${username}`, imageFormData, {
                         headers: {
                             'Content-Type': 'multipart/form-data',
                         },

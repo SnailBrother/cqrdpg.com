@@ -75,7 +75,7 @@ const AvatarSettings = () => {
 
                 // 上传图片到服务器
                 const response = await axios.post(
-                    `https://www.cqrdpg.com:5202/backend/api/uploaduserheadimage?username=${username}`,
+                    `/api/uploaduserheadimage?username=${username}`,
                     formData,
                     {
                         headers: {

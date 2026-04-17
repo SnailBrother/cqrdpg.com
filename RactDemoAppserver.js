@@ -27,7 +27,7 @@ const config = {
         encrypt: false,
         trustServerCertificate: true,
         pool: {
-            max: 100, // 连接池最大连接数
+            max: 20, // 连接池最大连接数
             min: 0,  // 最小连接数
             idleTimeoutMillis: 30000 // 空闲连接超时时间
         }
@@ -3236,7 +3236,7 @@ app.get('/api/checkImageExists', (req, res) => {
     const uploadheadimage = multer({ storage: storageheadimage });
 
     // 处理图片上传的接口
-    app.post('/backend/api/uploaduserheadimage', uploadheadimage.single('image'), (req, res) => {
+    app.post('/api/uploaduserheadimage', uploadheadimage.single('image'), (req, res) => {
         const { username } = req.query;
         if (!username) {
             return res.status(400).json({ error: 'Username is required' });
@@ -3298,7 +3298,7 @@ app.get('/api/checkImageExists', (req, res) => {
     const uploadChatBackground = multer({ storage: storageChatBackground });
 
     // 处理聊天背景图片上传的接口
-    app.post('/backend/api/uploadchatbackground', uploadChatBackground.single('image'), (req, res) => {
+    app.post('/api/themesettings/uploadchatbackground', uploadChatBackground.single('image'), (req, res) => {
         const { username } = req.query;
         if (!username) {
             return res.status(400).json({ error: 'Username is required' });
@@ -4266,7 +4266,7 @@ app.get('/api/musics', async (req, res) => {
 });
 
 // 获取用户收藏列表
-app.get('/backend/api/favorites', async (req, res) => {
+app.get('/api/music/favorites', async (req, res) => {
     try {
         const { user_name } = req.query;
 
@@ -4285,7 +4285,7 @@ app.get('/backend/api/favorites', async (req, res) => {
 });
 
 // 按分类获取歌曲
-app.get('/backend/api/musics/by-category', async (req, res) => {
+app.get('/api/musics/by-category', async (req, res) => {
     try {
         const { category } = req.query;
 
@@ -4303,7 +4303,7 @@ app.get('/backend/api/musics/by-category', async (req, res) => {
     }
 });
 // 添加收藏
-app.post('/backend/api/favorites', async (req, res) => {
+app.post('/api/favorites', async (req, res) => {
     try {
         const { user_name, song_name, artist, play_count } = req.body;
 
@@ -4325,7 +4325,7 @@ app.post('/backend/api/favorites', async (req, res) => {
 });
 
 // 取消收藏
-app.delete('/backend/api/favorites', async (req, res) => {
+app.delete('/api/favorites', async (req, res) => {
     try {
         const { user_name, song_name } = req.body;
 
@@ -4373,7 +4373,7 @@ const uploadMusic = multer({ storage: storageMusic });
 
 // 处理音乐上传的接口
 
-app.post('/backend/api/uploadmusic', uploadMusic.fields([
+app.post('/api/uploadmusic', uploadMusic.fields([
     { name: 'audio', maxCount: 1 },
     { name: 'cover', maxCount: 1 },
     { name: 'lyrics', maxCount: 1 }
@@ -4430,7 +4430,7 @@ app.post('/backend/api/uploadmusic', uploadMusic.fields([
 //上传音乐结束
 
 // 新增获取歌词的接口
-app.get('/backend/api/lyrics/:filename', async (req, res) => {
+app.get('/api/lyrics/:filename', async (req, res) => {
     try {
         const { filename } = req.params;
         const lrcPath = path.join(__dirname, 'musics', filename);
@@ -4451,7 +4451,7 @@ app.get('/backend/api/lyrics/:filename', async (req, res) => {
 
 //歌曲评论 api👇
 // 获取某首歌曲的所有评论
-app.get('/backend/api/music-comments', async (req, res) => {
+app.get('/api/music-comments', async (req, res) => {
     const { music_id } = req.query;
 
     if (!music_id) {
@@ -4505,7 +4505,7 @@ app.get('/backend/api/music-comments/count', async (req, res) => {
 });
 // 提交新评论
 // 提交新评论API
-app.post('/backend/api/music-comments', async (req, res) => {
+app.post('/api/music-comments', async (req, res) => {
     console.log('Received comment data:', req.body);
     const { music_id, music_title, music_artist, user_name, comment_text } = req.body;
 
@@ -4539,7 +4539,7 @@ app.post('/backend/api/music-comments', async (req, res) => {
     }
 });
 // 删除评论 (可选功能)
-app.delete('/backend/api/music-comments', async (req, res) => {
+app.delete('/api/music-comments', async (req, res) => {
     const { comment_id, user_name } = req.body;
 
     if (!comment_id || !user_name) {
@@ -4572,7 +4572,7 @@ app.delete('/backend/api/music-comments', async (req, res) => {
 
 
 // 保存播放历史 - 改进版
-app.post('/backend/api/play-history', async (req, res) => {
+app.post('/api/play-history', async (req, res) => {
     //后端打印历史播放信息
     // console.log('Received play history data:', req.body);
     const { user_name, music_id, music_title, music_artist } = req.body;
@@ -4626,7 +4626,7 @@ app.post('/backend/api/play-history', async (req, res) => {
 });
 
 // 获取播放历史 - 改进版
-app.get('/backend/api/play-history/:user_name', async (req, res) => {
+app.get('/api/play-history/:user_name', async (req, res) => {
     const { user_name } = req.params;
     //  console.log(`Fetching play history for user: ${user_name}`);
 
@@ -9447,7 +9447,7 @@ app.delete('/api/deletemusic/:id', async (req, res) => {
 });
 
 //获取喜欢歌单
-app.get('/backend/api/reactdemofavorites', async (req, res) => {
+app.get('/api/reactdemofavorites', async (req, res) => {
     try {
         const { username, page = 1, pageSize = 20, search = '' } = req.query;
 

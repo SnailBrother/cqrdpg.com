@@ -216,7 +216,7 @@ const Player = ({ className = '' }) => {
 
   const checkIfLiked = async () => {
     try {
-      const response = await axios.get('https://www.cqrdpg.com:5202/backend/api/reactdemofavorites', {
+      const response = await axios.get('/api/reactdemofavorites', {
         params: {
           username: user.username,
           search: currentSong.title
@@ -316,7 +316,7 @@ const Player = ({ className = '' }) => {
     setLoading(true);
     try {
       if (isLiked) {
-        await axios.delete('https://www.cqrdpg.com:5202/backend/api/favorites', {
+        await axios.delete('/api/music/favorites', {
           data: {
             user_name: user.username,
             song_name: currentSong.title
@@ -325,7 +325,7 @@ const Player = ({ className = '' }) => {
         setIsLiked(false);
         console.log('取消收藏成功');
       } else {
-        await axios.post('https://www.cqrdpg.com:5202/backend/api/favorites', {
+        await axios.post('/api/music/favorites', {
           user_name: user.username,
           song_name: currentSong.title,
           artist: currentSong.artist,
