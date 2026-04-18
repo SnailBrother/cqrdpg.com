@@ -1,3 +1,86 @@
+ # Nginx 反向代理配置
+
+## Nginx 配置
+
+```
+worker_processes  1;
+
+events {
+    worker_connections  1024;
+}
+
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+    sendfile        on;
+    keepalive_timeout  65;
+
+    server {
+        listen 80;
+        server_name  localhost;
+
+        location / {
+            root   html;
+            try_files $uri $uri/ /index.html;
+            index index.html index.htm;
+        }
+
+        # API 代理
+        location /api/ {
+            proxy_pass https://www.cqrdpg.com:5202;   #proxy_pass https://www.cqrdpg.com:5202/api/;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection 'upgrade';
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_cache_bypass $http_upgrade;
+
+            # CORS 头（如果后端没有设置）
+            add_header Access-Control-Allow-Origin *;
+            add_header Access-Control-Allow-Methods 'GET, POST, PUT, DELETE, OPTIONS';
+            add_header Access-Control-Allow-Headers 'Authorization, Content-Type';
+        }
+    }
+}
+```
+
+## 后端代码示例
+```
+app.get('/api/GetHousePricePictures', (req, res) => {
+    // 处理请求
+});
+```
+## 前端代码示例
+```
+const response = await axios.get('/api/GetHousePricePictures');
+```
+## 工作原理
+
+```
+前端代码:
+axios.get('/api/GetHousePricePictures')
+        ↓
+浏览器实际请求:
+GET https://www.cqrdpg.com:5202/api/GetHousePricePictures
+        ↓
+Nginx 服务器接收到请求（当前端和 Nginx 同域时）
+        ↓
+Nginx 匹配 location /api/
+        ↓
+Nginx 转发请求到:
+https://www.cqrdpg.com:5202/api/GetHousePricePictures
+        ↓
+后端服务器处理:
+app.get('/api/GetHousePricePictures', ...)
+```
+
+## 关键配置说明
+- 通过 Nginx 反向代理，前端请求 /api/GetHousePricePictures 会被转发到 https://www.cqrdpg.com:5202/api/GetHousePricePictures，从而实现跨域请求。
+
+<br>
+ 
 # 多功能集成平台数据库设计
 
 ## 📌 项目简介
@@ -224,7 +307,7 @@ CREATE TABLE WeChatApp.dbo.WeChatUserManagement (
 ``` 
 ---
 
-## 五、系统设置板块数据库 (`SystemSettingsApp`)
+## 四、系统设置板块数据库 (`SystemSettingsApp`)
  ### 1. 用户设置 (`SystemSettingsApp.dbo.SystemUserAccounts`)
 ``` 
 CREATE TABLE SystemSettingsApp.dbo.SystemUserAccounts (
@@ -275,17 +358,4 @@ CREATE TABLE SystemSettingsApp.dbo.SystemUserThemeSettings (
 );
 ``` 
 
-## 六、跨库关联与维护建议
-
-### 1. 跨库数据关联逻辑
-- **用户信息统一**：所有业务表 `user_id` 均指向 `user_center_db.user_base` 的 ID。
-- **消息分享**：聊天中分享歌曲时，`messages.content` 字段存储 `music_service_db.songs.id`。
-
-### 2. 部署与维护建议
-#### 数据库选型
-- **核心关系型数据**：MySQL 8.0+ 或 PostgreSQL。
-- **海量埋点/日志数据**：ClickHouse 或 Elasticsearch。
-
-#### 缓存策略
-- **用户基础信息**：必须通过 **Redis** 缓存，减少 `user_center_db` 压力。
-- **热门歌单与文档**：使用 **Redis** 缓存元数据。
+ 
