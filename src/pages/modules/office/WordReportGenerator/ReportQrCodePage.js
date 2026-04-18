@@ -217,7 +217,7 @@ const ReportQrCodePage = () => {
         }
 
         // 步骤3: 调用API查询数据库中的数据（使用解码后的原始ID）
-        //const response = await axios.get(`https://www.cqrdpg.com:5202/api/searchWordReportsReportQrCode/${reportsID}`);
+        //const response = await axios.get(`/api/searchWordReportsReportQrCode/${reportsID}`);
         const response = await axios.get(`/api/searchWordReportsReportQrCode/${reportsID}`);
         
         if (!response.data) {

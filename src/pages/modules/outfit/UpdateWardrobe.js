@@ -137,7 +137,7 @@ const UpdateWardrobeSteward = () => {
             };
 
             // First create the item to get the item_code
-            const response = await axios.post('https://www.cqrdpg.com:5202/api/Reactwardrobe/add', submitData);
+            const response = await axios.post('/api/Reactwardrobe/add', submitData);
             const itemCode = response.data.item_code;
 
             // Then upload images
@@ -148,7 +148,7 @@ const UpdateWardrobeSteward = () => {
             formDataImages.append('item_image', itemImage);
             formDataImages.append('effect_image', effectImage);
 
-            await axios.post('https://www.cqrdpg.com:5202/api/Reactwardrobe/upload-images', formDataImages, {
+            await axios.post('/api/Reactwardrobe/upload-images', formDataImages, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }

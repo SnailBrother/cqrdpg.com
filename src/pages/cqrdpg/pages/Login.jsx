@@ -415,7 +415,7 @@ function Login() {
 
         setUserInfo(userData, token);
 
-        const from = location.state?.from?.pathname || '/apps';
+        const from = location.state?.from?.pathname || '/home';
         navigate(from, { replace: true });
       } else {
         throw new Error(response.data.message || '登录失败');

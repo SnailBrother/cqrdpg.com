@@ -30,7 +30,7 @@ const PublicNews = () => {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const response = await axios.get('https://www.cqrdpg.com:5202/api/getMessageDetailData');
+        const response = await axios.get('/api/getMessageDetailData');
         setMessages(response.data.MessageDetail);
         setLoading(false);
       } catch (error) {

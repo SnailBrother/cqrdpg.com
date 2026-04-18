@@ -83,7 +83,7 @@ const AccountingDetailsChange = ({ record, onClose, onUpdateSuccess, onDeleteSuc
 
         try {
             await axios.delete(
-                `https://www.cqrdpg.com:5202/api/lifebookkeepingdeleteRecord/${record.transaction_id}`
+                `/api/lifebookkeepingdeleteRecord/${record.transaction_id}`
             );
             onDeleteSuccess();
         } catch (err) {

@@ -28,7 +28,7 @@ const AddNewPublicNews = () => {
     setError('');
 
     try {
-      const response = await axios.post('https://www.cqrdpg.com:5202/api/addMessage', {
+      const response = await axios.post('/api/addMessage', {
         title,
         content
       });

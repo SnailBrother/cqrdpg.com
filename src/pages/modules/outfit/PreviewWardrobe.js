@@ -35,7 +35,7 @@ const PreviewWardrobe = () => {
     const fetchWardrobeItems = async () => {
         try {
             setLoading(true);
-            const response = await axios.get(`https://www.cqrdpg.com:5202/api/Reactwardrobe/items?username=${user.username}`);
+            const response = await axios.get(`/api/Reactwardrobe/items?username=${user.username}`);
             setWardrobeItems(response.data.items || []);
             setError('');
         } catch (error) {

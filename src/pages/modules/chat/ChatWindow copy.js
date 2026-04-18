@@ -78,7 +78,7 @@ const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) 
                 file_size: file.size
             });
 
-            const response = await axios.post('https://www.cqrdpg.com:5202/api/messages/uploadImage', formData, {
+            const response = await axios.post('/api/messages/uploadImage', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 },

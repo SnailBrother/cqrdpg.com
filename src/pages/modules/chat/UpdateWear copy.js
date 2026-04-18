@@ -159,7 +159,7 @@ const UpdateWear = () => {
             });
 
             // 发送请求
-            const response = await axios.post('https://www.cqrdpg.com:5202/api/dressing-guidelines/upload', formData, {
+            const response = await axios.post('/api/dressing-guidelines/upload', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },

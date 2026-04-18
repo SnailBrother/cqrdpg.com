@@ -17,7 +17,7 @@ const SiteLinks = () => {
     // 2. 初始数据获取
     const fetchData = async () => {
       try {
-        const response = await fetch('https://www.cqrdpg.com:5202/api/getUsedWebsitesData');
+        const response = await fetch('/api/getUsedWebsitesData');
         const data = await response.json();
         processLinksData(data);
       } catch (err) {

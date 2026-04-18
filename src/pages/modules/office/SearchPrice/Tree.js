@@ -63,7 +63,7 @@ function Tree() {
     const fetchRandomTrees = async () => {
         try {
             setIsLoading(true);
-            const response = await axios.get('https://www.cqrdpg.com:5202/api/getRandomTrees');
+            const response = await axios.get('/api/getRandomTrees');
             setAllTrees(response.data.Trees);
             setFilteredTrees(response.data.Trees);
             // 添加这行设置总条数
@@ -87,7 +87,7 @@ function Tree() {
         setIsLoading(true);
         try {
             const response = await axios.get(
-                `https://www.cqrdpg.com:5202/api/searchTrees?term=${encodeURIComponent(searchTerm)}&page=${currentPage}&pageSize=${itemsPerPage}`
+                `/api/searchTrees?term=${encodeURIComponent(searchTerm)}&page=${currentPage}&pageSize=${itemsPerPage}`
             );
             setFilteredTrees(response.data.results);
             setTotalCount(response.data.totalCount);
@@ -108,13 +108,13 @@ function Tree() {
                 if (isSearching) {
                     // 如果是搜索状态，保持搜索
                     const response = await axios.get(
-                        `https://www.cqrdpg.com:5202/api/searchTrees?term=${encodeURIComponent(searchTerm)}&page=${page}&pageSize=${itemsPerPage}`
+                        `/api/searchTrees?term=${encodeURIComponent(searchTerm)}&page=${page}&pageSize=${itemsPerPage}`
                     );
                     setFilteredTrees(response.data.results);
                 } else {
                     // 如果不是搜索状态，获取新的分页数据
                     const response = await axios.get(
-                        `https://www.cqrdpg.com:5202/api/getTrees?page=${page}&pageSize=${itemsPerPage}`
+                        `/api/getTrees?page=${page}&pageSize=${itemsPerPage}`
                     );
                     setFilteredTrees(response.data.results);
                 }
@@ -131,7 +131,7 @@ function Tree() {
     //     try {
     //         setIsLoading(true);
     //         const response = await axios.get(
-    //             `https://www.cqrdpg.com:5202/api/getTrees?page=${page}&pageSize=${size}`
+    //             `/api/getTrees?page=${page}&pageSize=${size}`
     //         );
     //         setFilteredTrees(response.data.results);
     //         setTotalCount(response.data.totalCount);
@@ -154,7 +154,7 @@ function Tree() {
             if (isSearching) {
                 // 如果是搜索状态，保持搜索
                 const response = await axios.get(
-                    `https://www.cqrdpg.com:5202/api/searchTrees?term=${encodeURIComponent(searchTerm)}&page=1&pageSize=${newSize}`
+                    `/api/searchTrees?term=${encodeURIComponent(searchTerm)}&page=1&pageSize=${newSize}`
                 );
                 setFilteredTrees(response.data.results);
                 setTotalCount(response.data.totalCount);
@@ -162,7 +162,7 @@ function Tree() {
             } else {
                 // 如果不是搜索状态，获取新的分页数据
                 const response = await axios.get(
-                    `https://www.cqrdpg.com:5202/api/getTrees?page=1&pageSize=${newSize}`
+                    `/api/getTrees?page=1&pageSize=${newSize}`
                 );
                 setFilteredTrees(response.data.results);
                 setTotalCount(response.data.totalCount);
@@ -186,13 +186,13 @@ function Tree() {
                 if (isSearching) {
                     // 如果是搜索状态，保持搜索
                     const response = await axios.get(
-                        `https://www.cqrdpg.com:5202/api/searchTrees?term=${encodeURIComponent(searchTerm)}&page=${page}&pageSize=${itemsPerPage}`
+                        `/api/searchTrees?term=${encodeURIComponent(searchTerm)}&page=${page}&pageSize=${itemsPerPage}`
                     );
                     setFilteredTrees(response.data.results);
                 } else {
                     // 如果不是搜索状态，获取新的分页数据
                     const response = await axios.get(
-                        `https://www.cqrdpg.com:5202/api/getTrees?page=${page}&pageSize=${itemsPerPage}`
+                        `/api/getTrees?page=${page}&pageSize=${itemsPerPage}`
                     );
                     setFilteredTrees(response.data.results);
                 }
@@ -214,7 +214,7 @@ function Tree() {
     // 处理删除操作
     const handleDeleteClick = async (id) => {
         try {
-            await axios.delete(`https://www.cqrdpg.com:5202/api/deleteTree/${id}`);
+            await axios.delete(`/api/deleteTree/${id}`);
             // Socket通知会自动更新数据
             alert('删除成功');
         } catch (error) {
@@ -248,9 +248,9 @@ function Tree() {
 
         try {
             if (editTree) {
-                await axios.put(`https://www.cqrdpg.com:5202/api/updateTree/${editTree.id}`, updatedTree);
+                await axios.put(`/api/updateTree/${editTree.id}`, updatedTree);
             } else {
-                await axios.post('https://www.cqrdpg.com:5202/api/addTree', updatedTree);
+                await axios.post('/api/addTree', updatedTree);
                 alert('新增成功');
             }
         } catch (error) {
@@ -334,7 +334,7 @@ function Tree() {
         setUploadProgress(0);
 
         try {
-            const response = await axios.post('https://www.cqrdpg.com:5202/api/uploadTreesExcel', { data: excelData });
+            const response = await axios.post('/api/uploadTreesExcel', { data: excelData });
 
             if (response.data.success) {
                 setUploadStatus('success');

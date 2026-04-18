@@ -23,7 +23,7 @@ const TemplateManagement = () => {
     useEffect(() => {
         const fetchTemplates = async () => {
             try {
-                const response = await axios.get('https://www.cqrdpg.com:5202/api/getTemplateManagement');
+                const response = await axios.get('/api/getTemplateManagement');
                 setTemplates(response.data.Template);
                 setLoading(false);
             } catch (err) {
@@ -40,7 +40,7 @@ const TemplateManagement = () => {
 
         try {
             const response = await axios({
-                url: 'https://www.cqrdpg.com:5202/api/downloadTemplateManagement',
+                url: '/api/downloadTemplateManagement',
                 method: 'GET',
                 params: {
                     assetType: assetType,

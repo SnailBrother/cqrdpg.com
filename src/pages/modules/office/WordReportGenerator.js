@@ -365,7 +365,7 @@ const handleSavePreviewData = (updatedData) => {
         // 获取估价师选项
         const fetchAppraiserOptions = async () => {
             try {
-                const response = await axios.get('https://www.cqrdpg.com:5202/api/getWordReportOptions');
+                const response = await axios.get('/api/getWordReportOptions');
                 setReportgeneratorAppraiserOptions(response.data);
             } catch (error) {
                 console.error('获取估价师选项失败:', error);
@@ -377,7 +377,7 @@ const handleSavePreviewData = (updatedData) => {
         // 获取报告列表 api/searchWordReports
         const fetchReportList = async () => {
             try {
-                const response = await axios.get('https://www.cqrdpg.com:5202/api/searchWordReports');
+                const response = await axios.get('/api/searchWordReports');
                 let data = response.data;
 
                 // 确保返回的是数组
@@ -651,7 +651,7 @@ const handleSavePreviewData = (updatedData) => {
         setIsLoading(true);
         try {
             const response = await axios.get(
-                `https://www.cqrdpg.com:5202/api/searchWordReports?documentNo=${reportgeneratorSearchTerm}&page=${currentPage}&pageSize=${pageSize}`
+                `/api/searchWordReports?documentNo=${reportgeneratorSearchTerm}&page=${currentPage}&pageSize=${pageSize}`
             );
             setReportgeneratorReportList(response.data.reports); // 假设返回数据格式为 { reports: [], total: 100 }
             setTotalReports(response.data.total);
@@ -770,7 +770,7 @@ const handleSavePreviewData = (updatedData) => {
 
             // 检查是否存在相同报告编号的报告 
             const checkResponse = await axios.get(
-                `https://www.cqrdpg.com:5202/api/checkReportByReportID?reportID=${encodeURIComponent(reportData.reportID)}`
+                `/api/checkReportByReportID?reportID=${encodeURIComponent(reportData.reportID)}`
             );
             const existingReport = checkResponse.data;
 
@@ -786,14 +786,14 @@ const handleSavePreviewData = (updatedData) => {
 
                 if (isConfirmed) {
                     await axios.put(
-                        `https://www.cqrdpg.com:5202/api/updateWordReport/${existingReport.reportsID}`,
+                        `/api/updateWordReport/${existingReport.reportsID}`,
                         reportData
                     );
                     notify('报告更新成功！', 'success');
                 }
             } else {
                 // 不存在相同报告编号的报告，创建新报告
-                await axios.post('https://www.cqrdpg.com:5202/api/createWordReport', reportData);
+                await axios.post('/api/createWordReport', reportData);
                 notify('报告创建成功！', 'success');
             }
         } catch (error) {
@@ -837,7 +837,7 @@ const handleSavePreviewData = (updatedData) => {
         if (isConfirmed) {
             setIsLoading(true);
             try {
-                await axios.delete(`https://www.cqrdpg.com:5202/api/deleteWordReport/${currentReportId}`);
+                await axios.delete(`/api/deleteWordReport/${currentReportId}`);
                 notify('报告删除成功！', 'success');
 
                 // 安全更新本地状态

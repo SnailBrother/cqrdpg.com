@@ -18,7 +18,7 @@ const AddNewSpecialtips = () => {
         setErrorMessage('');
 
         try {
-            const response = await axios.post('https://www.cqrdpg.com:5202/api/addSpecialTip', {
+            const response = await axios.post('/api/addSpecialTip', {
                 asset_type: assetType,
                 tip_content: tipContent,
                 remark: remark
