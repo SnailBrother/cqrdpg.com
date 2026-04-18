@@ -34,7 +34,7 @@ const AccountingAdd = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const response = await axios.get('/api/getCategoryIcons');
+                const response = await axios.get('/api/AccountingApp/getCategoryIcons');
                 if (response.data) {
                     setCategories(response.data);
                 }
@@ -86,7 +86,7 @@ const AccountingAdd = () => {
 
         try {
             const response = await axios.post(
-                'https://www.cqrdpg.com:5202/api/lifebookkeepingaddRecord',
+                '/api/AccountingApp/lifebookkeepingaddRecord',
                 submitData,
                 { headers: { 'Content-Type': 'application/json' } }
             );

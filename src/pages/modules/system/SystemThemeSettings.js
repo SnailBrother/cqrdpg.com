@@ -55,7 +55,7 @@ const SystemThemeSettings = () => {
 
     setLoadingState(true);
     try {
-      const response = await axios.get('/api/UserThemeSettings', {
+      const response = await axios.get('/api/SystemSettingsApp/UserThemeSettings', {
         params: { email: user.email }
       });
 
@@ -94,7 +94,7 @@ const SystemThemeSettings = () => {
   const setActiveThemeById = useCallback(async (themeId) => {
     if (!isAuthenticated || !user) throw new Error('用户未登录');
     try {
-      const response = await axios.put(`/api/UserThemeSettings/setActive/${themeId}`, {
+      const response = await axios.put(`/api/SystemSettingsApp/UserThemeSettings/setActive/${themeId}`, {
         email: user.email
       });
 
@@ -123,7 +123,7 @@ const SystemThemeSettings = () => {
   const setDefaultThemeById = useCallback(async (themeId) => {
     if (!isAuthenticated || !user) throw new Error('用户未登录');
     try {
-      const response = await axios.put(`/api/UserThemeSettings/setDefault/${themeId}`, {
+      const response = await axios.put(`/api/SystemSettingsApp/UserThemeSettings/setDefault/${themeId}`, {
         email: user.email
       });
 
@@ -232,7 +232,7 @@ const SystemThemeSettings = () => {
       };
 
       // 创建主题
-      const response = await axios.post('/api/UserThemeSettings', themeData);
+      const response = await axios.post('/api/SystemSettingsApp/UserThemeSettings', themeData);
 
       if (response.data && response.data.success && response.data.theme) {
         const newTheme = response.data.theme;
@@ -268,7 +268,7 @@ const updateThemeById = useCallback(async (themeId, updateData) => {
       ...updateData
     };
 
-    const response = await axios.put(`/api/UserThemeSettings/${themeId}`, requestData);
+    const response = await axios.put(`/api/SystemSettingsApp/UserThemeSettings/${themeId}`, requestData);
 
     console.log('更新主题响应:', response.data);
 
@@ -310,7 +310,7 @@ const updateThemeById = useCallback(async (themeId, updateData) => {
   // 在 deleteThemeById 函数中也添加邮箱
   const deleteThemeById = useCallback(async (themeId) => {
     try {
-      const response = await axios.delete(`/api/UserThemeSettings/${themeId}`, {
+      const response = await axios.delete(`/api/SystemSettingsApp/UserThemeSettings/${themeId}`, {
         data: { email: user?.email } // 在请求体中传递邮箱
       });
 

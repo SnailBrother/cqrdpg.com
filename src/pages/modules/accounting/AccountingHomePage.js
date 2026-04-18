@@ -29,7 +29,7 @@ const AccountingHomePage = () => {
             try {
                 setLoading(true);
                 setError(null);
-                const response = await axios.get('https://www.cqrdpg.com:5202/api/lifebookkeepinggetRecords');
+                const response = await axios.get('/api/accountingApp/lifebookkeepinggetRecords');
                 setData(response.data);
             } catch (err) {
                 console.error('获取数据失败:', err);

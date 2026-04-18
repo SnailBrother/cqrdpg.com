@@ -96,7 +96,7 @@ const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) 
 
         try {
             // 先获取或创建房间号
-            const roomResponse = await axios.post('https://www.cqrdpg.com:5202/api/chatRoom/getOrCreateRoom', {
+            const roomResponse = await axios.post('/api/WeChatApp/chatRoom/getOrCreateRoom', {
                 sender_name: username,
                 receiver_name: selectedFriend.name
             });
@@ -109,7 +109,7 @@ const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) 
             console.log('获取到房间号:', roomId);
 
             // 发送视频通话邀请消息，携带 roomId
-            const response = await axios.post('https://www.cqrdpg.com:5202/api/messages', {
+            const response = await axios.post('/api/messages', {
                 message_text: `您的好友 ${username} 邀请您进行视频通话`,
                 sender_name: username,
                 receiver_name: selectedFriend.name,
@@ -245,7 +245,7 @@ const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) 
                 file_size: file.size
             });
 
-            const response = await axios.post('https://www.cqrdpg.com:5202/api/messages/uploadImage', formData, {
+            const response = await axios.post('/api/WeChatApp/messages/uploadImage', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 },
@@ -325,7 +325,7 @@ const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) 
     // 获取未读消息总数（排除当前选中好友）
     const fetchUnreadCounts = async () => {
         try {
-            const response = await axios.get('https://www.cqrdpg.com:5202/api/messages');
+            const response = await axios.get('/api/messages');
             const allMessages = response.data;
 
             const unreadCounts = {};
@@ -387,7 +387,7 @@ const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) 
 
         setIsLoading(true);
         try {
-            const response = await axios.get('https://www.cqrdpg.com:5202/api/messages/chat', {
+            const response = await axios.get('/api/messages/chat', {
                 params: {
                     senderName: username,
                     receiverName: selectedFriend.name,
@@ -816,7 +816,7 @@ const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) 
         if (!selectedFriend || !username) return; // 如果没有选中好友或用户未登录，直接返回
 
         try {
-            await axios.put('https://www.cqrdpg.com:5202/api/messages/markAllAsRead', {
+            await axios.put('/api/messages/markAllAsRead', {
                 sender_name: selectedFriend.name, // 好友的用户名
                 receiver_name: username // 当前用户的用户名
             });
@@ -853,7 +853,7 @@ const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) 
 
         try {
             // 发送消息
-            await axios.post('https://www.cqrdpg.com:5202/api/messages', {
+            await axios.post('/api/messages', {
                 message_text: messageText,
                 sender_name: senderName,
                 receiver_name: receiverName
@@ -918,7 +918,7 @@ const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) 
         if (!confirmDelete) return;
 
         try {
-            await axios.delete('https://www.cqrdpg.com:5202/api/messages', {
+            await axios.delete('/api/messages', {
                 data: { messageIds: selectedMessages }
             });
 
@@ -995,7 +995,7 @@ const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) 
         if (messageIds.length === 0) return;
 
         try {
-            await axios.put('https://www.cqrdpg.com:5202/api/messages/read', { messageIds });
+            await axios.put('/api/messages/read', { messageIds });
             setMessages((prevMessages) =>
                 prevMessages.map((msg) =>
                     messageIds.includes(msg.message_id) ? { ...msg, is_read: 1 } : msg

@@ -64,7 +64,7 @@ const AccountingDetailsChange = ({ record, onClose, onUpdateSuccess, onDeleteSuc
 
         try {
             const response = await axios.put(
-                `https://www.cqrdpg.com:5202/api/lifebookkeepingupdateRecord/${record.transaction_id}`,
+                `/api/AccountingApp/lifebookkeepingupdateRecord/${record.transaction_id}`,
                 formData
             );
             onUpdateSuccess(response.data);

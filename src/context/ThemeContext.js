@@ -122,7 +122,7 @@ export const ThemeProvider = ({ children }) => {
 
     setLoadingState(true);
     try {
-      const response = await axios.get('/api/UserThemeSettings', {
+      const response = await axios.get('/api/SystemSettingsApp/UserThemeSettings', {
         params: { email }
       });
 
@@ -167,7 +167,7 @@ export const ThemeProvider = ({ children }) => {
 
     setLoadingState(true);
     try {
-      const response = await axios.get('/api/UserThemeSettings/active', {
+      const response = await axios.get('/api/SystemSettingsApp/UserThemeSettings/active', {
         params: { email }
       });
 
@@ -195,7 +195,7 @@ export const ThemeProvider = ({ children }) => {
 
     setLoadingState(true);
     try {
-      const response = await axios.get('/api/UserThemeSettings/default', {
+      const response = await axios.get('/api/SystemSettingsApp/UserThemeSettings/default', {
         params: { email }
       });
 

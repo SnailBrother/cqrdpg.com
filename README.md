@@ -6,7 +6,7 @@
 
 ---
 
-## 🗃️ 数据库整体架构
+## 数据库整体架构
 
 ### 1. 分库设计原则
 按业务领域垂直拆分，降低耦合；用户基础信息集中共享，业务数据独立扩展。
@@ -20,8 +20,8 @@
 | **AccountingApp** | 记账 | 记录日常开销 |
 | **SportsApp** | 运动 | 记录日常运动 |
 ---
-
-## 💬 二、听歌板块数据库 (`MusicApp`)
+ 
+## 一、听歌板块数据库 (`MusicApp`)
 
 ### 1. 歌单  (`MusicApp.dbo.MusicList`)
 
@@ -53,7 +53,6 @@ CREATE TABLE MusicApp.dbo.MusicComments (
     ON DELETE CASCADE                           -- 当 MusicList 表中的歌曲删除时，删除该歌曲的评论
 );
 ```
-
 
 ### 3. 收藏 (`MusicApp.dbo.MusicFavorites`)
 
@@ -138,79 +137,145 @@ CREATE TABLE MusicApp.dbo.MusicListenTogetherRoomMessages (
         ON DELETE CASCADE                            -- 外键约束，删除 MusicApp.dbo.MusicListenTogetherRooms 中的房间时，自动删除该房间的所有消息
 );
  ```
+---
+##  二、记账板块数据库 (`AccountingApp`)
+
+### 1. 账单 (`AccountingApp.dbo.AccountingList`)
+
+ ``` 
+CREATE TABLE AccountingApp.dbo.AccountingList (
+    transaction_id INT IDENTITY(1,1) PRIMARY KEY,     -- 交易ID，唯一标识
+    transaction_date DATE NOT NULL,                -- 交易时间
+    amount DECIMAL(18, 2) NOT NULL,                    -- 交易金额，使用DECIMAL类型来确保精度
+    transaction_type NVARCHAR(50) NOT NULL,            -- 交易类型 (收入 / 支出)
+    category NVARCHAR(100),                            -- 交易类别 (例如: 食品, 交通, 工资等)
+    payment_method NVARCHAR(50),                       -- 支付方式 (现金、银行卡、支付宝、微信等)
+    description NVARCHAR(255),                         -- 交易描述 (详细说明)
+    created_by NVARCHAR(100) NOT NULL,                 -- 记录创建人
+    note NVARCHAR(MAX),                                 -- 额外备注或说明
+    created_date DATETIME DEFAULT GETDATE(),          -- 记录创建时间 (默认当前时间)
+    updated_by NVARCHAR(100),                          -- 最近更新记录的人
+    updated_date DATETIME,                             -- 最近更新时间
+);
+ ``` 
+> **设计建议**：此表数据量大，建议按月份分区或使用存储。
+---
+
+##  三、聊天板块数据库 (`WeChatApp`)
+
+### 1. 用户管理 (`WeChatApp.dbo.WeChatUserManagement`)
+ ``` 
+CREATE TABLE WeChatApp.dbo.WeChatUserManagement (
+    id INT IDENTITY(1,1) PRIMARY KEY,  -- 用户ID，自动递增
+    username NVARCHAR(50) NOT NULL,     -- 用户账号
+    gender VARCHAR(10);  -- 新增性别字段，使用VARCHAR类型，最大长度为10
+    password NVARCHAR(100) NULL,    -- 用户密码
+    friend NVARCHAR(50),                -- 好友账号，可以为空
+    friend_ip VARCHAR(15),              -- 好友IP地址，使用VARCHAR类型，最大长度为15
+    is_friend_request_accepted BIT,      -- 是否同意好友请求，1为同意，0为不同意
+    is_show_request BIT DEFAULT 1,  -- 默认值设为 1，表示默认显示请求
+    friend_nickname NVARCHAR(50),       -- 好友备注昵称字段，长度可根据需要调整
+);
+ ``` 
+
+ ### 2. 聊天消息 (`WeChatApp.dbo.WeChatMessages`)
+  ``` 
+ CREATE TABLE WeChatApp.dbo.WeChatMessages (
+    message_id BIGINT IDENTITY(1,1) PRIMARY KEY,          -- 唯一标识符，自增，主键
+    message_text TEXT,                                     -- 消息内容
+    sender_name VARCHAR(100) NOT NULL,                      -- 发送者的用户名
+    receiver_name VARCHAR(100) NOT NULL,                    -- 接收者的用户名
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,           -- 消息发送时间戳
+    is_read BIT DEFAULT 0,  -- 新增是否已读字段，默认值为 0（未读）
+    message_type VARCHAR(50) DEFAULT 'text',  -- 消息类型，默认是文字类型
+    image_filename VARCHAR(255) NULL,          -- 图片文件名，允许为空，存储图片文件名
+    roomId INT NULL,   -- 视频房间号
+);
+ ``` 
+
+### 3. 视频房间号 (`WeChatApp.dbo.WeChatRoomNumber`)
+ ``` 
+ CREATE TABLE WeChatApp.dbo.WeChatRoomNumber (
+    roomId BIGINT IDENTITY(1,1) PRIMARY KEY,          -- 唯一标识符，自增，主键
+    sender_name VARCHAR(100) NOT NULL,                      -- 发送者的用户名
+    receiver_name VARCHAR(100) NOT NULL,                    -- 接收者的用户名
+);
+ ``` 
  
-
-### 3. 好友关系表 (`friendships`)
-| 字段名 | 类型 | 说明 |
-| :--- | :--- | :--- |
-| user_id | bigint | 用户ID |
-| friend_id | bigint | 好友用户ID |
-| status | tinyint | 0:待确认 1:已添加 2:已拉黑 |
-| created_at | datetime | 成为好友时间 |
-
+ ### 4. 聊天主题设置 (`WeChatApp.dbo.WeChatThemeSettings`)
+``` 
+ CREATE TABLE WeChatApp.dbo.WeChatThemeSettings (
+    id INT IDENTITY(1,1) PRIMARY KEY,  -- 自增长字段，初始值为 1，每次增加 1
+    username NVARCHAR(50) NOT NULL,     -- 用户名，限制最大长度为 50 个字符
+    password NVARCHAR(255) NOT NULL,    -- 密码，限制最大长度为 255 个字符
+    login_time DATETIME NOT NULL DEFAULT GETDATE(),  -- 登录时间，默认为当前时间
+    ip_address NVARCHAR(50),            -- 用户登录时的 IP 地址，长度为 50
+    status NVARCHAR(20) DEFAULT 'active',   -- 状态，默认为 'active'
+     -- 主题设置相关字段
+    their_font_color NVARCHAR(7) DEFAULT '#000000',  -- 对方字体颜色，默认黑色
+    their_bubble_color NVARCHAR(7) DEFAULT '#D3D3D3',  -- 对方对话框颜色，默认灰色
+    my_font_color NVARCHAR(7) DEFAULT '#000000',  -- 我的字体颜色，默认黑色
+    my_bubble_color NVARCHAR(7) DEFAULT '#90EE90',  -- 我的对话框颜色，默认白色
+    background_color NVARCHAR(7) DEFAULT '#F0F0F0',  -- 背景颜色，默认浅灰色
+    use_background_image BIT DEFAULT 0,  -- 是否启用背景图片，默认不启用
+    navbar_font_color NVARCHAR(7) DEFAULT '#FFFFFF',  -- 导航栏字体颜色，默认白色
+    navbar_background_color NVARCHAR(7) DEFAULT '#32502c',   -- 导航栏背景颜色，默认 #32502c   
+);
+``` 
 ---
 
-## 🎵 三、听歌板块数据库 (`music_service_db`)
+## 五、系统设置板块数据库 (`SystemSettingsApp`)
+ ### 1. 用户设置 (`SystemSettingsApp.dbo.SystemUserAccounts`)
+``` 
+CREATE TABLE SystemSettingsApp.dbo.SystemUserAccounts (
+    id INT IDENTITY(1,1) PRIMARY KEY,         -- 用户ID，自增
+    username NVARCHAR(100) NOT NULL,          -- 用户姓名
+    email NVARCHAR(100) NOT NULL UNIQUE,       -- 用户邮箱，唯一
+    password NVARCHAR(255) NOT NULL,           -- 用户密码，存储加密后的密码
+    registration_date DATETIME DEFAULT GETDATE(),  -- 用户注册时间，默认为当前时间
+    last_login_time DATETIME DEFAULT GETDATE(),    -- 最后登录时间
+    profile_picture NVARCHAR(255),             -- 头像图片链接
+    permission_level NVARCHAR(50) DEFAULT 0,    -- 权限级别，例如管理员、普通用户、VIP等 
+    notes NVARCHAR(500),                       -- 管理员备注信息
+    is_locked BIT DEFAULT 0,                    -- 账户锁定状态，默认为0（未锁定）
+);
+``` 
+ ### 2. 系统主题设置 (`SystemSettingsApp.dbo.SystemUserThemeSettings`)
+``` 
+CREATE TABLE SystemSettingsApp.dbo.SystemUserThemeSettings (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    email NVARCHAR(100) NOT NULL,
+    theme_name NVARCHAR(100) DEFAULT '默认主题',
+    -- ===== 背景色 =====
+    background_color NVARCHAR(9) DEFAULT '#FFFFFFFF',           -- 背景色
+    secondary_background_color NVARCHAR(9) DEFAULT '#F8F9FAFF', -- 次要背景色
+    hover_background_color NVARCHAR(9) DEFAULT '#E9ECEEFF',     -- 悬停背景色
+    focus_background_color NVARCHAR(9) DEFAULT '#DEE2E6FF',     -- 焦点背景色
+    -- ===== 字体颜色 =====
+    font_color NVARCHAR(9) DEFAULT '#000000FF',                -- 主要字体颜色
+    secondary_font_color NVARCHAR(9) DEFAULT '#6C757DFF',      -- 次要字体颜色
+    hover_font_color NVARCHAR(9) DEFAULT '#0078D4FF',          -- 悬停字体颜色
+    focus_font_color NVARCHAR(9) DEFAULT '#0056B3FF',          -- 焦点字体颜色
+    watermark_font_color NVARCHAR(9) DEFAULT '#B3B5B6FF',      -- 水印字体颜色
+    font_family NVARCHAR(255) DEFAULT 'system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif', -- 字体族
+    -- ===== 边框颜色 =====
+    border_color NVARCHAR(9) DEFAULT '#DEE2E6FF',              -- 主要边框颜色
+    secondary_border_color NVARCHAR(9) DEFAULT '#E9ECEEFF',    -- 次要边框颜色
+    hover_border_color NVARCHAR(9) DEFAULT '#0078D4FF',        -- 悬停边框颜色
+    focus_border_color NVARCHAR(9) DEFAULT '#0056B3FF',        -- 焦点边框颜色
+    -- ===== 阴影颜色 =====
+    shadow_color NVARCHAR(9) DEFAULT '#00000019',              -- 阴影颜色
+    hover_shadow_color NVARCHAR(9) DEFAULT '#00000026',        -- 悬停阴影颜色
+    focus_shadow_color NVARCHAR(9) DEFAULT '#0078D440',        -- 焦点阴影颜色
+    is_active BIT DEFAULT 0,        -- 默认不启用激活
+    background_animation NVARCHAR(100) DEFAULT 'DarkClouds',  -- 背景特效
+    -- 外键约束：关联到 userAccounts 表的 email 字段
+    FOREIGN KEY (email) REFERENCES SystemSettingsApp.dbo.SystemUserAccounts(email) 
+        ON DELETE CASCADE, -- 外键约束    如果用户被删除，相关的主题设置也删除  
+);
+``` 
 
-### 1. 歌曲基础信息表 (`songs`)
-| 字段名 | 类型 | 说明 |
-| :--- | :--- | :--- |
-| id | bigint | 主键，歌曲ID |
-| title | varchar(200) | 歌曲名称 |
-| artist | varchar(100) | 歌手名 |
-| duration | int | 时长(秒) |
-| file_url | varchar(500) | 音频文件地址 |
-
-### 2. 歌单表 (`playlists`)
-| 字段名 | 类型 | 说明 |
-| :--- | :--- | :--- |
-| id | bigint | 歌单ID |
-| owner_id | bigint | 创建者用户ID |
-| name | varchar(50) | 歌单名称 |
-| is_public | boolean | 是否公开 |
-
-### 3. 播放历史表 (`play_history`)
-| 字段名 | 类型 | 说明 |
-| :--- | :--- | :--- |
-| user_id | bigint | 用户ID |
-| song_id | bigint | 歌曲ID |
-| played_at | datetime | 播放时间 |
-
-> **设计建议**：此表数据量大，建议按月份分区或使用 ClickHouse 存储。
-
----
-
-## 📋 四、办公板块数据库 (`office_service_db`)
-
-### 1. 在线文档表 (`documents`)
-| 字段名 | 类型 | 说明 |
-| :--- | :--- | :--- |
-| id | bigint | 文档ID |
-| title | varchar(200) | 文档标题 |
-| owner_id | bigint | 所有者ID |
-| content | longtext | 文档正文 |
-| version | int | 当前版本号 |
-
-### 2. 任务看板表 (`tasks`)
-| 字段名 | 类型 | 说明 |
-| :--- | :--- | :--- |
-| id | bigint | 任务ID |
-| assignee_id | bigint | 负责人ID |
-| title | varchar(200) | 任务标题 |
-| status | tinyint | 0:待办 1:进行中 2:已完成 |
-| due_date | date | 截止日期 |
-
-### 3. 会议预约表 (`meetings`)
-| 字段名 | 类型 | 说明 |
-| :--- | :--- | :--- |
-| id | bigint | 会议ID |
-| creator_id | bigint | 发起人 |
-| start_time | datetime | 开始时间 |
-| end_time | datetime | 结束时间 |
-
----
-
-## 🔗 五、跨库关联与维护建议
+## 六、跨库关联与维护建议
 
 ### 1. 跨库数据关联逻辑
 - **用户信息统一**：所有业务表 `user_id` 均指向 `user_center_db.user_base` 的 ID。

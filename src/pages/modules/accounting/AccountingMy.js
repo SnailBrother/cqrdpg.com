@@ -28,7 +28,7 @@ const AccountingMy = () => {
             const formattedStart = startDate.toISOString().split('T')[0];
             const formattedEnd = endDate.toISOString().split('T')[0];
 
-            const response = await fetch(`https://www.cqrdpg.com:5202/api/transactions?start=${formattedStart}&end=${formattedEnd}&username=${username}`, {
+            const response = await fetch(`/api/AccountingApp/transactions?start=${formattedStart}&end=${formattedEnd}&username=${username}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

@@ -27,8 +27,6 @@ ALTER TABLE BillingApp.dbo.AccountLogin
 ADD 
     navbar_background_color NVARCHAR(7) DEFAULT '#2c3e50'  -- 导航栏背景颜色，默认 #32502c 
     navbar_font_color NVARCHAR(7) DEFAULT '#FFFFFF',  -- 导航栏字体颜色，默认白色
-     
-
     their_font_color NVARCHAR(7) DEFAULT '#000000',  -- 对方字体颜色，默认黑色
     their_bubble_color NVARCHAR(7) DEFAULT '#D3D3D3',  -- 对方对话框颜色，默认灰色
     my_font_color NVARCHAR(7) DEFAULT '#000000',  -- 我的字体颜色，默认黑色
@@ -251,9 +249,11 @@ CREATE TABLE ChatApp.dbo.ChatMessages (
     message_text TEXT,                                     -- 消息内容
     sender_name VARCHAR(100) NOT NULL,                      -- 发送者的用户名
     receiver_name VARCHAR(100) NOT NULL,                    -- 接收者的用户名
-    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP           -- 消息发送时间戳
-    is_read BIT DEFAULT 0;  -- 新增是否已读字段，默认值为 0（未读）
-    roomId INT NULL;   -- 视频房间号
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,           -- 消息发送时间戳
+    is_read BIT DEFAULT 0,  -- 新增是否已读字段，默认值为 0（未读）
+    message_type VARCHAR(50) DEFAULT 'text',  -- 消息类型，默认是文字类型
+    image_filename VARCHAR(255) NULL,          -- 图片文件名，允许为空，存储图片文件名
+    roomId INT NULL,   -- 视频房间号
 );
 ALTER TABLE ChatApp.dbo.ChatMessages 
 ADD roomId INT NULL;

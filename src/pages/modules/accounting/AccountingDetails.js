@@ -65,8 +65,8 @@ const AccountingDetails = () => {
             setError(null);
 
             const [recordsResponse, iconsResponse] = await Promise.all([
-                axios.get('https://www.cqrdpg.com:5202/api/lifebookkeepinggetRecords'),
-                axios.get('/api/getCategoryIcons')
+                axios.get('/api/accountingApp/lifebookkeepinggetRecords'),
+                axios.get('/api/AccountingApp/getCategoryIcons')
             ]);
 
             setRecords(recordsResponse.data);

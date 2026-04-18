@@ -149,8 +149,8 @@ app.get('/api/getRealEstateData', async (req, res) => {
 // 获取 AccountLogin 表数据
 app.get('/api/getAccountLoginData', async (req, res) => {
     try {
-        const accountLoginResult = await pool.request().query('SELECT * FROM AccountLogin');
-        res.json({ AccountLogin: accountLoginResult.recordset });
+        const accountLoginResult = await pool.request().query('SELECT * FROM WeChatApp.dbo.WeChatThemeSettings');
+        res.json({ 'WeChatApp.dbo.WeChatThemeSettings': accountLoginResult.recordset });
     } catch (err) {
         console.error(err);
         res.status(500).send('Server Error');
@@ -163,7 +163,7 @@ app.post('/api/checkUsernameExists', async (req, res) => {
     try {
         const result = await pool.request()
             .input('username', sql.NVarChar(50), username)
-            .query('SELECT COUNT(*) as count FROM AccountLogin WHERE username = @username');
+            .query('SELECT COUNT(*) as count FROM WeChatApp.dbo.WeChatThemeSettings WHERE username = @username');
 
         const exists = result.recordset[0].count > 0;
         res.json({ exists });
@@ -179,7 +179,7 @@ app.post('/api/register', async (req, res) => {
         // 再次在后端检查账号是否已存在
         const checkResult = await pool.request()
             .input('username', sql.NVarChar(50), username)
-            .query('SELECT COUNT(*) as count FROM AccountLogin WHERE username = @username');
+            .query('SELECT COUNT(*) as count FROM WeChatApp.dbo.WeChatThemeSettings WHERE username = @username');
 
         if (checkResult.recordset[0].count > 0) {
             res.status(400).json({ message: '该账号已存在，请选择其他用户名' });
@@ -189,7 +189,7 @@ app.post('/api/register', async (req, res) => {
         const result = await pool.request()
             .input('username', sql.NVarChar(50), username)
             .input('password', sql.NVarChar(255), password)
-            .query('INSERT INTO AccountLogin (username, password) VALUES (@username, @password)');
+            .query('INSERT INTO WeChatApp.dbo.WeChatThemeSettings (username, password) VALUES (@username, @password)');
 
         res.status(201).json({ message: '注册成功' });
     } catch (err) {
@@ -204,7 +204,7 @@ app.delete('/api/deleteAccount', async (req, res) => {
         const result = await pool.request()
             .input('username', sql.NVarChar(50), username)
             .input('password', sql.NVarChar(255), password)
-            .query('DELETE FROM AccountLogin WHERE username = @username AND password = @password');
+            .query('DELETE FROM WeChatApp.dbo.WeChatThemeSettings WHERE username = @username AND password = @password');
 
         if (result.rowsAffected[0] > 0) {
             res.status(200).json({ message: '账号已注销' });
@@ -223,13 +223,13 @@ app.put('/api/changePassword', async (req, res) => {
         const checkResult = await pool.request()
             .input('username', sql.NVarChar(50), username)
             .input('oldPassword', sql.NVarChar(255), oldPassword)
-            .query('SELECT * FROM AccountLogin WHERE username = @username AND password = @oldPassword');
+            .query('SELECT * FROM WeChatApp.dbo.WeChatThemeSettings WHERE username = @username AND password = @oldPassword');
 
         if (checkResult.recordset.length > 0) {
             const updateResult = await pool.request()
                 .input('username', sql.NVarChar(50), username)
                 .input('newPassword', sql.NVarChar(255), newPassword)
-                .query('UPDATE AccountLogin SET password = @newPassword WHERE username = @username');
+                .query('UPDATE WeChatApp.dbo.WeChatThemeSettings SET password = @newPassword WHERE username = @username');
             res.status(200).json({ message: '密码修改成功' });
         } else {
             res.status(400).json({ message: '原密码错误，修改失败' });
@@ -2344,10 +2344,10 @@ app.get('/api/checkImageExists', (req, res) => {
 { //好友聊天//聊天👇
 
     // 获取聊天所有用户管理数据
-    app.get('/api/user-management', async (req, res) => {
+    app.get('/api/WeChatApp/user-management', async (req, res) => {
         try {
             //const pool = await sql.connect(config);
-            const result = await pool.request().query('SELECT * FROM ChatApp.dbo.UserManagement');
+            const result = await pool.request().query('SELECT * FROM WeChatApp.dbo.WeChatUserManagement');
             res.json(result.recordset);
         } catch (err) {
             res.status(500).send(err.message);
@@ -2355,7 +2355,7 @@ app.get('/api/checkImageExists', (req, res) => {
     });
 
     // 更新好友昵称的 API
-    app.post('/api/update-nickname', async (req, res) => {
+    app.post('/api/WeChatApp/update-nickname', async (req, res) => {
         try {
             const { username, friend, newNickname } = req.body;
             //const pool = await sql.connect(config);
@@ -2364,7 +2364,7 @@ app.get('/api/checkImageExists', (req, res) => {
                 .input('friend', sql.NVarChar(50), friend)
                 .input('newNickname', sql.NVarChar(50), newNickname)
                 .query(`
-                UPDATE ChatApp.dbo.UserManagement
+                UPDATE WeChatApp.dbo.WeChatUserManagement
                 SET friend_nickname = @newNickname
                 WHERE username = @username AND friend = @friend
             `);
@@ -2384,13 +2384,13 @@ app.get('/api/checkImageExists', (req, res) => {
 
     // 添加好友
     // 验证用户是否存在
-    app.get('/api/validate-user/:username', async (req, res) => {
+    app.get('/api/WeChatApp/validate-user/:username', async (req, res) => {
         const { username } = req.params;
         try {
             //const pool = await sql.connect(config);
             const result = await pool.request()
                 .input('username', sql.NVarChar(50), username)
-                .query('SELECT * FROM AccountLogin WHERE username = @username');
+                .query('SELECT * FROM WeChatApp.dbo.WeChatThemeSettings WHERE username = @username');
 
             if (result.recordset.length > 0) {
                 res.status(200).json({ exists: true });
@@ -2404,12 +2404,12 @@ app.get('/api/checkImageExists', (req, res) => {
     });
 
     // 请求添加好友
-    app.post('/api/user-management', async (req, res) => {
+    app.post('/api/WeChatApp/user-management', async (req, res) => {
         try {
             const { username, friend, is_friend_request_accepted = false, is_show_request = true } = req.body;
             //const pool = await sql.connect(config);
             const query = `
-            INSERT INTO ChatApp.dbo.UserManagement (username, friend, is_friend_request_accepted, is_show_request)
+            INSERT INTO WeChatApp.dbo.WeChatUserManagement (username, friend, is_friend_request_accepted, is_show_request)
             VALUES (@username, @friend, @is_friend_request_accepted, @is_show_request)
         `;
             const request = pool.request();
@@ -2430,12 +2430,12 @@ app.get('/api/checkImageExists', (req, res) => {
 
 
     // 同意好友请求
-    app.put('/api/user-management/:username/:friend/accept', async (req, res) => {
+    app.put('/api/WeChatApp/user-management/:username/:friend/accept', async (req, res) => {
         try {
             const { username, friend } = req.params;
             //const pool = await sql.connect(config);
             const query = `
-            UPDATE ChatApp.dbo.UserManagement
+            UPDATE WeChatApp.dbo.WeChatUserManagement
             SET is_friend_request_accepted = 1
             WHERE (username = @username AND friend = @friend)
                OR (username = @friend AND friend = @username)
@@ -2456,12 +2456,12 @@ app.get('/api/checkImageExists', (req, res) => {
     });
 
     // 拒绝好友请求
-    app.delete('/api/user-management/:username/:friend', async (req, res) => {
+    app.delete('/api/WeChatApp/user-management/:username/:friend', async (req, res) => {
         try {
             const { username, friend } = req.params;
             //const pool = await sql.connect(config);
             const query = `
-            DELETE FROM ChatApp.dbo.UserManagement
+            DELETE FROM WeChatApp.dbo.WeChatUserManagement
             WHERE (username = @username AND friend = @friend)
                OR (username = @friend AND friend = @username)
         `;
@@ -2480,12 +2480,12 @@ app.get('/api/checkImageExists', (req, res) => {
     });
 
     //聊天界面删除好友
-    app.delete('/api/user-management/:username/:friend', async (req, res) => {
+    app.delete('/api/WeChatApp/user-management/:username/:friend', async (req, res) => {
         try {
             const { username, friend } = req.params;
             //const pool = await sql.connect(config);
             const query = `
-            DELETE FROM ChatApp.dbo.UserManagement
+            DELETE FROM WeChatApp.dbo.WeChatUserManagement
             WHERE username = @username AND friend = @friend
         `;
             const request = pool.request();
@@ -2545,7 +2545,7 @@ app.get('/api/checkImageExists', (req, res) => {
     });
 
     // 上传聊天图片的API
-    app.post('/api/messages/uploadImage',
+    app.post('/api/WeChatApp/messages/uploadImage',
         uploadChatImage.single('image'),
         async (req, res) => {
             try {
@@ -2584,7 +2584,7 @@ app.get('/api/checkImageExists', (req, res) => {
                     .input('message_type', sql.VarChar(50), 'image')
                     .input('image_filename', sql.VarChar(255), req.file.filename)
                     .query(`
-                    INSERT INTO ChatApp.dbo.ChatMessages 
+                    INSERT INTO WeChatApp.dbo.WeChatMessages 
                     (message_text, sender_name, receiver_name, message_type, image_filename) 
                     VALUES (@message_text, @sender_name, @receiver_name, @message_type, @image_filename); 
                     SELECT SCOPE_IDENTITY() as message_id;
@@ -2637,7 +2637,7 @@ app.get('/api/checkImageExists', (req, res) => {
     //处理视频聊天房间号
 
 
-    app.post('/api/chatRoom/getOrCreateRoom', async (req, res) => {
+    app.post('/api/WeChatApp/chatRoom/getOrCreateRoom', async (req, res) => {
         const { sender_name, receiver_name } = req.body;
 
         if (!sender_name || !receiver_name) {
@@ -2654,7 +2654,7 @@ app.get('/api/checkImageExists', (req, res) => {
 
             const query = `
             SELECT roomId 
-            FROM ChatApp.dbo.ChatRoomNumber 
+            FROM WeChatApp.dbo.WeChatRoomNumber 
             WHERE (sender_name = @sender_name AND receiver_name = @receiver_name)
                OR (sender_name = @receiver_name AND receiver_name = @sender_name)
         `;
@@ -2673,7 +2673,7 @@ app.get('/api/checkImageExists', (req, res) => {
             } else {
                 // 创建新房间
                 const insertQuery = `
-                INSERT INTO ChatApp.dbo.ChatRoomNumber (sender_name, receiver_name)
+                INSERT INTO WeChatApp.dbo.WeChatRoomNumber (sender_name, receiver_name)
                 OUTPUT INSERTED.roomId
                 VALUES (@sender_name, @receiver_name)
             `;
@@ -2712,7 +2712,7 @@ app.get('/api/checkImageExists', (req, res) => {
 
             const query = `
             SELECT room_id, sender_name, receiver_name 
-            FROM ChatApp.dbo.ChatRoomNumber 
+            FROM WeChatApp.dbo.WeChatRoomNumber 
             WHERE roomId = @roomId
         `;
 
@@ -2749,7 +2749,7 @@ app.get('/api/checkImageExists', (req, res) => {
     app.get('/api/messages', async (req, res) => {
         try {
             //const pool = await sql.connect(config);
-            const result = await pool.request().query('SELECT * FROM ChatApp.dbo.ChatMessages');
+            const result = await pool.request().query('SELECT * FROM WeChatApp.dbo.WeChatMessages');
             res.json(result.recordset);
         } catch (err) {
             res.status(500).send(err.message);
@@ -2769,7 +2769,7 @@ app.get('/api/checkImageExists', (req, res) => {
                 .input('username', sql.VarChar(100), username)
                 .query(`
                 SELECT COUNT(*) as count 
-                FROM ChatApp.dbo.ChatMessages 
+                FROM WeChatApp.dbo.WeChatMessages 
                 WHERE receiver_name = @username AND is_read = 0
             `);
 
@@ -2792,7 +2792,7 @@ app.get('/api/checkImageExists', (req, res) => {
             //const pool = await sql.connect(config);
             const query = `
             SELECT * 
-            FROM ChatApp.dbo.ChatMessages 
+            FROM WeChatApp.dbo.WeChatMessages 
             WHERE (sender_name = @senderName AND receiver_name = @receiverName)
                OR (sender_name = @receiverName AND receiver_name = @senderName)
             ORDER BY message_id ASC
@@ -2821,7 +2821,7 @@ app.get('/api/checkImageExists', (req, res) => {
 
             const query = `
             SELECT * 
-            FROM ChatApp.dbo.ChatMessages 
+            FROM WeChatApp.dbo.WeChatMessages 
             WHERE (sender_name = @senderName AND receiver_name = @receiverName)
                OR (sender_name = @receiverName AND receiver_name = @senderName)
             ORDER BY message_id DESC
@@ -2876,7 +2876,7 @@ app.get('/api/checkImageExists', (req, res) => {
                 .input('roomId', sql.Int, roomId)  // 添加 roomId 参数
                 .input('timestamp', sql.DateTime, now)
                 .query(`
-                INSERT INTO ChatApp.dbo.ChatMessages 
+                INSERT INTO WeChatApp.dbo.WeChatMessages 
                 (message_text, sender_name, receiver_name, message_type, image_filename, roomId, timestamp) 
                 VALUES (@message_text, @sender_name, @receiver_name, @message_type, @image_filename, @roomId, @timestamp); 
                 SELECT SCOPE_IDENTITY() as message_id;
@@ -2915,7 +2915,7 @@ app.get('/api/checkImageExists', (req, res) => {
             for (const id of messageIds) {
                 await pool.request()
                     .input('message_id', sql.BigInt, id)
-                    .query('UPDATE ChatApp.dbo.ChatMessages SET is_read = 1 WHERE message_id = @message_id');
+                    .query('UPDATE WeChatApp.dbo.WeChatMessages SET is_read = 1 WHERE message_id = @message_id');
             }
             res.status(200).send('Messages marked as read');
 
@@ -2937,13 +2937,13 @@ app.get('/api/checkImageExists', (req, res) => {
             const result = await pool.request()
                 .input('sender_name', sql.NVarChar, sender_name)
                 .input('receiver_name', sql.NVarChar, receiver_name)
-                .query('UPDATE ChatApp.dbo.ChatMessages SET is_read = 1 WHERE sender_name = @sender_name AND receiver_name = @receiver_name');
+                .query('UPDATE WeChatApp.dbo.WeChatMessages SET is_read = 1 WHERE sender_name = @sender_name AND receiver_name = @receiver_name');
 
             // 获取更新后的消息 ID
             const updatedMessages = await pool.request()
                 .input('sender_name', sql.NVarChar, sender_name)
                 .input('receiver_name', sql.NVarChar, receiver_name)
-                .query('SELECT message_id FROM ChatApp.dbo.ChatMessages WHERE sender_name = @sender_name AND receiver_name = @receiver_name AND is_read = 1');
+                .query('SELECT message_id FROM WeChatApp.dbo.WeChatMessages WHERE sender_name = @sender_name AND receiver_name = @receiver_name AND is_read = 1');
 
             const messageIds = updatedMessages.recordset.map(msg => msg.message_id);
 
@@ -2968,14 +2968,14 @@ app.get('/api/checkImageExists', (req, res) => {
             const queryResult = await pool.request()
                 .query(`
                 SELECT message_id, sender_name, message_type, image_filename 
-                FROM ChatApp.dbo.ChatMessages 
+                FROM WeChatApp.dbo.WeChatMessages 
                 WHERE message_id IN (${idList})
             `);
 
             const messagesToDelete = queryResult.recordset;
 
             // 删除数据库中的消息
-            await pool.request().query(`DELETE FROM ChatApp.dbo.ChatMessages WHERE message_id IN (${idList})`);
+            await pool.request().query(`DELETE FROM WeChatApp.dbo.WeChatMessages WHERE message_id IN (${idList})`);
 
             // 删除对应的图片文件
             await deleteMessageImages(messagesToDelete);
@@ -3000,7 +3000,7 @@ app.get('/api/checkImageExists', (req, res) => {
                 .input('messageId', sql.BigInt, messageId)
                 .query(`
                 SELECT message_id, sender_name, message_type, image_filename 
-                FROM ChatApp.dbo.ChatMessages 
+                FROM WeChatApp.dbo.WeChatMessages 
                 WHERE message_id = @messageId
             `);
 
@@ -3013,7 +3013,7 @@ app.get('/api/checkImageExists', (req, res) => {
             // 删除数据库中的消息
             await pool.request()
                 .input('messageId', sql.BigInt, messageId)
-                .query('DELETE FROM ChatApp.dbo.ChatMessages WHERE message_id = @messageId');
+                .query('DELETE FROM WeChatApp.dbo.WeChatMessages WHERE message_id = @messageId');
 
             // 删除对应的图片文件
             await deleteMessageImages([message]);
@@ -3060,7 +3060,7 @@ app.get('/api/checkImageExists', (req, res) => {
                 .input('username', sql.VarChar(100), username)
                 .query(`
                 SELECT message_id, sender_name, image_filename 
-                FROM ChatApp.dbo.ChatMessages 
+                FROM WeChatApp.dbo.WeChatMessages 
                 WHERE sender_name = @username AND message_type = 'image'
             `);
 
@@ -3069,7 +3069,7 @@ app.get('/api/checkImageExists', (req, res) => {
             // 删除数据库中的图片消息
             await pool.request()
                 .input('username', sql.VarChar(100), username)
-                .query(`DELETE FROM ChatApp.dbo.ChatMessages WHERE sender_name = @username AND message_type = 'image'`);
+                .query(`DELETE FROM WeChatApp.dbo.WeChatMessages WHERE sender_name = @username AND message_type = 'image'`);
 
             // 删除对应的图片文件
             await deleteMessageImages(imageMessages);
@@ -3092,7 +3092,7 @@ app.get('/api/checkImageExists', (req, res) => {
             //const pool = await sql.connect(config);
             const result = await pool.request()
                 .input('keyword', sql.NVarChar, `%${keyword}%`)
-                .query('SELECT * FROM ChatApp.dbo.ChatMessages WHERE message_text LIKE @keyword');
+                .query('SELECT * FROM WeChatApp.dbo.WeChatMessages WHERE message_text LIKE @keyword');
             res.json(result.recordset);
         } catch (err) {
             res.status(500).send(err.message);
@@ -3127,7 +3127,7 @@ app.get('/api/checkImageExists', (req, res) => {
         try {
             //const pool = await sql.connect(config);
             // 检查好友IP是否存在
-            const checkFriendQuery = `SELECT * FROM ChatApp.dbo.UserManagement WHERE username = '${friend_ip}'`;
+            const checkFriendQuery = `SELECT * FROM WeChatApp.dbo.WeChatUserManagement WHERE username = '${friend_ip}'`;
             const friendResult = await pool.request().query(checkFriendQuery);
 
             if (friendResult.recordset.length === 0) {
@@ -3136,7 +3136,7 @@ app.get('/api/checkImageExists', (req, res) => {
 
             // 插入好友关系
             const insertQuery = `
-            INSERT INTO ChatApp.dbo.UserManagement (username, friend, friend_ip, is_friend_request_accepted)
+            INSERT INTO WeChatApp.dbo.WeChatUserManagement (username, friend, friend_ip, is_friend_request_accepted)
             VALUES ('${username}', '${friendResult.recordset[0].username}', '${friend_ip}', 0)
         `;
             await pool.request().query(insertQuery);
@@ -3148,7 +3148,7 @@ app.get('/api/checkImageExists', (req, res) => {
     });
 
     // 获取头像图片
-    app.get('/api/getuserheadimage', (req, res) => {
+    app.get('/api/WeChatApp/getuserheadimage', (req, res) => {
         const { username } = req.query; // 从查询参数中获取用户名
 
         if (!username) {
@@ -3334,7 +3334,7 @@ app.get('/api/getthemesettings', async (req, res) => {
                 use_background_image,
                 navbar_font_color,  -- 新增字段
                 navbar_background_color  -- 新增字段
-            FROM AccountLogin
+            FROM WeChatApp.dbo.WeChatThemeSettings
             WHERE username = @username
         `;
         const request = pool.request();
@@ -3369,7 +3369,7 @@ app.post('/api/savethemesettings', upload.none(), async (req, res) => {
     } = req.body;
     try {
         const query = `
-            UPDATE AccountLogin
+            UPDATE WeChatApp.dbo.WeChatThemeSettings
             SET 
                 their_font_color = @theirFontColor,
                 their_bubble_color = @theirBubbleColor,
@@ -5550,10 +5550,10 @@ app.delete('/api/bugs/:id', async (req, res) => {
 
 //新的重写的记账本 👇
 // 获取所有新的记账记录的API  ✔✔✔✔✔✔✔✔✔✔✔✔
-app.get('/api/lifebookkeepinggetRecords', async (req, res) => {
+app.get('/api/accountingApp/lifebookkeepinggetRecords', async (req, res) => {
     try {
         //const pool = await sql.connect(config);
-        const result = await pool.request().query('SELECT * FROM ChatApp.dbo.LifeBookkeepingData');
+        const result = await pool.request().query('SELECT * FROM AccountingApp.dbo.AccountingList');
         res.status(200).json(result.recordset);
     } catch (error) {
         console.error('获取数据失败:', error);
@@ -5562,7 +5562,7 @@ app.get('/api/lifebookkeepinggetRecords', async (req, res) => {
 });
 
 // 处理添加新的记账记录的 API 路由
-app.post('/api/lifebookkeepingaddRecord', async (req, res) => {
+app.post('/api/AccountingApp/lifebookkeepingaddRecord', async (req, res) => {
     // 1. 验证请求数据
     if (!req.body) {
         return res.status(400).json({
@@ -5613,7 +5613,7 @@ app.post('/api/lifebookkeepingaddRecord', async (req, res) => {
 
         // 构建SQL查询
         const query = `
-            INSERT INTO ChatApp.dbo.LifeBookkeepingData (
+            INSERT INTO AccountingApp.dbo.AccountingList (
                 transaction_date,
                 amount,
                 transaction_type,
@@ -5702,7 +5702,7 @@ app.post('/api/lifebookkeepingaddRecord', async (req, res) => {
     }
 });
 //修改
-app.put('/api/lifebookkeepingupdateRecord/:id', async (req, res) => {
+app.put('/api/AccountingApp/lifebookkeepingupdateRecord/:id', async (req, res) => {
     try {
         const { id } = req.params;
         const {
@@ -5731,7 +5731,7 @@ app.put('/api/lifebookkeepingupdateRecord/:id', async (req, res) => {
             .input('updated_by', sql.NVarChar(100), updated_by)
             .input('updated_date', sql.DateTime, new Date()) // 设置为当前时间
             .query(`
-                UPDATE ChatApp.dbo.LifeBookkeepingData
+                UPDATE AccountingApp.dbo.AccountingList
                 SET transaction_date = @transaction_date,
                     amount = @amount,
                     transaction_type = @transaction_type,
@@ -5746,7 +5746,7 @@ app.put('/api/lifebookkeepingupdateRecord/:id', async (req, res) => {
             `);
 
         // 获取更新后的记录并发送给客户端
-        const updatedRecord = await pool.request().input('id', sql.Int, id).query('SELECT * FROM ChatApp.dbo.LifeBookkeepingData WHERE transaction_id = @id');
+        const updatedRecord = await pool.request().input('id', sql.Int, id).query('SELECT * FROM AccountingApp.dbo.AccountingList WHERE transaction_id = @id');
         io.emit('recordUpdated', updatedRecord.recordset[0]);
 
         res.status(200).json({ message: '数据更新成功' });
@@ -5762,7 +5762,7 @@ app.delete('/api/lifebookkeepingdeleteRecord/:id', async (req, res) => {
         //const pool = await sql.connect(config);
         await pool.request()
             .input('id', sql.Int, id)
-            .query('DELETE FROM ChatApp.dbo.LifeBookkeepingData WHERE transaction_id = @id');
+            .query('DELETE FROM AccountingApp.dbo.AccountingList WHERE transaction_id = @id');
 
         // 发送删除通知给客户端
         io.emit('recordDeleted', id);
@@ -5776,7 +5776,7 @@ app.delete('/api/lifebookkeepingdeleteRecord/:id', async (req, res) => {
 
 //获取详细列表的ico图标
 // 获取分类图标API
-app.get('/api/getCategoryIcons', async (req, res) => {
+app.get('/api/AccountingApp/getCategoryIcons', async (req, res) => {
     try {
         //const pool = await sql.connect(config);
         const result = await pool.request()
@@ -5790,7 +5790,7 @@ app.get('/api/getCategoryIcons', async (req, res) => {
 });
 
 //下载账单 账单数据API
-app.get('/api/transactions', async (req, res) => {
+app.get('/api/AccountingApp/transactions', async (req, res) => {
     try {
         const { start, end, username } = req.query;
 
@@ -5807,7 +5807,7 @@ app.get('/api/transactions', async (req, res) => {
                     payment_method,
                     description,
                     created_by
-                FROM ChatApp.dbo.LifeBookkeepingData
+                FROM AccountingApp.dbo.AccountingList
                 WHERE created_by = @username
                 AND transaction_date BETWEEN @start AND @end
                 ORDER BY transaction_date DESC
@@ -10167,7 +10167,7 @@ app.get('/api/music/ReactDemomusic-rooms', async (req, res) => {
         const usersQuery = `
       SELECT ru.room_name, ru.email, u.username, ru.is_host, ru.join_time
       FROM MusicApp.dbo.MusicListenTogetherRoomUsers ru
-      LEFT JOIN reactDemoApp.dbo.userAccounts u ON ru.email = u.email
+      LEFT JOIN SystemSettingsApp.dbo.SystemUserAccounts u ON ru.email = u.email
       ORDER BY ru.is_host DESC, ru.join_time ASC
     `;
         const usersResult = await pool.request().query(usersQuery);
@@ -11091,7 +11091,7 @@ app.post('/api/auth/register', async (req, res) => {
 
         const existingUser = await pool.request()
             .input('email', sql.NVarChar, email)
-            .query('SELECT id FROM reactDemoApp.dbo.userAccounts WHERE email = @email');
+            .query('SELECT id FROM SystemSettingsApp.dbo.SystemUserAccounts WHERE email = @email');
 
         if (existingUser.recordset.length > 0) {
             return res.status(400).json({
@@ -11109,7 +11109,7 @@ app.post('/api/auth/register', async (req, res) => {
                 .input('email', sql.NVarChar, email)
                 .input('password', sql.NVarChar, password)
                 .query(`
-                    INSERT INTO reactDemoApp.dbo.userAccounts 
+                    INSERT INTO SystemSettingsApp.dbo.SystemUserAccounts 
                     (username, email, password, permission_level) 
                     OUTPUT INSERTED.* 
                     VALUES (@username, @email, @password, 'user')
@@ -11140,7 +11140,7 @@ app.post('/api/auth/register', async (req, res) => {
                 .input('hover_shadow_color', sql.NVarChar, '#00000026')
                 .input('focus_shadow_color', sql.NVarChar, '#0078D440')
                 .query(`
-                    INSERT INTO reactDemoApp.dbo.UserThemeSettings 
+                    INSERT INTO SystemSettingsApp.dbo.SystemUserThemeSettings 
                     (
                         email, theme_name,
                         background_color, secondary_background_color, hover_background_color, focus_background_color,
@@ -11196,7 +11196,7 @@ app.post('/api/ChatRegister', async (req, res) => {
         // 检查账号是否已存在
         const checkResult = await pool.request()
             .input('username', sql.NVarChar(50), username)
-            .query('SELECT COUNT(*) as count FROM AccountLogin WHERE username = @username');
+            .query('SELECT COUNT(*) as count FROM WeChatApp.dbo.WeChatThemeSettings WHERE username = @username');
 
         if (checkResult.recordset[0].count > 0) {
             return res.status(400).json({ message: '该账号已存在，请选择其他用户名' });
@@ -11206,7 +11206,7 @@ app.post('/api/ChatRegister', async (req, res) => {
         const result = await pool.request()
             .input('username', sql.NVarChar(50), username)
             .input('password', sql.NVarChar(255), password)
-            .query('INSERT INTO AccountLogin (username, password) VALUES (@username, @password)');
+            .query('INSERT INTO WeChatApp.dbo.WeChatThemeSettings (username, password) VALUES (@username, @password)');
 
         res.status(201).json({ message: '注册成功' });
     } catch (err) {
@@ -11226,7 +11226,7 @@ app.post('/api/auth/login', async (req, res) => {
 
         const result = await pool.request()
             .input('email', sql.NVarChar, email)
-            .query('SELECT * FROM reactDemoApp.dbo.userAccounts WHERE email = @email');
+            .query('SELECT * FROM SystemSettingsApp.dbo.SystemUserAccounts WHERE email = @email');
 
         if (result.recordset.length === 0) {
             return res.status(401).json({
@@ -11253,7 +11253,7 @@ app.post('/api/auth/login', async (req, res) => {
 
         await pool.request()
             .input('id', sql.Int, user.id)
-            .query('UPDATE reactDemoApp.dbo.userAccounts SET last_login_time = GETDATE() WHERE id = @id');
+            .query('UPDATE SystemSettingsApp.dbo.SystemUserAccounts SET last_login_time = GETDATE() WHERE id = @id');
 
         const userResponse = {
             id: user.id,
@@ -11291,7 +11291,7 @@ app.post('/api/auth/login', async (req, res) => {
 
 
 // 2. 获取用户所有主题
-app.get('/api/UserThemeSettings', async (req, res) => {
+app.get('/api/SystemSettingsApp/UserThemeSettings', async (req, res) => {
     try {
         const { email } = req.query;
         if (!email) return res.status(400).json({ success: false, message: '邮箱参数不能为空' });
@@ -11300,7 +11300,7 @@ app.get('/api/UserThemeSettings', async (req, res) => {
         const request = pool.request().input('email', sql.NVarChar, email);
 
         const result = await request.query(`
-            SELECT * FROM reactDemoApp.dbo.UserThemeSettings 
+            SELECT * FROM SystemSettingsApp.dbo.SystemUserThemeSettings 
             WHERE email = @email 
             ORDER BY is_active DESC, id DESC
         `);
@@ -11313,7 +11313,7 @@ app.get('/api/UserThemeSettings', async (req, res) => {
 });
 
 // 3. 创建新主题
-app.post('/api/UserThemeSettings', async (req, res) => {
+app.post('/api/SystemSettingsApp/UserThemeSettings', async (req, res) => {
     try {
         const { email, theme_name, is_active, background_animation, ...themeColors } = req.body;
 
@@ -11365,7 +11365,7 @@ app.post('/api/UserThemeSettings', async (req, res) => {
         }
 
         const result = await request.query(`
-      INSERT INTO reactDemoApp.dbo.UserThemeSettings (${columns.join(', ')}) 
+      INSERT INTO SystemSettingsApp.dbo.SystemUserThemeSettings (${columns.join(', ')}) 
       OUTPUT INSERTED.*
       VALUES (${values.join(', ')});
     `);
@@ -11378,7 +11378,7 @@ app.post('/api/UserThemeSettings', async (req, res) => {
 });
 
 // 4. 更新主题
-app.put('/api/UserThemeSettings/:id', async (req, res) => {
+app.put('/api/SystemSettingsApp/UserThemeSettings/:id', async (req, res) => {
     try {
         const { id } = req.params;
         const { email, ...updateData } = req.body;
@@ -11397,7 +11397,7 @@ app.put('/api/UserThemeSettings/:id', async (req, res) => {
         if (setClauses.length === 0) return res.status(400).json({ success: false, message: '没有要更新的字段' });
 
         const result = await request.query(`
-            UPDATE reactDemoApp.dbo.UserThemeSettings 
+            UPDATE SystemSettingsApp.dbo.SystemUserThemeSettings 
             SET ${setClauses.join(', ')} 
             OUTPUT INSERTED.*
             WHERE id = @id AND email = @email;
@@ -11413,7 +11413,7 @@ app.put('/api/UserThemeSettings/:id', async (req, res) => {
 });
 
 // 5. 设置活动主题
-app.put('/api/UserThemeSettings/setActive/:id', async (req, res) => {
+app.put('/api/SystemSettingsApp/UserThemeSettings/setActive/:id', async (req, res) => {
     const { id } = req.params;
     const { email } = req.body;
     if (!email) return res.status(400).json({ success: false, message: '邮箱不能为空' });
@@ -11424,12 +11424,12 @@ app.put('/api/UserThemeSettings/setActive/:id', async (req, res) => {
 
         await transaction.request()
             .input('email', sql.NVarChar, email)
-            .query('UPDATE reactDemoApp.dbo.UserThemeSettings SET is_active = 0 WHERE email = @email');
+            .query('UPDATE SystemSettingsApp.dbo.SystemUserThemeSettings SET is_active = 0 WHERE email = @email');
 
         const result = await transaction.request()
             .input('id', sql.Int, id)
             .input('email', sql.NVarChar, email)
-            .query('UPDATE reactDemoApp.dbo.UserThemeSettings SET is_active = 1 OUTPUT INSERTED.* WHERE id = @id AND email = @email');
+            .query('UPDATE SystemSettingsApp.dbo.SystemUserThemeSettings SET is_active = 1 OUTPUT INSERTED.* WHERE id = @id AND email = @email');
 
         await transaction.commit();
 
@@ -11445,13 +11445,13 @@ app.put('/api/UserThemeSettings/setActive/:id', async (req, res) => {
 
 
 // 6. 设置默认主题 (此功能在前端UI未体现，但保留API)
-app.put('/api/UserThemeSettings/setDefault/:id', async (req, res) => {
+app.put('/api/SystemSettingsApp/UserThemeSettings/setDefault/:id', async (req, res) => {
     // ... 逻辑与 setActive 类似，更新 is_default 字段
 });
 
 
 // 7. 删除主题
-app.delete('/api/UserThemeSettings/:id', async (req, res) => {
+app.delete('/api/SystemSettingsApp/UserThemeSettings/:id', async (req, res) => {
     try {
         const { id } = req.params;
         const { email } = req.body; // 从请求体获取email以验证所有权
@@ -11462,7 +11462,7 @@ app.delete('/api/UserThemeSettings/:id', async (req, res) => {
             .input('id', sql.Int, id)
             .input('email', sql.NVarChar, email);
 
-        const result = await request.query('DELETE FROM reactDemoApp.dbo.UserThemeSettings WHERE id = @id AND email = @email');
+        const result = await request.query('DELETE FROM SystemSettingsApp.dbo.SystemUserThemeSettings WHERE id = @id AND email = @email');
 
         if (result.rowsAffected[0] === 0) {
             return res.status(404).json({ success: false, message: '主题不存在或不属于该用户' });
@@ -11607,7 +11607,7 @@ app.post('/api/react-demo/upload-background', (req, res) => {
                 .input('id', sql.Int, themeId)
                 .input('email', sql.NVarChar, email)
                 .input('background_animation', sql.NVarChar, 'CustomBackground')
-                .query(`UPDATE reactDemoApp.dbo.UserThemeSettings 
+                .query(`UPDATE SystemSettingsApp.dbo.SystemUserThemeSettings 
                 SET background_animation = @background_animation 
                 WHERE id = @id AND email = @email`);
 

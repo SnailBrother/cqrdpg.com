@@ -50,7 +50,7 @@ const FriendsList = (props) => {
         const fetchFriendsAndUnreadCounts = async () => {
             try {
                 // 获取好友列表
-                const response = await axios.get('https://www.cqrdpg.com:5202/api/user-management');
+                const response = await axios.get('/api/WeChatApp/user-management');
                 const filteredFriends = response.data.filter(user =>
                     user.username === username && user.is_friend_request_accepted === true
                 );
@@ -60,14 +60,14 @@ const FriendsList = (props) => {
                 const friendsWithHeadImagesAndUnreadCounts = await Promise.all(
                     uniqueFriends.map(async (name, index) => {
                         try {
-                            const headImageResponse = await axios.get('https://www.cqrdpg.com:5202/api/getuserheadimage', {
+                            const headImageResponse = await axios.get('/api/WeChatApp/getuserheadimage', {
                                 params: { username: name }
                             });
                             const friendRecord = filteredFriends.find(f => f.friend === name);
                             const nickname = friendRecord?.friend_nickname || name;
 
                             // 获取未读消息数
-                            const unreadResponse = await axios.get('https://www.cqrdpg.com:5202/api/messages');
+                            const unreadResponse = await axios.get('/api/messages');
                             const unreadCount = unreadResponse.data.filter(msg =>
                                 msg.receiver_name === username &&
                                 msg.sender_name === name &&
@@ -140,7 +140,7 @@ const FriendsList = (props) => {
         const fetchFriendsInterval = () => {
             const fetchFriends = async () => {
                 try {
-                    const response = await axios.get('https://www.cqrdpg.com:5202/api/user-management');
+                    const response = await axios.get('/api/WeChatApp/user-management');
                     const filteredFriends = response.data.filter(user =>
                         user.username === username && user.is_friend_request_accepted === true
                     );
@@ -149,7 +149,7 @@ const FriendsList = (props) => {
                     const friendsWithHeadImages = await Promise.all(
                         uniqueFriends.map(async (name, index) => {
                             try {
-                                const headImageResponse = await axios.get('https://www.cqrdpg.com:5202/api/getuserheadimage', {
+                                const headImageResponse = await axios.get('/api/WeChatApp/getuserheadimage', {
                                     params: { username: name }
                                 });
                                 const friendRecord = filteredFriends.find(f => f.friend === name);
@@ -211,7 +211,7 @@ const FriendsList = (props) => {
     useEffect(() => {
         const fetchUnreadCounts = async () => {
             try {
-                const response = await axios.get('https://www.cqrdpg.com:5202/api/messages');
+                const response = await axios.get('/api/messages');
                 const allMessages = response.data;
                 const newUnreadCounts = {};
                 friends.forEach(friend => {

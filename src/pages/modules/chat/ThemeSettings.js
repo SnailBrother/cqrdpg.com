@@ -36,7 +36,7 @@ const ThemeSettings = () => {
     useEffect(() => {
         const loadThemeSettings = async () => {
             try {
-                const response = await axios.get('https://www.cqrdpg.com:5202/api/getthemesettings', {
+                const response = await axios.get('/api/getthemesettings', {
                     params: { username },
                 });
 
@@ -76,7 +76,7 @@ const ThemeSettings = () => {
             formData.append('navbarBackgroundColor', navbarBackgroundColor);
 
             // 保存主题设置
-            const themeResponse = await axios.post('https://www.cqrdpg.com:5202/api/savethemesettings', formData, {
+            const themeResponse = await axios.post('/api/savethemesettings', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },

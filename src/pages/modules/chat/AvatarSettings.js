@@ -15,7 +15,7 @@ const AvatarSettings = () => {
     // 获取用户头像
     const fetchUserHeadImage = useCallback(async () => {
         try {
-            const response = await axios.get('https://www.cqrdpg.com:5202/api/getuserheadimage', {
+            const response = await axios.get('/api/WeChatApp/getuserheadimage', {
                 params: { username }
             });
             if (response.data.imageUrl) {

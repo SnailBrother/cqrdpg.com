@@ -53,8 +53,8 @@ export const AccountingProvider = ({ children }) => {
             setError(null);
             
             const [recordsResponse, iconsResponse] = await Promise.all([
-                axios.get('/api/lifebookkeepinggetRecords'),
-                axios.get('/api/getCategoryIcons')
+                axios.get('/api/accountingApp/lifebookkeepinggetRecords'),
+                axios.get('/api/AccountingApp/getCategoryIcons')
             ]);
 
             setRecords(recordsResponse.data);
