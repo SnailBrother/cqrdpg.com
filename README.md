@@ -1,4 +1,5 @@
- # Nginx 反向代理配置
+
+# Nginx 反向代理配置
 
 ## Nginx 配置
 
@@ -358,4 +359,92 @@ CREATE TABLE SystemSettingsApp.dbo.SystemUserThemeSettings (
 );
 ``` 
 
+   # 项目结构
+  ```
+  src/
+├── components/           # 仅用于user页面的私有组件
+│   ├── Layout/
+│   │   ├── BottomNavLayout.js
+│   │   ├── BottomNavLayout.module.css
+│   │   ├── Header.js
+│   │   ├── Header.module.css
+│   │   ├── index.js
+│   │   ├── index.module.css
+│   │   ├── readme.md
+│   │   ├── Sidebar.module.css
+│   │   └── SidebarLayout.js
+│   │   └── Header.js    
+│   └── UI/              
+│       ├── Button/
+│       ├── Input/
+│       ├── Modal/
+│       └── index.js     # 统一导出
+├── pages/
+│    ├── modules
+│    │   ├── accounting
+│    │   │   ├── Overview.js
+│    │   │   ├── Reports.js
+│    │   │   └── Transactions.js
+│    │   ├── chat
+│    │   │   ├── Contacts.js
+│    │   │   └── Conversations.js
+│    │   ├── music
+│    │   │   ├── Favorites.js
+│    │   │   ├── Favorites.module.css
+│    │   │   ├── Home.js
+│    │   │   ├── Home.module.css
+│    │   │   ├── Player.js
+│    │   │   ├── Player.module.css
+│    │   │   ├── Recent.js
+│    │   │   ├── Recent.module.css
+│    │   │   ├── Recommend.js
+│    │   │   └── Recommend.module.css
+│    │   ├── office
+│    │   │   ├── Dashboard.js
+│    │   │   ├── Docs.js
+│    │   │   └── Tasks.js
+│    │   └── outfit
+│    │       ├── Closet.css
+│    │       ├── Closet.js
+│    │       ├── Combos.js
+│    │       ├── mannequin.png
+│    │       ├── PreviewWardrobe.css
+│    │       ├── PreviewWardrobe.js
+│    │       ├── UpdateWardrobe.css
+│    │       ├── UpdateWardrobe.js
+├── context/   # 全局状态管理（如AuthContext、ThemeContext）
+│   ├── AuthContext.js
+│   ├── ThemeContext.js
+│   └── index.js         # 统一导出
+├── hooks/     # 自定义React Hooks 
+│   ├── useAuth.js
+│   ├── useForm.js
+│   ├── useLocalStorage.js
+│   └── index.js         # 统一导出
+├── utils/               # 新增：工具函数
+│   ├── api.js          # API调用封装
+│   ├── constants.js    # 常量定义
+│   ├── helpers.js      # 辅助函数
+│   └── index.js        # 统一导出
+├── services/            # 新增：API服务层
+│   ├── authService.js
+│   ├── userService.js
+│   └── index.js        # 统一导出
+├── assets/
+│   ├── images/
+│   │   ├── icons/
+│   │   └── illustrations/
+│   ├── fonts/
+│   └── styles/         # 样式文件分类
+│       ├── globals.css # 全局样式
+│       ├── variables.css # CSS变量
+│       └── mixins.css  # CSS混入
+├── routes/
+│   ├── index.js
+│   └── ProtectedRoute.js # 路由守卫组件
+├── App.js
+├── App.module.css
+└── index.js
+  ```
+ 
  
