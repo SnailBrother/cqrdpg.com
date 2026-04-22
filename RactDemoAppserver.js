@@ -9944,6 +9944,15 @@ app.get('/api/reactdemorecommend', async (req, res) => {
 app.post('/api/Music/MusicRecentlyPlayed', async (req, res) => {
     try {
         const { email, music_id, title, artist, coverimage, src, genre } = req.body;
+        
+        // ✅ 添加详细日志
+        console.log('接收到播放记录请求:', {
+            email,
+            music_id,
+            title,
+            artist,
+            hasMusicId: !!music_id
+        });
 
         // 验证必填字段
         if (!email || !title || !artist || !src) {
@@ -9952,7 +9961,32 @@ app.post('/api/Music/MusicRecentlyPlayed', async (req, res) => {
             });
         }
 
-        // 先检查是否已有相同记录（同一用户同一歌曲）
+        // ✅ 验证 music_id
+        if (!music_id) {
+            console.error('❌ music_id 为空，请求体:', req.body);
+            return res.status(400).json({
+                error: 'music_id 不能为空'
+            });
+        }
+
+        // 验证并处理 music_id，确保其在 INT 范围内
+        const numValue = Number(music_id);
+        if (isNaN(numValue)) {
+            return res.status(400).json({
+                error: 'music_id 必须是数字'
+            });
+        }
+        
+        if (numValue < -2147483648 || numValue > 2147483647) {
+            return res.status(400).json({
+                error: 'music_id 超出 INT 范围'
+            });
+        }
+        
+        const validated_music_id = Math.floor(numValue);
+
+        // ... 其余代码保持不变
+        // 先检查是否已有相同记录
         const checkQuery = `
             SELECT id FROM MusicApp.dbo.MusicRecentlyPlayed 
             WHERE email = @email AND title = @title AND artist = @artist
@@ -9965,7 +9999,6 @@ app.post('/api/Music/MusicRecentlyPlayed', async (req, res) => {
             .query(checkQuery);
 
         if (checkResult.recordset.length > 0) {
-            // 如果已存在，先删除旧的记录
             await pool.request()
                 .input('email', sql.NVarChar, email)
                 .input('title', sql.NVarChar, title)
@@ -9986,7 +10019,6 @@ app.post('/api/Music/MusicRecentlyPlayed', async (req, res) => {
             `);
         const recordCount = countResult.recordset[0].recordCount;
 
-        // 如果记录数量达到或超过100条，删除最早的一条记录
         if (recordCount >= 100) {
             await pool.request()
                 .input('email', sql.NVarChar, email)
@@ -10004,7 +10036,7 @@ app.post('/api/Music/MusicRecentlyPlayed', async (req, res) => {
         // 插入新记录
         await pool.request()
             .input('email', sql.NVarChar, email)
-            .input('music_id', sql.Int, music_id || null)
+            .input('music_id', sql.Int, validated_music_id)
             .input('title', sql.NVarChar, title)
             .input('artist', sql.NVarChar, artist)
             .input('coverimage', sql.NVarChar, coverimage || '')
@@ -10026,7 +10058,7 @@ app.post('/api/Music/MusicRecentlyPlayed', async (req, res) => {
         console.error('添加最近播放记录错误:', err);
         res.status(500).json({
             success: false,
-            error: '服务器错误'
+            error: '服务器错误: ' + err.message
         });
     }
 });
@@ -10933,7 +10965,7 @@ app.post('/api/ListenTogetherMusic/ChangePlaySong', async (req, res) => {
 
         // 第一步：检查用户是否在房间中
         const userCheckQuery = `
-            SELECT * FROM MusicApp.dbo.MusicListenTogetherRooms 
+            SELECT * FROM MusicApp.dbo.MusicListenTogetherRoomUsers  
             WHERE room_name = @room_name AND email = @email
         `;
 
@@ -11014,7 +11046,7 @@ app.get('/api/ListenTogetherMusic/ChangePlaySong', async (req, res) => {
 
         // 检查用户是否在房间中
         const userCheckQuery = `
-            SELECT * FROM MusicApp.dbo.MusicListenTogetherRooms 
+            SELECT * FROM MusicApp.dbo.MusicListenTogetherRoomUsers 
             WHERE room_name = @room_name AND email = @email
         `;
 

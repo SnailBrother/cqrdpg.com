@@ -167,40 +167,49 @@ const Player = ({ className = '' }) => {
   }, [isDragging]);
 
   // --- 记录播放历史 ---
-  const recordPlayHistory = async (song) => {
+const recordPlayHistory = async (song) => {
     if (!isAuthenticated || !user?.email || !song) {
-      return;
+        return;
     }
 
-    // ✅ 正确获取歌曲 ID
-    // 优先使用 music_id（来自收藏列表等），否则使用 id（来自音乐库）
-    const songId = song.music_id || song.id;
-
+    // ✅ 直接从歌曲对象获取 id
+    const songId = song.id;
+    
     console.log('记录播放历史 - 歌曲信息:', {
-      id: song.id,
-      music_id: song.music_id,
-      title: song.title,
-      使用的歌曲ID: songId
-    });
-
-    try {
-      const coverimageFileName = generateFileName(song.title, song.artist, 'jpg');
-      const srcFileName = generateFileName(song.title, song.artist, 'mp3');
-
-      await axios.post('/api/Music/MusicRecentlyPlayed', {
-        email: user.email,
-        music_id: songId,  // ✅ 使用正确的歌曲 ID
+        songId: songId,
         title: song.title,
         artist: song.artist,
-        coverimage: coverimageFileName,
-        src: srcFileName,
-        genre: song.genre || ''
-      });
-      console.log('播放记录保存成功，music_id:', songId);
-    } catch (err) {
-      console.error('保存播放记录失败:', err);
+        歌曲对象: song
+    });
+
+    // ✅ 验证 id 是否存在
+    if (!songId) {
+        console.error('歌曲 ID 不存在:', song);
+        return;  // 没有 ID 就不记录
     }
-  };
+
+    try {
+        const coverimageFileName = generateFileName(song.title, song.artist, 'jpg');
+        const srcFileName = generateFileName(song.title, song.artist, 'mp3');
+
+        // ✅ 确保传递正确的 id
+        await axios.post('/api/Music/MusicRecentlyPlayed', {
+            email: user.email,
+            music_id: songId,  // 传递歌曲的 id
+            title: song.title,
+            artist: song.artist,
+            coverimage: coverimageFileName,
+            src: srcFileName,
+            genre: song.genre || ''
+        });
+        console.log('播放记录保存成功，music_id:', songId);
+    } catch (err) {
+        console.error('保存播放记录失败:', err);
+        if (err.response) {
+            console.error('错误响应:', err.response.data);
+        }
+    }
+};
 
   // --- 增加播放量 ---
   const increasePlayCount = async (song) => {

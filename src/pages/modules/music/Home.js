@@ -138,6 +138,7 @@ const Home = () => {
         });
 
         const actualIndex = musics.findIndex(music => music.id === songToPlay.id);
+        
         // 更新本地状态
         dispatch({
             type: 'PLAY_SONG',
