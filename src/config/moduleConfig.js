@@ -48,7 +48,7 @@ const OfficeWordReportGenerator = lazy(() => import('../pages/modules/office/Wor
 //const OfficeNeighborhoodFinder = lazy(() => import('../pages/modules/office/NeighborhoodFinder'));
 const OfficeSearchPdfFileView = lazy(() => import('../pages/modules/office/SearchPdfFileView'));
 const OfficeQuickCopy = lazy(() => import('../pages/modules/office/QuickCopy'));
-
+const OfficeAIStudioDownload = lazy(() => import('../pages/modules/office/AIStudioDownload'));
 
 
 
@@ -166,7 +166,7 @@ export const moduleConfig = {
       { key: 'FeeCalculation', label: '收费计算', icon: '#icon-jisuanji', component: OfficeFeeCalculation, showInNavigation: true, showInTabs: false },
       // { key: 'EvaluationFilePreview', label: '参考文献', icon: '#icon-bendiwenjianziyuan', component: OfficeEvaluationFilePreview, showInNavigation: true, showInTabs: false },
       { key: 'WordReportGenerator', label: '撰写报告', icon: '#icon-xiti', component: OfficeWordReportGenerator, showInNavigation: true, showInTabs: false },
-      
+      { key: 'AIStudioDownload', label: '文字提取', icon: '#icon-baobiao', component: OfficeAIStudioDownload, showInNavigation: true, showInTabs: false },
       
     ]
   },

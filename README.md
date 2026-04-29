@@ -309,6 +309,7 @@ CREATE TABLE WeChatApp.dbo.WeChatUserManagement (
 ---
 
 ## 四、系统设置板块数据库 (`SystemSettingsApp`)
+
  ### 1. 用户设置 (`SystemSettingsApp.dbo.SystemUserAccounts`)
 ``` 
 CREATE TABLE SystemSettingsApp.dbo.SystemUserAccounts (
@@ -324,7 +325,22 @@ CREATE TABLE SystemSettingsApp.dbo.SystemUserAccounts (
     is_locked BIT DEFAULT 0,                    -- 账户锁定状态，默认为0（未锁定）
 );
 ``` 
- ### 2. 系统主题设置 (`SystemSettingsApp.dbo.SystemUserThemeSettings`)
+
+ ### 2. 用户API设置 (`SystemSettingsApp.dbo.SystemUserApi`)
+``` 
+CREATE TABLE SystemSettingsApp.dbo.SystemUserApi (
+    id INT IDENTITY(1,1) PRIMARY KEY,         -- 用户ID，自增
+    email NVARCHAR(100) NOT NULL UNIQUE,       -- 用户邮箱，唯一
+    purpose NVARCHAR(200) NULL,                 -- 用途
+    API_URL NVARCHAR(255) NULL,               -- 接口地址
+    TOKEN NVARCHAR(255) NULL,                  -- 令牌
+      remark NVARCHAR(500) NULL                 -- 备注
+    FOREIGN KEY (email) REFERENCES SystemSettingsApp.dbo.SystemUserAccounts(email) 
+        ON DELETE CASCADE                            -- 外键约束，删除 SystemSettingsApp.dbo.SystemUserAccounts 中的email时，自动删除该email的所有消息
+);
+``` 
+
+ ### 3. 系统主题设置 (`SystemSettingsApp.dbo.SystemUserThemeSettings`)
 ``` 
 CREATE TABLE SystemSettingsApp.dbo.SystemUserThemeSettings (
     id INT IDENTITY(1,1) PRIMARY KEY,

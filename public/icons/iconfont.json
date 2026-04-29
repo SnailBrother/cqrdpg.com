@@ -6,6 +6,27 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "3836624",
+      "name": "办公椅",
+      "font_class": "bangongyi",
+      "unicode": "eb56",
+      "unicode_decimal": 60246
+    },
+    {
+      "icon_id": "37275121",
+      "name": "办公非住宅",
+      "font_class": "bangongfeizhuzhai",
+      "unicode": "eb57",
+      "unicode_decimal": 60247
+    },
+    {
+      "icon_id": "39594034",
+      "name": "工作室",
+      "font_class": "gongzuoshi",
+      "unicode": "eb58",
+      "unicode_decimal": 60248
+    },
+    {
       "icon_id": "5431279",
       "name": "拒绝",
       "font_class": "jujue",
