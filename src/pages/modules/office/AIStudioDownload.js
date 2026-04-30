@@ -455,9 +455,10 @@ const AIStudio = () => {
                 .replace(/\\text\{([^}]+)\}/g, '$1').replace(/\\+/g, '').replace(/\s+/g, ' ').trim();
 
             let landArea = '', buildingArea = '';
-            const landMatch = cleaned.match(/共有宗地面积\s*(\d+\.?\d*)/);
+            // 修改正则，让㎡或²后面的内容可选，匹配数字后可能紧跟任意字符
+            const landMatch = cleaned.match(/共有宗地面积[：:]\s*(\d+\.?\d*)/);
             if (landMatch) landArea = parseFloat(landMatch[1]);
-            const buildingMatch = cleaned.match(/房屋建筑面积\s*(\d+\.?\d*)/);
+            const buildingMatch = cleaned.match(/房屋建筑面积[：:]\s*(\d+\.?\d*)/);
             if (buildingMatch) buildingArea = parseFloat(buildingMatch[1]);
             return { landArea, buildingArea };
         };
@@ -526,13 +527,7 @@ const AIStudio = () => {
     const handleDragLeave = (e) => { e.preventDefault(); setDragOver(false); };
     const handleDrop = (e) => { e.preventDefault(); setDragOver(false); handleFileSelect(e.dataTransfer.files); };
 
-    const formatFileSize = (bytes) => {
-        if (bytes === 0) return '0 B';
-        const k = 1024;
-        const sizes = ['B', 'KB', 'MB', 'GB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-    };
+
 
     return (
         <div className={styles.container}>
@@ -551,7 +546,7 @@ const AIStudio = () => {
                 {/* 左侧面板 */}
                 <div className={styles.leftPanel}>
                     <div className={styles.panelHeader}>
-                        <h3>原始文件</h3>
+                        <h3 className={styles.panelHeaderleft} >源文件</h3>
                         <div className={styles.headerActions}>
 
                             {propertyData.length > 0 && (
@@ -564,7 +559,8 @@ const AIStudio = () => {
                             )}
 
                             {filePreviews.length > 0 && (
-                                <button onClick={handleReset} className={styles.resetBtn}>
+                                <button onClick={handleReset} title='重置'
+                                    className={styles.resetBtn}>
                                     {/* 重置 */}
                                     <svg className={styles.uploadIconin} aria-hidden="true">
                                         <use xlinkHref="#icon-liebiaoxunhuan7"></use>
@@ -577,9 +573,14 @@ const AIStudio = () => {
                                     <button
                                         onClick={handleProcessFiles}
                                         disabled={isLoading || pdfConverting}
+                                        title='开始'
                                         className={styles.processBtn}
                                     >
-                                        {isLoading ? `识别中 ${currentFileIndex + 1}/${filePreviews.length}...` : `开始 (${filePreviews.length}页)`}
+                                        {/* {filePreviews.length} */}
+                                        {isLoading ? `识别中 ${currentFileIndex + 1}/${filePreviews.length}...` : <svg className={styles.uploadIconin} aria-hidden="true">
+                                            <use xlinkHref="#icon-kaishi"></use>
+                                        </svg>}
+
                                     </button>
 
 
@@ -684,6 +685,7 @@ const AIStudio = () => {
                         <div className={styles.previewList}>
                             <div className={styles.previewListHeader}>
                                 <span>文件预览 ({filePreviews.length}页)</span>
+                                
                             </div>
                             <div className={styles.previewItems}>
                                 {filePreviews.map((preview, index) => (
@@ -724,7 +726,13 @@ const AIStudio = () => {
                 {/* 右侧面板 */}
                 <div className={styles.rightPanel}>
                     <div className={styles.panelHeader}>
-                        <h3>解析结果</h3>
+                        <div className={styles.panelHeadercontainer}>
+                            <span className={styles.panelHeaderlabel}>解析模型</span>
+                            <span className={styles.panelHeadermodelName}>PaddleOCR-VL-1.5</span>
+                            <span className={styles.panelHeadernewTag}>NEW</span>
+                            <span className={styles.panelHeadercheckIcon}>v </span>
+
+                        </div>
                         {isLoading && propertyData.length > 0 && (
                             <span className={styles.realtimeBadge}>⏳ 实时更新中... 已识别 {propertyData.length} 条</span>
                         )}
