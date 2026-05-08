@@ -455,10 +455,10 @@ const AIStudio = () => {
                 .replace(/\\text\{([^}]+)\}/g, '$1').replace(/\\+/g, '').replace(/\s+/g, ' ').trim();
 
             let landArea = '', buildingArea = '';
-            // 修改正则，让㎡或²后面的内容可选，匹配数字后可能紧跟任意字符
-            const landMatch = cleaned.match(/共有宗地面积[：:]\s*(\d+\.?\d*)/);
+            // 修复正则表达式，支持无冒号格式
+            const landMatch = cleaned.match(/共有宗地面积\s*(\d+\.?\d*)/); // 移除了 [：:] 匹配
             if (landMatch) landArea = parseFloat(landMatch[1]);
-            const buildingMatch = cleaned.match(/房屋建筑面积[：:]\s*(\d+\.?\d*)/);
+            const buildingMatch = cleaned.match(/房屋建筑面积\s*(\d+\.?\d*)/); // 移除了 [：:] 匹配
             if (buildingMatch) buildingArea = parseFloat(buildingMatch[1]);
             return { landArea, buildingArea };
         };
@@ -685,7 +685,7 @@ const AIStudio = () => {
                         <div className={styles.previewList}>
                             <div className={styles.previewListHeader}>
                                 <span>文件预览 ({filePreviews.length}页)</span>
-                                
+
                             </div>
                             <div className={styles.previewItems}>
                                 {filePreviews.map((preview, index) => (
