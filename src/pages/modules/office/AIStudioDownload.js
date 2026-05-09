@@ -4,6 +4,7 @@ import * as pdfjsLib from 'pdfjs-dist/webpack';
 import styles from './AIStudioDownload.module.css';
 import PropertyTable from './AIStudioDownload/PropertyTable';
 import { ConfirmationDialog } from '../../../../src/components/UI';
+let globalFileId = 0; 
 
 const AIStudio = () => {
     const [selectedFiles, setSelectedFiles] = useState([]);
@@ -195,7 +196,7 @@ const AIStudio = () => {
                     const previewPromise = new Promise((resolve) => {
                         reader.onloadend = () => {
                             resolve({
-                                id: Date.now() + Math.random(),
+                                id: ++globalFileId,
                                 type: 'image',
                                 url: reader.result,
                                 name: file.name,
@@ -220,7 +221,7 @@ const AIStudio = () => {
 
                         pages.forEach(page => {
                             allPreviews.push({
-                                id: Date.now() + Math.random(),
+                                id: ++globalFileId,
                                 type: 'pdf-page',
                                 url: page.url,
                                 name: file.name,
@@ -266,32 +267,53 @@ const AIStudio = () => {
         setIsSelectAll(newSelected.size === filePreviews.length && filePreviews.length > 0);
     };
 
-    // 全选/取消全选
-    const toggleSelectAll = () => {
-        if (isSelectAll) {
-            setSelectedPreviewIds(new Set());
-            setIsSelectAll(false);
-        } else {
-            const allIds = new Set(filePreviews.map(preview => preview.id));
-            setSelectedPreviewIds(allIds);
-            setIsSelectAll(true);
-        }
-    };
+// 全选/取消全选 (优化版)
+const toggleSelectAll = () => {
+  // 防止 filePreviews 为空时报错
+  if (filePreviews.length === 0) {
+    setSelectedPreviewIds(new Set());
+    setIsSelectAll(false);
+    return;
+  }
 
-    // 反选
-    const invertSelection = () => {
-        const allIds = new Set(filePreviews.map(preview => preview.id));
-        const newSelected = new Set();
+  // 如果当前已经是全选，或者数据量过大导致卡顿，点击则清空
+  if (isSelectAll) {
+    setSelectedPreviewIds(new Set());
+  } else {
+    // 使用 Set 构造函数直接传入数组，比 forEach 稍微高效一点点
+    const allIds = new Set(filePreviews.map(preview => preview.id));
+    setSelectedPreviewIds(allIds);
+  }
+  // 更新全选状态
+  setIsSelectAll(!isSelectAll);
+};
 
-        filePreviews.forEach(preview => {
-            if (!selectedPreviewIds.has(preview.id)) {
-                newSelected.add(preview.id);
-            }
-        });
+// 反选 (优化版：增加性能保护)
+const invertSelection = () => {
+  if (filePreviews.length === 0) {
+    setSelectedPreviewIds(new Set());
+    return;
+  }
 
-        setSelectedPreviewIds(newSelected);
-        setIsSelectAll(newSelected.size === filePreviews.length && filePreviews.length > 0);
-    };
+  // 警告：600条数据反选非常消耗性能，建议先提示用户
+  if (filePreviews.length > 300) {
+    const confirm = window.confirm(`当前有 ${filePreviews.length} 个文件，反选可能需要几秒钟并导致页面卡顿，是否继续？`);
+    if (!confirm) return;
+  }
+
+  const allIds = new Set(filePreviews.map(preview => preview.id));
+  const newSelected = new Set();
+
+  // 核心反选逻辑：遍历所有 ID，如果不在当前选中列表里，就加入新列表
+  allIds.forEach(id => {
+    if (!selectedPreviewIds.has(id)) {
+      newSelected.add(id);
+    }
+  });
+
+  setSelectedPreviewIds(newSelected);
+  setIsSelectAll(newSelected.size === filePreviews.length);
+};
 
     // 重置
     const handleReset = () => {
@@ -386,7 +408,7 @@ const AIStudio = () => {
                         _index: i,
                         _fileName: preview.name,
                         _pageNumber: preview.pageNumber,
-                        _id: Date.now() + Math.random()
+                        _id: ++globalFileId
                     };
                     allPropertyData.push(newData);
 
