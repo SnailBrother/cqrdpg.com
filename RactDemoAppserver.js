@@ -7534,7 +7534,6 @@ app.get('/api/getTemplateManagement', async (req, res) => {
 //下载
 // 统一的下载API
 app.get('/api/downloadTemplateManagement', (req, res) => {
-    // console.log('收到下载请求，参数:', req.query);
     const {
         templateId,
         files,
@@ -7549,18 +7548,13 @@ app.get('/api/downloadTemplateManagement', (req, res) => {
     }
 
     const fileList = files.split(',');
-    // console.log('要下载的文件列表:', fileList);
-
-    // 构建安全路径（不再使用templateId）
+    
+    // 构建安全路径
     const safeAssetType = path.normalize(assetType).replace(/^(\.\.(\/|\\|$))+/, '');
     const safeValuationPurpose = path.normalize(valuationPurpose).replace(/^(\.\.(\/|\\|$))+/, '');
 
     const basePath = path.join(__dirname, './public/downloads/Templates');
-    // console.log('基础路径:', basePath);
-
-    // 修改这里：去掉templateId
     const directoryPath = path.join(basePath, safeAssetType, safeValuationPurpose);
-    // console.log('修正后的文件目录路径:', directoryPath);
 
     // 验证路径是否在允许的范围内
     if (!directoryPath.startsWith(basePath)) {
@@ -7578,19 +7572,17 @@ app.get('/api/downloadTemplateManagement', (req, res) => {
     // 单文件下载
     if (downloadType === 'single' && fileList.length === 1) {
         const fileName = fileList[0];
-        // console.log('单文件下载:', fileName);
-
         const safeFileName = path.normalize(fileName).replace(/^(\.\.(\/|\\|$))+/, '');
         const filePath = path.join(directoryPath, safeFileName);
-        //console.log('完整文件路径:', filePath);
 
         if (!fs.existsSync(filePath)) {
             console.error('错误：文件不存在');
             return res.status(404).send('File not found');
         }
 
-        //console.log('开始文件下载:', filePath);
-        res.setHeader('Content-Disposition', `attachment; filename="${encodeURIComponent(fileName)}"`);
+        // 修复：正确设置文件名编码
+        const encodedFileName = encodeURIComponent(fileName);
+        res.setHeader('Content-Disposition', `attachment; filename="${encodedFileName}"; filename*=UTF-8''${encodedFileName}`);
         res.setHeader('Content-Type', 'application/octet-stream');
 
         const fileStream = fs.createReadStream(filePath);
@@ -7601,30 +7593,31 @@ app.get('/api/downloadTemplateManagement', (req, res) => {
             res.status(500).send('File download error');
         });
     }
-    // 多文件压缩下载（同样修改路径构建）
+    // 多文件压缩下载
     else if (downloadType === 'zip' && fileList.length > 1) {
-        //console.log('多文件压缩下载:', fileList);
-
         const zip = new JSZip();
+        // 修复：确保文件名以 .zip 结尾
         const zipFileName = `template_files_${Date.now()}.zip`;
         const zipFilePath = path.join(__dirname, './temp', zipFileName);
-        const output = fs.createWriteStream(zipFilePath);
-
+        
         // 确保临时目录存在
-        if (!fs.existsSync(path.join(__dirname, './temp'))) {
-            fs.mkdirSync(path.join(__dirname, './temp'));
+        const tempDir = path.join(__dirname, './temp');
+        if (!fs.existsSync(tempDir)) {
+            fs.mkdirSync(tempDir, { recursive: true });
         }
+
+        const output = fs.createWriteStream(zipFilePath);
 
         // 添加每个文件到zip
         let filesAdded = 0;
         const addFilesPromises = fileList.map(fileName => {
-            return new Promise((resolve, reject) => {
+            return new Promise((resolve) => {
                 const safeFileName = path.normalize(fileName).replace(/^(\.\.(\/|\\|$))+/, '');
                 const filePath = path.join(directoryPath, safeFileName);
 
                 if (!fs.existsSync(filePath)) {
                     console.error(`文件不存在: ${filePath}`);
-                    resolve(false); // 不reject，继续处理其他文件
+                    resolve(false);
                     return;
                 }
 
@@ -7653,11 +7646,10 @@ app.get('/api/downloadTemplateManagement', (req, res) => {
                 zip.generateNodeStream({ type: 'nodebuffer', streamFiles: true })
                     .pipe(output)
                     .on('finish', () => {
-                        //console.log('ZIP文件创建完成:', zipFilePath);
-
-                        // 设置响应头
+                        // 修复：正确设置zip文件的Content-Disposition
+                        const encodedZipFileName = encodeURIComponent(zipFileName);
                         res.setHeader('Content-Type', 'application/zip');
-                        res.setHeader('Content-Disposition', `attachment; filename="${encodeURIComponent(zipFileName)}"`);
+                        res.setHeader('Content-Disposition', `attachment; filename="${encodedZipFileName}"; filename*=UTF-8''${encodedZipFileName}`);
 
                         // 流式传输zip文件
                         const zipStream = fs.createReadStream(zipFilePath);
@@ -7672,15 +7664,28 @@ app.get('/api/downloadTemplateManagement', (req, res) => {
 
                         zipStream.on('error', (err) => {
                             console.error('ZIP文件流错误:', err);
-                            fs.unlink(zipFilePath, () => { }); // 尝试清理
-                            res.status(500).send('Zip download error');
+                            fs.unlink(zipFilePath, () => {});
+                            if (!res.headersSent) {
+                                res.status(500).send('Zip download error');
+                            }
                         });
+                    })
+                    .on('error', (err) => {
+                        console.error('写入ZIP文件失败:', err);
+                        fs.unlink(zipFilePath, () => {});
+                        if (!res.headersSent) {
+                            res.status(500).send('Error creating zip file');
+                        }
                     });
             })
             .catch(err => {
                 console.error('创建ZIP过程中出错:', err);
-                res.status(500).send('Error creating zip file');
+                if (!res.headersSent) {
+                    res.status(500).send('Error creating zip file');
+                }
             });
+    } else {
+        res.status(400).send('Invalid download type or file count');
     }
 });
 //新的报告下载模板 👆

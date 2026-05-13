@@ -1,20 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import io from 'socket.io-client';
-import ReactDOM from 'react-dom'; // 新增导入
 import './Specialtips.css';
-import { Loading, Toast, useToast, ToastContainer } from '../../../components/UI';
-
-const socket = io('https://www.cqrdpg.com:5202');
+import { Loading } from '../../../components/UI';
+const socket = io('https://www.cqrdpg.com:5202'); // 请根据实际情况修改服务器地址
 
 export default function Specialtips() {
     const [tips, setTips] = useState([]);
-    const [allTips, setAllTips] = useState([]);
+    const [allTips, setAllTips] = useState([]); // 新增：存储所有原始数据
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
-    const [searchInput, setSearchInput] = useState('');
-
-    const { toasts, removeToast, success, error } = useToast();
+    const [searchInput, setSearchInput] = useState(''); // 新增：用于输入框的临时值
 
     useEffect(() => {
         const fetchTipsData = async () => {
@@ -22,7 +18,7 @@ export default function Specialtips() {
                 const response = await axios.get('/api/getSpecial_TipsData');
                 const tipsData = response.data.Special_Tips;
                 setTips(tipsData);
-                setAllTips(tipsData);
+                setAllTips(tipsData); // 保存所有原始数据
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching tips data:', error);
@@ -32,9 +28,10 @@ export default function Specialtips() {
 
         fetchTipsData();
 
+        // 监听 socket.io 的事件
         socket.on('tips-update', (newTips) => {
             setTips(newTips);
-            setAllTips(newTips);
+            setAllTips(newTips); // 同时更新所有数据
         });
 
         return () => {
@@ -42,23 +39,16 @@ export default function Specialtips() {
         };
     }, []);
 
-    const handleCopy = async (value) => {
-        if (!value) return;
-        try {
-            await navigator.clipboard.writeText(value);
-            success('复制成功！');
-        } catch (err) {
-            error('复制失败，请手动复制');
-        }
-    };
-
+    // 处理搜索提交
     const handleSearchSubmit = () => {
         const trimmedInput = searchInput.trim();
-        setSearchTerm(trimmedInput);
+        setSearchTerm(trimmedInput); // 更新搜索词状态
         
         if (trimmedInput === '') {
+            // 如果搜索为空，显示所有数据
             setTips(allTips);
         } else {
+            // 执行搜索过滤
             const filtered = allTips.filter(tip =>
                 tip.tip_content.toLowerCase().includes(trimmedInput.toLowerCase())
             );
@@ -66,14 +56,22 @@ export default function Specialtips() {
         }
     };
 
+    // 处理输入框按键事件
     const handleKeyPress = (e) => {
         if (e.key === 'Enter') {
             handleSearchSubmit();
         }
     };
 
+    // 清除搜索
+    // const handleClearSearch = () => {
+    //     setSearchInput('');
+    //     setSearchTerm('');
+    //     setTips(allTips);
+    // };
+
     if (loading) {
-        return <div className="specialtips-loading"><Loading message="特别提示加载中" /></div>;
+        return <div className="specialtips-loading"> <Loading message="特别提示加载中" /></div>;
     }
 
     return (
@@ -88,6 +86,15 @@ export default function Specialtips() {
                         onKeyDown={handleKeyPress}
                         className="specialtips-search-input"
                     />
+                    {/* {searchInput && (
+                        <button 
+                            className="specialtips-clear-button"
+                            onClick={handleClearSearch}
+                            title="清除搜索"
+                        >
+                            ✕
+                        </button>
+                    )} */}
                 </div>
             </div>
 
@@ -99,12 +106,7 @@ export default function Specialtips() {
                                 <div className="specialtips-card-header">
                                     <span className="specialtips-card-category">{tip.asset_type}</span>
                                 </div>
-                                <div 
-                                    className="specialtips-card-body"
-                                    onClick={() => handleCopy(tip.tip_content)}
-                                    style={{ cursor: 'pointer' }}
-                                    title="点击复制提示内容"
-                                >
+                                <div className="specialtips-card-body">
                                     <p className="specialtips-card-content">{tip.tip_content}</p>
                                 </div>
                             </div>
@@ -116,12 +118,6 @@ export default function Specialtips() {
                     </div>
                 )}
             </div>
-
-            {/* 将 ToastContainer 移到最外层，避免被遮挡 */}
-            {ReactDOM.createPortal(
-                <ToastContainer toasts={toasts} removeToast={removeToast} />,
-                document.body
-            )}
         </div>
     );
 }

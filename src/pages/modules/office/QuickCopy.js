@@ -6,7 +6,7 @@ import SiteLinks from './SiteLinks';
 import Specialtips from './Specialtips';
 import styles from './QuickCopy.module.css';
 
-const MusicMenu = () => {
+const QuickCopy = () => {
     // 定义页面配置
     const pages = [
         { component: PublicNews, props: {} },
@@ -36,4 +36,4 @@ const MusicMenu = () => {
     );
 };
 
-export default MusicMenu;
+export default QuickCopy;

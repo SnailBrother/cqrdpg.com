@@ -34,52 +34,74 @@ const TemplateManagement = () => {
         fetchTemplates();
     }, []);
 
-    const handleDownload = async (folderId, assetType, valuationPurpose) => {
-        const selected = selectedFiles[folderId] || [];
-        if (selected.length === 0) return;
+const handleDownload = async (folderId, assetType, valuationPurpose) => {
+    const selected = selectedFiles[folderId] || [];
+    if (selected.length === 0) return;
 
-        try {
-            const response = await axios({
-                url: '/api/downloadTemplateManagement',
-                method: 'GET',
-                params: {
-                    assetType: assetType,
-                    valuationPurpose: valuationPurpose,
-                    files: selected.join(','),
-                    downloadType: selected.length > 1 ? 'zip' : 'single'
-                },
-                responseType: 'blob'
-            });
+    try {
+        const response = await axios({
+            url: '/api/downloadTemplateManagement',
+            method: 'GET',
+            params: {
+                assetType: assetType,
+                valuationPurpose: valuationPurpose,
+                files: selected.join(','),
+                downloadType: selected.length > 1 ? 'zip' : 'single'
+            },
+            responseType: 'blob'
+        });
 
-            const contentDisposition = response.headers['content-disposition'];
-            let fileName = 'download';
-
-            if (contentDisposition) {
-                const fileNameMatch = contentDisposition.match(/filename="?(.+)"?/);
-                if (fileNameMatch && fileNameMatch[1]) {
-                    fileName = fileNameMatch[1];
+        // 修复：从 Content-Disposition 头中正确解析文件名
+        let fileName = '';
+        const contentDisposition = response.headers['content-disposition'];
+        
+        if (contentDisposition) {
+            // 优先尝试获取 filename*=UTF-8'' 格式
+            const utf8FilenameMatch = contentDisposition.match(/filename\*=UTF-8''([^;]+)/);
+            if (utf8FilenameMatch && utf8FilenameMatch[1]) {
+                fileName = decodeURIComponent(utf8FilenameMatch[1]);
+            } else {
+                // 降级到普通 filename 格式
+                const filenameMatch = contentDisposition.match(/filename="?([^";]+)"?/);
+                if (filenameMatch && filenameMatch[1]) {
+                    fileName = decodeURIComponent(filenameMatch[1]);
                 }
-            } else if (selected.length === 1) {
+            }
+        }
+        
+        // 如果没有从 header 获取到文件名，使用默认逻辑
+        if (!fileName) {
+            if (selected.length === 1) {
                 fileName = selected[0];
             } else {
-                fileName = `${folderId}_files.zip`;
+                fileName = `${folderId}_${Date.now()}.zip`;
             }
-
-            const url = window.URL.createObjectURL(new Blob([response.data]));
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', fileName);
-            document.body.appendChild(link);
-            link.click();
-            setTimeout(() => {
-                document.body.removeChild(link);
-                window.URL.revokeObjectURL(url);
-            }, 100);
-        } catch (error) {
-            console.error('下载失败:', error);
-            alert('下载失败，请稍后重试');
         }
-    };
+
+        // 确保文件名有正确的扩展名
+        if (selected.length > 1 && !fileName.endsWith('.zip')) {
+            fileName = fileName.replace(/\.zip_?$/, '.zip');
+            if (!fileName.endsWith('.zip')) {
+                fileName += '.zip';
+            }
+        }
+
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        
+        setTimeout(() => {
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+        }, 100);
+    } catch (error) {
+        console.error('下载失败:', error);
+        alert('下载失败，请稍后重试');
+    }
+};
 
     const handleViewDocument = (template, fileType) => {
         setViewerState({
