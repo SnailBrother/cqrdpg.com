@@ -11,8 +11,6 @@ import { validateReportData } from './WordReportGenerator/ValidationUtils'; //�
 import BaiduDataGrabber from './WordReportGenerator/BaiduDataGrabber';//百度地图抓包
 import HandBaiduDataGrabber from './WordReportGenerator/HandBaiduDataGrabber';//百度地图手动抓包
 import WordEditingPreview from './WordEditing';//百度地图手动抓包
-import { TextBox } from '../../../components/UI';
-// 导入你封装的 UI 组件
 
 //import { useTheme } from '../../context/ThemeContext'; // 导入useTheme钩子
 //日期控件
@@ -173,64 +171,64 @@ const WordReportGenerator = () => {
     };
 
     //报告预览回传数据
-    const handleSavePreviewData = (updatedData) => {
-        console.log('收到更新的数据:', updatedData);
-
-        // 创建一个函数来更新嵌套字段
-        const updateNestedField = (state, path, value) => {
-            const keys = path.split('.');
-            const newState = { ...state };
-            let current = newState;
-
-            for (let i = 0; i < keys.length - 1; i++) {
-                current[keys[i]] = { ...current[keys[i]] };
-                current = current[keys[i]];
-            }
-
-            current[keys[keys.length - 1]] = value;
-            return newState;
-        };
-
-        // 定义字段映射（WordEditing字段名 -> WordReportGenerator字段路径）
-        const fieldMap = {
-            // 委托信息
-            documentNo: 'entrustment.documentNo',
-            entrustingParty: 'entrustment.entrustingParty',
-            assessmentCommissionDocument: 'entrustment.assessmentCommissionDocument',
-
-            // 产权信息
-            location: 'property.location',
-            buildingArea: 'property.buildingArea',
-            interiorArea: 'property.interiorArea',
-            propertyCertificateNo: 'property.propertyCertificateNo',
-            rightsHolder: 'property.rightsHolder',
-
-            // 结果信息
-            reportID: 'result.reportID',
-            projectID: 'result.projectID',
-            valuationPrice: 'result.valuationPrice',
-            rent: 'result.rent',
-
-            // 估价师信息
-            appraiserA_name: 'result.appraiserA.name',
-            appraiserA_licenseNo: 'result.appraiserA.licenseNo',
-            appraiserB_name: 'result.appraiserB.name',
-            appraiserB_licenseNo: 'result.appraiserB.licenseNo',
-        };
-
-        // 批量更新所有字段
-        let newState = { ...reportgeneratorReportData };
-
-        Object.entries(fieldMap).forEach(([templateField, reportPath]) => {
-            if (updatedData[templateField] !== undefined) {
-                newState = updateNestedField(newState, reportPath, updatedData[templateField]);
-            }
-        });
-
-        setReportgeneratorReportData(newState);
-        notify('预览数据已保存', 'success');
-        setShowReportPreview(false);
+const handleSavePreviewData = (updatedData) => {
+    console.log('收到更新的数据:', updatedData);
+    
+    // 创建一个函数来更新嵌套字段
+    const updateNestedField = (state, path, value) => {
+        const keys = path.split('.');
+        const newState = { ...state };
+        let current = newState;
+        
+        for (let i = 0; i < keys.length - 1; i++) {
+            current[keys[i]] = { ...current[keys[i]] };
+            current = current[keys[i]];
+        }
+        
+        current[keys[keys.length - 1]] = value;
+        return newState;
     };
+    
+    // 定义字段映射（WordEditing字段名 -> WordReportGenerator字段路径）
+    const fieldMap = {
+        // 委托信息
+        documentNo: 'entrustment.documentNo',
+        entrustingParty: 'entrustment.entrustingParty',
+        assessmentCommissionDocument: 'entrustment.assessmentCommissionDocument',
+        
+        // 产权信息
+        location: 'property.location',
+        buildingArea: 'property.buildingArea',
+        interiorArea: 'property.interiorArea',
+        propertyCertificateNo: 'property.propertyCertificateNo',
+        rightsHolder: 'property.rightsHolder',
+        
+        // 结果信息
+        reportID: 'result.reportID',
+        projectID: 'result.projectID',
+        valuationPrice: 'result.valuationPrice',
+        rent: 'result.rent',
+        
+        // 估价师信息
+        appraiserA_name: 'result.appraiserA.name',
+        appraiserA_licenseNo: 'result.appraiserA.licenseNo',
+        appraiserB_name: 'result.appraiserB.name',
+        appraiserB_licenseNo: 'result.appraiserB.licenseNo',
+    };
+    
+    // 批量更新所有字段
+    let newState = { ...reportgeneratorReportData };
+    
+    Object.entries(fieldMap).forEach(([templateField, reportPath]) => {
+        if (updatedData[templateField] !== undefined) {
+            newState = updateNestedField(newState, reportPath, updatedData[templateField]);
+        }
+    });
+    
+    setReportgeneratorReportData(newState);
+    notify('预览数据已保存', 'success');
+    setShowReportPreview(false);
+};
     //打开报告预览功能 👆
 
 
@@ -493,7 +491,9 @@ const WordReportGenerator = () => {
                 totalFloors: reportData.totalFloors !== null && reportData.totalFloors !== undefined
                     ? reportData.totalFloors.toString()
                     : '',
-                floorNumber: reportData.floorNumber || '',
+                floorNumber: reportData.floorNumber !== null && reportData.floorNumber !== undefined
+                    ? reportData.floorNumber.toString()
+                    : '',
                 elevator: reportData.elevator || false,
                 decorationStatus: reportData.decorationStatus || '',
                 ventilationStatus: reportData.ventilationStatus || false,
@@ -698,7 +698,7 @@ const WordReportGenerator = () => {
                 rightsNature: reportgeneratorReportData.property.rightsNature,
                 communityName: reportgeneratorReportData.physicalCondition.communityName,
                 totalFloors: parseInt(reportgeneratorReportData.physicalCondition.totalFloors) || 0,
-                floorNumber: reportgeneratorReportData.physicalCondition.floorNumber || '',
+                floorNumber: parseInt(reportgeneratorReportData.physicalCondition.floorNumber) || 0,
                 elevator: reportgeneratorReportData.physicalCondition.elevator,
                 decorationStatus: reportgeneratorReportData.physicalCondition.decorationStatus,
                 ventilationStatus: reportgeneratorReportData.physicalCondition.ventilationStatus,
@@ -1301,36 +1301,30 @@ const WordReportGenerator = () => {
     /**
      * 处理表单输入变化
      */
-const reportgeneratorHandleInputChange = (section, field, value) => {
-    // 特殊处理日期字段
-    const dateFields = ['entrustDate', 'landUseRightEndDate', 'valueDate', 'reportDate'];
+    const reportgeneratorHandleInputChange = (section, field, value) => {
+        // 特殊处理日期字段
+        const dateFields = ['entrustDate', 'landUseRightEndDate', 'valueDate', 'reportDate'];
 
-    if (dateFields.includes(field)) {
-        let dateValue = '';
-        if (value) {
-            // 使用 dayjs 统一处理各种格式
-            const dayjsValue = dayjs(value);
-            if (dayjsValue.isValid()) {
-                dateValue = dayjsValue.format('YYYY-MM-DD');
-            }
+        if (dateFields.includes(field)) {
+            // 如果值是 dayjs 对象，则格式化为字符串 则格式化为字符串（使用本地日期）
+            const dateValue = value ? value.format('YYYY-MM-DD') : '';
+            setReportgeneratorReportData(prev => ({
+                ...prev,
+                [section]: {
+                    ...prev[section],
+                    [field]: dateValue
+                }
+            }));
+        } else {
+            setReportgeneratorReportData(prev => ({
+                ...prev,
+                [section]: {
+                    ...prev[section],
+                    [field]: value
+                }
+            }));
         }
-        setReportgeneratorReportData(prev => ({
-            ...prev,
-            [section]: {
-                ...prev[section],
-                [field]: dateValue
-            }
-        }));
-    } else {
-        setReportgeneratorReportData(prev => ({
-            ...prev,
-            [section]: {
-                ...prev[section],
-                [field]: value
-            }
-        }));
-    }
-};
+    };
 
     /**
      * 处理估价师选择变化
@@ -1360,150 +1354,134 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
         notify('周边信息已保存', 'success');
     };
 
-
-
-    // 自定义ui组件👇
-    // 委托类型:
-    const assessmentCommissionSearchList = React.useMemo(() => {
-        const options = reportgeneratorAppraiserOptions
-            .map(option => option.assessmentCommissionDocumentOptions)
-            .filter(Boolean);
-        return [...new Set(options)]; // 去重
-    }, [reportgeneratorAppraiserOptions]);
-    //时点要求:
-    const valueDateRequirementsSearchList = React.useMemo(() => {
-        const options = reportgeneratorAppraiserOptions
-            .map(option => option.valueDateRequirementsOptions)
-            .filter(Boolean);
-        return [...new Set(options)]; // 去重
-    }, [reportgeneratorAppraiserOptions]);
-    //共有情况
-    const coOwnershipStatusSearchList = React.useMemo(() => {
-        const options = reportgeneratorAppraiserOptions
-            .map(option => option.coOwnershipStatusOptions)
-            .filter(Boolean);
-        return [...new Set(options)]; // 去重
-    }, [reportgeneratorAppraiserOptions]);
-    //权利性质
-    const rightsNatureSearchList = React.useMemo(() => {
-        const options = reportgeneratorAppraiserOptions
-            .map(option => option.rightsNatureOptions)
-            .filter(Boolean);
-        return [...new Set(options)]; // 去重
-    }, [reportgeneratorAppraiserOptions]);
-    //房屋结构
-    const houseStructureSearchList = React.useMemo(() => {
-        const options = reportgeneratorAppraiserOptions
-            .map(option => option.houseStructureOptions)
-            .filter(Boolean);
-        return [...new Set(options)]; // 去重
-    }, [reportgeneratorAppraiserOptions]);
-    //土地用途
-    const landPurposeSearchList = React.useMemo(() => {
-        const options = reportgeneratorAppraiserOptions
-            .map(option => option.landPurposeOptions)
-            .filter(Boolean);
-        return [...new Set(options)]; // 去重
-    }, [reportgeneratorAppraiserOptions]);
-    //房屋用途
-    const housePurposeSearchList = React.useMemo(() => {
-        const options = reportgeneratorAppraiserOptions
-            .map(option => option.housePurposeOptions)
-            .filter(Boolean);
-        return [...new Set(options)]; // 去重
-    }, [reportgeneratorAppraiserOptions]);
-    //建成年代
-    const yearBuiltSearchList = React.useMemo(() => {
-        const currentYear = new Date().getFullYear();
-        const years = [];
-        for (let year = currentYear; year >= 1900; year--) {
-            years.push(year.toString());
-        }
-        return years;
-    }, []);
-    //所在楼层
-    // 楼层列表：-6 到 50，从小到大排序（纯数字字符串）
-    const floorNumberSearchList = React.useMemo(() => {
-        const floors = [];
-        // 从 -6 循环到 50，从小到大
-        for (let floor = -6; floor <= 50; floor++) {
-            floors.push(floor.toString());
-        }
-        return floors;
-    }, []);
-    //朝向
-    const orientationSearchList = React.useMemo(() => {
-        const options = reportgeneratorAppraiserOptions
-            .map(option => option.orientationOptions)
-            .filter(Boolean);
-        return [...new Set(options)]; // 去重
-    }, [reportgeneratorAppraiserOptions]);
-    //土地形状
-    const landShapeSearchList = React.useMemo(() => {
-        const options = reportgeneratorAppraiserOptions
-            .map(option => option.landShapeOptions)
-            .filter(Boolean);
-        return [...new Set(options)]; // 去重
-    }, [reportgeneratorAppraiserOptions]);
-    //外墙面 
-    const exteriorWallMaterialSearchList = React.useMemo(() => {
-        const options = reportgeneratorAppraiserOptions
-            .map(option => option.exteriorWallMaterialOptions)
-            .filter(Boolean);
-        return [...new Set(options)]; // 去重
-    }, [reportgeneratorAppraiserOptions]);
-    //停车状况
-    const parkingStatusSearchList = React.useMemo(() => {
-        const options = reportgeneratorAppraiserOptions
-            .map(option => option.parkingStatusOptions)
-            .filter(Boolean);
-        return [...new Set(options)]; // 去重
-    }, [reportgeneratorAppraiserOptions]);
-    //估价方法
-    const valuationMethodSearchList = React.useMemo(() => {
-        const options = reportgeneratorAppraiserOptions
-            .map(option => option.valuationMethodOptions)
-            .filter(Boolean);
-        return [...new Set(options)]; // 去重
-    }, [reportgeneratorAppraiserOptions]);
-    //估价师A
-    const appraiserNameSearchList = React.useMemo(() => {
-        const options = reportgeneratorAppraiserOptions
-            .map(option => option.AppraiserNameOptions)
-            .filter(Boolean);
-        return [...new Set(options)]; // 去重
-    }, [reportgeneratorAppraiserOptions]);
-    //抵押依据
-    const mortgageBasisSearchList = React.useMemo(() => {
-        const options = reportgeneratorAppraiserOptions
-            .map(option => option.mortgageBasisOptions)
-            .filter(Boolean);
-        return [...new Set(options)]; // 去重
-    }, [reportgeneratorAppraiserOptions]);
-    //查封依据
-    const seizureBasisSearchList = React.useMemo(() => {
-        const options = reportgeneratorAppraiserOptions
-            .map(option => option.seizureBasisOptions)
-            .filter(Boolean);
-        return [...new Set(options)]; // 去重
-    }, [reportgeneratorAppraiserOptions]);
-    //利用状况
-    const utilizationStatusSearchList = React.useMemo(() => {
-        const options = reportgeneratorAppraiserOptions
-            .map(option => option.utilizationStatusOptions)
-            .filter(Boolean);
-        return [...new Set(options)]; // 去重
-    }, [reportgeneratorAppraiserOptions]);
-    // 自定义ui组件👆
-
-
+    // 如果主题正在加载，显示加载状态
+    // if (loading) {
+    //     return <div className="reportgenerator-container">
+    //         {/* 加载主题中... */}
+    //         <WordReportGeneratorLoader />
+    //     </div>;
+    // }
 
     //添加跳转二维码 👇
 
 
 
     // 添加查看二维码的处理函数
+    const handleViewQRCodeold = () => {
+        if (!currentReportId) {
+            notify('请先选择或创建报告', 'warning');
+            return;
+        }
 
+        // 准备要传递的报告数据（只传递id和坐落）
+        const reportData = {
+            reportsID: currentReportId,
+            //location: reportgeneratorReportData.property.location || '坐落？'
+        };
+
+        // 将数据编码为URL参数
+        const queryParams = new URLSearchParams(reportData).toString();
+
+        // 跳转到二维码页面
+        // navigate(`/reportqrcodepage?${queryParams}`);
+
+
+        // 拼接完整的二维码页面URL（基于当前项目的基础路径）
+        const qrCodePageUrl = `${window.location.origin}/app/office/reportqrcodepage?${queryParams}`;
+
+        // 新开页面跳转（_blank 表示新窗口）
+        window.open(qrCodePageUrl, '_blank');
+
+    };
+    const handleViewQRCodeover = () => {
+        if (!currentReportId) {
+            notify('请先选择或创建报告', 'warning');
+            return;
+        }
+
+        // 准备要传递的报告数据
+        const reportData = {
+            reportsID: currentReportId,
+            // 确保 location 有值
+            location: reportgeneratorReportData?.property?.location || '未知位置'
+        };
+
+        console.log('QR Code Data:', reportData); // 添加调试信息
+
+        // 将数据编码为URL参数
+        const queryParams = new URLSearchParams(reportData).toString();
+
+        console.log('Query Params:', queryParams); // 调试查询参数
+
+        // 拼接完整的二维码页面URL
+        const qrCodePageUrl = `${window.location.origin}/app/office/reportqrcodepage?${queryParams}`;
+
+        console.log('Full URL:', qrCodePageUrl); // 调试完整URL
+
+        // 新开页面跳转
+        window.open(qrCodePageUrl, '_blank');
+    };
+    const handleViewQRCode = async () => {
+        if (!currentReportId) {
+            notify('请先选择或创建报告', 'warning');
+            return;
+        }
+    
+        // 准备基础数据
+        const location = reportgeneratorReportData?.property?.location || '未知位置';
+    
+        try {
+            // 1. 调用后端 API 获取【加密后的ID字符串】
+            const response = await fetch('/api/generateEncodedReportUrl', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    reportsID: currentReportId,
+                    location: location
+                })
+            });
+    
+            if (!response.ok) {
+                const errData = await response.json();
+                throw new Error(errData.error || '生成二维码链接失败');
+            }
+    
+            const data = await response.json();
+            const encodedId = data.encodedId; // 获取类似 "Alpha|Beta" 的字符串
+    
+            if (!encodedId) {
+                throw new Error('未获取到加密ID');
+            }
+    
+            console.log('Encoded ID:', encodedId);
+    
+            // 2. 【前端构建完整 URL】
+            const baseUrl = `${window.location.origin}/app/office/reportqrcodepage`;
+            
+            // 使用 URLSearchParams 自动处理特殊字符编码 (| 会被编码为 %7C)
+            const queryParams = new URLSearchParams({
+                reportsID: encodedId,
+                location: location
+            });
+    
+            const qrCodePageUrl = `${baseUrl}?${queryParams.toString()}`;
+    
+            console.log('Generated Secure URL:', qrCodePageUrl);
+    
+            // 3. 新开页面跳转
+            if (qrCodePageUrl) {
+                window.open(qrCodePageUrl, '_blank');
+            } else {
+                notify('无法生成有效的二维码链接', 'error');
+            }
+    
+        } catch (error) {
+            console.error('Error generating QR code URL:', error);
+            notify(error.message || '系统错误，请稍后重试', 'error');
+        }
+    };
 
     const handleViewUploadPicture = () => {
         if (!currentReportId) {
@@ -1922,66 +1900,98 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                 <div className="reportgenerator-tab-content">
                                     {/* <h2 className="reportgenerator-section-title">委托书信息</h2> */}
                                     {/* 委托方 */}
-                                    <TextBox
-                                        label="委托方:"
-                                        Type="SearchBox"
-                                        leftIcon="#icon-edit"
-                                         rightIcon="#icon-a-duicuocuo"
-                                        placeholder="请输入搜索内容"
-                                        value={reportgeneratorReportData.entrustment.entrustingParty}
-                                        onChange={(value) => reportgeneratorHandleInputChange('entrustment', 'entrustingParty', value)}
-                                        required
-                                    />
+                                    <div className="reportgenerator-form-field-horizontal">
+                                        <label className="reportgenerator-field-label"  >委托方:</label>
+                                        <input
+                                            type="text"
+                                            value={reportgeneratorReportData.entrustment.entrustingParty}
+                                            onChange={(e) => reportgeneratorHandleInputChange('entrustment', 'entrustingParty', e.target.value)}
+                                            className="reportgenerator-form-input-inline"
 
-                                   
+                                            placeholder="请输入委托单位/个人名称"
+                                            required
+                                        />
+                                    </div>
                                     {/* 评估委托文书（选项值） */}
-                                    <TextBox
-                                        label="委托类型:"
-                                        Type="SearchBox"
-                                        placeholder="请选择委托文书"
-                                        searchList={assessmentCommissionSearchList}
-                                        value={reportgeneratorReportData.entrustment.assessmentCommissionDocument || ""}
-                                        onChange={(value) => reportgeneratorHandleInputChange('entrustment', 'assessmentCommissionDocument', value)}
-                                        required
-                                    />
+                                    <div className="reportgenerator-form-field-horizontal">
+                                        <label className="reportgenerator-field-label"
+                                        >委托类型:</label>
+                                        <select
+                                            value={reportgeneratorReportData.entrustment.assessmentCommissionDocument || ""}
+                                            onChange={(e) => reportgeneratorHandleInputChange('entrustment', 'assessmentCommissionDocument', e.target.value)}
+                                            className={`reportgenerator-form-select-inline ${!reportgeneratorReportData.entrustment.assessmentCommissionDocument ? "placeholder-style" : ""
+                                                }`}
+                                            required
 
+                                        >
+                                            <option value="" disabled
+                                            >请选择委托文书 </option>
+                                            {Array.from(new Set(
+                                                reportgeneratorAppraiserOptions
+                                                    .map(option => option.assessmentCommissionDocumentOptions)
+                                                    .filter(Boolean)
+                                            )).map((purpose, index) => (
+                                                <option key={`assessmentCommissionDocument-${index}`} value={purpose}>
+                                                    {purpose}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
                                     {/* 价值时点要求 */}
-                                    <TextBox
-                                        label="时点要求:"
-                                        Type="SearchBox"
-                                        placeholder="价值时点要求"
-                                        searchList={valueDateRequirementsSearchList}
-                                        value={reportgeneratorReportData.entrustment.valueDateRequirements || ""}
-                                        onChange={(value) => reportgeneratorHandleInputChange('entrustment', 'valueDateRequirements', value)}
-                                        required
-                                    />
+                                    <div className="reportgenerator-form-field-horizontal">
+                                        <label className="reportgenerator-field-label"
+                                        >时点要求 :</label>
+                                        <select
+                                            value={reportgeneratorReportData.entrustment.valueDateRequirements || ""}
+                                            onChange={(e) => reportgeneratorHandleInputChange('entrustment', 'valueDateRequirements', e.target.value)}
+                                            className={`reportgenerator-form-select-inline ${!reportgeneratorReportData.entrustment.valueDateRequirements ? "placeholder-style" : ""
+                                                }`}
+                                            required
 
+                                        >
+                                            <option value="" disabled>价值时点要求 </option>
+                                            {Array.from(new Set(
+                                                reportgeneratorAppraiserOptions
+                                                    .map(option => option.valueDateRequirementsOptions)
+                                                    .filter(Boolean)
+                                            )).map((purpose, index) => (
+                                                <option key={`valueDateRequirements-${index}`} value={purpose}>
+                                                    {purpose}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
                                     {/* 委托书号 */}
-                                    <TextBox
-                                        label="委托书号:"
-                                        Type="SearchBox"
-                                        leftIcon="#icon-edit"
-                                         rightIcon="#icon-a-duicuocuo"
-                                        placeholder="请输入委托书编号"
-                                        value={reportgeneratorReportData.entrustment.documentNo}
-                                        onChange={(value) => reportgeneratorHandleInputChange('entrustment', 'documentNo', value)} 
-                                        required
-                                    />
+                                    <div className="reportgenerator-form-field-horizontal">
+                                        <label className="reportgenerator-field-label"
+                                        >委托书号:</label>
+                                        <input
+                                            type="text"
+                                            value={reportgeneratorReportData.entrustment.documentNo}
+                                            onChange={(e) => reportgeneratorHandleInputChange('entrustment', 'documentNo', e.target.value)}
+                                            className="reportgenerator-form-input-inline"
+                                            placeholder="请输入委托书编号"
+                                            required
+
+                                        />
+                                    </div>
 
                                     {/* 委托日期 */}
+                                    <div className="reportgenerator-form-field-horizontal">
+                                        <label className="reportgenerator-field-label"
+                                        >委托日期:</label>
+                                        <DatePicker
+                                            value={reportgeneratorReportData.entrustment.entrustDate ?
+                                                dayjs(reportgeneratorReportData.entrustment.entrustDate) : null}
+                                            onChange={(date) => reportgeneratorHandleInputChange('entrustment', 'entrustDate', date)}
+                                            format="YYYY年M月D日"
+                                            className="reportgenerator-form-input-inline"
+                                            placeholder="请选择委托日期"
 
-                                    <TextBox
-                                        label="委托日期:"
-                                        Type="DatePicker"
-                                        leftIcon="#icon-edit"
-                                        dateFormat="YYYY年M月D日"
-                                        placeholder="请选择委托日期"
-                                        // 修改 value：如果是 dayjs 对象，用 .format() 转成字符串；否则保持原样或为空
-                                        value={reportgeneratorReportData.entrustment.entrustDate ?
-                                            dayjs(reportgeneratorReportData.entrustment.entrustDate).format('YYYY年M月D日') : ''}
-                                        // 修改 onChange：直接接收 date 字符串并更新，不需要再包一层 dayjs
-                                        onChange={(date) => reportgeneratorHandleInputChange('entrustment', 'entrustDate', date)}
-                                    />
+                                        />
+                                    </div>
+
+
 
                                 </div>
                             )}
@@ -1992,173 +2002,261 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                 >
                                     {/* <h2 className="reportgenerator-section-title">产权信息</h2> */}
                                     {/* 产权证号 */}
-                                    <TextBox
-                                        label="产权证号:"
-                                        Type="SearchBox"
-                                        leftIcon="#icon-edit"
-                                         rightIcon="#icon-a-duicuocuo"
-                                        placeholder="请输入产权证号"
-                                        value={reportgeneratorReportData.property.propertyCertificateNo}
-                                        onChange={(e) => reportgeneratorHandleInputChange('property', 'propertyCertificateNo', e.target.value)}
-                                        required
-                                    />
+                                    <div className="reportgenerator-form-field-horizontal">
+                                        <label className="reportgenerator-field-label"  >产权证号:</label>
+                                        <input
+                                            type="text"
+                                            value={reportgeneratorReportData.property.propertyCertificateNo}
+                                            onChange={(e) => reportgeneratorHandleInputChange('property', 'propertyCertificateNo', e.target.value)}
+                                            className="reportgenerator-form-input-inline"
+                                            placeholder="请输入产权证号"
+                                            required
 
+                                        />
+                                    </div>
                                     {/* 权利人 */}
-                                    <TextBox
-                                        label="权利人:"
-                                        Type="SearchBox"
-                                        leftIcon="#icon-edit"
-                                        rightIcon="#icon-a-duicuocuo"
-                                        placeholder="请输入权利人"
-                                        value={reportgeneratorReportData.property.rightsHolder}
-                                        onChange={(e) => reportgeneratorHandleInputChange('property', 'rightsHolder', e.target.value)}
-                                        required
-                                    />
+                                    <div className="reportgenerator-form-field-horizontal">
+                                        <label className="reportgenerator-field-label"
+                                        >权利人:</label>
+                                        <input
+                                            type="text"
+                                            value={reportgeneratorReportData.property.rightsHolder}
+                                            onChange={(e) => reportgeneratorHandleInputChange('property', 'rightsHolder', e.target.value)}
+                                            className="reportgenerator-form-input-inline"
+                                            placeholder="请输入权利人姓名"
+                                            required
 
+                                        />
+                                    </div>
                                     {/* 共有情况 */}
-                                    <TextBox
-                                        label="共有情况:"
-                                        Type="SearchBox"
-                                        placeholder="请选择共有情况"
-                                        searchList={coOwnershipStatusSearchList}
-                                        value={reportgeneratorReportData.property.coOwnershipStatus || ""}
-                                        onChange={(value) => reportgeneratorHandleInputChange('property', 'coOwnershipStatus', value)}
-                                        required
-                                    />
-                                    
-                                    {/* 坐落 */}
-                                    <TextBox
-                                        label="坐落:"
-                                        Type="SearchBox"
-                                        leftIcon="#icon-edit"
-                                         rightIcon="#icon-a-duicuocuo"
-                                        placeholder="请输入房产坐落地址"
-                                        value={reportgeneratorReportData.property.location}
-                                        onChange={(e) => reportgeneratorHandleInputChange('property', 'location', e.target.value)}
-                                        required
-                                    />
+                                    <div className="reportgenerator-form-field-horizontal">
+                                        <label className="reportgenerator-field-label"
 
+                                        >共有情况 :</label>
+                                        <select
+                                            value={reportgeneratorReportData.property.coOwnershipStatus || ""}
+                                            onChange={(e) => reportgeneratorHandleInputChange('property', 'coOwnershipStatus', e.target.value)}
+                                            className={`reportgenerator-form-select-inline ${!reportgeneratorReportData.property.coOwnershipStatus ? "placeholder-style" : ""
+                                                }`}
+                                            required
+
+
+                                        >
+                                            <option value="" disabled>请选择共有情况 </option>
+                                            {Array.from(new Set(
+                                                reportgeneratorAppraiserOptions
+                                                    .map(option => option.coOwnershipStatusOptions)
+                                                    .filter(Boolean)
+                                            )).map((purpose, index) => (
+                                                <option key={`coOwnershipStatus-${index}`} value={purpose}>
+                                                    {purpose}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    {/* 坐落 */}
+                                    <div className="reportgenerator-form-field-horizontal">
+                                        <label className="reportgenerator-field-label"
+                                        >坐落:</label>
+                                        <input
+                                            type="text"
+                                            value={reportgeneratorReportData.property.location}
+                                            onChange={(e) => reportgeneratorHandleInputChange('property', 'location', e.target.value)}
+                                            className="reportgenerator-form-input-inline"
+                                            placeholder="请输入房产坐落地址"
+                                            required
+
+                                        />
+                                    </div>
                                     {/* 不动产单元号 */}
-                                    <TextBox
-                                        label="不动产单元号:"
-                                        Type="SearchBox"
-                                        leftIcon="#icon-edit"
-                                         rightIcon="#icon-a-duicuocuo"
-                                        placeholder="请输入不动产单元号"
-                                        value={reportgeneratorReportData.property.propertyUnitNo}
-                                        onChange={(e) => reportgeneratorHandleInputChange('property', 'propertyUnitNo', e.target.value)}
-                                        required
-                                    />
+                                    <div className="reportgenerator-form-field-horizontal">
+                                        <label className="reportgenerator-field-label"
+                                        >不动产单元号:</label>
+                                        <input
+                                            type="text"
+                                            value={reportgeneratorReportData.property.propertyUnitNo}
+                                            onChange={(e) => reportgeneratorHandleInputChange('property', 'propertyUnitNo', e.target.value)}
+                                            className="reportgenerator-form-input-inline"
+                                            placeholder="请输入不动产单元号"
+                                            required
+
+                                        />
+                                    </div>
+
                                     {/* 一行多列 */}
                                     <div className="reportgenerator-form-field-vertical">
                                         {/* 权利性质 */}
-                                        <TextBox
-                                            label="权利性质:"
-                                            Type="SearchBox"
-                                            placeholder="请选择权利性质"
-                                            searchList={rightsNatureSearchList}
-                                            value={reportgeneratorReportData.property.rightsNature || ""}
-                                            onChange={(value) => reportgeneratorHandleInputChange('property', 'rightsNature', value)}
-                                            required
-                                        />
-                                        
+                                        <div className="reportgenerator-form-field-vertical-container">
+                                            <label className="reportgenerator-field-label"
+                                            >权利性质 :</label>
+                                            <select
+                                                value={reportgeneratorReportData.property.rightsNature || ""}
+                                                onChange={(e) => reportgeneratorHandleInputChange('property', 'rightsNature', e.target.value)}
+                                                className={`reportgenerator-form-select-inline ${!reportgeneratorReportData.property.rightsNature ? "placeholder-style" : ""
+                                                    }`}
+                                                required
+
+                                            >
+                                                <option value="" disabled>请选择权利性质 </option>
+                                                {Array.from(new Set(
+                                                    reportgeneratorAppraiserOptions
+                                                        .map(option => option.rightsNatureOptions)
+                                                        .filter(Boolean)
+                                                )).map((purpose, index) => (
+                                                    <option key={`rightsNature-${index}`} value={purpose}>
+                                                        {purpose}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
                                         {/* 房屋结构 */}
-                                        <TextBox
-                                            label="房屋结构:"
-                                            Type="SearchBox"
-                                            placeholder="请选择房屋结构"
-                                            searchList={houseStructureSearchList}
-                                            value={reportgeneratorReportData.property.houseStructure || ""}
-                                            onChange={(value) => reportgeneratorHandleInputChange('property', 'houseStructure', value)}
-                                            required
-                                        />
-                                        
+                                        <div className="reportgenerator-form-field-vertical-container">
+                                            <label className="reportgenerator-field-label"
+                                            >房屋结构 :</label>
+                                            <select
+                                                value={reportgeneratorReportData.property.houseStructure || ""}
+                                                onChange={(e) => reportgeneratorHandleInputChange('property', 'houseStructure', e.target.value)}
+                                                className={`reportgenerator-form-select-inline ${!reportgeneratorReportData.property.houseStructure ? "placeholder-style" : ""
+                                                    }`}
+                                                required
+
+                                            >
+                                                <option value="" disabled>请选择房屋结构 </option>
+                                                {Array.from(new Set(
+                                                    reportgeneratorAppraiserOptions
+                                                        .map(option => option.houseStructureOptions)
+                                                        .filter(Boolean)
+                                                )).map((purpose, index) => (
+                                                    <option key={`houseStructure-${index}`} value={purpose}>
+                                                        {purpose}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
                                     </div>
 
                                     {/* 一行多列 */}
                                     <div className="reportgenerator-form-field-vertical">
                                         {/* 土地用途 */}
-                                        <TextBox
-                                            label="土地用途:"
-                                            Type="SearchBox"
-                                            placeholder="请选择土地用途"
-                                            searchList={landPurposeSearchList}
-                                            value={reportgeneratorReportData.property.landPurpose || ""}
-                                            onChange={(value) => reportgeneratorHandleInputChange('property', 'landPurpose', value)}
-                                            required
-                                        />
-                                       
+                                        <div className="reportgenerator-form-field-vertical-container">
+                                            <label className="reportgenerator-field-label"
+                                            >土地用途 :</label>
+                                            <select
+                                                value={reportgeneratorReportData.property.landPurpose || ""}
+                                                onChange={(e) => reportgeneratorHandleInputChange('property', 'landPurpose', e.target.value)}
+                                                className={`reportgenerator-form-select-inline ${!reportgeneratorReportData.property.landPurpose ? "placeholder-style" : ""
+                                                    }`}
+                                                required
+
+                                            >
+                                                <option value="" disabled>请选择土地用途 </option>
+                                                {Array.from(new Set(
+                                                    reportgeneratorAppraiserOptions
+                                                        .map(option => option.landPurposeOptions)
+                                                        .filter(Boolean)
+                                                )).map((purpose, index) => (
+                                                    <option key={`landPurpose-${index}`} value={purpose}>
+                                                        {purpose}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
                                         {/* 房屋用途 */}
-                                        <TextBox
-                                            label="房屋用途:"
-                                            Type="SearchBox"
-                                            placeholder="请选择房屋用途"
-                                            searchList={housePurposeSearchList}
-                                            value={reportgeneratorReportData.property.housePurpose || ""}
-                                            onChange={(value) => reportgeneratorHandleInputChange('property', 'housePurpose', value)}
-                                            required
-                                        />
-                                       
+                                        <div className="reportgenerator-form-field-vertical-container">
+                                            <label className="reportgenerator-field-label"
+                                            >房屋用途:</label>
+                                            <select
+                                                value={reportgeneratorReportData.property.housePurpose || ""}
+                                                onChange={(e) => reportgeneratorHandleInputChange('property', 'housePurpose', e.target.value)}
+                                                className={`reportgenerator-form-select-inline ${!reportgeneratorReportData.property.housePurpose ? "placeholder-style" : ""
+                                                    }`}
+                                                required
+
+                                            >
+                                                <option value="" disabled>请选择房屋用途</option>
+                                                {Array.from(new Set(
+                                                    reportgeneratorAppraiserOptions
+                                                        .map(option => option.housePurposeOptions)
+                                                        .filter(Boolean)
+                                                )).map((purpose, index) => (
+                                                    <option key={`housePurpose-${index}`} value={purpose}>
+                                                        {purpose}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+
                                     </div>
 
                                     {/* 一行多列 */}
                                     <div className="reportgenerator-form-field-vertical">
                                         {/* 共有宗地面积 */}
-                                        <TextBox
-                                            label="共有宗地(m²):"
-                                            Type="NumberInput"
-                                            leftIcon="#icon-edit"
-                                            min={0}
-                                            max={100000}
-                                            step={10}
-                                            placeholder="请输入共有宗地面积"
-                                            value={reportgeneratorReportData.property.sharedLandArea}
-                                            onChange={(value) => reportgeneratorHandleInputChange('property', 'sharedLandArea', value)}
-                                        />
+                                        <div className="reportgenerator-form-field-vertical-container">
+                                            <label className="reportgenerator-field-label"
+                                            >共有宗地(m²):</label>
+                                            <input
+                                                type="number"
+                                                value={reportgeneratorReportData.property.sharedLandArea}
+                                                onChange={(e) => reportgeneratorHandleInputChange('property', 'sharedLandArea', e.target.value)}
+                                                className="reportgenerator-form-input-inline"
+                                                min="0"
+                                                step="0.01"
+                                                placeholder="请输入共有宗地面积"
+                                                required
 
+                                            />
+                                        </div>
                                         {/* 建筑面积 */}
-                                        <TextBox
-                                            label="建筑面积(m²):"
-                                            Type="NumberInput"
-                                            leftIcon="#icon-edit"
-                                            min={0}
-                                            max={100000}
-                                            step={10}
-                                            placeholder="请输入建筑面积"
-                                            value={reportgeneratorReportData.property.buildingArea}
-                                            onChange={(value) => reportgeneratorHandleInputChange('property', 'buildingArea', value)}
-                                        />
-
+                                        <div className="reportgenerator-form-field-vertical-container">
+                                            <label className="reportgenerator-field-label"
+                                            >建筑面积(m²):</label>
+                                            <input
+                                                type="number"
+                                                value={reportgeneratorReportData.property.buildingArea}
+                                                onChange={(e) => reportgeneratorHandleInputChange('property', 'buildingArea', e.target.value)}
+                                                className="reportgenerator-form-input-inline"
+                                                min="0"
+                                                step="0.01"
+                                                placeholder="请输入建筑面积"
+                                            />
+                                        </div>
                                     </div>
                                     {/* 一行多列 */}
                                     <div className="reportgenerator-form-field-vertical">
                                         {/* 土地使用权终止日期 */}
-                                        <TextBox
-                                            label="土地终止日期:"
-                                            Type="DatePicker"
-                                            leftIcon="#icon-edit"
-                                            dateFormat="YYYY年M月D日"
-                                            placeholder="请选择土地终止日期:"
+                                        <div className="reportgenerator-form-field-vertical-container">
+                                            <label className="reportgenerator-field-label"
+                                            >土地终止日期:</label>
+                                            <DatePicker
+                                                value={reportgeneratorReportData.property.landUseRightEndDate ?
+                                                    dayjs(reportgeneratorReportData.property.landUseRightEndDate) : null}
+                                                onChange={(date) => reportgeneratorHandleInputChange('property', 'landUseRightEndDate', date)}
+                                                format="YYYY年M月D日"
+                                                className="reportgenerator-form-input-inline"
+                                                placeholder="请选择土地终止日期"
+                                                required
 
-                                            value={reportgeneratorReportData.property.landUseRightEndDate ?
-                                                dayjs(reportgeneratorReportData.property.landUseRightEndDate).format('YYYY年M月D日') : ''}
-
-                                            onChange={(date) => reportgeneratorHandleInputChange('property', 'landUseRightEndDate', date)}
-                                        />
-
+                                            />
+                                        </div>
                                         {/* 套内面积 */}
-                                        <TextBox
-                                            label="套内面积(m²):"
-                                            Type="NumberInput"
-                                            leftIcon="#icon-edit"
-                                            min={0}
-                                            max={100000}
-                                            step={10}
-                                            placeholder="请选择套内面积"
-                                            value={reportgeneratorReportData.property.interiorArea}
-                                            onChange={(value) => reportgeneratorHandleInputChange('property', 'interiorArea', value)}
-                                        />
+                                        <div className="reportgenerator-form-field-vertical-container">
+                                            <label className="reportgenerator-field-label"
+                                            >套内面积(m²):</label>
+                                            <input
+                                                type="number"
+                                                value={reportgeneratorReportData.property.interiorArea}
+                                                onChange={(e) => reportgeneratorHandleInputChange('property', 'interiorArea', e.target.value)}
+                                                className="reportgenerator-form-input-inline"
+                                                min="0"
+                                                step="1"
+                                                title='未记载的直接填写：0'
+                                                placeholder="请选择套内面积"
+                                            />
+                                        </div>
                                     </div>
+
+
+
                                 </div>
                             )}
 
@@ -2170,339 +2268,502 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                     {/* 一行多列 */}
                                     <div className="reportgenerator-form-field-vertical">
                                         {/* 小区名称 */}
+                                        <div className="reportgenerator-form-field-vertical-container">
+                                            <label className="reportgenerator-field-label"
+                                            >名称:</label>
+                                            <input
+                                                type="text"
+                                                value={reportgeneratorReportData.physicalCondition.communityName}
+                                                onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'communityName', e.target.value)}
+                                                className="reportgenerator-form-input-inline"
+                                                placeholder="请输入小区名称"
+                                                required
 
-                                        <TextBox
-                                            label="名称:"
-                                            Type="SearchBox"
-                                            leftIcon="#icon-edit"
-                                             rightIcon="#icon-a-duicuocuo"
-                                            placeholder="请输入小区名称"
-                                            value={reportgeneratorReportData.physicalCondition.communityName}
-                                            onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'communityName', e.target.value)}
-                                            required
-                                        />
-
+                                            />
+                                        </div>
                                         {/* 建成年份 */}
-                                        <TextBox
-                                            label="年代:"
-                                            Type="SearchBox"
-                                            placeholder="请选择年份"
-                                            searchList={yearBuiltSearchList}
-                                            value={reportgeneratorReportData.physicalCondition.yearBuilt || ""}
-                                            onChange={(value) => reportgeneratorHandleInputChange('physicalCondition', 'yearBuilt', value)}
-                                            required
-                                        />
-                                        
+                                        <div className="reportgenerator-form-field-vertical-container">
+                                            <label className="reportgenerator-field-label"
+                                            >年代:</label>
+                                            <select
+                                                value={reportgeneratorReportData.physicalCondition.yearBuilt}
+                                                onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'yearBuilt', e.target.value)}
+                                                c
+                                                className={`reportgenerator-form-select-inline ${!reportgeneratorReportData.physicalCondition.yearBuilt ? "placeholder-style" : ""
+                                                    }`}
+                                                required
+
+                                            >
+                                                <option value="" disabled>请选择年份</option>
+                                                {Array.from({ length: new Date().getFullYear() - 1900 + 1 }, (_, i) => {
+                                                    const year = new Date().getFullYear() - i;
+                                                    return (
+                                                        <option key={year} value={year}>
+                                                            {year}
+                                                        </option>
+                                                    );
+                                                })}
+                                            </select>
+                                        </div>
                                     </div>
 
                                     {/* 一行多列 */}
                                     <div className="reportgenerator-form-field-vertical">
                                         {/* 总层数 */}
-                                        <TextBox
-                                            label="总层数:"
-                                            Type="NumberInput"
-                                            leftIcon="#icon-edit"
-                                            min={0}
-                                            max={100}
-                                            step={10}
-                                            placeholder="请输入总层数"
-                                            value={reportgeneratorReportData.physicalCondition.totalFloors}
-                                            onChange={(value) => reportgeneratorHandleInputChange('physicalCondition', 'totalFloors', value)}
-                                        />
+                                        <div className="reportgenerator-form-field-vertical-container">
+                                            <label className="reportgenerator-field-label"
+                                            >总层数:</label>
+                                            <input
+                                                type="number"
+                                                value={reportgeneratorReportData.physicalCondition.totalFloors}
+                                                onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'totalFloors', e.target.value)}
+                                                className="reportgenerator-form-input-inline"
+                                                min="1"
+                                                required
+                                                placeholder="请输入总层数"
+                                            />
+                                        </div>
+
                                         {/* 所在楼层 */}
-                                        <TextBox
-                                            label="楼层:"
-                                            Type="ComboBox"
-                                            searchList={floorNumberSearchList}
-                                            leftIcon="#icon-unedit"
-                                             rightIcon="#icon-a-duicuocuo"
-                                            placeholder="请输入所在楼层（可多选）"
-                                            editable={true}
-                                            multiple={true}
-                                            value={reportgeneratorReportData.physicalCondition.floorNumber}
-                                            connector="、"
-                                            onChange={(value) => reportgeneratorHandleInputChange('physicalCondition', 'floorNumber', value)}
-                                            required
-                                        />
-                                       
+                                        <div className="reportgenerator-form-field-vertical-container">
+                                            <label className="reportgenerator-field-label"
+                                            >楼层:</label>
+                                            <input
+                                                type="number"
+                                                value={reportgeneratorReportData.physicalCondition.floorNumber}
+                                                onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'floorNumber', e.target.value)}
+                                                className="reportgenerator-form-input-inline"
+                                                min="1"
+                                                required
+                                                placeholder="请输入所在楼层"
+                                            />
+                                        </div>
                                     </div>
                                     {/* 一行多列 */}
                                     <div className="reportgenerator-form-field-vertical">
                                         {/* 电梯 */}
-                                        <TextBox
-                                            label="电梯："
-                                            Type="Switch"
-                                            value={reportgeneratorReportData.physicalCondition.elevator === true}
-                                            onChange={(value) => {
-                                                reportgeneratorHandleInputChange('physicalCondition', 'elevator', value);
-                                            }}
-                                            trueLabel="有"
-                                            falseLabel="无"
-                                        />
+                                        <div className="reportgenerator-form-field-vertical-container">
+                                            <label className="reportgenerator-field-label"
+                                            >电梯:</label>
+                                            <div className="reportgenerator-toggle-switch">
+                                                <input
+                                                    type="radio"
+                                                    id="elevator-yes"
+                                                    name="elevator"
+                                                    checked={reportgeneratorReportData.physicalCondition.elevator === true}
+                                                    onChange={() => reportgeneratorHandleInputChange('physicalCondition', 'elevator', true)}
+                                                    className="reportgenerator-toggle-input"
+
+                                                />
+                                                <label htmlFor="elevator-yes" className="reportgenerator-toggle-option reportgenerator-toggle-option-left">有</label>
+
+                                                <input
+                                                    type="radio"
+                                                    id="elevator-no"
+                                                    name="elevator"
+                                                    checked={reportgeneratorReportData.physicalCondition.elevator === false}
+                                                    onChange={() => reportgeneratorHandleInputChange('physicalCondition', 'elevator', false)}
+                                                    className="reportgenerator-toggle-input"
+                                                />
+                                                <label htmlFor="elevator-no" className="reportgenerator-toggle-option reportgenerator-toggle-option-right">无</label>
+
+                                                <span className="reportgenerator-toggle-selection"></span>
+                                            </div>
+                                        </div>
+
                                         {/* 通气 */}
-                                        <TextBox
-                                            label="通气:"
-                                            Type="Switch"
-                                            value={reportgeneratorReportData.physicalCondition.ventilationStatus === true}
-                                            onChange={(value) => {
-                                                reportgeneratorHandleInputChange('physicalCondition', 'ventilationStatus', value);
-                                            }}
-                                            trueLabel="有"
-                                            falseLabel="无"
-                                        />
-                                        
+                                        <div className="reportgenerator-form-field-vertical-container">
+                                            <label className="reportgenerator-field-label"
+                                            >通气:</label>
+                                            <div className="reportgenerator-toggle-switch">
+                                                <input
+                                                    type="radio"
+                                                    id="ventilation-yes"
+                                                    name="ventilation"
+                                                    checked={reportgeneratorReportData.physicalCondition.ventilationStatus === true}
+                                                    onChange={() => reportgeneratorHandleInputChange('physicalCondition', 'ventilationStatus', true)}
+                                                    className="reportgenerator-toggle-input"
+                                                />
+                                                <label htmlFor="ventilation-yes" className="reportgenerator-toggle-option reportgenerator-toggle-option-left">有</label>
+
+                                                <input
+                                                    type="radio"
+                                                    id="ventilation-no"
+                                                    name="ventilation"
+                                                    checked={reportgeneratorReportData.physicalCondition.ventilationStatus === false}
+                                                    onChange={() => reportgeneratorHandleInputChange('physicalCondition', 'ventilationStatus', false)}
+                                                    className="reportgenerator-toggle-input"
+                                                />
+                                                <label htmlFor="ventilation-no" className="reportgenerator-toggle-option reportgenerator-toggle-option-right">无</label>
+
+                                                <span className="reportgenerator-toggle-selection"></span>
+                                            </div>
+                                        </div>
                                     </div>
 
 
                                     {/* 一行多列 */}
                                     <div className="reportgenerator-form-field-vertical">
                                         {/* 空间布局 */}
-                                        <TextBox
-                                            label="户型:"
-                                            Type="SearchBox"
-                                            leftIcon="#icon-edit"
-                                             rightIcon="#icon-a-duicuocuo"
-                                            placeholder="请输入空间布局"
-                                            value={reportgeneratorReportData.physicalCondition.spaceLayout}
-                                            onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'spaceLayout', e.target.value)}
-                                            required
-                                        />
-                                       
+                                        <div className="reportgenerator-form-field-vertical-container">
+                                            <label className="reportgenerator-field-label"
+                                            >户型:</label>
+                                            <input
+                                                type="text"
+                                                value={reportgeneratorReportData.physicalCondition.spaceLayout}
+                                                onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'spaceLayout', e.target.value)}
+                                                className="reportgenerator-form-input-inline"
+                                                placeholder="请输入空间布局"
+                                                title="例如：平层三室两厅一厨两卫"
+                                                required
+
+                                            />
+                                        </div>
                                         {/* 朝向 */}
-                                        <TextBox
-                                            label="朝向:"
-                                            Type="SearchBox"
-                                            placeholder="请选择朝向"
-                                            searchList={orientationSearchList}
-                                            value={reportgeneratorReportData.physicalCondition.orientation || ""}
-                                            onChange={(value) => reportgeneratorHandleInputChange('physicalCondition', 'orientation', value)}
-                                            required
-                                        />
-                                       
+                                        <div className="reportgenerator-form-field-vertical-container">
+                                            <label className="reportgenerator-field-label"
+                                            >朝向 :</label>
+                                            <select
+                                                value={reportgeneratorReportData.physicalCondition.orientation || ""}
+                                                onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'orientation', e.target.value)}
+                                                className={`reportgenerator-form-select-inline ${!reportgeneratorReportData.physicalCondition.orientation ? "placeholder-style" : ""
+                                                    }`}
+                                                required
+
+                                            >
+                                                <option value="" disabled>请选择朝向 </option>
+                                                {Array.from(new Set(
+                                                    reportgeneratorAppraiserOptions
+                                                        .map(option => option.orientationOptions)
+                                                        .filter(Boolean)
+                                                )).map((purpose, index) => (
+                                                    <option key={`orientation-${index}`} value={purpose}>
+                                                        {purpose}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+
+
                                     </div>
                                     {/* 一行多列 */}
                                     <div className="reportgenerator-form-field-vertical">
                                         {/* 土地形状 */}
-                                        <TextBox
-                                            label="形状:"
-                                            Type="SearchBox"
-                                            placeholder="请选择土地形状"
-                                            searchList={landShapeSearchList}
-                                            value={reportgeneratorReportData.physicalCondition.landShape || ""}
-                                            onChange={(value) => reportgeneratorHandleInputChange('physicalCondition', 'landShape', value)}
-                                            required
-                                        />
-                                        
+                                        <div className="reportgenerator-form-field-vertical-container">
+                                            <label className="reportgenerator-field-label"
+                                            >形状 :</label>
+                                            <select
+                                                value={reportgeneratorReportData.physicalCondition.landShape || ""}
+                                                onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'landShape', e.target.value)}
+                                                className={`reportgenerator-form-select-inline ${!reportgeneratorReportData.physicalCondition.landShape ? "placeholder-style" : ""
+                                                    }`}
+                                                required
+
+                                            >
+                                                <option value="" disabled>请选择土地形状 </option>
+                                                {Array.from(new Set(
+                                                    reportgeneratorAppraiserOptions
+                                                        .map(option => option.landShapeOptions)
+                                                        .filter(Boolean)
+                                                )).map((purpose, index) => (
+                                                    <option key={`landShape-${index}`} value={purpose}>
+                                                        {purpose}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+
                                         {/* 外墙面 */}
-                                        <TextBox
-                                            label="外墙:"
-                                            Type="SearchBox"
-                                            placeholder="请选择外墙面"
-                                            searchList={exteriorWallMaterialSearchList}
-                                            value={reportgeneratorReportData.physicalCondition.exteriorWallMaterial || ""}
-                                            onChange={(value) => reportgeneratorHandleInputChange('physicalCondition', 'exteriorWallMaterial', value)}
-                                            onLabelDoubleClick={() => {
-                                                if (reportgeneratorReportData.property.location) {
-                                                    setShowBaiduDataGrabber(true);
-                                                } else {
-                                                    notify('请先填写房产坐落', 'warning');
-                                                }
-                                            }}
-                                            required
-                                        />
-                                        
-                                        
+                                        <div className="reportgenerator-form-field-vertical-container">
+                                            {/* <label className="reportgenerator-field-label">外墙 :</label> */}
+                                            <label
+                                                className="reportgenerator-field-label reportgenerator-field-label-showHandBaiduDataGrabber"
+                                                onDoubleClick={(e) => {
+                                                    e.preventDefault();
+                                                    if (reportgeneratorReportData.property.location) {
+                                                        setShowBaiduDataGrabber(true);
+                                                    } else {
+                                                        notify('请先填写房产坐落', 'warning');
+                                                    }
+                                                }}
+                                                title={!reportgeneratorReportData.property.location ? "请先填写房产坐落" : "双击自动获取周边配套"}
+                                                style={{
+                                                    cursor: reportgeneratorReportData.property.location ? 'pointer' : 'not-allowed',
+                                                    userSelect: 'none',
+
+                                                }}
+
+
+                                            >
+                                                外墙:
+                                            </label>
+                                            <select
+                                                value={reportgeneratorReportData.physicalCondition.exteriorWallMaterial || ""}
+                                                onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'exteriorWallMaterial', e.target.value)}
+                                                className={`reportgenerator-form-select-inline ${!reportgeneratorReportData.physicalCondition.exteriorWallMaterial ? "placeholder-style" : ""
+                                                    }`}
+                                                required
+
+                                            >
+                                                <option value="" disabled>请选择外墙面 </option>
+                                                {Array.from(new Set(
+                                                    reportgeneratorAppraiserOptions
+                                                        .map(option => option.exteriorWallMaterialOptions)
+                                                        .filter(Boolean)
+                                                )).map((purpose, index) => (
+                                                    <option key={`exteriorWallMaterial-${index}`} value={purpose}>
+                                                        {purpose}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
                                     </div>
                                     {/* 一行多列 */}
                                     <div className="reportgenerator-form-field-vertical">
                                         {/* 临街状况 */}
-                                        <TextBox
-                                            label="临街:"
-                                            Type="SearchBox"
-                                            leftIcon="#icon-edit"
-                                             rightIcon="#icon-a-duicuocuo"
-                                            placeholder="请输入临街状况"
-                                            value={reportgeneratorReportData.physicalCondition.streetStatus}
-                                            onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'streetStatus', e.target.value)}
-                                            required
-                                        />
-                                       
-                                        {/* 方位 */}
-                                        <TextBox
-                                            label="方位:"
-                                            Type="SearchBox"
-                                            leftIcon="#icon-edit"
-                                             rightIcon="#icon-a-duicuocuo"
-                                            placeholder="请输入方位"
-                                            value={reportgeneratorReportData.physicalCondition.direction}
-                                            onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'direction', e.target.value)}
-                                            onLabelDoubleClick={() => {
-                                                if (reportgeneratorReportData.property.location) {
-                                                    setShowHandBaiduDataGrabber(true);
-                                                } else {
-                                                    notify('请先填写房产坐落', 'warning');
-                                                }
-                                            }}
-                                            required
-                                        />
+                                        <div className="reportgenerator-form-field-vertical-container ">
+                                            <label className="reportgenerator-field-label"
+                                            >临街:</label>
 
+                                            <input
+                                                type="text"
+                                                value={reportgeneratorReportData.physicalCondition.streetStatus}
+                                                onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'streetStatus', e.target.value)}
+                                                className="reportgenerator-form-input-inline"
+                                                placeholder="请输入临街状况"
+                                                title="例如：临滨江路"
+                                                required
+
+                                            />
+                                        </div>
+                                        {/* 方位 */}
+                                        <div className="reportgenerator-form-field-vertical-container">
+                                            <label
+                                                className="reportgenerator-field-label reportgenerator-field-label-showHandBaiduDataGrabber"
+                                                onDoubleClick={(e) => {
+                                                    e.preventDefault();
+                                                    if (reportgeneratorReportData.property.location) {
+                                                        setShowHandBaiduDataGrabber(true);
+                                                    } else {
+                                                        notify('请先填写房产坐落', 'warning');
+                                                    }
+                                                }}
+                                                title={!reportgeneratorReportData.property.location ? "请先填写房产坐落" : "双击手动获取周边配套"}
+                                                style={{
+                                                    cursor: reportgeneratorReportData.property.location ? 'pointer' : 'not-allowed',
+                                                    userSelect: 'none',
+
+
+
+
+                                                }}
+
+                                            >
+                                                方位:
+                                            </label>
+                                            <input
+                                                type="text"
+                                                value={reportgeneratorReportData.physicalCondition.direction}
+                                                onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'direction', e.target.value)}
+                                                className="reportgenerator-form-input-inline"
+                                                placeholder="请输入方位"
+                                                title="例如：滨江路西侧"
+                                                required
+
+                                            />
+                                        </div>
                                     </div>
 
                                     {/* 一行多列 */}
                                     <div className="reportgenerator-form-field-vertical">
                                         {/* 距离 */}
-                                        <TextBox
-                                            label="距离:"
-                                            Type="SearchBox"
-                                            leftIcon="#icon-edit"
-                                             rightIcon="#icon-a-duicuocuo"
-                                            placeholder="请输入距重要场所距离"
-                                            value={reportgeneratorReportData.physicalCondition.distance}
-                                            onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'distance', e.target.value)}
-                                            required
-                                        />
+                                        <div className="reportgenerator-form-field-vertical-container">
+                                            <label className="reportgenerator-field-label"
+                                            >距离:</label>
+                                            <input
+                                                type="text"
+                                                value={reportgeneratorReportData.physicalCondition.distance}
+                                                onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'distance', e.target.value)}
+                                                className="reportgenerator-form-input-inline"
+                                                placeholder="请输入距重要场所距离"
+                                                title="例如：距轻轨环线海峡路站3号口约500米"
+                                                required
 
+                                            />
+                                        </div>
                                         {/* 四至 */}
-                                        <TextBox
-                                            label="四至:"
-                                            Type="SearchBox"
-                                            leftIcon="#icon-edit"
-                                             rightIcon="#icon-a-duicuocuo"
-                                            placeholder="请输入四至"
-                                            value={reportgeneratorReportData.physicalCondition.boundaries}
-                                            onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'distance', e.target.value)}
-                                            required
-                                        />
+                                        <div className="reportgenerator-form-field-vertical-container">
+                                            <label className="reportgenerator-field-label"
+                                            >四至:</label>
+                                            <input
+                                                type="text"
+                                                value={reportgeneratorReportData.physicalCondition.boundaries}
+                                                onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'boundaries', e.target.value)}
+                                                className="reportgenerator-form-input-inline"
+                                                placeholder="请输入四至"
+                                                required
 
+                                            />
+                                        </div>
                                     </div>
                                     {/* 停车状况 */}
-                                    <TextBox
-                                        label="停车:"
-                                        Type="SearchBox"
-                                        placeholder="请选择停车状况"
-                                        searchList={parkingStatusSearchList}
-                                        value={reportgeneratorReportData.physicalCondition.parkingStatus || ""}
-                                        onChange={(value) => reportgeneratorHandleInputChange('physicalCondition', 'parkingStatus', value)}
-                                        required
-                                    />                         
+                                    <div className="reportgenerator-form-field-horizontal">
+                                        <label className="reportgenerator-field-label"
+                                        >停车 :</label>
+                                        <select
+                                            value={reportgeneratorReportData.physicalCondition.parkingStatus || ""}
+                                            onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'parkingStatus', e.target.value)}
+                                            className={`reportgenerator-form-select-inline ${!reportgeneratorReportData.physicalCondition.parkingStatus ? "placeholder-style" : ""
+                                                }`}
+                                            required
+
+                                        >
+                                            <option value="" disabled>请选择停车状况 </option>
+                                            {Array.from(new Set(
+                                                reportgeneratorAppraiserOptions
+                                                    .map(option => option.parkingStatusOptions)
+                                                    .filter(Boolean)
+                                            )).map((purpose, index) => (
+                                                <option key={`parkingStatus-${index}`} value={purpose}>
+                                                    {purpose}
+                                                </option>
+                                            ))}
+                                        </select>
+
+                                    </div>
 
                                     {/* 装饰装修 */}
-                                    <TextBox
-                                        label="装修:"
-                                        Type="SearchBox"
-                                        leftIcon="#icon-edit"
-                                         rightIcon="#icon-a-duicuocuo"
-                                        placeholder="请输入装修:"
-                                        value={reportgeneratorReportData.physicalCondition.decorationStatus}
-                                        onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'decorationStatus', e.target.value)}
-                                        onLabelDoubleClick={() => {
-                                            if (!reportgeneratorReportData.physicalCondition.decorationStatus) {
-                                                reportgeneratorHandleInputChange(
-                                                    'physicalCondition',
-                                                    'decorationStatus',
-                                                    '入户门防盗门，铝合金窗；室内客厅地面地砖，墙面墙布，天棚吊顶，卧室地面木地板，墙面墙布，天棚刷漆，厨卫：地面地砖，墙砖到顶，扣板吊顶'
-                                                );
-                                            }
-                                        }}
-                                        required
-                                    />
+                                    <div className="reportgenerator-form-field-horizontal">
+                                        <label
+                                            className="reportgenerator-field-label"
+                                            onDoubleClick={() => {
+                                                if (!reportgeneratorReportData.physicalCondition.decorationStatus) {
+                                                    reportgeneratorHandleInputChange(
+                                                        'physicalCondition',
+                                                        'decorationStatus',
+                                                        '入户门防盗门，铝合金窗；室内客厅地面地砖，墙面墙布，天棚吊顶，卧室地面木地板，墙面墙布，天棚刷漆，厨卫：地面地砖，墙砖到顶，扣板吊顶'
+                                                    );
+                                                }
+                                            }}
 
+                                        >
+                                            装修:
+                                        </label>
+                                        <textarea
+                                            value={reportgeneratorReportData.physicalCondition.decorationStatus}
+                                            onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'decorationStatus', e.target.value)}
+                                            className="reportgenerator-form-input-inline reportgenerator-form-input-inline-textarea"
+                                            placeholder="请输入装饰装修情况"
+                                            title="入户门防盗门，铝合金窗；室内客厅地面地砖，墙面墙布，天棚吊顶，卧室地面木地板，墙面墙布，天棚刷漆，厨卫：地面地砖，墙砖到顶，扣板吊顶"
+                                            required
+
+                                        />
+                                    </div>
                                     {/* 银行 */}
-                                    <TextBox
-                                        label="银行:"
-                                        Type="SearchBox"
-                                        leftIcon="#icon-edit"
-                                         rightIcon="#icon-a-duicuocuo"
-                                        placeholder="请输入周边银行"
-                                        value={reportgeneratorReportData.physicalCondition.bank}
-                                        onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'bank', e.target.value)}
-                                        required
-                                    />
+                                    <div className="reportgenerator-form-field-horizontal">
+                                        <label className="reportgenerator-field-label"
+                                        >银行:</label>
+                                        <textarea
+                                            value={reportgeneratorReportData.physicalCondition.bank}
+                                            onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'bank', e.target.value)}
+                                            className="reportgenerator-form-input-inline  reportgenerator-form-input-inline-textarea"
+                                            placeholder="请输入周边银行"
+                                            required
 
+                                        />
+                                    </div>
                                     {/* 超市 */}
-                                    <TextBox
-                                        label="超市:"
-                                        Type="SearchBox"
-                                        leftIcon="#icon-edit"
-                                         rightIcon="#icon-a-duicuocuo"
-                                        placeholder="请输入周边超市"
-                                        value={reportgeneratorReportData.physicalCondition.supermarket}
-                                        onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'supermarket', e.target.value)}
-                                        required
-                                    />
+                                    <div className="reportgenerator-form-field-horizontal">
+                                        <label className="reportgenerator-field-label"
+                                        >超市:</label>
+                                        <textarea
+                                            value={reportgeneratorReportData.physicalCondition.supermarket}
+                                            onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'supermarket', e.target.value)}
+                                            className="reportgenerator-form-input-inline  reportgenerator-form-input-inline-textarea"
+                                            placeholder="请输入周边超市"
+                                            required
 
+                                        />
+                                    </div>
                                     {/* 医院 */}
-                                    <TextBox
-                                        label="医院:"
-                                        Type="SearchBox"
-                                        leftIcon="#icon-edit"
-                                         rightIcon="#icon-a-duicuocuo"
-                                        placeholder="请输入医院"
-                                        value={reportgeneratorReportData.physicalCondition.hospital}
-                                        onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'hospital', e.target.value)}
-                                        required
-                                    />
+                                    <div className="reportgenerator-form-field-horizontal">
+                                        <label className="reportgenerator-field-label"
+                                        >医院:</label>
+                                        <textarea
+                                            value={reportgeneratorReportData.physicalCondition.hospital}
+                                            onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'hospital', e.target.value)}
+                                            className="reportgenerator-form-input-inline  reportgenerator-form-input-inline-textarea"
+                                            placeholder="请输入周边医院"
+                                            required
 
+                                        />
+                                    </div>
                                     {/* 学校 */}
-                                    <TextBox
-                                        label="学校:"
-                                        Type="SearchBox"
-                                        leftIcon="#icon-edit"
-                                         rightIcon="#icon-a-duicuocuo"
-                                        placeholder="请输入学校"
-                                        value={reportgeneratorReportData.physicalCondition.school}
-                                        onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'school', e.target.value)}
-                                        required
-                                    />
+                                    <div className="reportgenerator-form-field-horizontal">
+                                        <label className="reportgenerator-field-label"
+                                        >学校:</label>
+                                        <textarea
+                                            value={reportgeneratorReportData.physicalCondition.school}
+                                            onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'school', e.target.value)}
+                                            className="reportgenerator-form-input-inline  reportgenerator-form-input-inline-textarea"
+                                            placeholder="请输入周边学校"
+                                            required
 
+                                        />
+                                    </div>
                                     {/* 附近小区 */}
-                                    <TextBox
-                                        label="小区:"
-                                        Type="SearchBox"
-                                        leftIcon="#icon-edit"
-                                         rightIcon="#icon-a-duicuocuo"
-                                        placeholder="请输入小区"
-                                        value={reportgeneratorReportData.physicalCondition.nearbyCommunity}
-                                        onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'nearbyCommunity', e.target.value)}
-                                        required
-                                    />
-                                  
+                                    <div className="reportgenerator-form-field-horizontal">
+                                        <label className="reportgenerator-field-label"
+                                        >小区:</label>
+                                        <textarea
+                                            value={reportgeneratorReportData.physicalCondition.nearbyCommunity}
+                                            onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'nearbyCommunity', e.target.value)}
+                                            className="reportgenerator-form-input-inline  reportgenerator-form-input-inline-textarea"
+                                            placeholder="请输入周边附近小区"
+                                            required
+
+                                        />
+                                    </div>
                                     {/* 公交站名 */}
-                                    <TextBox
-                                        label="公交:"
-                                        Type="SearchBox"
-                                        leftIcon="#icon-edit"
-                                         rightIcon="#icon-a-duicuocuo"
-                                        placeholder="请输入公交"
-                                        value={reportgeneratorReportData.physicalCondition.busStopName}
-                                        onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'busStopName', e.target.value)}
-                                        required
-                                    />
-                                   
+                                    <div className="reportgenerator-form-field-horizontal">
+                                        <label className="reportgenerator-field-label"
+                                        >公交:</label>
+                                        <textarea
+                                            value={reportgeneratorReportData.physicalCondition.busStopName}
+                                            onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'busStopName', e.target.value)}
+                                            className="reportgenerator-form-input-inline  reportgenerator-form-input-inline-textarea"
+                                            placeholder="请输入周边公交站名"
+                                            required
+
+                                        />
+                                    </div>
                                     {/* 附近公交线路 */}
-                                    <TextBox
-                                        label="线路:"
-                                        Type="SearchBox"
-                                        leftIcon="#icon-edit"
-                                         rightIcon="#icon-a-duicuocuo"
-                                        placeholder="周边公交线路"
-                                        value={reportgeneratorReportData.physicalCondition.busRoutes}
-                                        onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'busRoutes', e.target.value)}
-                                        required
-                                    />
-                                  
+                                    <div className="reportgenerator-form-field-horizontal">
+                                        <label className="reportgenerator-field-label"
+                                        >线路:</label>
+                                        <textarea
+                                            value={reportgeneratorReportData.physicalCondition.busRoutes}
+                                            onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'busRoutes', e.target.value)}
+                                            className="reportgenerator-form-input-inline  reportgenerator-form-input-inline-textarea"
+                                            placeholder="请输入周边公交线路"
+                                            required
+
+                                        />
+                                    </div>
                                     {/* 道路 */}
-                                    <TextBox
-                                        label="道路:"
-                                        Type="SearchBox"
-                                        leftIcon="#icon-edit"
-                                         rightIcon="#icon-a-duicuocuo"
-                                        placeholder="请输入周边道路"
-                                        value={reportgeneratorReportData.physicalCondition.areaRoad}
-                                        onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'areaRoad', e.target.value)}
-                                        required
-                                    />
-                                   
+                                    <div className="reportgenerator-form-field-horizontal">
+                                        <label className="reportgenerator-field-label"
+                                        >道路:</label>
+                                        <textarea
+                                            value={reportgeneratorReportData.physicalCondition.areaRoad}
+                                            onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'areaRoad', e.target.value)}
+                                            className="reportgenerator-form-input-inline  reportgenerator-form-input-inline-textarea"
+                                            placeholder="请输入周边道路"
+                                            required
+
+                                        />
+                                    </div>
+
                                 </div>
                             )}
 
@@ -2515,15 +2776,38 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                     {/* 一行多列 */}
                                     <div className="reportgenerator-form-field-vertical">
                                         {/* 是否包含家具家电 */}
-                                        <TextBox
-                                            label="家具家电:"
-                                            Type="Switch"
-                                            value={reportgeneratorReportData.result.hasFurnitureElectronics === true}
-                                            onChange={(value) => reportgeneratorHandleInputChange('result', 'hasFurnitureElectronics', value)}
-                                            trueLabel="有"
-                                            falseLabel="无"
-                                        />
-                                       
+                                        <div className="reportgenerator-form-field-vertical-container">
+                                            <label className="reportgenerator-field-label"
+                                            >家具家电:</label>
+                                            <div className="reportgenerator-toggle-switch">
+                                                <input
+                                                    type="radio"
+                                                    id="hasFurnitureElectronics-yes"
+                                                    name="hasFurnitureElectronics"
+                                                    checked={reportgeneratorReportData.result.hasFurnitureElectronics === true}
+                                                    onChange={() => reportgeneratorHandleInputChange('result', 'hasFurnitureElectronics', true)}
+                                                    className="reportgenerator-toggle-input"
+
+                                                />
+                                                <label htmlFor="hasFurnitureElectronics-yes"
+                                                    className="reportgenerator-toggle-option reportgenerator-toggle-option-left"
+                                                >有</label>
+
+                                                <input
+                                                    type="radio"
+                                                    id="hasFurnitureElectronics-no"
+                                                    name="hasFurnitureElectronics"
+                                                    checked={reportgeneratorReportData.result.hasFurnitureElectronics === false}
+                                                    onChange={() => reportgeneratorHandleInputChange('result', 'hasFurnitureElectronics', false)}
+                                                    className="reportgenerator-toggle-input"
+
+                                                />
+                                                <label htmlFor="hasFurnitureElectronics-no" className="reportgenerator-toggle-option reportgenerator-toggle-option-right">无</label>
+
+                                                <span className="reportgenerator-toggle-selection"></span>
+                                            </div>
+                                        </div>
+
                                         {/* 家具家电评估总价 - 有平滑过渡效果 */}
                                         <div
                                             className="reportgenerator-form-field-vertical-container"
@@ -2553,115 +2837,151 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                     {/* 一行多列 */}
                                     <div className="reportgenerator-form-field-vertical">
                                         {/* 价值时点 */}
-                                        <TextBox
-                                            label="价值时点:"
-                                            Type="DatePicker"
-                                            leftIcon="#icon-edit"
-                                            dateFormat="YYYY年M月D日"
-                                            placeholder="请选择价值时点:"
+                                        <div className="reportgenerator-form-field-vertical-container">
+                                            <label className="reportgenerator-field-label"
+                                            >价值时点:</label>
+                                            <DatePicker
+                                                value={reportgeneratorReportData.result.valueDate ?
+                                                    dayjs(reportgeneratorReportData.result.valueDate) : null}
+                                                onChange={(date) => reportgeneratorHandleInputChange('result', 'valueDate', date)}
+                                                format="YYYY年M月D日"
+                                                className="reportgenerator-form-input-inline"
+                                                placeholder="请选择价值时点"
+                                                required
 
-                                            value={reportgeneratorReportData.result.valueDate ?
-                                                dayjs(reportgeneratorReportData.result.valueDate).format('YYYY年M月D日') : ''}
-
-                                            onChange={(date) => reportgeneratorHandleInputChange('result', 'valueDate', date)}
-                                        />
- 
+                                            />
+                                        </div>
                                         {/* 报告出具日期 */}
-                                        <TextBox
-                                            label="报告日期:"
-                                            Type="DatePicker"
-                                            leftIcon="#icon-edit"
-                                            dateFormat="YYYY年M月D日"
-                                            placeholder="请选择报告日期:"
+                                        <div className="reportgenerator-form-field-vertical-container">
+                                            <label className="reportgenerator-field-label"
+                                            >报告日期:</label>
+                                            <DatePicker
+                                                value={reportgeneratorReportData.result.reportDate ?
+                                                    dayjs(reportgeneratorReportData.result.reportDate) : null}
+                                                onChange={(date) => reportgeneratorHandleInputChange('result', 'reportDate', date)}
+                                                format="YYYY年M月D日"
+                                                className="reportgenerator-form-input-inline"
+                                                placeholder="请选择报告日期"
+                                                required
 
-                                            value={reportgeneratorReportData.result.reportDate ?
-                                                dayjs(reportgeneratorReportData.result.reportDate).format('YYYY年M月D日') : ''}
-
-                                            onChange={(date) => reportgeneratorHandleInputChange('result', 'reportDate', date)}
-                                        />
-
+                                            />
+                                        </div>
                                     </div>
 
                                     {/* 一行多列 */}
                                     <div className="reportgenerator-form-field-vertical">
                                         {/* 估价方法 */}
-                                        <TextBox
-                                            label="估价方法:"
-                                            Type="SearchBox"
-                                            placeholder="请选择估价方法"
-                                            searchList={valuationMethodSearchList}
-                                            value={reportgeneratorReportData.result.valuationMethod || ""}
-                                            onChange={(value) => reportgeneratorHandleInputChange('result', 'valuationMethod', value)}
-                                            required
-                                        />  
+                                        <div className="reportgenerator-form-field-vertical-container">
+                                            <label className="reportgenerator-field-label"
+                                            >估价方法 :</label>
+                                            <select
+                                                value={reportgeneratorReportData.result.valuationMethod || ""}
+                                                onChange={(e) => reportgeneratorHandleInputChange('result', 'valuationMethod', e.target.value)}
+                                                className={`reportgenerator-form-select-inline ${!reportgeneratorReportData.result.valuationMethod ? "placeholder-style" : ""
+                                                    }`}
+                                                required
+
+                                            >
+                                                <option value="" disabled>请选择估价方法 </option>
+                                                {Array.from(new Set(
+                                                    reportgeneratorAppraiserOptions
+                                                        .map(option => option.valuationMethodOptions)
+                                                        .filter(Boolean)
+                                                )).map((purpose, index) => (
+                                                    <option key={`valuationMethod-${index}`} value={purpose}>
+                                                        {purpose}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
 
                                         {/* 评估单价 */}
-                                        <TextBox
-                                            label="单价(元/㎡):"
-                                            Type="NumberInput"
-                                            leftIcon="#icon-edit"
-                                            min={0}
-                                            max={150000}
-                                            step={100}
-                                            placeholder="请输入建面评估单价"
-                                            value={reportgeneratorReportData.result.valuationPrice}
-                                            onChange={(value) => reportgeneratorHandleInputChange('result', 'valuationPrice', value)}
-                                        />
+                                        <div className="reportgenerator-form-field-vertical-container">
+                                            <label className="reportgenerator-field-label"
+                                            >单价(元/㎡):</label>
+                                            <input
+                                                type="number"
+                                                value={reportgeneratorReportData.result.valuationPrice}
+                                                onChange={(e) => reportgeneratorHandleInputChange('result', 'valuationPrice', e.target.value)}
+                                                className="reportgenerator-form-input-inline"
+                                                placeholder="请输入建面评估单价"
+                                                min="0"
+                                                step="0.01"
 
+                                            />
+                                        </div>
                                     </div>
 
 
                                     {/* 一行多列 */}
                                     <div className="reportgenerator-form-field-vertical">
                                         {/* 新增项目编号字段 */}
-                                        <TextBox
-                                            label="项目编号:"
-                                            Type="SearchBox"
-                                            leftIcon="#icon-edit"
-                                             rightIcon="#icon-a-duicuocuo"
-                                            placeholder="请输入项目编号:"
-                                            value={reportgeneratorReportData.result.projectID}
-                                            onChange={(e) => reportgeneratorHandleInputChange('result', 'projectID', e.target.value)}
-                                            required
-                                        />
+                                        <div className="reportgenerator-form-field-vertical-container">
+                                            <label className="reportgenerator-field-label"
+                                            >项目编号:</label>
+                                            <input
+                                                type="text"
+                                                value={reportgeneratorReportData.result.projectID}
+                                                onChange={(e) => reportgeneratorHandleInputChange('result', 'projectID', e.target.value)}
+                                                className="reportgenerator-form-input-inline"
+                                                placeholder="请输入项目编号"
+                                                required
+
+                                            />
+                                        </div>
+
                                         {/* 新增报告编号字段 */}
-                                        <TextBox
-                                            label="报告编号:"
-                                            Type="SearchBox"
-                                            leftIcon="#icon-edit"
-                                             rightIcon="#icon-a-duicuocuo"
-                                            placeholder="请输入报告编号"
-                                            value={reportgeneratorReportData.result.reportID}
-                                            onChange={(e) => reportgeneratorHandleInputChange('result', 'reportID', e.target.value)}
-                                            onLabelDoubleClick={() => {
-                                                if (!reportgeneratorReportData.result.reportID) {
-                                                    reportgeneratorHandleInputChange('result', 'reportID', `渝瑞达房评〔2026〕司字第***号`);
-                                                }
-                                            }}
+                                        <div className="reportgenerator-form-field-vertical-container">
+                                            <label
+                                                className="reportgenerator-field-label"
+                                                onDoubleClick={() => {
+                                                    if (!reportgeneratorReportData.result.reportID) {
+                                                        reportgeneratorHandleInputChange('result', 'reportID', `渝房评〔2025〕司字第***号`);
+                                                    }
+                                                }}
 
-                                            required
-                                        />
+                                            >
+                                                报告编号:
+                                            </label>
+                                            <input
+                                                type="text"
+                                                value={reportgeneratorReportData.result.reportID}
+                                                onChange={(e) => reportgeneratorHandleInputChange('result', 'reportID', e.target.value)}
+                                                className="reportgenerator-form-input-inline"
+                                                placeholder="请输入报告编号"
+                                                required
 
+                                            />
+                                        </div>
                                     </div>
 
                                     {/* 一行多列 */}
                                     <div className="reportgenerator-form-field-vertical">
                                         {/* 估价师A */}
-                                        <TextBox
-                                            label="估价师姓名:"
-                                            Type="SearchBox"
-                                            placeholder="请选择估价师"
-                                            searchList={appraiserNameSearchList}
-                                            value={reportgeneratorReportData.result.appraiserA.name || ""}
-                                            onChange={(value) => {
-                                                const selectedOption = reportgeneratorAppraiserOptions.find(
-                                                    option => option.AppraiserNameOptions === value
-                                                );
-                                                reportgeneratorHandleAppraiserChange('A', selectedOption || {});
-                                            }}
-                                            required
-                                        />
-                                        
+                                        <div className="reportgenerator-form-field-vertical-container">
+                                            <label className="reportgenerator-field-label"
+                                            >估价师姓名:</label>
+                                            <select
+                                                value={reportgeneratorReportData.result.appraiserA.name}
+                                                onChange={(e) => {
+                                                    const selectedOption = reportgeneratorAppraiserOptions.find(
+                                                        option => option.AppraiserNameOptions === e.target.value
+                                                    );
+                                                    reportgeneratorHandleAppraiserChange('A', selectedOption || {});
+                                                }}
+                                                className={`reportgenerator-form-select-inline ${!reportgeneratorReportData.result.appraiserA.name ? "placeholder-style" : ""
+                                                    }`}
+                                                required
+
+                                            >
+                                                <option value="">请选择估价师</option>
+                                                {reportgeneratorAppraiserOptions.map((option, index) => (
+                                                    <option key={`appraiserA-${index}`} value={option.AppraiserNameOptions}>
+                                                        {option.AppraiserNameOptions}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
                                         {/* 后端操作，前端不显示 */}
                                         {/* <div className="reportgenerator-form-field-horizontal">
                                         <label className="reportgenerator-field-label">注册号:</label>
@@ -2674,21 +2994,30 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                         />
                                     </div> */}
                                         {/*  估价师B */}
-                                        <TextBox
-                                            label="估价师姓名:"
-                                            Type="SearchBox"
-                                            placeholder="请选择估价师"
-                                            searchList={appraiserNameSearchList}
-                                            value={reportgeneratorReportData.result.appraiserB.name || ""}
-                                            onChange={(value) => {
-                                                const selectedOption = reportgeneratorAppraiserOptions.find(
-                                                    option => option.AppraiserNameOptions === value
-                                                );
-                                                reportgeneratorHandleAppraiserChange('B', selectedOption || {});
-                                            }}
-                                            required
-                                        />
-                                        
+                                        <div className="reportgenerator-form-field-vertical-container">
+                                            <label className="reportgenerator-field-label"
+                                            >估价师姓名:</label>
+                                            <select
+                                                value={reportgeneratorReportData.result.appraiserB.name}
+                                                onChange={(e) => {
+                                                    const selectedOption = reportgeneratorAppraiserOptions.find(
+                                                        option => option.AppraiserNameOptions === e.target.value
+                                                    );
+                                                    reportgeneratorHandleAppraiserChange('B', selectedOption || {});
+                                                }}
+                                                className={`reportgenerator-form-select-inline ${!reportgeneratorReportData.result.appraiserB.name ? "placeholder-style" : ""
+                                                    }`}
+                                                required
+
+                                            >
+                                                <option value="">请选择估价师</option>
+                                                {reportgeneratorAppraiserOptions.map((option, index) => (
+                                                    <option key={`appraiserB-${index}`} value={option.AppraiserNameOptions}>
+                                                        {option.AppraiserNameOptions}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
                                         {/* 后端操作，前端不显示 */}
                                         {/* <div className="reportgenerator-form-field-horizontal">
                                         <label className="reportgenerator-field-label">注册号:</label>
@@ -2702,21 +3031,96 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                     </div> */}
                                     </div>
 
+
+                                    {/* 估价师信息 */}
+                                    {/* <div className="reportgenerator-appraiser-container">
+                                  
+                                    <div className="reportgenerator-appraiser-card">
+                                        <h3 className="reportgenerator-appraiser-title">估价师A</h3>
+                                        <div className="reportgenerator-form-field-horizontal">
+                                            <label className="reportgenerator-field-label">姓名:</label>
+                                            <select
+                                                value={reportgeneratorReportData.result.appraiserA.name}
+                                                onChange={(e) => {
+                                                    const selectedOption = reportgeneratorAppraiserOptions.find(
+                                                        option => option.AppraiserNameOptions === e.target.value
+                                                    );
+                                                    reportgeneratorHandleAppraiserChange('A', selectedOption || {});
+                                                }}
+                                                className="reportgenerator-form-select-inline"
+                                                required
+                                            >
+                                                <option value="">请选择估价师</option>
+                                                {reportgeneratorAppraiserOptions.map((option, index) => (
+                                                    <option key={`appraiserA-${index}`} value={option.AppraiserNameOptions}>
+                                                        {option.AppraiserNameOptions}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                        <div className="reportgenerator-form-field-horizontal">
+                                            <label className="reportgenerator-field-label">注册号:</label>
+                                            <input
+                                                type="text"
+                                                value={reportgeneratorReportData.result.appraiserA.licenseNo}
+                                                readOnly
+                                                className="reportgenerator-form-input-inline"
+                                                placeholder="自动填充注册号"
+                                            />
+                                        </div>
+                                    </div>
+
+                                     
+                                    <div className="reportgenerator-appraiser-card">
+                                        <h3 className="reportgenerator-appraiser-title">估价师B</h3>
+                                        <div className="reportgenerator-form-field-horizontal">
+                                            <label className="reportgenerator-field-label">姓名:</label>
+                                            <select
+                                                value={reportgeneratorReportData.result.appraiserB.name}
+                                                onChange={(e) => {
+                                                    const selectedOption = reportgeneratorAppraiserOptions.find(
+                                                        option => option.AppraiserNameOptions === e.target.value
+                                                    );
+                                                    reportgeneratorHandleAppraiserChange('B', selectedOption || {});
+                                                }}
+                                                className="reportgenerator-form-select-inline"
+                                            >
+                                                <option value="">请选择估价师</option>
+                                                {reportgeneratorAppraiserOptions.map((option, index) => (
+                                                    <option key={`appraiserB-${index}`} value={option.AppraiserNameOptions}>
+                                                        {option.AppraiserNameOptions}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                        <div className="reportgenerator-form-field-horizontal">
+                                            <label className="reportgenerator-field-label">注册号:</label>
+                                            <input
+                                                type="text"
+                                                value={reportgeneratorReportData.result.appraiserB.licenseNo}
+                                                readOnly
+                                                className="reportgenerator-form-input-inline"
+                                                placeholder="自动填充注册号"
+                                            />
+                                        </div>
+                                    </div>
+                                </div> */}
                                     {/* 一行多列 */}
                                     <div className="reportgenerator-form-field-vertical">
                                         {/* 租金 */}
-                                        <TextBox
-                                            label="租金（元/㎡）:"
-                                            Type="NumberInput"
-                                            leftIcon="#icon-edit"
-                                            min={0}
-                                            max={2000}
-                                            step={10}
-                                            placeholder="请输入建面月租金：元/㎡.月"
-                                            value={reportgeneratorReportData.result.rent}
-                                            onChange={(e) => reportgeneratorHandleInputChange('result', 'rent', e.target.value)}
-                                        />
-
+                                        <div className="reportgenerator-form-field-vertical-container">
+                                            <label className="reportgenerator-field-label"
+                                            >租金（元/㎡）:</label>
+                                            <input
+                                                type="number" title='建面月租金'
+                                                value={reportgeneratorReportData.result.rent}
+                                                onChange={(e) => reportgeneratorHandleInputChange('result', 'rent', e.target.value)}
+                                                className="reportgenerator-form-input-inline"
+                                                placeholder="请输入建面月租金：元/㎡.月"
+                                                min="0"
+                                                step="1"
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             )}
@@ -2728,104 +3132,173 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                     {/* 一行多列 */}
                                     <div className="reportgenerator-form-field-vertical">
                                         {/* 抵押 */}
-                                        <TextBox
-                                            label="抵押:"
-                                            Type="Switch"
-                                            value={reportgeneratorReportData.equityStatus.mortgageStatus === true}
-                                            onChange={(value) => reportgeneratorHandleInputChange('equityStatus', 'mortgageStatus', value)}
-                                            trueLabel="有"
-                                            falseLabel="无"
-                                        />
+                                        <div className="reportgenerator-form-field-vertical-container">
+                                            <label className="reportgenerator-field-label"
+                                            >抵押:</label>
+                                            <div className="reportgenerator-toggle-switch">
+                                                <input
+                                                    type="radio"
+                                                    id="mortgageStatus-yes"
+                                                    name="mortgageStatus"
+                                                    checked={reportgeneratorReportData.equityStatus.mortgageStatus === true}
+                                                    onChange={() => reportgeneratorHandleInputChange('equityStatus', 'mortgageStatus', true)}
+                                                    className="reportgenerator-toggle-input"
 
-                                        {/* 抵押依据 */}
-                                        <TextBox
-                                            label="抵押依据:"
-                                            Type="SearchBox"
-                                            placeholder="请选择抵押依据"
-                                            searchList={mortgageBasisSearchList}
-                                            value={reportgeneratorReportData.equityStatus.mortgageBasis || ""}
-                                            onChange={(value) => reportgeneratorHandleInputChange('equityStatus', 'mortgageBasis', value)}
-                                            required
-                                        />
+                                                />
+                                                <label htmlFor="mortgageStatus-yes" className="reportgenerator-toggle-option reportgenerator-toggle-option-left"
+                                                >有</label>
 
-                                       
+                                                <input
+                                                    type="radio"
+                                                    id="mortgageStatus-no"
+                                                    name="mortgageStatus"
+                                                    checked={reportgeneratorReportData.equityStatus.mortgageStatus === false}
+                                                    onChange={() => reportgeneratorHandleInputChange('equityStatus', 'mortgageStatus', false)}
+                                                    className="reportgenerator-toggle-input"
+                                                />
+                                                <label htmlFor="mortgageStatus-no" className="reportgenerator-toggle-option reportgenerator-toggle-option-right">无</label>
+
+                                                <span className="reportgenerator-toggle-selection"></span>
+                                            </div>
+                                        </div>
+                                        <div className="reportgenerator-form-field-vertical-container">
+                                            <label className="reportgenerator-field-label"
+                                            >抵押依据 :</label>
+                                            <select
+                                                value={reportgeneratorReportData.equityStatus.mortgageBasis || ""}
+                                                onChange={(e) => reportgeneratorHandleInputChange('equityStatus', 'mortgageBasis', e.target.value)}
+                                                className={`reportgenerator-form-select-inline ${!reportgeneratorReportData.equityStatus.mortgageBasis ? "placeholder-style" : ""
+                                                    }`}
+                                                required
+
+                                            >
+                                                <option value="" disabled>请选择抵押依据 </option>
+                                                {Array.from(new Set(
+                                                    reportgeneratorAppraiserOptions
+                                                        .map(option => option.mortgageBasisOptions)
+                                                        .filter(Boolean)
+                                                )).map((purpose, index) => (
+                                                    <option key={`mortgageBasis-${index}`} value={purpose}>
+                                                        {purpose}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+
+
                                     </div>
                                     {/* 一行多列 */}
                                     <div className="reportgenerator-form-field-vertical">
                                         {/* 查封 */}
-                                        <TextBox
-                                            label="查封:"
-                                            Type="Switch"
-                                            value={reportgeneratorReportData.equityStatus.seizureStatus === true}
-                                            onChange={(value) => reportgeneratorHandleInputChange('equityStatus', 'seizureStatus', value)}
-                                            trueLabel="有"
-                                            falseLabel="无"
-                                        />
-                                       
-                                        {/* 查封依据 : */}
-                                        <TextBox
-                                            label="查封依据:"
-                                            Type="SearchBox"
-                                            placeholder="请选择查封依据"
-                                            searchList={seizureBasisSearchList}
-                                            value={reportgeneratorReportData.equityStatus.seizureBasis || ""}
-                                            onChange={(value) => reportgeneratorHandleInputChange('equityStatus', 'seizureBasis', value)}
-                                            required
-                                        />
-                                       
+                                        <div className="reportgenerator-form-field-vertical-container">
+                                            <label className="reportgenerator-field-label"
+                                            >查封:</label>
+                                            <div className="reportgenerator-toggle-switch">
+                                                <input
+                                                    type="radio"
+                                                    id="seizureStatus-yes"
+                                                    name="seizureStatus"
+                                                    checked={reportgeneratorReportData.equityStatus.seizureStatus === true}
+                                                    onChange={() => reportgeneratorHandleInputChange('equityStatus', 'seizureStatus', true)}
+                                                    className="reportgenerator-toggle-input"
+
+                                                />
+                                                <label htmlFor="seizureStatus-yes" className="reportgenerator-toggle-option reportgenerator-toggle-option-left">有</label>
+
+                                                <input
+                                                    type="radio"
+                                                    id="seizureStatus-no"
+                                                    name="seizureStatus"
+                                                    checked={reportgeneratorReportData.equityStatus.seizureStatus === false}
+                                                    onChange={() => reportgeneratorHandleInputChange('equityStatus', 'seizureStatus', false)}
+                                                    className="reportgenerator-toggle-input"
+                                                />
+                                                <label htmlFor="seizureStatus-no" className="reportgenerator-toggle-option reportgenerator-toggle-option-right">无</label>
+
+                                                <span className="reportgenerator-toggle-selection"></span>
+                                            </div>
+                                        </div>
+                                        <div className="reportgenerator-form-field-vertical-container">
+                                            <label className="reportgenerator-field-label"
+                                            >查封依据 :</label>
+                                            <select
+                                                value={reportgeneratorReportData.equityStatus.seizureBasis || ""}
+                                                onChange={(e) => reportgeneratorHandleInputChange('equityStatus', 'seizureBasis', e.target.value)}
+                                                className={`reportgenerator-form-select-inline ${!reportgeneratorReportData.equityStatus.seizureBasis ? "placeholder-style" : ""
+                                                    }`}
+                                                required
+
+                                            >
+                                                <option value="" disabled>请选择查封依据 </option>
+                                                {Array.from(new Set(
+                                                    reportgeneratorAppraiserOptions
+                                                        .map(option => option.seizureBasisOptions)
+                                                        .filter(Boolean)
+                                                )).map((purpose, index) => (
+                                                    <option key={`seizureBasis-${index}`} value={purpose}>
+                                                        {purpose}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+
+
                                     </div>
                                     {/* 一行多列 */}
                                     <div className="reportgenerator-form-field-vertical">
                                         {/* 利用状况 */}
-                                        <TextBox
-                                            label="利用状况:"
-                                            Type="SearchBox"
-                                            placeholder="请选择利用状况"
-                                            searchList={utilizationStatusSearchList}
-                                            value={reportgeneratorReportData.equityStatus.utilizationStatus || ""}
-                                            onChange={(value) => reportgeneratorHandleInputChange('equityStatus', 'utilizationStatus', value)}
-                                            required
-                                        />
+                                        <div className="reportgenerator-form-field-vertical-container">
+                                            <label className="reportgenerator-field-label"
+                                            >利用状况 :</label>
+                                            <select
+                                                value={reportgeneratorReportData.equityStatus.utilizationStatus || ""}
+                                                onChange={(e) => reportgeneratorHandleInputChange('equityStatus', 'utilizationStatus', e.target.value)}
+                                                className={`reportgenerator-form-select-inline ${!reportgeneratorReportData.equityStatus.utilizationStatus ? "placeholder-style" : ""}`}
+                                                required
+
+                                            >
+                                                <option value="" disabled>请选择利用状况</option>
+                                                {Array.from(new Set(
+                                                    reportgeneratorAppraiserOptions
+                                                        .map(option => option.utilizationStatusOptions)
+                                                        .filter(Boolean)
+                                                )).map((purpose, index) => (
+                                                    <option key={`utilizationStatus-${index}`} value={purpose}>
+                                                        {purpose}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
 
                                         {/* 条件渲染：只有当利用状况为"出租"时才显示租约选项 */}
                                         {showLeaseOption && (
+                                            <div className="reportgenerator-form-field-vertical-container">
+                                                <label className="reportgenerator-field-label"
+                                                >是否考虑租约:</label>
+                                                <div className="reportgenerator-toggle-switch">
+                                                    <input
+                                                        type="radio"
+                                                        id="isLeaseConsidered-yes"
+                                                        name="isLeaseConsidered"
+                                                        checked={reportgeneratorReportData.equityStatus.isLeaseConsidered === true}
+                                                        onChange={() => reportgeneratorHandleInputChange('equityStatus', 'isLeaseConsidered', true)}
+                                                        className="reportgenerator-toggle-input"
+                                                    />
+                                                    <label htmlFor="isLeaseConsidered-yes" className="reportgenerator-toggle-option reportgenerator-toggle-option-left">是</label>
 
-                                            <TextBox
-                                                label="是否考虑租约:"
-                                                Type="Switch"
-                                                value={reportgeneratorReportData.equityStatus.isLeaseConsidered === true}
-                                                onChange={(value) => reportgeneratorHandleInputChange('equityStatus', 'isLeaseConsidered', value)}
-                                                trueLabel="是"
-                                                falseLabel="否"
-                                            />
+                                                    <input
+                                                        type="radio"
+                                                        id="isLeaseConsidered-no"
+                                                        name="isLeaseConsidered"
+                                                        checked={reportgeneratorReportData.equityStatus.isLeaseConsidered === false}
+                                                        onChange={() => reportgeneratorHandleInputChange('equityStatus', 'isLeaseConsidered', false)}
+                                                        className="reportgenerator-toggle-input"
+                                                    />
+                                                    <label htmlFor="isLeaseConsidered-no" className="reportgenerator-toggle-option reportgenerator-toggle-option-right">否</label>
 
-                                            // <div className="reportgenerator-form-field-vertical-container">
-                                            //     <label className="reportgenerator-field-label"
-                                            //     >是否考虑租约:</label>
-                                            //     <div className="reportgenerator-toggle-switch">
-                                            //         <input
-                                            //             type="radio"
-                                            //             id="isLeaseConsidered-yes"
-                                            //             name="isLeaseConsidered"
-                                            //             checked={reportgeneratorReportData.equityStatus.isLeaseConsidered === true}
-                                            //             onChange={() => reportgeneratorHandleInputChange('equityStatus', 'isLeaseConsidered', true)}
-                                            //             className="reportgenerator-toggle-input"
-                                            //         />
-                                            //         <label htmlFor="isLeaseConsidered-yes" className="reportgenerator-toggle-option reportgenerator-toggle-option-left">是</label>
-
-                                            //         <input
-                                            //             type="radio"
-                                            //             id="isLeaseConsidered-no"
-                                            //             name="isLeaseConsidered"
-                                            //             checked={reportgeneratorReportData.equityStatus.isLeaseConsidered === false}
-                                            //             onChange={() => reportgeneratorHandleInputChange('equityStatus', 'isLeaseConsidered', false)}
-                                            //             className="reportgenerator-toggle-input"
-                                            //         />
-                                            //         <label htmlFor="isLeaseConsidered-no" className="reportgenerator-toggle-option reportgenerator-toggle-option-right">否</label>
-
-                                            //         <span className="reportgenerator-toggle-selection"></span>
-                                            //     </div>
-                                            // </div>
+                                                    <span className="reportgenerator-toggle-selection"></span>
+                                                </div>
+                                            </div>
                                         )}
                                     </div>
                                 </div>

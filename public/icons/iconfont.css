@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 4797853 */
-  src: url('iconfont.woff2?t=1777472830961') format('woff2'),
-       url('iconfont.woff?t=1777472830961') format('woff'),
-       url('iconfont.ttf?t=1777472830961') format('truetype');
+  src: url('iconfont.woff2?t=1779077771059') format('woff2'),
+       url('iconfont.woff?t=1779077771059') format('woff'),
+       url('iconfont.ttf?t=1779077771059') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,74 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-edit:before {
+  content: "\eb74";
+}
+
+.icon-unedit:before {
+  content: "\eb75";
+}
+
+.icon-search3:before {
+  content: "\eb76";
+}
+
+.icon-meiyoushuju-copy:before {
+  content: "\eb62";
+}
+
+.icon-meishuju:before {
+  content: "\eb63";
+}
+
+.icon-meiyoushuju3:before {
+  content: "\eb64";
+}
+
+.icon-meiyouxinxi:before {
+  content: "\eb65";
+}
+
+.icon-zanmeishuju:before {
+  content: "\eb66";
+}
+
+.icon-meiyoushuju4:before {
+  content: "\eb67";
+}
+
+.icon-rili:before {
+  content: "\eb59";
+}
+
+.icon-rili-:before {
+  content: "\eb5a";
+}
+
+.icon-rili-dianji:before {
+  content: "\eb5b";
+}
+
+.icon-rili1:before {
+  content: "\eb5d";
+}
+
+.icon-rili2:before {
+  content: "\eb5e";
+}
+
+.icon-riliriqi2:before {
+  content: "\eb5f";
+}
+
+.icon-rili3:before {
+  content: "\eb60";
+}
+
+.icon-a-243_rili:before {
+  content: "\eb61";
 }
 
 .icon-bangongyi:before {

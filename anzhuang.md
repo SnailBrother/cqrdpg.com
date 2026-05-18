@@ -710,7 +710,7 @@ CREATE TABLE WebWordReports.dbo.WordReportsInformation (
     appraiserRegNoB VARCHAR(50) NOT NULL,             -- 估价师 B 注册号
     communityName VARCHAR(100) NOT NULL,              -- 小区名称
     totalFloors INT NOT NULL,                          -- 总层数
-    floorNumber INT NOT NULL,                          -- 所在楼层
+    floorNumber NVARCHAR(20) NOT NULL,                          -- 所在楼层
     housePurpose VARCHAR(100) NOT NULL,                -- 房屋用途
     propertyUnitNo VARCHAR(50) NOT NULL,               -- 不动产单元号
     rightsHolder VARCHAR(100) NOT NULL,                -- 权利人
@@ -773,7 +773,7 @@ ALTER TABLE WebWordReports.dbo.WordReportsInformation
 ADD 
     communityName VARCHAR(100) NOT NULL,              -- 小区名称
     totalFloors INT NOT NULL,                          -- 总层数
-    floorNumber INT NOT NULL,                          -- 所在楼层
+    floorNumber NVARCHAR(20) NOT NULL,                          -- 所在楼层
     housePurpose VARCHAR(100) NOT NULL,                -- 房屋用途
     hasFurnitureElectronics BIT NOT NULL DEFAULT 0,     -- 是否包含家具家电，默认值为 0（即否）
     furnitureElectronicsEstimatedPrice DECIMAL(10, 0) NOT NULL;  -- 家具家电评估总价 (DECIMAL 类型，最多 10 位数字，其中 2 位为小数)

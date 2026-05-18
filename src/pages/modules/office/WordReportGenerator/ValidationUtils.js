@@ -22,7 +22,7 @@ const validateReportData = (reportData) => {
         { field: 'appraiserRegNoB', name: '估价师B注册号', maxLength: 50 },
         { field: 'communityName', name: '小区名称', maxLength: 100 },
         { field: 'totalFloors', name: '总层数', type: 'integer' },
-        { field: 'floorNumber', name: '所在楼层', type: 'integer' },
+        { field: 'floorNumber', name: '所在楼层', type: 'string' },
         { field: 'housePurpose', name: '房屋用途', maxLength: 100 },
         { field: 'propertyUnitNo', name: '不动产单元号', maxLength: 50 },
         { field: 'rightsHolder', name: '权利人', maxLength: 100 },
