@@ -1499,7 +1499,67 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
 
 
     //添加跳转二维码 👇
-
+   const handleViewQRCode = async () => {
+        if (!currentReportId) {
+            notify('请先选择或创建报告', 'warning');
+            return;
+        }
+    
+        // 准备基础数据
+        const location = reportgeneratorReportData?.property?.location || '未知位置';
+    
+        try {
+            // 1. 调用后端 API 获取【加密后的ID字符串】
+            const response = await fetch('/api/generateEncodedReportUrl', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    reportsID: currentReportId,
+                    location: location
+                })
+            });
+    
+            if (!response.ok) {
+                const errData = await response.json();
+                throw new Error(errData.error || '生成二维码链接失败');
+            }
+    
+            const data = await response.json();
+            const encodedId = data.encodedId; // 获取类似 "Alpha|Beta" 的字符串
+    
+            if (!encodedId) {
+                throw new Error('未获取到加密ID');
+            }
+    
+            console.log('Encoded ID:', encodedId);
+    
+            // 2. 【前端构建完整 URL】
+            const baseUrl = `${window.location.origin}/app/office/reportqrcodepage`;
+            
+            // 使用 URLSearchParams 自动处理特殊字符编码 (| 会被编码为 %7C)
+            const queryParams = new URLSearchParams({
+                reportsID: encodedId,
+                location: location
+            });
+    
+            const qrCodePageUrl = `${baseUrl}?${queryParams.toString()}`;
+    
+            console.log('Generated Secure URL:', qrCodePageUrl);
+    
+            // 3. 新开页面跳转
+            if (qrCodePageUrl) {
+                window.open(qrCodePageUrl, '_blank');
+            } else {
+                notify('无法生成有效的二维码链接', 'error');
+            }
+    
+        } catch (error) {
+            console.error('Error generating QR code URL:', error);
+            notify(error.message || '系统错误，请稍后重试', 'error');
+        }
+    };
 
 
     // 添加查看二维码的处理函数
