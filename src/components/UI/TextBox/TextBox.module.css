@@ -68,12 +68,13 @@
   left: 0;
   right: 0;
   min-width: 200px;
-  background: rgb(176, 177, 176);
-  border: 1px solid #d9d9d9;
+  background: rgb(255, 255, 255);
+  border: 1px solid #3b3b3b8c;
   border-radius: 6px;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
   z-index: 1050;
   padding: 8px;
+  
 }
 
 .dropdownSearchInput {
@@ -447,3 +448,5 @@
    
 }
 /*  #endregion end */
+
+

@@ -24,7 +24,6 @@ const TextBox = ({
   trueLabel = "是",
   falseLabel = "否",
   onLabelDoubleClick,
-  enableInputSearch = true, // 新增属性：是否启用输入框搜索功能，默认启用
 }) => {
   const [inputValue, setInputValue] = useState(() => {
     if (Type === "Switch") {
@@ -37,7 +36,7 @@ const TextBox = ({
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const containerRef = useRef(null);
-  const inputWrapperRef = useRef(null);
+  const inputWrapperRef = useRef(null); // 新增：用于定位下拉面板
   const defaultPlaceholder = placeholder || (
     Type === "DatePicker" ? "请选择日期" :
       Type === "NumberInput" ? "请输入数字" :
@@ -134,29 +133,35 @@ const TextBox = ({
   }
 
   // 格式化日期
-  function formatDate(date, formatStr = dateFormat) {
-    const d = new Date(date);
-    const year = d.getFullYear();
-    const month = d.getMonth() + 1;
-    const day = d.getDate();
-
-    let result = formatStr;
-    result = result.replace('YYYY', year.toString());
-
-    if (formatStr.includes('MM')) {
-      result = result.replace('MM', String(month).padStart(2, '0'));
-    } else {
-      result = result.replace('M', month.toString());
-    }
-
-    if (formatStr.includes('DD')) {
-      result = result.replace('DD', String(day).padStart(2, '0'));
-    } else {
-      result = result.replace('D', day.toString());
-    }
-
-    return result;
+// 格式化日期
+function formatDate(date, formatStr = dateFormat) {
+  const d = new Date(date);
+  const year = d.getFullYear();
+  const month = d.getMonth() + 1;
+  const day = d.getDate();
+  
+  // 根据格式字符串进行替换
+  let result = formatStr;
+  
+  // 处理年份（始终4位）
+  result = result.replace('YYYY', year.toString());
+  
+  // 处理月份：MM 表示补零，M 表示不补零
+  if (formatStr.includes('MM')) {
+    result = result.replace('MM', String(month).padStart(2, '0'));
+  } else {
+    result = result.replace('M', month.toString());
   }
+  
+  // 处理日期：DD 表示补零，D 表示不补零
+  if (formatStr.includes('DD')) {
+    result = result.replace('DD', String(day).padStart(2, '0'));
+  } else {
+    result = result.replace('D', day.toString());
+  }
+  
+  return result;
+}
 
   // 日历数据
   const calendarDays = useMemo(() => {
@@ -275,25 +280,11 @@ const TextBox = ({
     } else if (Type === "ComboBox") {
       if (!editable) return;
       setInputValue(val);
-
-      // 如果启用输入框搜索，则同步搜索关键词
-      if (enableInputSearch) {
-        setSearchQuery(val);
-      }
-
       if (!multiple) {
         setSelectedItems([]);
         onChange?.(val);
       } else {
         onChange?.(val);
-      }
-    } else if (Type === "SearchBox") {
-      setInputValue(val);
-      onChange && onChange(val);
-
-      // 如果启用输入框搜索，则同步搜索关键词
-      if (enableInputSearch) {
-        setSearchQuery(val);
       }
     } else if (Type === "Switch") {
       return;
@@ -315,11 +306,6 @@ const TextBox = ({
         setSelectedItems([]);
       }
       onChange && onChange(multiple ? [] : '');
-
-      // 清空搜索关键词
-      if (enableInputSearch && (Type === "SearchBox" || Type === "ComboBox")) {
-        setSearchQuery('');
-      }
     }
     inputRef.current?.focus();
   };
@@ -347,11 +333,8 @@ const TextBox = ({
   const handleInputFocus = () => {
     if (Type === "SearchBox" || Type === "ComboBox" || Type === "Switch") {
       setIsDropdownVisible(true);
-      // 如果启用输入框搜索且当前有值，在显示下拉时同步当前输入值到搜索框
-      if (enableInputSearch && (Type === "SearchBox" || Type === "ComboBox") && inputValue) {
-        setSearchQuery(inputValue);
-      }
     }
+    // DatePicker 不在这里处理，由 handleDatePickerClick 处理
   };
 
   // 点击输入框区域（DatePicker 模式）
@@ -359,6 +342,7 @@ const TextBox = ({
     if (Type === "DatePicker") {
       setIsDatePickerOpen(!isDatePickerOpen);
       setViewMode('day');
+      // 确保关闭其他下拉面板
       setIsDropdownVisible(false);
     }
   };
@@ -394,23 +378,16 @@ const TextBox = ({
     setSelectedItems([item]);
     onChange?.(item);
     setIsDropdownVisible(false);
-    setSearchQuery(''); // 清空搜索
+    setSearchQuery('');
   };
 
-  // 选择下拉项 (SearchBox 模式)
+  // 选下拉项 (SearchBox 模式)
   const handleSelectItem = (item) => {
     setInputValue(item);
     onChange && onChange(item);
     setIsDropdownVisible(false);
-    setSearchQuery(''); // 清空搜索
+    setSearchQuery('');
     inputRef.current?.focus();
-  };
-
-  // 搜索输入框变化处理
-  const handleSearchInputChange = (e) => {
-    e.stopPropagation();
-    const newQuery = e.target.value;
-    setSearchQuery(newQuery);
   };
 
   // 点击外部关闭
@@ -431,19 +408,14 @@ const TextBox = ({
   }, []);
 
   // 搜索过滤
-  const getFilteredData = () => {
-    if (enableInputSearch) {
-      return searchList.filter(item =>
-        item.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    } else {
-      return searchList.filter(item =>
-        item.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
-  };
+  const filteredData = searchList.filter(item =>
+    item.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-  const filteredData = getFilteredData();
+  const handleSearchInputChange = (e) => {
+    e.stopPropagation();
+    setSearchQuery(e.target.value);
+  };
 
   const handleKeyDown = (e) => {
     if (Type === "NumberInput") {
@@ -486,62 +458,13 @@ const TextBox = ({
     );
   };
 
-  // 渲染 SearchBox 下拉面板
-  const renderSearchBoxPanel = () => {
-    if (Type !== "SearchBox" || !isDropdownVisible || searchList.length === 0) return null;
-
-    return (
-      <div className={styles.dropdownPanel}>
-        {/* 只在未启用输入框搜索时显示搜索输入框 */}
-        {!enableInputSearch && (
-          <input
-            type="text"
-            className={styles.dropdownSearchInput}
-            placeholder="搜索选项..."
-            value={searchQuery}
-            onChange={handleSearchInputChange}
-            onClick={(e) => e.stopPropagation()}
-            onMouseDown={(e) => e.stopPropagation()}
-          />
-        )}
-
-        {/* 启用输入框搜索时的提示 */}
-        {/*  {enableInputSearch && (
-          <div className={styles.searchHint} style={{ padding: '8px 12px', fontSize: '12px', color: '#999', borderBottom: '1px solid #eee' }}>
-            💡 在输入框中输入关键词进行搜索
-          </div>
-        )}*/}
-
-        <ul className={styles.resultList}>
-          {filteredData.length > 0 ? (
-            filteredData.map((item, index) => (
-              <li
-                key={index}
-                className={styles.resultItem}
-                onMouseDown={(e) => {
-                  e.preventDefault();
-                  handleSelectItem(item);
-                }}
-              >
-                {item}
-              </li>
-            ))
-          ) : (
-            <li className={styles.resultItem} style={{ color: '#999' }}>无匹配内容</li>
-          )}
-        </ul>
-      </div>
-    );
-  };
-
   // 渲染 ComboBox 下拉面板
   const renderComboBoxPanel = () => {
     if (Type !== "ComboBox" || !isDropdownVisible) return null;
 
     return (
       <div className={styles.dropdownPanel}>
-        {/* 只在未启用输入框搜索时显示搜索输入框 */}
-        {editable && !enableInputSearch && (
+        {editable && (
           <input
             type="text"
             className={styles.dropdownSearchInput}
@@ -552,13 +475,6 @@ const TextBox = ({
             onMouseDown={(e) => e.stopPropagation()}
           />
         )}
-
-        {/* 启用输入框搜索时的提示 */}
-        {/*  {editable && enableInputSearch && (
-          <div className={styles.searchHint} style={{ padding: '8px 12px', fontSize: '12px', color: '#999', borderBottom: '1px solid #eee' }}>
-            💡 在输入框中输入关键词进行搜索
-          </div>
-        )}*/}
 
         <ul className={styles.resultList}>
           {filteredData.length > 0 ? (
@@ -763,6 +679,7 @@ const TextBox = ({
           placeholder={defaultPlaceholder}
           inputMode={Type === "NumberInput" ? "numeric" : "text"}
           readOnly={Type === "DatePicker" || Type === "Switch" || (Type === "ComboBox" && !editable)}
+          // 添加这个，确保 DatePicker 点击时能触发
           onClick={(e) => {
             if (Type === "DatePicker") {
               e.stopPropagation();
@@ -850,7 +767,37 @@ const TextBox = ({
         )}
 
         {/* SearchBox 模式：下拉搜索界面 */}
-        {renderSearchBoxPanel()}
+        {Type === "SearchBox" && isDropdownVisible && searchList.length > 0 && (
+          <div className={styles.dropdownPanel}>
+            <input
+              type="text"
+              className={styles.dropdownSearchInput}
+              placeholder="搜索选项..."
+              value={searchQuery}
+              onChange={handleSearchInputChange}
+              onClick={(e) => e.stopPropagation()}
+              onMouseDown={(e) => e.stopPropagation()}
+            />
+            <ul className={styles.resultList}>
+              {filteredData.length > 0 ? (
+                filteredData.map((item, index) => (
+                  <li
+                    key={index}
+                    className={styles.resultItem}
+                    onMouseDown={(e) => {
+                      e.preventDefault();
+                      handleSelectItem(item);
+                    }}
+                  >
+                    {item}
+                  </li>
+                ))
+              ) : (
+                <li className={styles.resultItem} style={{ color: '#999' }}>无匹配内容</li>
+              )}
+            </ul>
+          </div>
+        )}
 
         {/* ComboBox 模式：下拉多选/单选界面 */}
         {renderComboBoxPanel()}
