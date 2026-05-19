@@ -2030,18 +2030,14 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
 
                                     {/* 委托日期 */}
 
-                                    <TextBox
-                                        label="委托日期:"
-                                        Type="DatePicker"
-                                        leftIcon="#icon-edit"
-                                        dateFormat="YYYY年M月D日"
-                                        placeholder="请选择委托日期"
-                                        // 修改 value：如果是 dayjs 对象，用 .format() 转成字符串；否则保持原样或为空
-                                        value={reportgeneratorReportData.entrustment.entrustDate ?
-                                            dayjs(reportgeneratorReportData.entrustment.entrustDate).format('YYYY年M月D日') : ''}
-                                        // 修改 onChange：直接接收 date 字符串并更新，不需要再包一层 dayjs
-                                        onChange={(date) => reportgeneratorHandleInputChange('entrustment', 'entrustDate', date)}
-                                    />
+<TextBox
+    label="委托日期:"
+    Type="DatePicker"
+     leftIcon="#icon-edit"
+     dateFormat="YYYY年M月D日"
+    value={reportgeneratorReportData.entrustment.entrustDate || ''}
+    onChange={(date) => reportgeneratorHandleInputChange('entrustment', 'entrustDate', date)}
+/>
 
                                 </div>
                             )}
@@ -2059,7 +2055,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                          rightIcon="#icon-a-duicuocuo"
                                         placeholder="请输入产权证号"
                                         value={reportgeneratorReportData.property.propertyCertificateNo}
-                                        onChange={(e) => reportgeneratorHandleInputChange('property', 'propertyCertificateNo', e.target.value)}
+                                        onChange={(value) => reportgeneratorHandleInputChange('property', 'propertyCertificateNo', value)}
                                         required
                                     />
 
@@ -2071,7 +2067,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                         rightIcon="#icon-a-duicuocuo"
                                         placeholder="请输入权利人"
                                         value={reportgeneratorReportData.property.rightsHolder}
-                                        onChange={(e) => reportgeneratorHandleInputChange('property', 'rightsHolder', e.target.value)}
+                                        onChange={(value) => reportgeneratorHandleInputChange('property', 'rightsHolder', value)}
                                         required
                                     />
 
@@ -2094,7 +2090,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                          rightIcon="#icon-a-duicuocuo"
                                         placeholder="请输入房产坐落地址"
                                         value={reportgeneratorReportData.property.location}
-                                        onChange={(e) => reportgeneratorHandleInputChange('property', 'location', e.target.value)}
+                                        onChange={(value) => reportgeneratorHandleInputChange('property', 'location', value)}
                                         required
                                     />
 
@@ -2106,7 +2102,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                          rightIcon="#icon-a-duicuocuo"
                                         placeholder="请输入不动产单元号"
                                         value={reportgeneratorReportData.property.propertyUnitNo}
-                                        onChange={(e) => reportgeneratorHandleInputChange('property', 'propertyUnitNo', e.target.value)}
+                                        onChange={(value) => reportgeneratorHandleInputChange('property', 'propertyUnitNo', value)}
                                         required
                                     />
                                     {/* 一行多列 */}
@@ -2200,9 +2196,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                             dateFormat="YYYY年M月D日"
                                             placeholder="请选择土地终止日期:"
 
-                                            value={reportgeneratorReportData.property.landUseRightEndDate ?
-                                                dayjs(reportgeneratorReportData.property.landUseRightEndDate).format('YYYY年M月D日') : ''}
-
+                                            value={reportgeneratorReportData.property.landUseRightEndDate || ''}  // 存储格式 YYYY-MM-DD
                                             onChange={(date) => reportgeneratorHandleInputChange('property', 'landUseRightEndDate', date)}
                                         />
 
@@ -2238,7 +2232,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                              rightIcon="#icon-a-duicuocuo"
                                             placeholder="请输入小区名称"
                                             value={reportgeneratorReportData.physicalCondition.communityName}
-                                            onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'communityName', e.target.value)}
+                                            onChange={(value) => reportgeneratorHandleInputChange('physicalCondition', 'communityName', value)}
                                             required
                                         />
 
@@ -2324,7 +2318,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                              rightIcon="#icon-a-duicuocuo"
                                             placeholder="请输入空间布局"
                                             value={reportgeneratorReportData.physicalCondition.spaceLayout}
-                                            onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'spaceLayout', e.target.value)}
+                                            onChange={(value) => reportgeneratorHandleInputChange('physicalCondition', 'spaceLayout', value)}
                                             required
                                         />
                                        
@@ -2383,7 +2377,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                              rightIcon="#icon-a-duicuocuo"
                                             placeholder="请输入临街状况"
                                             value={reportgeneratorReportData.physicalCondition.streetStatus}
-                                            onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'streetStatus', e.target.value)}
+                                            onChange={(value) => reportgeneratorHandleInputChange('physicalCondition', 'streetStatus', value)}
                                             required
                                         />
                                        
@@ -2395,7 +2389,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                              rightIcon="#icon-a-duicuocuo"
                                             placeholder="请输入方位"
                                             value={reportgeneratorReportData.physicalCondition.direction}
-                                            onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'direction', e.target.value)}
+                                            onChange={(value) => reportgeneratorHandleInputChange('physicalCondition', 'direction', value)}
                                             onLabelDoubleClick={() => {
                                                 if (reportgeneratorReportData.property.location) {
                                                     setShowHandBaiduDataGrabber(true);
@@ -2418,7 +2412,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                              rightIcon="#icon-a-duicuocuo"
                                             placeholder="请输入距重要场所距离"
                                             value={reportgeneratorReportData.physicalCondition.distance}
-                                            onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'distance', e.target.value)}
+                                            onChange={(value) => reportgeneratorHandleInputChange('physicalCondition', 'distance', value)}
                                             required
                                         />
 
@@ -2429,11 +2423,11 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                             leftIcon="#icon-edit"
                                              rightIcon="#icon-a-duicuocuo"
                                             placeholder="请输入四至"
+                                            multiline="true"
                                             value={reportgeneratorReportData.physicalCondition.boundaries}
-                                            onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'distance', e.target.value)}
+                                            onChange={(value) => reportgeneratorHandleInputChange('physicalCondition', 'boundaries', value)}
                                             required
                                         />
-
                                     </div>
                                     {/* 停车状况 */}
                                     <TextBox
@@ -2454,7 +2448,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                          rightIcon="#icon-a-duicuocuo"
                                         placeholder="请输入装修:"
                                         value={reportgeneratorReportData.physicalCondition.decorationStatus}
-                                        onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'decorationStatus', e.target.value)}
+                                        onChange={(value) => reportgeneratorHandleInputChange('physicalCondition', 'decorationStatus', value)}
                                         onLabelDoubleClick={() => {
                                             if (!reportgeneratorReportData.physicalCondition.decorationStatus) {
                                                 reportgeneratorHandleInputChange(
@@ -2475,7 +2469,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                          rightIcon="#icon-a-duicuocuo"
                                         placeholder="请输入周边银行"
                                         value={reportgeneratorReportData.physicalCondition.bank}
-                                        onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'bank', e.target.value)}
+                                        onChange={(value) => reportgeneratorHandleInputChange('physicalCondition', 'bank', value)}
                                         required
                                     />
 
@@ -2487,7 +2481,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                          rightIcon="#icon-a-duicuocuo"
                                         placeholder="请输入周边超市"
                                         value={reportgeneratorReportData.physicalCondition.supermarket}
-                                        onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'supermarket', e.target.value)}
+                                        onChange={(value) => reportgeneratorHandleInputChange('physicalCondition', 'supermarket', value)}
                                         required
                                     />
 
@@ -2499,7 +2493,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                          rightIcon="#icon-a-duicuocuo"
                                         placeholder="请输入医院"
                                         value={reportgeneratorReportData.physicalCondition.hospital}
-                                        onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'hospital', e.target.value)}
+                                        onChange={(value) => reportgeneratorHandleInputChange('physicalCondition', 'hospital', value)}
                                         required
                                     />
 
@@ -2511,7 +2505,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                          rightIcon="#icon-a-duicuocuo"
                                         placeholder="请输入学校"
                                         value={reportgeneratorReportData.physicalCondition.school}
-                                        onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'school', e.target.value)}
+                                        onChange={(value) => reportgeneratorHandleInputChange('physicalCondition', 'school', value)}
                                         required
                                     />
 
@@ -2523,7 +2517,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                          rightIcon="#icon-a-duicuocuo"
                                         placeholder="请输入小区"
                                         value={reportgeneratorReportData.physicalCondition.nearbyCommunity}
-                                        onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'nearbyCommunity', e.target.value)}
+                                        onChange={(value) => reportgeneratorHandleInputChange('physicalCondition', 'nearbyCommunity', value)}
                                         required
                                     />
                                   
@@ -2535,7 +2529,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                          rightIcon="#icon-a-duicuocuo"
                                         placeholder="请输入公交"
                                         value={reportgeneratorReportData.physicalCondition.busStopName}
-                                        onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'busStopName', e.target.value)}
+                                        onChange={(value) => reportgeneratorHandleInputChange('physicalCondition', 'busStopName', value)}
                                         required
                                     />
                                    
@@ -2547,7 +2541,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                          rightIcon="#icon-a-duicuocuo"
                                         placeholder="周边公交线路"
                                         value={reportgeneratorReportData.physicalCondition.busRoutes}
-                                        onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'busRoutes', e.target.value)}
+                                        onChange={(value) => reportgeneratorHandleInputChange('physicalCondition', 'busRoutes', value)}
                                         required
                                     />
                                   
@@ -2559,7 +2553,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                          rightIcon="#icon-a-duicuocuo"
                                         placeholder="请输入周边道路"
                                         value={reportgeneratorReportData.physicalCondition.areaRoad}
-                                        onChange={(e) => reportgeneratorHandleInputChange('physicalCondition', 'areaRoad', e.target.value)}
+                                        onChange={(value) => reportgeneratorHandleInputChange('physicalCondition', 'areaRoad', value)}
                                         required
                                     />
                                    
@@ -2585,7 +2579,20 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                         />
                                        
                                         {/* 家具家电评估总价 - 有平滑过渡效果 */}
-                                        <div
+<TextBox
+    label="家具(元):"
+    Type="NumberInput"
+    leftIcon="#icon-edit"
+    min={0}
+    max={1000000}
+    step={1000}
+    placeholder="请输入家具家电评估总价"
+    value={reportgeneratorReportData.result.furnitureElectronicsEstimatedPrice}
+    onChange={(value) => reportgeneratorHandleInputChange('result', 'furnitureElectronicsEstimatedPrice', value)}
+    showCondition={reportgeneratorReportData.result.hasFurnitureElectronics === true}
+    animate={true}
+/>
+                                        {/*  <div
                                             className="reportgenerator-form-field-vertical-container"
                                             style={{
                                                 opacity: reportgeneratorReportData.result.hasFurnitureElectronics ? 1 : 0,
@@ -2595,19 +2602,20 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                                 visibility: reportgeneratorReportData.result.hasFurnitureElectronics ? 'visible' : 'hidden'
                                             }}
                                         >
+                                        
                                             <label className="reportgenerator-field-label"
                                             >家具(元):</label>
                                             <input
                                                 type="number"
                                                 value={reportgeneratorReportData.result.furnitureElectronicsEstimatedPrice}
-                                                onChange={(e) => reportgeneratorHandleInputChange('result', 'furnitureElectronicsEstimatedPrice', e.target.value)}
+                                                onChange={(value) => reportgeneratorHandleInputChange('result', 'furnitureElectronicsEstimatedPrice', value)}
                                                 className="reportgenerator-form-input-inline"
                                                 placeholder="请输入家具家电评估总价"
                                                 min="0"
                                                 step="1"
 
-                                            />
-                                        </div>
+                                           
+                                        </div> />*/}
                                     </div>
 
                                     {/* 一行多列 */}
@@ -2620,8 +2628,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                             dateFormat="YYYY年M月D日"
                                             placeholder="请选择价值时点:"
 
-                                            value={reportgeneratorReportData.result.valueDate ?
-                                                dayjs(reportgeneratorReportData.result.valueDate).format('YYYY年M月D日') : ''}
+                                            value={reportgeneratorReportData.result.valueDate || ''}   
 
                                             onChange={(date) => reportgeneratorHandleInputChange('result', 'valueDate', date)}
                                         />
@@ -2634,8 +2641,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                             dateFormat="YYYY年M月D日"
                                             placeholder="请选择报告日期:"
 
-                                            value={reportgeneratorReportData.result.reportDate ?
-                                                dayjs(reportgeneratorReportData.result.reportDate).format('YYYY年M月D日') : ''}
+                                            value={reportgeneratorReportData.result.reportDate || ''}   
 
                                             onChange={(date) => reportgeneratorHandleInputChange('result', 'reportDate', date)}
                                         />
@@ -2681,7 +2687,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                              rightIcon="#icon-a-duicuocuo"
                                             placeholder="请输入项目编号:"
                                             value={reportgeneratorReportData.result.projectID}
-                                            onChange={(e) => reportgeneratorHandleInputChange('result', 'projectID', e.target.value)}
+                                            onChange={(value) => reportgeneratorHandleInputChange('result', 'projectID', value)}
                                             required
                                         />
                                         {/* 新增报告编号字段 */}
@@ -2692,7 +2698,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                              rightIcon="#icon-a-duicuocuo"
                                             placeholder="请输入报告编号"
                                             value={reportgeneratorReportData.result.reportID}
-                                            onChange={(e) => reportgeneratorHandleInputChange('result', 'reportID', e.target.value)}
+                                            onChange={(value) => reportgeneratorHandleInputChange('result', 'reportID', value)}
                                             onLabelDoubleClick={() => {
                                                 if (!reportgeneratorReportData.result.reportID) {
                                                     reportgeneratorHandleInputChange('result', 'reportID', `渝瑞达房评〔2026〕司字第***号`);
@@ -2774,7 +2780,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                             step={10}
                                             placeholder="请输入建面月租金：元/㎡.月"
                                             value={reportgeneratorReportData.result.rent}
-                                            onChange={(e) => reportgeneratorHandleInputChange('result', 'rent', e.target.value)}
+                                            onChange={(value) => reportgeneratorHandleInputChange('result', 'rent', value)}
                                         />
 
                                     </div>

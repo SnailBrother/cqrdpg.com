@@ -24,9 +24,9 @@ const TextBox = ({
   trueLabel = "是",
   falseLabel = "否",
   onLabelDoubleClick,
-  enableInputSearch = true,
-  showCondition = true,
-  multiline = false,
+  enableInputSearch = true, // 新增属性：是否启用输入框搜索功能，默认启用
+   showCondition = true,  // 新增：控制是否显示的条件
+ 
 }) => {
   const [inputValue, setInputValue] = useState(() => {
     if (Type === "Switch") {
@@ -72,56 +72,58 @@ const TextBox = ({
   });
 
   // 同步外部 value
-  useEffect(() => {
-    if (value !== undefined && value !== null) {
-      if (Type === "ComboBox" && multiple) {
-        if (typeof value === 'string') {
-          const items = value.split(connector).map(s => s.trim()).filter(s => s);
-          setSelectedItems(items);
-          setInputValue(value);
-        } else if (Array.isArray(value)) {
-          setSelectedItems(value);
-          setInputValue(value.join(connector));
-        }
-      } else if (Type === "Switch") {
-        if (value === true) {
-          setInputValue(trueLabel);
-          setSwitchValue(true);
-        } else if (value === false) {
-          setInputValue(falseLabel);
-          setSwitchValue(false);
-        } else {
-          setInputValue('');
-          setSwitchValue(null);
-        }
-      } else if (Type === "DatePicker") {
-        if (value) {
-          try {
-            const displayValue = formatDate(value, dateFormat);
-            setInputValue(displayValue);
-            const parsedDate = parseDate(value);
-            if (parsedDate && !isNaN(parsedDate.getTime())) {
-              setTempDate(parsedDate);
-            } else {
-              const today = new Date();
-              setTempDate(new Date(today.getFullYear(), today.getMonth(), today.getDate()));
-            }
-          } catch (e) {
-            console.warn('Date parsing error:', e);
-            setInputValue('');
+// 同步外部 value
+useEffect(() => {
+  if (value !== undefined && value !== null) {
+    if (Type === "ComboBox" && multiple) {
+      if (typeof value === 'string') {
+        const items = value.split(connector).map(s => s.trim()).filter(s => s);
+        setSelectedItems(items);
+        setInputValue(value);
+      } else if (Array.isArray(value)) {
+        setSelectedItems(value);
+        setInputValue(value.join(connector));
+      }
+    } else if (Type === "Switch") {
+      if (value === true) {
+        setInputValue(trueLabel);
+        setSwitchValue(true);
+      } else if (value === false) {
+        setInputValue(falseLabel);
+        setSwitchValue(false);
+      } else {
+        setInputValue('');
+        setSwitchValue(null);
+      }
+    } else if (Type === "DatePicker") {
+      // DatePicker 模式：将存储格式转换为显示格式
+      if (value) {
+        try {
+          const displayValue = formatDate(value, dateFormat);
+          setInputValue(displayValue);
+          const parsedDate = parseDate(value);
+          if (parsedDate && !isNaN(parsedDate.getTime())) {
+            setTempDate(parsedDate);
+          } else {
             const today = new Date();
             setTempDate(new Date(today.getFullYear(), today.getMonth(), today.getDate()));
           }
-        } else {
+        } catch (e) {
+          console.warn('Date parsing error:', e);
           setInputValue('');
           const today = new Date();
           setTempDate(new Date(today.getFullYear(), today.getMonth(), today.getDate()));
         }
-      } else if (value !== inputValue) {
-        setInputValue(value);
+      } else {
+        setInputValue('');
+        const today = new Date();
+        setTempDate(new Date(today.getFullYear(), today.getMonth(), today.getDate()));
       }
+    } else if (value !== inputValue) {
+      setInputValue(value);
     }
-  }, [value, Type, multiple, connector, trueLabel, falseLabel, dateFormat]);
+  }
+}, [value, Type, multiple, connector, trueLabel, falseLabel, dateFormat]);
 
   // 日期选择器相关状态
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
@@ -144,74 +146,89 @@ const TextBox = ({
     }
   }, [tempDate, Type]);
 
-  // 解析日期 - 支持多种输入格式，返回 Date 对象
-  function parseDate(dateStr) {
-    if (!dateStr) return new Date();
-    
-    if (dateStr instanceof Date) {
-      return new Date(dateStr.getFullYear(), dateStr.getMonth(), dateStr.getDate());
-    }
-    
-    if (typeof dateStr === 'number') {
-      const date = new Date(dateStr);
-      if (!isNaN(date.getTime())) return date;
-    }
-    
-    const str = String(dateStr);
-    
-    let match = str.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
-    if (match) return new Date(parseInt(match[1]), parseInt(match[2]) - 1, parseInt(match[3]));
-    
-    match = str.match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/);
-    if (match) return new Date(parseInt(match[1]), parseInt(match[2]) - 1, parseInt(match[3]));
-    
-    match = str.match(/^(\d{4})年(\d{1,2})月(\d{1,2})日$/);
-    if (match) return new Date(parseInt(match[1]), parseInt(match[2]) - 1, parseInt(match[3]));
-    
-    const date = new Date(str);
-    if (!isNaN(date.getTime())) {
-      return new Date(date.getFullYear(), date.getMonth(), date.getDate());
-    }
-    
-    const today = new Date();
-    return new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  // 解析日期字符串
+// 解析日期 - 支持多种输入格式，返回 Date 对象
+function parseDate(dateStr) {
+  // 处理 null、undefined 或空值
+  if (!dateStr) return new Date();
+  
+  // 如果已经是 Date 对象，直接返回
+  if (dateStr instanceof Date) {
+    return new Date(dateStr.getFullYear(), dateStr.getMonth(), dateStr.getDate());
+  }
+  
+  // 如果是数字（时间戳）
+  if (typeof dateStr === 'number') {
+    const date = new Date(dateStr);
+    if (!isNaN(date.getTime())) return date;
+  }
+  
+  // 确保是字符串
+  const str = String(dateStr);
+  
+  // 支持 ISO 格式: 2025-12-25
+  let match = str.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+  if (match) return new Date(parseInt(match[1]), parseInt(match[2]) - 1, parseInt(match[3]));
+  
+  // 支持斜杠格式: 2025/12/25
+  match = str.match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/);
+  if (match) return new Date(parseInt(match[1]), parseInt(match[2]) - 1, parseInt(match[3]));
+  
+  // 支持中文格式: 2025年12月25日 或 2025年1月5日
+  match = str.match(/^(\d{4})年(\d{1,2})月(\d{1,2})日$/);
+  if (match) return new Date(parseInt(match[1]), parseInt(match[2]) - 1, parseInt(match[3]));
+  
+  // 尝试直接用 Date 解析
+  const date = new Date(str);
+  if (!isNaN(date.getTime())) {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  }
+  
+  // 所有解析失败，返回当前日期
+  const today = new Date();
+  return new Date(today.getFullYear(), today.getMonth(), today.getDate());
+}
+
+  // 格式化日期
+// 格式化日期 - 支持自定义格式，输入可以是 Date 对象或各种日期字符串
+function formatDate(dateInput, formatStr = dateFormat) {
+  if (!dateInput) return '';
+  
+  // 解析为 Date 对象
+  let d;
+  if (dateInput instanceof Date) {
+    d = new Date(dateInput.getFullYear(), dateInput.getMonth(), dateInput.getDate());
+  } else {
+    const parsed = parseDate(dateInput);
+    if (isNaN(parsed.getTime())) return '';
+    d = parsed;
+  }
+  
+  const year = d.getFullYear();
+  const month = d.getMonth() + 1;
+  const day = d.getDate();
+
+  let result = formatStr;
+  
+  // 替换年份
+  result = result.replace('YYYY', year.toString());
+  
+  // 替换月份（处理 MM 和 M）
+  if (formatStr.includes('MM')) {
+    result = result.replace('MM', String(month).padStart(2, '0'));
+  } else {
+    result = result.replace('M', month.toString());
+  }
+  
+  // 替换日期（处理 DD 和 D）
+  if (formatStr.includes('DD')) {
+    result = result.replace('DD', String(day).padStart(2, '0'));
+  } else {
+    result = result.replace('D', day.toString());
   }
 
-  // 格式化日期 - 支持自定义格式
-  function formatDate(dateInput, formatStr = dateFormat) {
-    if (!dateInput) return '';
-    
-    let d;
-    if (dateInput instanceof Date) {
-      d = new Date(dateInput.getFullYear(), dateInput.getMonth(), dateInput.getDate());
-    } else {
-      const parsed = parseDate(dateInput);
-      if (isNaN(parsed.getTime())) return '';
-      d = parsed;
-    }
-    
-    const year = d.getFullYear();
-    const month = d.getMonth() + 1;
-    const day = d.getDate();
-
-    let result = formatStr;
-    result = result.replace('YYYY', year.toString());
-    
-    if (formatStr.includes('MM')) {
-      result = result.replace('MM', String(month).padStart(2, '0'));
-    } else {
-      result = result.replace('M', month.toString());
-    }
-    
-    if (formatStr.includes('DD')) {
-      result = result.replace('DD', String(day).padStart(2, '0'));
-    } else {
-      result = result.replace('D', day.toString());
-    }
-
-    return result;
-  }
-
+  return result;
+}
   // 日历数据
   const calendarDays = useMemo(() => {
     if (Type !== "DatePicker") return [];
@@ -263,16 +280,18 @@ const TextBox = ({
 
   const months = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
 
-  // 日期选择处理
-  const handleSelectDate = (date) => {
-    const isoFormat = formatDate(date, 'YYYY-MM-DD');
-    const displayFormat = formatDate(date, dateFormat);
-    
-    setInputValue(displayFormat);
-    onChange?.(isoFormat);
-    setIsDatePickerOpen(false);
-    setViewMode('day');
-  };
+// 日期选择处理
+const handleSelectDate = (date) => {
+  // 存储格式：YYYY-MM-DD（ISO 格式）
+  const isoFormat = formatDate(date, 'YYYY-MM-DD');
+  // 显示格式：根据 dateFormat 属性
+  const displayFormat = formatDate(date, dateFormat);
+  
+  setInputValue(displayFormat);
+  onChange?.(isoFormat);  // 传递 ISO 格式给父组件
+  setIsDatePickerOpen(false);
+  setViewMode('day');
+};
 
   const handleSelectMonth = (month) => {
     setTempDate(prev => new Date(prev.getFullYear(), month, 1));
@@ -284,17 +303,17 @@ const TextBox = ({
     setViewMode('month');
   };
 
-  const handleToday = () => {
-    const today = new Date();
-    const isoFormat = formatDate(today, 'YYYY-MM-DD');
-    const displayFormat = formatDate(today, dateFormat);
-    
-    setInputValue(displayFormat);
-    onChange?.(isoFormat);
-    setTempDate(new Date(today.getFullYear(), today.getMonth(), today.getDate()));
-    setIsDatePickerOpen(false);
-    setViewMode('day');
-  };
+const handleToday = () => {
+  const today = new Date();
+  const isoFormat = formatDate(today, 'YYYY-MM-DD');
+  const displayFormat = formatDate(today, dateFormat);
+  
+  setInputValue(displayFormat);
+  onChange?.(isoFormat);
+  setTempDate(new Date(today.getFullYear(), today.getMonth(), today.getDate()));
+  setIsDatePickerOpen(false);
+  setViewMode('day');
+};
 
   const isSelected = (date) => {
     if (!inputValue) return false;
@@ -333,9 +352,12 @@ const TextBox = ({
     } else if (Type === "ComboBox") {
       if (!editable) return;
       setInputValue(val);
+
+      // 如果启用输入框搜索，则同步搜索关键词
       if (enableInputSearch) {
         setSearchQuery(val);
       }
+
       if (!multiple) {
         setSelectedItems([]);
         onChange?.(val);
@@ -345,6 +367,8 @@ const TextBox = ({
     } else if (Type === "SearchBox") {
       setInputValue(val);
       onChange && onChange(val);
+
+      // 如果启用输入框搜索，则同步搜索关键词
       if (enableInputSearch) {
         setSearchQuery(val);
       }
@@ -368,6 +392,8 @@ const TextBox = ({
         setSelectedItems([]);
       }
       onChange && onChange(multiple ? [] : '');
+
+      // 清空搜索关键词
       if (enableInputSearch && (Type === "SearchBox" || Type === "ComboBox")) {
         setSearchQuery('');
       }
@@ -398,6 +424,7 @@ const TextBox = ({
   const handleInputFocus = () => {
     if (Type === "SearchBox" || Type === "ComboBox" || Type === "Switch") {
       setIsDropdownVisible(true);
+      // 如果启用输入框搜索且当前有值，在显示下拉时同步当前输入值到搜索框
       if (enableInputSearch && (Type === "SearchBox" || Type === "ComboBox") && inputValue) {
         setSearchQuery(inputValue);
       }
@@ -434,6 +461,7 @@ const TextBox = ({
     setSelectedItems(newSelectedItems);
     const displayValue = newSelectedItems.join(connector);
     setInputValue(displayValue);
+
     onChange?.(multiple ? newSelectedItems : displayValue);
   };
 
@@ -443,7 +471,7 @@ const TextBox = ({
     setSelectedItems([item]);
     onChange?.(item);
     setIsDropdownVisible(false);
-    setSearchQuery('');
+    setSearchQuery(''); // 清空搜索
   };
 
   // 选择下拉项 (SearchBox 模式)
@@ -451,7 +479,7 @@ const TextBox = ({
     setInputValue(item);
     onChange && onChange(item);
     setIsDropdownVisible(false);
-    setSearchQuery('');
+    setSearchQuery(''); // 清空搜索
     inputRef.current?.focus();
   };
 
@@ -481,9 +509,15 @@ const TextBox = ({
 
   // 搜索过滤
   const getFilteredData = () => {
-    return searchList.filter(item =>
-      item.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    if (enableInputSearch) {
+      return searchList.filter(item =>
+        item.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    } else {
+      return searchList.filter(item =>
+        item.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
   };
 
   const filteredData = getFilteredData();
@@ -535,6 +569,7 @@ const TextBox = ({
 
     return (
       <div className={styles.dropdownPanel}>
+        {/* 只在未启用输入框搜索时显示搜索输入框 */}
         {!enableInputSearch && (
           <input
             type="text"
@@ -546,6 +581,14 @@ const TextBox = ({
             onMouseDown={(e) => e.stopPropagation()}
           />
         )}
+
+        {/* 启用输入框搜索时的提示 */}
+        {/*  {enableInputSearch && (
+          <div className={styles.searchHint} style={{ padding: '8px 12px', fontSize: '12px', color: '#999', borderBottom: '1px solid #eee' }}>
+            💡 在输入框中输入关键词进行搜索
+          </div>
+        )}*/}
+
         <ul className={styles.resultList}>
           {filteredData.length > 0 ? (
             filteredData.map((item, index) => (
@@ -574,6 +617,7 @@ const TextBox = ({
 
     return (
       <div className={styles.dropdownPanel}>
+        {/* 只在未启用输入框搜索时显示搜索输入框 */}
         {editable && !enableInputSearch && (
           <input
             type="text"
@@ -585,6 +629,14 @@ const TextBox = ({
             onMouseDown={(e) => e.stopPropagation()}
           />
         )}
+
+        {/* 启用输入框搜索时的提示 */}
+        {/*  {editable && enableInputSearch && (
+          <div className={styles.searchHint} style={{ padding: '8px 12px', fontSize: '12px', color: '#999', borderBottom: '1px solid #eee' }}>
+            💡 在输入框中输入关键词进行搜索
+          </div>
+        )}*/}
+
         <ul className={styles.resultList}>
           {filteredData.length > 0 ? (
             filteredData.map((item, index) => {
@@ -602,7 +654,7 @@ const TextBox = ({
                       <input
                         type="checkbox"
                         checked={isChecked}
-                        onChange={() => {}}
+                        onChange={() => { }}
                         onClick={(e) => e.stopPropagation()}
                       />
                     </span>
@@ -757,51 +809,7 @@ const TextBox = ({
       </div>
     );
   };
-
-  const renderInput = () => {
-    if (multiline && (Type === "SearchBox" || Type === "ComboBox")) {
-      return (
-        <textarea
-          ref={inputRef}
-          className={styles.textarea}
-          value={inputValue}
-          onChange={handleInputChange}
-          onFocus={handleInputFocus}
-          placeholder={defaultPlaceholder}
-          readOnly={Type === "ComboBox" && !editable}
-          style={{
-            resize: 'vertical',
-         
-          }}
-        />
-      );
-    }
-
-    return (
-      <input
-        ref={inputRef}
-        type="text"
-        className={`${styles.input} ${Type === "NumberInput" ? styles.numberInput : ''} 
-          ${Type === "DatePicker" ? styles.dateInput : ''}`}
-        value={inputValue}
-        onChange={handleInputChange}
-        onFocus={handleInputFocus}
-        onKeyDown={handleKeyDown}
-        placeholder={defaultPlaceholder}
-        inputMode={Type === "NumberInput" ? "numeric" : "text"}
-        readOnly={Type === "DatePicker" || Type === "Switch" || (Type === "ComboBox" && !editable)}
-        onClick={(e) => {
-          if (Type === "DatePicker") {
-            e.stopPropagation();
-            handleDatePickerClick();
-          }
-        }}
-      />
-    );
-  };
-
-  if (!showCondition) return null;
-
+ if (!showCondition) return null;
   return (
     <div className={styles.container} ref={containerRef}>
       <label className={styles.label}
@@ -820,10 +828,28 @@ const TextBox = ({
           <use xlinkHref={leftIcon}></use>
         </svg>
 
-        {renderInput()}
+        <input
+          ref={inputRef}
+          type="text"
+          className={`${styles.input} ${Type === "NumberInput" ? styles.numberInput : ''} 
+    ${Type === "DatePicker" ? styles.dateInput : ''}`}
+          value={inputValue}
+          onChange={handleInputChange}
+          onFocus={handleInputFocus}
+          onKeyDown={handleKeyDown}
+          placeholder={defaultPlaceholder}
+          inputMode={Type === "NumberInput" ? "numeric" : "text"}
+          readOnly={Type === "DatePicker" || Type === "Switch" || (Type === "ComboBox" && !editable)}
+          onClick={(e) => {
+            if (Type === "DatePicker") {
+              e.stopPropagation();
+              handleDatePickerClick();
+            }
+          }}
+        />
 
-        {/* 清空图标 */}
-        {((Type === "SearchBox" || Type === "ComboBox") && inputValue && !multiline) ||
+        {/* 清空图标逻辑 */}
+        {((Type === "SearchBox" || Type === "ComboBox") && inputValue) ||
           (Type === "Switch" && inputValue) ? (
           <svg
             className={`${styles.icon} ${styles.rightIcon}`}
@@ -834,27 +860,22 @@ const TextBox = ({
           </svg>
         ) : null}
 
-        {/* 多行模式清空图标 */}
-        {multiline && inputValue && (
+        {/* ComboBox 模式：下拉箭头图标 */}
+        {Type === "ComboBox" && !inputValue && (
           <svg
             className={`${styles.icon} ${styles.rightIcon}`}
             aria-hidden="true"
-            onClick={(e) => { e.stopPropagation(); handleClear(); }}
           >
-            <use xlinkHref={rightIcon}></use>
-          </svg>
-        )}
-
-        {/* ComboBox 模式：下拉箭头图标 */}
-        {Type === "ComboBox" && !inputValue && (
-          <svg className={`${styles.icon} ${styles.rightIcon}`} aria-hidden="true">
             <use xlinkHref="#icon-arrow-down"></use>
           </svg>
         )}
 
         {/* Switch 模式：下拉箭头图标 */}
         {Type === "Switch" && !inputValue && (
-          <svg className={`${styles.icon} ${styles.rightIcon}`} aria-hidden="true">
+          <svg
+            className={`${styles.icon} ${styles.rightIcon}`}
+            aria-hidden="true"
+          >
             <use xlinkHref="#icon-arrow-down"></use>
           </svg>
         )}
@@ -870,7 +891,10 @@ const TextBox = ({
               <use xlinkHref={rightIcon}></use>
             </svg>
           ) : (
-            <svg className={`${styles.icon} ${styles.rightIcon}`} aria-hidden="true">
+            <svg
+              className={`${styles.icon} ${styles.rightIcon}`}
+              aria-hidden="true"
+            >
               <use xlinkHref="#icon-rili2"></use>
             </svg>
           )
@@ -902,10 +926,16 @@ const TextBox = ({
           </div>
         )}
 
-        {/* 下拉面板 */}
+        {/* SearchBox 模式：下拉搜索界面 */}
         {renderSearchBoxPanel()}
+
+        {/* ComboBox 模式：下拉多选/单选界面 */}
         {renderComboBoxPanel()}
+
+        {/* Switch 模式：下拉选择界面 */}
         {renderSwitchPanel()}
+
+        {/* DatePicker 模式：日期选择面板 */}
         {renderDatePickerPanel()}
       </div>
     </div>

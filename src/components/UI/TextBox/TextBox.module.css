@@ -450,3 +450,57 @@
 /*  #endregion end */
 
 
+/* .inputWrapper {
+  display: flex;
+  align-items: flex-start;  
+  position: relative;
+   border: 1px solid #ddd;  
+  border-radius: 4px;
+  padding: 0 8px;
+  background: #fff;
+} */
+
+/* .icon {
+  flex-shrink: 0;  
+  width: 20px;
+  height: 20px;
+  margin-top: 10px;  
+  margin-right: 4px;
+  fill: #999;
+} */
+
+/* .rightIcon {
+  margin-left: 4px;
+  margin-right: 0;
+  cursor: pointer;
+} */
+
+.textarea {
+  flex: 1;
+  border: 1px solid #4d4c4c;
+  border-radius: 6px;
+  outline: none;
+  font-size: 14px;
+  padding: 8px 40px 8px 40px;
+  background: transparent;
+  font-family: inherit;
+  resize: vertical;
+  line-height: 1.2;  /* 固定行高 */
+  height: 36px;  /* 固定高度，和 input 一致 */
+  min-height: 36px;  /* 最小高度保持一致 */
+  max-height: 200px;  /* 最大高度限制，超过后滚动 */
+  overflow-y: auto;  /* 内容超过最大高度时显示滚动条 */
+  transition: border-color 0.3s;
+  box-sizing: border-box;  /* 确保 padding 包含在高度内 */
+}
+
+.textarea:focus {
+  border-color: #4096ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+/* 多行模式下的清空图标位置调整 */
+.clearIconTextarea {
+  align-self: flex-start;
+  margin-top: 8px;
+}
