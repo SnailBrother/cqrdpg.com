@@ -362,6 +362,102 @@ const WordReportGenerator = () => {
             reportgeneratorHandleInputChange('equityStatus', 'isLeaseConsidered', false);
         }
     }, [reportgeneratorReportData.equityStatus.utilizationStatus]);
+
+//保存看有没有新增加的选项 👇
+// 收集表单中所有需要同步的选项字段的当前值
+const collectNewOptions = () => {
+    const optionsToSync = {
+        assessmentCommissionDocument: [],
+        valueDateRequirements: [],
+        coOwnershipStatus: [],
+        rightsNature: [],
+        houseStructure: [],
+        landPurpose: [],
+        housePurpose: [],
+        orientation: [],
+        landShape: [],
+        exteriorWallMaterial: [],
+        parkingStatus: [],
+        valuationMethod: [],
+        mortgageBasis: [],
+        seizureBasis: [],
+        utilizationStatus: []
+    };
+    
+    // 从当前表单数据中收集
+    if (reportgeneratorReportData.entrustment.assessmentCommissionDocument) {
+        optionsToSync.assessmentCommissionDocument.push(reportgeneratorReportData.entrustment.assessmentCommissionDocument);
+    }
+    if (reportgeneratorReportData.entrustment.valueDateRequirements) {
+        optionsToSync.valueDateRequirements.push(reportgeneratorReportData.entrustment.valueDateRequirements);
+    }
+    if (reportgeneratorReportData.property.coOwnershipStatus) {
+        optionsToSync.coOwnershipStatus.push(reportgeneratorReportData.property.coOwnershipStatus);
+    }
+    if (reportgeneratorReportData.property.rightsNature) {
+        optionsToSync.rightsNature.push(reportgeneratorReportData.property.rightsNature);
+    }
+    if (reportgeneratorReportData.property.houseStructure) {
+        optionsToSync.houseStructure.push(reportgeneratorReportData.property.houseStructure);
+    }
+    if (reportgeneratorReportData.property.landPurpose) {
+        optionsToSync.landPurpose.push(reportgeneratorReportData.property.landPurpose);
+    }
+    if (reportgeneratorReportData.property.housePurpose) {
+        optionsToSync.housePurpose.push(reportgeneratorReportData.property.housePurpose);
+    }
+    if (reportgeneratorReportData.physicalCondition.orientation) {
+        optionsToSync.orientation.push(reportgeneratorReportData.physicalCondition.orientation);
+    }
+    if (reportgeneratorReportData.physicalCondition.landShape) {
+        optionsToSync.landShape.push(reportgeneratorReportData.physicalCondition.landShape);
+    }
+    if (reportgeneratorReportData.physicalCondition.exteriorWallMaterial) {
+        optionsToSync.exteriorWallMaterial.push(reportgeneratorReportData.physicalCondition.exteriorWallMaterial);
+    }
+    if (reportgeneratorReportData.physicalCondition.parkingStatus) {
+        optionsToSync.parkingStatus.push(reportgeneratorReportData.physicalCondition.parkingStatus);
+    }
+    if (reportgeneratorReportData.result.valuationMethod) {
+        optionsToSync.valuationMethod.push(reportgeneratorReportData.result.valuationMethod);
+    }
+    if (reportgeneratorReportData.equityStatus.mortgageBasis) {
+        optionsToSync.mortgageBasis.push(reportgeneratorReportData.equityStatus.mortgageBasis);
+    }
+    if (reportgeneratorReportData.equityStatus.seizureBasis) {
+        optionsToSync.seizureBasis.push(reportgeneratorReportData.equityStatus.seizureBasis);
+    }
+    if (reportgeneratorReportData.equityStatus.utilizationStatus) {
+        optionsToSync.utilizationStatus.push(reportgeneratorReportData.equityStatus.utilizationStatus);
+    }
+    
+    return optionsToSync;
+};
+
+// 调用同步API
+const syncNewOptions = async () => {
+    const optionsToSync = collectNewOptions();
+    
+    // 检查是否有需要同步的数据
+    const hasData = Object.values(optionsToSync).some(arr => arr.length > 0);
+    if (!hasData) return;
+    
+    try {
+        await axios.post('/api/syncWordReportOptions', {
+            optionsData: optionsToSync
+        });
+        // 同步成功后，可以重新获取选项列表来更新前端下拉框
+        const response = await axios.get('/api/getWordReportOptions');
+        setReportgeneratorAppraiserOptions(response.data);
+    } catch (error) {
+        console.error('同步选项失败:', error);
+        // 不阻塞主流程，只记录错误
+    }
+};
+//保存看有没有新增加的选项 👆
+
+
+
     // 组件加载时获取初始数据
     useEffect(() => {
         // 获取估价师选项
@@ -790,11 +886,19 @@ const WordReportGenerator = () => {
                         reportData
                     );
                     notify('报告更新成功！', 'success');
+                    // 👇 添加这行：同步新选项
+    //await syncNewOptions();
+    // 不等待同步完成
+syncNewOptions().catch(err => console.error('同步选项失败:', err));
                 }
             } else {
                 // 不存在相同报告编号的报告，创建新报告
                 await axios.post('/api/createWordReport', reportData);
                 notify('报告创建成功！', 'success');
+                // 👇 添加这行：同步新选项
+    //await syncNewOptions();
+    // 不等待同步完成
+syncNewOptions().catch(err => console.error('同步选项失败:', err));
             }
         } catch (error) {
             console.error('保存报告失败:', error);
@@ -2450,6 +2554,7 @@ const WordReportGenerator = () => {
                                         leftIcon="#icon-edit"
                                         rightIcon="#icon-a-duicuocuo"
                                         placeholder="请输入装修:"
+                                         multiline="true"
                                         value={reportgeneratorReportData.physicalCondition.decorationStatus}
                                         onChange={(value) => reportgeneratorHandleInputChange('physicalCondition', 'decorationStatus', value)}
                                         onLabelDoubleClick={() => {

@@ -7780,7 +7780,101 @@ app.get('/api/getWordReportOptions', async (req, res) => {
         res.status(500).json({ message: '获取数据失败' });
     }
 });
-
+// 同步选项数据（新增不存在的选项）
+// 同步选项数据（新增不存在的选项）
+app.post('/api/syncWordReportOptions', async (req, res) => {
+    try {
+        const { optionsData } = req.body;
+        
+        if (!optionsData || typeof optionsData !== 'object') {
+            return res.status(400).json({ message: 'optionsData参数无效' });
+        }
+        
+        // 定义字段映射：前端字段名 -> 数据库列名
+        const fieldMapping = {
+            assessmentCommissionDocument: 'assessmentCommissionDocumentOptions',
+            valueDateRequirements: 'valueDateRequirementsOptions',
+            coOwnershipStatus: 'coOwnershipStatusOptions',
+            rightsNature: 'rightsNatureOptions',
+            houseStructure: 'houseStructureOptions',
+            landPurpose: 'landPurposeOptions',
+            housePurpose: 'housePurposeOptions',
+            orientation: 'orientationOptions',
+            landShape: 'landShapeOptions',
+            exteriorWallMaterial: 'exteriorWallMaterialOptions',
+            parkingStatus: 'parkingStatusOptions',
+            valuationMethod: 'valuationMethodOptions',
+            mortgageBasis: 'mortgageBasisOptions',
+            seizureBasis: 'seizureBasisOptions',
+            utilizationStatus: 'utilizationStatusOptions'
+        };
+        
+        const addedItems = [];
+        
+        // 遍历每个字段，检查并插入新值
+        for (const [frontendField, dbColumn] of Object.entries(fieldMapping)) {
+            const newValues = optionsData[frontendField];
+            
+            if (!newValues || !Array.isArray(newValues) || newValues.length === 0) {
+                continue;
+            }
+            
+            // 去重并过滤空字符串
+            const uniqueValues = [...new Set(newValues.filter(v => v && v.trim()))];
+            
+            if (uniqueValues.length === 0) continue;
+            
+            // 检查每个新值是否已存在
+            for (const value of uniqueValues) {
+                // 查询该列中是否已存在该值
+                const checkQuery = `
+                    SELECT COUNT(*) as count 
+                    FROM WebWordReports.dbo.WordReportOptions 
+                    WHERE ${dbColumn} = @value
+                `;
+                
+                const checkResult = await pool.request()
+                    .input('value', sql.NVarChar, value)
+                    .query(checkQuery);
+                
+                if (checkResult.recordset[0].count === 0) {
+                    // 不存在，找一行该列为NULL的记录进行更新
+                    const updateQuery = `
+                        UPDATE TOP (1) WebWordReports.dbo.WordReportOptions
+                        SET ${dbColumn} = @value
+                        WHERE ${dbColumn} IS NULL
+                    `;
+                    
+                    const updateResult = await pool.request()
+                        .input('value', sql.NVarChar, value)
+                        .query(updateQuery);
+                    
+                    // 如果没有NULL行可更新，才插入新行
+                    if (updateResult.rowsAffected[0] === 0) {
+                        const insertQuery = `
+                            INSERT INTO WebWordReports.dbo.WordReportOptions (${dbColumn})
+                            VALUES (@value)
+                        `;
+                        await pool.request()
+                            .input('value', sql.NVarChar, value)
+                            .query(insertQuery);
+                    }
+                    
+                    addedItems.push({ field: frontendField, added: value });
+                }
+            }
+        }
+        
+        res.status(200).json({ 
+            message: '选项同步完成', 
+            added: addedItems 
+        });
+        
+    } catch (error) {
+        console.error('同步选项失败:', error);
+        res.status(500).json({ message: '同步选项失败', error: error.message });
+    }
+});
 // 4.2 查找网页报告 没有分页功能
 app.get('/api/searchWordReportsold', async (req, res) => {
     const { documentNo } = req.query; // 使用 documentNo 作为参数名，但实际可以搜索多个字段
