@@ -27,6 +27,10 @@ const TextBox = ({
   enableInputSearch = true,
   showCondition = true,
   multiline = false,
+  // 新增 tooltip 相关属性
+  tooltip = '',                // 提示文本
+  tooltipDelay = 300,          // 延迟显示时间(ms)
+  tooltipPosition = 'top',     // 提示位置: 'top', 'bottom', 'left', 'right'
 }) => {
   const [inputValue, setInputValue] = useState(() => {
     if (Type === "Switch") {
@@ -50,6 +54,12 @@ const TextBox = ({
   );
   const inputRef = useRef(null);
 
+  // Tooltip 相关状态
+  const [showTooltip, setShowTooltip] = useState(false);
+  const [tooltipPositionState, setTooltipPositionState] = useState({ top: 0, left: 0 });
+  const tooltipTimeoutRef = useRef(null);
+  const inputWrapperRef_forTooltip = useRef(null);
+
   // ComboBox 多选相关状态
   const [selectedItems, setSelectedItems] = useState(() => {
     if (value && multiple) {
@@ -70,6 +80,86 @@ const TextBox = ({
     }
     return null;
   });
+
+  // Tooltip 位置计算
+  const calculateTooltipPosition = () => {
+    if (!inputWrapperRef_forTooltip.current) return;
+    
+    const rect = inputWrapperRef_forTooltip.current.getBoundingClientRect();
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+    
+    let top = 0;
+    let left = 0;
+    
+    switch (tooltipPosition) {
+      case 'top':
+        top = rect.top + scrollTop - 8;
+        left = rect.left + scrollLeft + rect.width / 2;
+        break;
+      case 'bottom':
+        top = rect.bottom + scrollTop + 8;
+        left = rect.left + scrollLeft + rect.width / 2;
+        break;
+      case 'left':
+        top = rect.top + scrollTop + rect.height / 2;
+        left = rect.left + scrollLeft - 8;
+        break;
+      case 'right':
+        top = rect.top + scrollTop + rect.height / 2;
+        left = rect.right + scrollLeft + 8;
+        break;
+      default:
+        top = rect.top + scrollTop - 8;
+        left = rect.left + scrollLeft + rect.width / 2;
+    }
+    
+    setTooltipPositionState({ top, left });
+  };
+
+  // Tooltip 显示处理
+  const handleMouseEnter = () => {
+    if (!tooltip) return;
+    
+    tooltipTimeoutRef.current = setTimeout(() => {
+      calculateTooltipPosition();
+      setShowTooltip(true);
+    }, tooltipDelay);
+  };
+
+  const handleMouseLeave = () => {
+    if (tooltipTimeoutRef.current) {
+      clearTimeout(tooltipTimeoutRef.current);
+      tooltipTimeoutRef.current = null;
+    }
+    setShowTooltip(false);
+  };
+
+  // 清理定时器
+  useEffect(() => {
+    return () => {
+      if (tooltipTimeoutRef.current) {
+        clearTimeout(tooltipTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  // 窗口滚动或大小时重新计算位置
+  useEffect(() => {
+    if (!showTooltip) return;
+    
+    const updatePosition = () => {
+      calculateTooltipPosition();
+    };
+    
+    window.addEventListener('scroll', updatePosition);
+    window.addEventListener('resize', updatePosition);
+    
+    return () => {
+      window.removeEventListener('scroll', updatePosition);
+      window.removeEventListener('resize', updatePosition);
+    };
+  }, [showTooltip, tooltipPosition]);
 
   // 同步外部 value
   useEffect(() => {
@@ -771,7 +861,6 @@ const TextBox = ({
           readOnly={Type === "ComboBox" && !editable}
           style={{
             resize: 'vertical',
-         
           }}
         />
       );
@@ -802,6 +891,18 @@ const TextBox = ({
 
   if (!showCondition) return null;
 
+  // 获取 tooltip 的样式类名
+  const getTooltipClassName = () => {
+    const baseClass = styles.tooltip;
+    switch (tooltipPosition) {
+      case 'top': return `${baseClass} ${styles.tooltipTop}`;
+      case 'bottom': return `${baseClass} ${styles.tooltipBottom}`;
+      case 'left': return `${baseClass} ${styles.tooltipLeft}`;
+      case 'right': return `${baseClass} ${styles.tooltipRight}`;
+      default: return `${baseClass} ${styles.tooltipTop}`;
+    }
+  };
+
   return (
     <div className={styles.container} ref={containerRef}>
       <label className={styles.label}
@@ -814,7 +915,12 @@ const TextBox = ({
         {label}
       </label>
 
-      <div className={styles.inputWrapper} ref={inputWrapperRef}>
+      <div 
+        className={styles.inputWrapper} 
+        ref={inputWrapperRef_forTooltip}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
         {/* 左边图标 */}
         <svg className={styles.icon} aria-hidden="true">
           <use xlinkHref={leftIcon}></use>
@@ -899,6 +1005,26 @@ const TextBox = ({
                 <use xlinkHref="#icon-arrow-down-bold"></use>
               </svg>
             </button>
+          </div>
+        )}
+
+        {/* Tooltip */}
+        {showTooltip && tooltip && (
+          <div 
+            className={getTooltipClassName()}
+            style={{
+              position: 'fixed',
+              top: `${tooltipPositionState.top}px`,
+              left: `${tooltipPositionState.left}px`,
+              transform: tooltipPosition === 'top' || tooltipPosition === 'bottom' 
+                ? 'translateX(-50%)' 
+                : tooltipPosition === 'left' 
+                  ? 'translateY(-50%) translateX(-100%)' 
+                  : 'translateY(-50%)',
+              zIndex: 1000,
+            }}
+          >
+            {tooltip}
           </div>
         )}
 

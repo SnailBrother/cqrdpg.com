@@ -1301,36 +1301,36 @@ const WordReportGenerator = () => {
     /**
      * 处理表单输入变化
      */
-const reportgeneratorHandleInputChange = (section, field, value) => {
-    // 特殊处理日期字段
-    const dateFields = ['entrustDate', 'landUseRightEndDate', 'valueDate', 'reportDate'];
+    const reportgeneratorHandleInputChange = (section, field, value) => {
+        // 特殊处理日期字段
+        const dateFields = ['entrustDate', 'landUseRightEndDate', 'valueDate', 'reportDate'];
 
-    if (dateFields.includes(field)) {
-        let dateValue = '';
-        if (value) {
-            // 使用 dayjs 统一处理各种格式
-            const dayjsValue = dayjs(value);
-            if (dayjsValue.isValid()) {
-                dateValue = dayjsValue.format('YYYY-MM-DD');
+        if (dateFields.includes(field)) {
+            let dateValue = '';
+            if (value) {
+                // 使用 dayjs 统一处理各种格式
+                const dayjsValue = dayjs(value);
+                if (dayjsValue.isValid()) {
+                    dateValue = dayjsValue.format('YYYY-MM-DD');
+                }
             }
+            setReportgeneratorReportData(prev => ({
+                ...prev,
+                [section]: {
+                    ...prev[section],
+                    [field]: dateValue
+                }
+            }));
+        } else {
+            setReportgeneratorReportData(prev => ({
+                ...prev,
+                [section]: {
+                    ...prev[section],
+                    [field]: value
+                }
+            }));
         }
-        setReportgeneratorReportData(prev => ({
-            ...prev,
-            [section]: {
-                ...prev[section],
-                [field]: dateValue
-            }
-        }));
-    } else {
-        setReportgeneratorReportData(prev => ({
-            ...prev,
-            [section]: {
-                ...prev[section],
-                [field]: value
-            }
-        }));
-    }
-};
+    };
 
     /**
      * 处理估价师选择变化
@@ -1499,15 +1499,15 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
 
 
     //添加跳转二维码 👇
-   const handleViewQRCode = async () => {
+    const handleViewQRCode = async () => {
         if (!currentReportId) {
             notify('请先选择或创建报告', 'warning');
             return;
         }
-    
+
         // 准备基础数据
         const location = reportgeneratorReportData?.property?.location || '未知位置';
-    
+
         try {
             // 1. 调用后端 API 获取【加密后的ID字符串】
             const response = await fetch('/api/generateEncodedReportUrl', {
@@ -1520,41 +1520,41 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                     location: location
                 })
             });
-    
+
             if (!response.ok) {
                 const errData = await response.json();
                 throw new Error(errData.error || '生成二维码链接失败');
             }
-    
+
             const data = await response.json();
             const encodedId = data.encodedId; // 获取类似 "Alpha|Beta" 的字符串
-    
+
             if (!encodedId) {
                 throw new Error('未获取到加密ID');
             }
-    
+
             console.log('Encoded ID:', encodedId);
-    
+
             // 2. 【前端构建完整 URL】
             const baseUrl = `${window.location.origin}/app/office/reportqrcodepage`;
-            
+
             // 使用 URLSearchParams 自动处理特殊字符编码 (| 会被编码为 %7C)
             const queryParams = new URLSearchParams({
                 reportsID: encodedId,
                 location: location
             });
-    
+
             const qrCodePageUrl = `${baseUrl}?${queryParams.toString()}`;
-    
+
             console.log('Generated Secure URL:', qrCodePageUrl);
-    
+
             // 3. 新开页面跳转
             if (qrCodePageUrl) {
                 window.open(qrCodePageUrl, '_blank');
             } else {
                 notify('无法生成有效的二维码链接', 'error');
             }
-    
+
         } catch (error) {
             console.error('Error generating QR code URL:', error);
             notify(error.message || '系统错误，请稍后重试', 'error');
@@ -1986,14 +1986,17 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                         label="委托方:"
                                         Type="SearchBox"
                                         leftIcon="#icon-edit"
-                                         rightIcon="#icon-a-duicuocuo"
+                                        rightIcon="#icon-a-duicuocuo"
                                         placeholder="请输入搜索内容"
+                                        tooltipPosition="bottom"
+                                        tooltipDelay={500}
+                                        tooltip="请输入您的用户名，长度不超过20个字符"
                                         value={reportgeneratorReportData.entrustment.entrustingParty}
                                         onChange={(value) => reportgeneratorHandleInputChange('entrustment', 'entrustingParty', value)}
                                         required
                                     />
 
-                                   
+
                                     {/* 评估委托文书（选项值） */}
                                     <TextBox
                                         label="委托类型:"
@@ -2021,23 +2024,23 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                         label="委托书号:"
                                         Type="SearchBox"
                                         leftIcon="#icon-edit"
-                                         rightIcon="#icon-a-duicuocuo"
+                                        rightIcon="#icon-a-duicuocuo"
                                         placeholder="请输入委托书编号"
                                         value={reportgeneratorReportData.entrustment.documentNo}
-                                        onChange={(value) => reportgeneratorHandleInputChange('entrustment', 'documentNo', value)} 
+                                        onChange={(value) => reportgeneratorHandleInputChange('entrustment', 'documentNo', value)}
                                         required
                                     />
 
                                     {/* 委托日期 */}
 
-<TextBox
-    label="委托日期:"
-    Type="DatePicker"
-     leftIcon="#icon-edit"
-     dateFormat="YYYY年M月D日"
-    value={reportgeneratorReportData.entrustment.entrustDate || ''}
-    onChange={(date) => reportgeneratorHandleInputChange('entrustment', 'entrustDate', date)}
-/>
+                                    <TextBox
+                                        label="委托日期:"
+                                        Type="DatePicker"
+                                        leftIcon="#icon-edit"
+                                        dateFormat="YYYY年M月D日"
+                                        value={reportgeneratorReportData.entrustment.entrustDate || ''}
+                                        onChange={(date) => reportgeneratorHandleInputChange('entrustment', 'entrustDate', date)}
+                                    />
 
                                 </div>
                             )}
@@ -2052,7 +2055,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                         label="产权证号:"
                                         Type="SearchBox"
                                         leftIcon="#icon-edit"
-                                         rightIcon="#icon-a-duicuocuo"
+                                        rightIcon="#icon-a-duicuocuo"
                                         placeholder="请输入产权证号"
                                         value={reportgeneratorReportData.property.propertyCertificateNo}
                                         onChange={(value) => reportgeneratorHandleInputChange('property', 'propertyCertificateNo', value)}
@@ -2081,13 +2084,13 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                         onChange={(value) => reportgeneratorHandleInputChange('property', 'coOwnershipStatus', value)}
                                         required
                                     />
-                                    
+
                                     {/* 坐落 */}
                                     <TextBox
                                         label="坐落:"
                                         Type="SearchBox"
                                         leftIcon="#icon-edit"
-                                         rightIcon="#icon-a-duicuocuo"
+                                        rightIcon="#icon-a-duicuocuo"
                                         placeholder="请输入房产坐落地址"
                                         value={reportgeneratorReportData.property.location}
                                         onChange={(value) => reportgeneratorHandleInputChange('property', 'location', value)}
@@ -2099,7 +2102,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                         label="不动产单元号:"
                                         Type="SearchBox"
                                         leftIcon="#icon-edit"
-                                         rightIcon="#icon-a-duicuocuo"
+                                        rightIcon="#icon-a-duicuocuo"
                                         placeholder="请输入不动产单元号"
                                         value={reportgeneratorReportData.property.propertyUnitNo}
                                         onChange={(value) => reportgeneratorHandleInputChange('property', 'propertyUnitNo', value)}
@@ -2117,7 +2120,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                             onChange={(value) => reportgeneratorHandleInputChange('property', 'rightsNature', value)}
                                             required
                                         />
-                                        
+
                                         {/* 房屋结构 */}
                                         <TextBox
                                             label="房屋结构:"
@@ -2128,7 +2131,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                             onChange={(value) => reportgeneratorHandleInputChange('property', 'houseStructure', value)}
                                             required
                                         />
-                                        
+
                                     </div>
 
                                     {/* 一行多列 */}
@@ -2143,7 +2146,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                             onChange={(value) => reportgeneratorHandleInputChange('property', 'landPurpose', value)}
                                             required
                                         />
-                                       
+
                                         {/* 房屋用途 */}
                                         <TextBox
                                             label="房屋用途:"
@@ -2154,7 +2157,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                             onChange={(value) => reportgeneratorHandleInputChange('property', 'housePurpose', value)}
                                             required
                                         />
-                                       
+
                                     </div>
 
                                     {/* 一行多列 */}
@@ -2229,7 +2232,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                             label="名称:"
                                             Type="SearchBox"
                                             leftIcon="#icon-edit"
-                                             rightIcon="#icon-a-duicuocuo"
+                                            rightIcon="#icon-a-duicuocuo"
                                             placeholder="请输入小区名称"
                                             value={reportgeneratorReportData.physicalCondition.communityName}
                                             onChange={(value) => reportgeneratorHandleInputChange('physicalCondition', 'communityName', value)}
@@ -2246,7 +2249,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                             onChange={(value) => reportgeneratorHandleInputChange('physicalCondition', 'yearBuilt', value)}
                                             required
                                         />
-                                        
+
                                     </div>
 
                                     {/* 一行多列 */}
@@ -2269,7 +2272,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                             Type="ComboBox"
                                             searchList={floorNumberSearchList}
                                             leftIcon="#icon-unedit"
-                                             rightIcon="#icon-a-duicuocuo"
+                                            rightIcon="#icon-a-duicuocuo"
                                             placeholder="请输入所在楼层（可多选）"
                                             editable={true}
                                             multiple={true}
@@ -2278,7 +2281,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                             onChange={(value) => reportgeneratorHandleInputChange('physicalCondition', 'floorNumber', value)}
                                             required
                                         />
-                                       
+
                                     </div>
                                     {/* 一行多列 */}
                                     <div className="reportgenerator-form-field-vertical">
@@ -2304,7 +2307,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                             trueLabel="有"
                                             falseLabel="无"
                                         />
-                                        
+
                                     </div>
 
 
@@ -2315,13 +2318,13 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                             label="户型:"
                                             Type="SearchBox"
                                             leftIcon="#icon-edit"
-                                             rightIcon="#icon-a-duicuocuo"
+                                            rightIcon="#icon-a-duicuocuo"
                                             placeholder="请输入空间布局"
                                             value={reportgeneratorReportData.physicalCondition.spaceLayout}
                                             onChange={(value) => reportgeneratorHandleInputChange('physicalCondition', 'spaceLayout', value)}
                                             required
                                         />
-                                       
+
                                         {/* 朝向 */}
                                         <TextBox
                                             label="朝向:"
@@ -2332,7 +2335,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                             onChange={(value) => reportgeneratorHandleInputChange('physicalCondition', 'orientation', value)}
                                             required
                                         />
-                                       
+
                                     </div>
                                     {/* 一行多列 */}
                                     <div className="reportgenerator-form-field-vertical">
@@ -2346,7 +2349,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                             onChange={(value) => reportgeneratorHandleInputChange('physicalCondition', 'landShape', value)}
                                             required
                                         />
-                                        
+
                                         {/* 外墙面 */}
                                         <TextBox
                                             label="外墙:"
@@ -2364,8 +2367,8 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                             }}
                                             required
                                         />
-                                        
-                                        
+
+
                                     </div>
                                     {/* 一行多列 */}
                                     <div className="reportgenerator-form-field-vertical">
@@ -2374,19 +2377,19 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                             label="临街:"
                                             Type="SearchBox"
                                             leftIcon="#icon-edit"
-                                             rightIcon="#icon-a-duicuocuo"
+                                            rightIcon="#icon-a-duicuocuo"
                                             placeholder="请输入临街状况"
                                             value={reportgeneratorReportData.physicalCondition.streetStatus}
                                             onChange={(value) => reportgeneratorHandleInputChange('physicalCondition', 'streetStatus', value)}
                                             required
                                         />
-                                       
+
                                         {/* 方位 */}
                                         <TextBox
                                             label="方位:"
                                             Type="SearchBox"
                                             leftIcon="#icon-edit"
-                                             rightIcon="#icon-a-duicuocuo"
+                                            rightIcon="#icon-a-duicuocuo"
                                             placeholder="请输入方位"
                                             value={reportgeneratorReportData.physicalCondition.direction}
                                             onChange={(value) => reportgeneratorHandleInputChange('physicalCondition', 'direction', value)}
@@ -2409,7 +2412,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                             label="距离:"
                                             Type="SearchBox"
                                             leftIcon="#icon-edit"
-                                             rightIcon="#icon-a-duicuocuo"
+                                            rightIcon="#icon-a-duicuocuo"
                                             placeholder="请输入距重要场所距离"
                                             value={reportgeneratorReportData.physicalCondition.distance}
                                             onChange={(value) => reportgeneratorHandleInputChange('physicalCondition', 'distance', value)}
@@ -2421,7 +2424,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                             label="四至:"
                                             Type="SearchBox"
                                             leftIcon="#icon-edit"
-                                             rightIcon="#icon-a-duicuocuo"
+                                            rightIcon="#icon-a-duicuocuo"
                                             placeholder="请输入四至"
                                             multiline="true"
                                             value={reportgeneratorReportData.physicalCondition.boundaries}
@@ -2438,14 +2441,14 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                         value={reportgeneratorReportData.physicalCondition.parkingStatus || ""}
                                         onChange={(value) => reportgeneratorHandleInputChange('physicalCondition', 'parkingStatus', value)}
                                         required
-                                    />                         
+                                    />
 
                                     {/* 装饰装修 */}
                                     <TextBox
                                         label="装修:"
                                         Type="SearchBox"
                                         leftIcon="#icon-edit"
-                                         rightIcon="#icon-a-duicuocuo"
+                                        rightIcon="#icon-a-duicuocuo"
                                         placeholder="请输入装修:"
                                         value={reportgeneratorReportData.physicalCondition.decorationStatus}
                                         onChange={(value) => reportgeneratorHandleInputChange('physicalCondition', 'decorationStatus', value)}
@@ -2466,7 +2469,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                         label="银行:"
                                         Type="SearchBox"
                                         leftIcon="#icon-edit"
-                                         rightIcon="#icon-a-duicuocuo"
+                                        rightIcon="#icon-a-duicuocuo"
                                         placeholder="请输入周边银行"
                                         value={reportgeneratorReportData.physicalCondition.bank}
                                         onChange={(value) => reportgeneratorHandleInputChange('physicalCondition', 'bank', value)}
@@ -2478,7 +2481,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                         label="超市:"
                                         Type="SearchBox"
                                         leftIcon="#icon-edit"
-                                         rightIcon="#icon-a-duicuocuo"
+                                        rightIcon="#icon-a-duicuocuo"
                                         placeholder="请输入周边超市"
                                         value={reportgeneratorReportData.physicalCondition.supermarket}
                                         onChange={(value) => reportgeneratorHandleInputChange('physicalCondition', 'supermarket', value)}
@@ -2490,7 +2493,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                         label="医院:"
                                         Type="SearchBox"
                                         leftIcon="#icon-edit"
-                                         rightIcon="#icon-a-duicuocuo"
+                                        rightIcon="#icon-a-duicuocuo"
                                         placeholder="请输入医院"
                                         value={reportgeneratorReportData.physicalCondition.hospital}
                                         onChange={(value) => reportgeneratorHandleInputChange('physicalCondition', 'hospital', value)}
@@ -2502,7 +2505,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                         label="学校:"
                                         Type="SearchBox"
                                         leftIcon="#icon-edit"
-                                         rightIcon="#icon-a-duicuocuo"
+                                        rightIcon="#icon-a-duicuocuo"
                                         placeholder="请输入学校"
                                         value={reportgeneratorReportData.physicalCondition.school}
                                         onChange={(value) => reportgeneratorHandleInputChange('physicalCondition', 'school', value)}
@@ -2514,49 +2517,49 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                         label="小区:"
                                         Type="SearchBox"
                                         leftIcon="#icon-edit"
-                                         rightIcon="#icon-a-duicuocuo"
+                                        rightIcon="#icon-a-duicuocuo"
                                         placeholder="请输入小区"
                                         value={reportgeneratorReportData.physicalCondition.nearbyCommunity}
                                         onChange={(value) => reportgeneratorHandleInputChange('physicalCondition', 'nearbyCommunity', value)}
                                         required
                                     />
-                                  
+
                                     {/* 公交站名 */}
                                     <TextBox
                                         label="公交:"
                                         Type="SearchBox"
                                         leftIcon="#icon-edit"
-                                         rightIcon="#icon-a-duicuocuo"
+                                        rightIcon="#icon-a-duicuocuo"
                                         placeholder="请输入公交"
                                         value={reportgeneratorReportData.physicalCondition.busStopName}
                                         onChange={(value) => reportgeneratorHandleInputChange('physicalCondition', 'busStopName', value)}
                                         required
                                     />
-                                   
+
                                     {/* 附近公交线路 */}
                                     <TextBox
                                         label="线路:"
                                         Type="SearchBox"
                                         leftIcon="#icon-edit"
-                                         rightIcon="#icon-a-duicuocuo"
+                                        rightIcon="#icon-a-duicuocuo"
                                         placeholder="周边公交线路"
                                         value={reportgeneratorReportData.physicalCondition.busRoutes}
                                         onChange={(value) => reportgeneratorHandleInputChange('physicalCondition', 'busRoutes', value)}
                                         required
                                     />
-                                  
+
                                     {/* 道路 */}
                                     <TextBox
                                         label="道路:"
                                         Type="SearchBox"
                                         leftIcon="#icon-edit"
-                                         rightIcon="#icon-a-duicuocuo"
+                                        rightIcon="#icon-a-duicuocuo"
                                         placeholder="请输入周边道路"
                                         value={reportgeneratorReportData.physicalCondition.areaRoad}
                                         onChange={(value) => reportgeneratorHandleInputChange('physicalCondition', 'areaRoad', value)}
                                         required
                                     />
-                                   
+
                                 </div>
                             )}
 
@@ -2577,21 +2580,21 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                             trueLabel="有"
                                             falseLabel="无"
                                         />
-                                       
+
                                         {/* 家具家电评估总价 - 有平滑过渡效果 */}
-<TextBox
-    label="家具(元):"
-    Type="NumberInput"
-    leftIcon="#icon-edit"
-    min={0}
-    max={1000000}
-    step={1000}
-    placeholder="请输入家具家电评估总价"
-    value={reportgeneratorReportData.result.furnitureElectronicsEstimatedPrice}
-    onChange={(value) => reportgeneratorHandleInputChange('result', 'furnitureElectronicsEstimatedPrice', value)}
-    showCondition={reportgeneratorReportData.result.hasFurnitureElectronics === true}
-    animate={true}
-/>
+                                        <TextBox
+                                            label="家具(元):"
+                                            Type="NumberInput"
+                                            leftIcon="#icon-edit"
+                                            min={0}
+                                            max={1000000}
+                                            step={1000}
+                                            placeholder="请输入家具家电评估总价"
+                                            value={reportgeneratorReportData.result.furnitureElectronicsEstimatedPrice}
+                                            onChange={(value) => reportgeneratorHandleInputChange('result', 'furnitureElectronicsEstimatedPrice', value)}
+                                            showCondition={reportgeneratorReportData.result.hasFurnitureElectronics === true}
+                                            animate={true}
+                                        />
                                         {/*  <div
                                             className="reportgenerator-form-field-vertical-container"
                                             style={{
@@ -2628,11 +2631,11 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                             dateFormat="YYYY年M月D日"
                                             placeholder="请选择价值时点:"
 
-                                            value={reportgeneratorReportData.result.valueDate || ''}   
+                                            value={reportgeneratorReportData.result.valueDate || ''}
 
                                             onChange={(date) => reportgeneratorHandleInputChange('result', 'valueDate', date)}
                                         />
- 
+
                                         {/* 报告出具日期 */}
                                         <TextBox
                                             label="报告日期:"
@@ -2641,7 +2644,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                             dateFormat="YYYY年M月D日"
                                             placeholder="请选择报告日期:"
 
-                                            value={reportgeneratorReportData.result.reportDate || ''}   
+                                            value={reportgeneratorReportData.result.reportDate || ''}
 
                                             onChange={(date) => reportgeneratorHandleInputChange('result', 'reportDate', date)}
                                         />
@@ -2659,7 +2662,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                             value={reportgeneratorReportData.result.valuationMethod || ""}
                                             onChange={(value) => reportgeneratorHandleInputChange('result', 'valuationMethod', value)}
                                             required
-                                        />  
+                                        />
 
                                         {/* 评估单价 */}
                                         <TextBox
@@ -2684,7 +2687,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                             label="项目编号:"
                                             Type="SearchBox"
                                             leftIcon="#icon-edit"
-                                             rightIcon="#icon-a-duicuocuo"
+                                            rightIcon="#icon-a-duicuocuo"
                                             placeholder="请输入项目编号:"
                                             value={reportgeneratorReportData.result.projectID}
                                             onChange={(value) => reportgeneratorHandleInputChange('result', 'projectID', value)}
@@ -2695,7 +2698,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                             label="报告编号:"
                                             Type="SearchBox"
                                             leftIcon="#icon-edit"
-                                             rightIcon="#icon-a-duicuocuo"
+                                            rightIcon="#icon-a-duicuocuo"
                                             placeholder="请输入报告编号"
                                             value={reportgeneratorReportData.result.reportID}
                                             onChange={(value) => reportgeneratorHandleInputChange('result', 'reportID', value)}
@@ -2727,7 +2730,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                             }}
                                             required
                                         />
-                                        
+
                                         {/* 后端操作，前端不显示 */}
                                         {/* <div className="reportgenerator-form-field-horizontal">
                                         <label className="reportgenerator-field-label">注册号:</label>
@@ -2754,7 +2757,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                             }}
                                             required
                                         />
-                                        
+
                                         {/* 后端操作，前端不显示 */}
                                         {/* <div className="reportgenerator-form-field-horizontal">
                                         <label className="reportgenerator-field-label">注册号:</label>
@@ -2814,7 +2817,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                             required
                                         />
 
-                                       
+
                                     </div>
                                     {/* 一行多列 */}
                                     <div className="reportgenerator-form-field-vertical">
@@ -2827,7 +2830,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                             trueLabel="有"
                                             falseLabel="无"
                                         />
-                                       
+
                                         {/* 查封依据 : */}
                                         <TextBox
                                             label="查封依据:"
@@ -2838,7 +2841,7 @@ const reportgeneratorHandleInputChange = (section, field, value) => {
                                             onChange={(value) => reportgeneratorHandleInputChange('equityStatus', 'seizureBasis', value)}
                                             required
                                         />
-                                       
+
                                     </div>
                                     {/* 一行多列 */}
                                     <div className="reportgenerator-form-field-vertical">

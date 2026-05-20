@@ -5,7 +5,7 @@ import styles from './PublicMessage.module.css';
 const PublicMessage = ({ onClose }) => {
   const [currentAd, setCurrentAd] = useState(0);
 
-  // 广告数据
+  // 广告数据  听歌、记账、房地产、  
   const advertisements = [
     {
       id: 1,

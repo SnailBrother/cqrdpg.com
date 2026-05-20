@@ -504,3 +504,78 @@
   align-self: flex-start;
   margin-top: 8px;
 }
+/* 在 TextBox.module.css 中添加以下样式 */
+
+/* Tooltip 基础样式 */
+.tooltip {
+  background-color: rgba(0, 0, 0, 0.75);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  line-height: 1.4;
+  white-space: nowrap;
+  max-width: 300px;
+  white-space: normal;
+  word-break: break-word;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  pointer-events: none;
+  animation: fadeIn 0.15s ease-in-out;
+}
+
+/* Tooltip 箭头 */
+.tooltip::before {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+}
+
+/* 上方提示的箭头 */
+.tooltipTop::before {
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px 5px 0 5px;
+  border-color: rgba(0, 0, 0, 0.75) transparent transparent transparent;
+}
+
+/* 下方提示的箭头 */
+.tooltipBottom::before {
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 0 5px 5px 5px;
+  border-color: transparent transparent rgba(0, 0, 0, 0.75) transparent;
+}
+
+/* 左侧提示的箭头 */
+.tooltipLeft::before {
+  top: 50%;
+  left: 100%;
+  transform: translateY(-50%);
+  border-width: 5px 0 5px 5px;
+  border-color: transparent transparent transparent rgba(0, 0, 0, 0.75);
+}
+
+/* 右侧提示的箭头 */
+.tooltipRight::before {
+  top: 50%;
+  right: 100%;
+  transform: translateY(-50%);
+  border-width: 5px 5px 5px 0;
+  border-color: transparent rgba(0, 0, 0, 0.75) transparent transparent;
+}
+
+/* 淡入动画 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
