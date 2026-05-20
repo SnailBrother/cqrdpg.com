@@ -12,9 +12,7 @@
   color: var(--font-color);
   white-space: nowrap;
   min-width: 80px;
-    /* 稍微增加标签宽度 */
   font-weight: bold;
-  
   text-align: right;
   flex-shrink: 0;
 }
@@ -32,6 +30,10 @@
   color: #999;
   pointer-events: none;
   z-index: 1;
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+  flex-shrink: 0;
 }
 
 .rightIcon {
@@ -39,6 +41,12 @@
   right: 12px;
   pointer-events: auto;
   cursor: pointer;
+  color: #999;
+  transition: color 0.3s;
+}
+
+.rightIcon:hover {
+  color: #333;
 }
 
 .input {
@@ -49,12 +57,10 @@
   font-size: 14px;
   outline: none;
   transition: border-color 0.3s;
-
   font-family: var(--font-family);
   background-color: var(--background-color);
   color: var(--font-color);
   border-color: var(--border_color);
-  
 }
 
 .input:focus {
@@ -74,7 +80,6 @@
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
   z-index: 1050;
   padding: 8px;
-  
 }
 
 .dropdownSearchInput {
@@ -113,28 +118,8 @@
   background-color: #f5f5f5;
   color: var(--focus_font-color);
 }
-.icon {
-  width: 16px;
-  height: 16px;
-  fill: currentColor;
-  color: #999;
-  flex-shrink: 0;
-}
-
-.rightIcon {
-  cursor: pointer;
-  color: #999;
-  transition: color 0.3s;
-}
-
-.rightIcon:hover {
-  color: #333;
-}
-/* 原有样式保持不变，添加以下样式 */
 
 /* NumberInput 样式 */
- 
-
 .numberControls {
   position: absolute;
   right: 8px;
@@ -181,20 +166,16 @@
   color: #4096ff;
 }
 
-/* #region start 日期样式*/
- /* 日期输入框独立样式 */
+/* 日期样式 */
 .dateInput {
   color: var(--font-color);
-  
   background-color: var(--background-color);
 }
-
 
 .datePickerPanel {
   position: absolute;
   top: calc(100% + 4px);
   left: 0;
-  /* 不要设置 right: 0，让宽度由内容决定 */
   width: 280px;
   background: #fff;
   border: 1px solid #d9d9d9;
@@ -256,11 +237,6 @@
   font-size: 14px;
   font-weight: 500;
   color: #333;
-}
-
-.datePanelBody {
-  /* 面板内容区域 */
-  /* background-color: var(--background-color); */
 }
 
 .dateWeekdays {
@@ -409,8 +385,7 @@
 .dateOutOfDecade:hover {
   background: transparent;
 }
-/*  #endregion end */
-/* #region start ComboBox相关的样式*/
+
 /* ComboBox 复选框样式 */
 .checkboxItem {
   display: flex;
@@ -442,38 +417,9 @@
   color: #1890ff;
 }
 
-/* 当 input 为只读时的样式 */
 .input[readonly] {
   cursor: pointer;
-   
 }
-/*  #endregion end */
-
-
-/* .inputWrapper {
-  display: flex;
-  align-items: flex-start;  
-  position: relative;
-   border: 1px solid #ddd;  
-  border-radius: 4px;
-  padding: 0 8px;
-  background: #fff;
-} */
-
-/* .icon {
-  flex-shrink: 0;  
-  width: 20px;
-  height: 20px;
-  margin-top: 10px;  
-  margin-right: 4px;
-  fill: #999;
-} */
-
-/* .rightIcon {
-  margin-left: 4px;
-  margin-right: 0;
-  cursor: pointer;
-} */
 
 .textarea {
   flex: 1;
@@ -485,13 +431,13 @@
   background: transparent;
   font-family: inherit;
   resize: vertical;
-  line-height: 1.2;  /* 固定行高 */
-  height: 36px;  /* 固定高度，和 input 一致 */
-  min-height: 36px;  /* 最小高度保持一致 */
-  max-height: 200px;  /* 最大高度限制，超过后滚动 */
-  overflow-y: auto;  /* 内容超过最大高度时显示滚动条 */
+  line-height: 1.2;
+  height: 36px;
+  min-height: 36px;
+  max-height: 200px;
+  overflow-y: auto;
   transition: border-color 0.3s;
-  box-sizing: border-box;  /* 确保 padding 包含在高度内 */
+  box-sizing: border-box;
 }
 
 .textarea:focus {
@@ -499,14 +445,7 @@
   box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
 }
 
-/* 多行模式下的清空图标位置调整 */
-.clearIconTextarea {
-  align-self: flex-start;
-  margin-top: 8px;
-}
-/* 在 TextBox.module.css 中添加以下样式 */
-
-/* Tooltip 基础样式 */
+/* Tooltip 基础样式 - 修复版 */
 .tooltip {
   background-color: rgba(0, 0, 0, 0.75);
   color: white;
@@ -523,7 +462,7 @@
   animation: fadeIn 0.15s ease-in-out;
 }
 
-/* Tooltip 箭头 */
+/* 箭头样式 - 只负责箭头，不参与整体定位 */
 .tooltip::before {
   content: '';
   position: absolute;
@@ -532,50 +471,43 @@
   border-style: solid;
 }
 
-/* 上方提示的箭头 */
 .tooltipTop::before {
-  top: 100%;
+  bottom: -10px;
   left: 50%;
   transform: translateX(-50%);
-  border-width: 5px 5px 0 5px;
+  border-width: 10px 8px 0 8px;
   border-color: rgba(0, 0, 0, 0.75) transparent transparent transparent;
 }
 
-/* 下方提示的箭头 */
 .tooltipBottom::before {
-  bottom: 100%;
+  top: -10px;
   left: 50%;
   transform: translateX(-50%);
-  border-width: 0 5px 5px 5px;
+  border-width: 0 8px 10px 8px;
   border-color: transparent transparent rgba(0, 0, 0, 0.75) transparent;
 }
 
-/* 左侧提示的箭头 */
 .tooltipLeft::before {
+  right: -10px;
   top: 50%;
-  left: 100%;
   transform: translateY(-50%);
-  border-width: 5px 0 5px 5px;
+  border-width: 8px 0 8px 10px;
   border-color: transparent transparent transparent rgba(0, 0, 0, 0.75);
 }
 
-/* 右侧提示的箭头 */
 .tooltipRight::before {
+  left: -10px;
   top: 50%;
-  right: 100%;
   transform: translateY(-50%);
-  border-width: 5px 5px 5px 0;
+  border-width: 8px 10px 8px 0;
   border-color: transparent rgba(0, 0, 0, 0.75) transparent transparent;
 }
 
-/* 淡入动画 */
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: scale(0.95);
   }
   to {
     opacity: 1;
-    transform: scale(1);
   }
 }

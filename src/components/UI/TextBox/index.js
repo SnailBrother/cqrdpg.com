@@ -27,10 +27,9 @@ const TextBox = ({
   enableInputSearch = true,
   showCondition = true,
   multiline = false,
-  // 新增 tooltip 相关属性
-  tooltip = '',                // 提示文本
-  tooltipDelay = 300,          // 延迟显示时间(ms)
-  tooltipPosition = 'top',     // 提示位置: 'top', 'bottom', 'left', 'right'
+  tooltip = '',
+  tooltipDelay = 300,
+  tooltipPosition = 'top',
 }) => {
   const [inputValue, setInputValue] = useState(() => {
     if (Type === "Switch") {
@@ -58,7 +57,8 @@ const TextBox = ({
   const [showTooltip, setShowTooltip] = useState(false);
   const [tooltipPositionState, setTooltipPositionState] = useState({ top: 0, left: 0 });
   const tooltipTimeoutRef = useRef(null);
-  const inputWrapperRef_forTooltip = useRef(null);
+  const tooltipRef = useRef(null);
+  const rafIdRef = useRef(null);
 
   // ComboBox 多选相关状态
   const [selectedItems, setSelectedItems] = useState(() => {
@@ -81,49 +81,56 @@ const TextBox = ({
     return null;
   });
 
-  // Tooltip 位置计算
+  // Tooltip 位置计算 - 关键修复：在计算时就考虑 transform 偏移
   const calculateTooltipPosition = () => {
-    if (!inputWrapperRef_forTooltip.current) return;
+    if (!inputWrapperRef.current) return;
     
-    const rect = inputWrapperRef_forTooltip.current.getBoundingClientRect();
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
-    
+    const rect = inputWrapperRef.current.getBoundingClientRect();
     let top = 0;
     let left = 0;
     
     switch (tooltipPosition) {
       case 'top':
-        top = rect.top + scrollTop - 8;
-        left = rect.left + scrollLeft + rect.width / 2;
+        top = rect.top - 8;
+        left = rect.left + rect.width / 2;
         break;
       case 'bottom':
-        top = rect.bottom + scrollTop + 8;
-        left = rect.left + scrollLeft + rect.width / 2;
+        top = rect.bottom + 8;
+        left = rect.left + rect.width / 2;
         break;
       case 'left':
-        top = rect.top + scrollTop + rect.height / 2;
-        left = rect.left + scrollLeft - 8;
+        top = rect.top + rect.height / 2;
+        left = rect.left - 8;
         break;
       case 'right':
-        top = rect.top + scrollTop + rect.height / 2;
-        left = rect.right + scrollLeft + 8;
+        top = rect.top + rect.height / 2;
+        left = rect.right + 8;
         break;
       default:
-        top = rect.top + scrollTop - 8;
-        left = rect.left + scrollLeft + rect.width / 2;
+        top = rect.top - 8;
+        left = rect.left + rect.width / 2;
     }
     
     setTooltipPositionState({ top, left });
+  };
+
+  // 立即计算位置并显示（不使用 RAF）
+  const showTooltipImmediately = () => {
+    calculateTooltipPosition();
+    setShowTooltip(true);
   };
 
   // Tooltip 显示处理
   const handleMouseEnter = () => {
     if (!tooltip) return;
     
+    if (tooltipTimeoutRef.current) {
+      clearTimeout(tooltipTimeoutRef.current);
+      tooltipTimeoutRef.current = null;
+    }
+    
     tooltipTimeoutRef.current = setTimeout(() => {
-      calculateTooltipPosition();
-      setShowTooltip(true);
+      showTooltipImmediately();
     }, tooltipDelay);
   };
 
@@ -135,31 +142,17 @@ const TextBox = ({
     setShowTooltip(false);
   };
 
-  // 清理定时器
+  // 清理
   useEffect(() => {
     return () => {
       if (tooltipTimeoutRef.current) {
         clearTimeout(tooltipTimeoutRef.current);
       }
+      if (rafIdRef.current) {
+        cancelAnimationFrame(rafIdRef.current);
+      }
     };
   }, []);
-
-  // 窗口滚动或大小时重新计算位置
-  useEffect(() => {
-    if (!showTooltip) return;
-    
-    const updatePosition = () => {
-      calculateTooltipPosition();
-    };
-    
-    window.addEventListener('scroll', updatePosition);
-    window.addEventListener('resize', updatePosition);
-    
-    return () => {
-      window.removeEventListener('scroll', updatePosition);
-      window.removeEventListener('resize', updatePosition);
-    };
-  }, [showTooltip, tooltipPosition]);
 
   // 同步外部 value
   useEffect(() => {
@@ -234,7 +227,7 @@ const TextBox = ({
     }
   }, [tempDate, Type]);
 
-  // 解析日期 - 支持多种输入格式，返回 Date 对象
+  // 解析日期
   function parseDate(dateStr) {
     if (!dateStr) return new Date();
     
@@ -267,7 +260,7 @@ const TextBox = ({
     return new Date(today.getFullYear(), today.getMonth(), today.getDate());
   }
 
-  // 格式化日期 - 支持自定义格式
+  // 格式化日期
   function formatDate(dateInput, formatStr = dateFormat) {
     if (!dateInput) return '';
     
@@ -503,7 +496,7 @@ const TextBox = ({
     }
   };
 
-  // Switch 模式：选择 true/false
+  // Switch 模式
   const handleSwitchSelect = (newValue) => {
     const displayText = newValue === true ? trueLabel : falseLabel;
     setInputValue(displayText);
@@ -512,7 +505,7 @@ const TextBox = ({
     setIsDropdownVisible(false);
   };
 
-  // 处理 ComboBox 选项的勾选
+  // ComboBox 多选
   const handleCheckboxChange = (item, isChecked) => {
     let newSelectedItems;
     if (isChecked) {
@@ -527,7 +520,7 @@ const TextBox = ({
     onChange?.(multiple ? newSelectedItems : displayValue);
   };
 
-  // 处理单选模式下的选项选择
+  // ComboBox 单选
   const handleSingleSelect = (item) => {
     setInputValue(item);
     setSelectedItems([item]);
@@ -536,7 +529,7 @@ const TextBox = ({
     setSearchQuery('');
   };
 
-  // 选择下拉项 (SearchBox 模式)
+  // SearchBox 选择
   const handleSelectItem = (item) => {
     setInputValue(item);
     onChange && onChange(item);
@@ -545,7 +538,7 @@ const TextBox = ({
     inputRef.current?.focus();
   };
 
-  // 搜索输入框变化处理
+  // 搜索输入
   const handleSearchInputChange = (e) => {
     e.stopPropagation();
     const newQuery = e.target.value;
@@ -590,7 +583,7 @@ const TextBox = ({
     }
   };
 
-  // 渲染 Switch 下拉面板
+  // 渲染各种面板
   const renderSwitchPanel = () => {
     if (Type !== "Switch" || !isDropdownVisible) return null;
 
@@ -619,7 +612,6 @@ const TextBox = ({
     );
   };
 
-  // 渲染 SearchBox 下拉面板
   const renderSearchBoxPanel = () => {
     if (Type !== "SearchBox" || !isDropdownVisible || searchList.length === 0) return null;
 
@@ -658,7 +650,6 @@ const TextBox = ({
     );
   };
 
-  // 渲染 ComboBox 下拉面板
   const renderComboBoxPanel = () => {
     if (Type !== "ComboBox" || !isDropdownVisible) return null;
 
@@ -722,7 +713,6 @@ const TextBox = ({
     );
   };
 
-  // 渲染日期选择器面板
   const renderDatePickerPanel = () => {
     if (Type !== "DatePicker" || !isDatePickerOpen) return null;
 
@@ -891,7 +881,53 @@ const TextBox = ({
 
   if (!showCondition) return null;
 
-  // 获取 tooltip 的样式类名
+  // 关键修复：tooltip 样式 - 根据不同方向应用正确的 transform
+  const getTooltipStyle = () => {
+    const baseStyle = {
+      position: 'fixed',
+      zIndex: 1000,
+    };
+    
+    // 根据方向设置不同的位置和 transform
+    switch (tooltipPosition) {
+      case 'top':
+        return {
+          ...baseStyle,
+          bottom: `calc(100vh - ${tooltipPositionState.top}px)`,
+          left: `${tooltipPositionState.left}px`,
+          transform: 'translateX(-50%)',
+        };
+      case 'bottom':
+        return {
+          ...baseStyle,
+          top: `${tooltipPositionState.top}px`,
+          left: `${tooltipPositionState.left}px`,
+          transform: 'translateX(-50%)',
+        };
+      case 'left':
+        return {
+          ...baseStyle,
+          top: `${tooltipPositionState.top}px`,
+          right: `calc(100vw - ${tooltipPositionState.left}px)`,
+          transform: 'translateY(-50%)',
+        };
+      case 'right':
+        return {
+          ...baseStyle,
+          top: `${tooltipPositionState.top}px`,
+          left: `${tooltipPositionState.left}px`,
+          transform: 'translateY(-50%)',
+        };
+      default:
+        return {
+          ...baseStyle,
+          top: `${tooltipPositionState.top}px`,
+          left: `${tooltipPositionState.left}px`,
+          transform: 'translateX(-50%)',
+        };
+    }
+  };
+
   const getTooltipClassName = () => {
     const baseClass = styles.tooltip;
     switch (tooltipPosition) {
@@ -917,7 +953,7 @@ const TextBox = ({
 
       <div 
         className={styles.inputWrapper} 
-        ref={inputWrapperRef_forTooltip}
+        ref={inputWrapperRef}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
@@ -1008,32 +1044,23 @@ const TextBox = ({
           </div>
         )}
 
-        {/* Tooltip */}
-        {showTooltip && tooltip && (
-          <div 
-            className={getTooltipClassName()}
-            style={{
-              position: 'fixed',
-              top: `${tooltipPositionState.top}px`,
-              left: `${tooltipPositionState.left}px`,
-              transform: tooltipPosition === 'top' || tooltipPosition === 'bottom' 
-                ? 'translateX(-50%)' 
-                : tooltipPosition === 'left' 
-                  ? 'translateY(-50%) translateX(-100%)' 
-                  : 'translateY(-50%)',
-              zIndex: 1000,
-            }}
-          >
-            {tooltip}
-          </div>
-        )}
-
         {/* 下拉面板 */}
         {renderSearchBoxPanel()}
         {renderComboBoxPanel()}
         {renderSwitchPanel()}
         {renderDatePickerPanel()}
       </div>
+
+      {/* Tooltip */}
+      {showTooltip && tooltip && (
+        <div 
+          ref={tooltipRef}
+          className={getTooltipClassName()}
+          style={getTooltipStyle()}
+        >
+          {tooltip}
+        </div>
+      )}
     </div>
   );
 };
