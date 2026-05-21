@@ -103,6 +103,7 @@ app.get('/api/GetHousePricePictures', ...)
 | **OfficeApp** | 办公协作 | 存储文档、任务、会议、审批数据 |
 | **AccountingApp** | 记账 | 记录日常开销 |
 | **SportsApp** | 运动 | 记录日常运动 |
+| **SystemSettingsApp** | 系统 | 系统相关设置 |
 ---
  
 ## 一、听歌板块数据库 (`MusicApp`)
@@ -222,30 +223,8 @@ CREATE TABLE MusicApp.dbo.MusicListenTogetherRoomMessages (
 );
  ```
 ---
-##  二、记账板块数据库 (`AccountingApp`)
 
-### 1. 账单 (`AccountingApp.dbo.AccountingList`)
-
- ``` 
-CREATE TABLE AccountingApp.dbo.AccountingList (
-    transaction_id INT IDENTITY(1,1) PRIMARY KEY,     -- 交易ID，唯一标识
-    transaction_date DATE NOT NULL,                -- 交易时间
-    amount DECIMAL(18, 2) NOT NULL,                    -- 交易金额，使用DECIMAL类型来确保精度
-    transaction_type NVARCHAR(50) NOT NULL,            -- 交易类型 (收入 / 支出)
-    category NVARCHAR(100),                            -- 交易类别 (例如: 食品, 交通, 工资等)
-    payment_method NVARCHAR(50),                       -- 支付方式 (现金、银行卡、支付宝、微信等)
-    description NVARCHAR(255),                         -- 交易描述 (详细说明)
-    created_by NVARCHAR(100) NOT NULL,                 -- 记录创建人
-    note NVARCHAR(MAX),                                 -- 额外备注或说明
-    created_date DATETIME DEFAULT GETDATE(),          -- 记录创建时间 (默认当前时间)
-    updated_by NVARCHAR(100),                          -- 最近更新记录的人
-    updated_date DATETIME,                             -- 最近更新时间
-);
- ``` 
-> **设计建议**：此表数据量大，建议按月份分区或使用存储。
----
-
-##  三、聊天板块数据库 (`WeChatApp`)
+##  二、聊天板块数据库 (`WeChatApp`)
 
 ### 1. 用户管理 (`WeChatApp.dbo.WeChatUserManagement`)
  ``` 
@@ -308,7 +287,118 @@ CREATE TABLE WeChatApp.dbo.WeChatUserManagement (
 ``` 
 ---
 
-## 四、系统设置板块数据库 (`SystemSettingsApp`)
+##  三、办公协作板块数据库 (`OfficeApp`)
+### 1. 报告编写预设选项 (`OfficeApp.dbo.WordReportOptions`)
+ ``` 
+CREATE TABLE OfficeApp.dbo.WordReportOptions (
+    ID INT IDENTITY(1,1) PRIMARY KEY,               -- 自增主键
+    AppraiserNameOptions VARCHAR(50),                -- 估价师名称（选项），可以为空
+    RegistrationNumberOptions VARCHAR(255),           -- 注册号（选项值），可以为空
+    housePurposeOptions VARCHAR(255),            -- 房屋用途（选项值）可以为空
+    houseStructureOptions VARCHAR(255),            -- 房屋结构（选项值）可以为空
+    coOwnershipStatusOptions VARCHAR(255),            -- 共有情况（选项值）可以为空
+    landPurposeOptions VARCHAR(255),            -- 土地用途（选项值）可以为空
+    rightsNatureOptions VARCHAR(255),            -- 权利性质（选项值）可以为空
+    exteriorWallMaterialOptions VARCHAR(255),            -- 外墙面（选项值）可以为空
+    valuationMethodOptions VARCHAR(255)            -- 估价方法（选项值）可以为空
+    assessmentCommissionDocumentOptions VARCHAR(500) -- 
+    valueDateRequirementsOptions VARCHAR(500)           -- 
+    landShapeOptions VARCHAR(500) -- 土地形状
+    orientationOptions VARCHAR(500) -- 朝向
+    parkingStatusOptions VARCHAR(500) -- 停车
+    mortgageBasisOptions VARCHAR(500) -- 抵押依据
+    seizureBasisOptions VARCHAR(500) -- 查封依据
+    utilizationStatusOptions VARCHAR(500) -- 利用现状
+);
+ ```
+ 
+ ### 2. 报告信息库 (`OfficeApp.dbo.WordReportsInformation`)
+ ``` 
+CREATE TABLE OfficeApp.dbo.WordReportsInformation (
+    reportsID INT IDENTITY(1,1) PRIMARY KEY,         -- ID，主键，自动增长
+    documentNo VARCHAR(50) NOT NULL,                 -- 委托书编号 可以存储字母、数字或特殊字符，最大长度为 50 个字符
+    entrustDate DATE NOT NULL,                       -- 委托日期
+    entrustingParty VARCHAR(100) NOT NULL,           -- 委托方
+    location VARCHAR(255) NOT NULL,                  -- 房产坐落
+    buildingArea DECIMAL(10, 2) NOT NULL,            -- 建筑面积，精度为 10 位数，保留 2 位小数
+    interiorArea DECIMAL(10, 2) NOT NULL,            -- 套内面积，精度为 10 位数，保留 2 位小数
+    valueDate DATE NOT NULL,                         -- 价值时点
+    reportDate DATE NOT NULL,                        -- 报告日期
+    appraiserNameA VARCHAR(50) NOT NULL,             -- 估价师 A 姓名
+    appraiserRegNoA VARCHAR(50) NOT NULL,            -- 估价师 A 注册号
+    appraiserNameB VARCHAR(50) NOT NULL,              -- 估价师 B 姓名
+    appraiserRegNoB VARCHAR(50) NOT NULL,             -- 估价师 B 注册号
+    communityName VARCHAR(100) NOT NULL,              -- 小区名称
+    totalFloors INT NOT NULL,                          -- 总层数
+    floorNumber NVARCHAR(20) NOT NULL,                          -- 所在楼层
+    housePurpose VARCHAR(100) NOT NULL,                -- 房屋用途
+    propertyUnitNo VARCHAR(50) NOT NULL,               -- 不动产单元号
+    rightsHolder VARCHAR(100) NOT NULL,                -- 权利人
+    landPurpose VARCHAR(100) NOT NULL,                 -- 土地用途
+    sharedLandArea DECIMAL(10, 2) NOT NULL,            -- 共有宗地面积
+    landUseRightEndDate DATE NOT NULL,                 -- 土地使用权终止日期
+    houseStructure VARCHAR(100) NOT NULL,              -- 房屋结构
+    coOwnershipStatus VARCHAR(100) NOT NULL,           -- 共有情况
+    rightsNature VARCHAR(50) NOT NULL,                 -- 权利性质（出让、划拨）
+    elevator BIT NOT NULL,                             -- 电梯（有、无）
+    decorationStatus VARCHAR(500) NOT NULL,            -- 装饰装修
+    ventilationStatus BIT NOT NULL,                    -- 通气（是、否）
+    spaceLayout VARCHAR(100) NOT NULL,                 -- 空间布局
+    exteriorWallMaterial VARCHAR(100) NOT NULL,        -- 外墙面
+    yearBuilt INT NOT NULL,                            -- 建成年份
+    boundaries VARCHAR(255) NOT NULL,                  -- 四至
+    valuationMethod VARCHAR(100) NOT NULL              -- 估价方法
+    propertyCertificateNo VARCHAR(50) NOT NULL         -- 产权证号
+    projectID VARCHAR(50) NOT NULL,                    -- 项目编号
+    reportID VARCHAR(50) NOT NULL,                      -- 报告编号
+    valuationPrice DECIMAL(15, 0) NOT NULL,            -- 评估单价 (没有小数)
+    assessmentCommissionDocument VARCHAR(255)  NOT NULL  -- 评估委托文书（选项值）
+    hasFurnitureElectronics BIT NOT NULL DEFAULT 0,     -- 是否包含家具家电，默认值为 0（即否）
+    furnitureElectronicsEstimatedPrice DECIMAL(6, 0) NOT NULL,  -- 家具家电评估总价，整数类型
+    valueDateRequirements VARCHAR(500) NOT NULL;          -- 价值时点要求，最大长度500字符
+    landShape VARCHAR(500) NULL,               -- 土地形状
+    streetStatus VARCHAR(500) NULL,            -- 临街状况
+    direction VARCHAR(500) NULL,                -- 方位
+    orientation VARCHAR(500) NULL,              -- 朝向
+    distance VARCHAR(500) NULL,                 -- 距离
+    parkingStatus VARCHAR(500) NULL;           -- 停车状况
+    mortgageStatus BIT NULL DEFAULT 1,                       -- 抵押状况 默认是1
+    mortgageBasis VARCHAR(500) NULL,                          -- 抵押依据
+    seizureStatus BIT NULL DEFAULT 1,                         -- 查封状况 默认是1
+    seizureBasis VARCHAR(500) NULL,                           -- 查封依据
+    utilizationStatus VARCHAR(500) NULL,                      -- 利用状况
+    isLeaseConsidered BIT NULL DEFAULT 0                      -- 是否考虑租约（1 = 是，0 = 否） 默认是0
+    rent DECIMAL(18, 2) NOT NULL DEFAULT 0.00;  -- 租金字段，类型为 DECIMAL，默认值为 0.00
+); 
+ ``` 
+
+##  四、记账板块数据库 (`AccountingApp`)
+
+### 1. 账单 (`AccountingApp.dbo.AccountingList`)
+
+ ``` 
+CREATE TABLE AccountingApp.dbo.AccountingList (
+    transaction_id INT IDENTITY(1,1) PRIMARY KEY,     -- 交易ID，唯一标识
+    transaction_date DATE NOT NULL,                -- 交易时间
+    amount DECIMAL(18, 2) NOT NULL,                    -- 交易金额，使用DECIMAL类型来确保精度
+    transaction_type NVARCHAR(50) NOT NULL,            -- 交易类型 (收入 / 支出)
+    category NVARCHAR(100),                            -- 交易类别 (例如: 食品, 交通, 工资等)
+    payment_method NVARCHAR(50),                       -- 支付方式 (现金、银行卡、支付宝、微信等)
+    description NVARCHAR(255),                         -- 交易描述 (详细说明)
+    created_by NVARCHAR(100) NOT NULL,                 -- 记录创建人
+    note NVARCHAR(MAX),                                 -- 额外备注或说明
+    created_date DATETIME DEFAULT GETDATE(),          -- 记录创建时间 (默认当前时间)
+    updated_by NVARCHAR(100),                          -- 最近更新记录的人
+    updated_date DATETIME,                             -- 最近更新时间
+);
+ ``` 
+> **设计建议**：此表数据量大，建议按月份分区或使用存储。
+---
+
+
+## 五、运动板块数据库 (`SportsAppApp`)
+
+## 六、系统设置板块数据库 (`SystemSettingsApp`)
 
  ### 1. 用户设置 (`SystemSettingsApp.dbo.SystemUserAccounts`)
 ``` 
