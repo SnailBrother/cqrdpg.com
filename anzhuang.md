@@ -61,7 +61,7 @@ CREATE TABLE BillingApp.dbo.AccountLogin (
 
 消息通知
 use BillingApp;
-CREATE TABLE MessageDetail (
+CREATE TABLE BillingApp.dbo.MessageDetail (
     id INT IDENTITY(1,1) PRIMARY KEY,  -- 自动递增的主键
     title NVARCHAR(255) NOT NULL,       -- 消息标题，最大长度 255
     time DATETIME NOT NULL,             -- 消息发布时间
@@ -961,8 +961,7 @@ CREATE TABLE PdfFileData.dbo.PdfPrintFileCompanyPersonnel (
     id INT IDENTITY(1,1) PRIMARY KEY,  -- ID，主键
      companyName NVARCHAR(100) NOT NULL DEFAULT 'ruida',  -- 新增：公司名称，非空且默认值为'ruida'
    username NVARCHAR(50) NOT NULL,     -- 用户名，限制最大长度为 50 个字符
-   email NVARCHAR(100) NOT NULL,       -- 用户邮箱
-            
+   email NVARCHAR(100) NOT NULL,       -- 用户邮箱           
 );
 
 

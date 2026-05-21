@@ -372,6 +372,145 @@ CREATE TABLE OfficeApp.dbo.WordReportsInformation (
 ); 
  ``` 
 
+### 3. 评估报告附件装订pdf用户管理 (`OfficeApp.dbo.PdfPrintFileCompanyPersonnel`)
+ ``` 
+CREATE TABLE OfficeApp.dbo.PdfPrintFileCompanyPersonnel (
+    id INT IDENTITY(1,1) PRIMARY KEY,  -- ID，主键
+     companyName NVARCHAR(100) NOT NULL DEFAULT 'ruida',  -- 新增：公司名称，非空且默认值为'ruida'
+   username NVARCHAR(50) NOT NULL,     -- 用户名，限制最大长度为 50 个字符
+   email NVARCHAR(100) NOT NULL,       -- 用户邮箱           
+);
+ ``` 
+
+ ### 4. 评估报告附件装订pdf文件表 (`OfficeApp.dbo.ReportPdfPrintFile`)
+``` 
+CREATE TABLE OfficeApp.dbo.ReportPdfPrintFile (
+    pdfPrintFileId INT IDENTITY(1,1) PRIMARY KEY,  -- ID，主键
+     companyName NVARCHAR(100) NOT NULL DEFAULT 'ruida',  -- 新增：公司名称，非空且默认值为'ruida'
+    fileType NVARCHAR(50) NOT NULL DEFAULT '房地产',        -- 文件类型，默认值为 '房地产'
+    pdfPrintFileName NVARCHAR(100) NOT NULL,         -- PDF文件名
+    paperSize NVARCHAR(10) NOT NULL DEFAULT 'A4',           -- 纸张大小，默认值为 A4
+    effectiveDate DATE NOT NULL DEFAULT GETDATE(),          -- 有效期字段（日期类型），默认值为当前日期
+    notes NVARCHAR(MAX) NULL                                 -- 备注，允许为空
+);
+``` 
+ ### 5. pdf资料文件表 (`OfficeApp.dbo.EvaluationFilePreview`)
+ ``` 
+CREATE TABLE OfficeApp.dbo.EvaluationFilePreview (
+    FileID INT IDENTITY(1,1) PRIMARY KEY,      -- 文件ID，主键
+    CategoryName NVARCHAR(100) NOT NULL,        -- 分类名称
+    FileName NVARCHAR(255) NOT NULL,            -- 文件名
+    Remarks NVARCHAR(255),                      -- 备注
+);
+``` 
+ ### 5. 创建新的报告下载表 (`OfficeApp.dbo.EvaluationFilePreview`)
+ ``` 
+CREATE TABLE OfficeApp.dbo.TemplateManagement (
+    Id INT PRIMARY KEY IDENTITY(1,1),  -- 主键，自增标识
+    AssetType NVARCHAR(50) NOT NULL,  -- 资产类型（非空）
+    AssetTypeRemark NVARCHAR(255) NULL,  -- 资产类型备注（可为空
+    ValuationPurpose NVARCHAR(50) NOT NULL,  -- 估价目的（非空）
+    DocumentName NVARCHAR(100) NOT NULL,  -- 文档名称（非空）
+    DocumentRemark NVARCHAR(255) NULL  -- 文档备注（可为空）
+);
+ ``` 
+
+### 6. 消息通知 (`OfficeApp.dbo.MessageDetail`)
+ ``` 
+CREATE TABLE OfficeApp.dbo.MessageDetail (
+    id INT IDENTITY(1,1) PRIMARY KEY,  -- 自动递增的主键
+    title NVARCHAR(255) NOT NULL,       -- 消息标题，最大长度 255
+    time DATETIME NOT NULL,             -- 消息发布时间
+    content NVARCHAR(MAX)               -- 消息内容，支持大量文本和换行
+);
+ ``` 
+ ### 7. 常用网站 (`OfficeApp.dbo.UsedWebsites`)
+  ``` 
+ CREATE TABLE OfficeApp.dbo.UsedWebsites (
+    id INT IDENTITY(1,1) PRIMARY KEY,  -- 自动递增的唯一标识符
+    type NVARCHAR(100),                 -- 网站类型 (如：房地产、资产、苗木、土地、娱乐)，长度可以根据实际需求调整
+    name NVARCHAR(255),                 -- 网站名，长度可根据需要调整
+    url NVARCHAR(500)                   -- 网站链接，长度可以根据需要调整
+);
+ ``` 
+ ### 8. 特别通知 (`OfficeApp.dbo.Special_Tips`)
+  ``` 
+CREATE TABLE OfficeApp.dbo.Special_Tips (
+    id INT IDENTITY(1,1) PRIMARY KEY,         -- 自动递增的唯一标识符
+    asset_type NVARCHAR(100) NOT NULL,         -- 资产类型(房地产、资产、土地、其他），最大长度 100 字符
+    tip_content NVARCHAR(1000) NOT NULL,       -- 提示内容，最大长度 255 字符
+    remark NVARCHAR(500) NULL                 -- 备注，最大长度 500 字符，允许为空
+);
+ ``` 
+  ### 8. 房价查询图片表 (`OfficeApp.dbo.HousePricePicture`)
+``` 
+CREATE TABLE OfficeApp.dbo.HousePricePicture (
+    pictureId INT IDENTITY(1,1) PRIMARY KEY,         -- 图片ID，主键，自增长
+    pictureFileName NVARCHAR(100) NOT NULL,          -- 图片文件名
+    reportsID INT NOT NULL,                          -- 必须添加这个外键字段！！！
+    FOREIGN KEY (reportsID) REFERENCES OfficeApp.dbo.WordReportsInformation(reportsID) 
+        ON DELETE CASCADE                            -- 外键约束
+);
+``` 
+  ### 8. 地图找房Api (`OfficeApp.dbo.ApiDatabas`)
+``` 
+CREATE TABLE OfficeApp.dbo.ApiDatabas (
+    id INT IDENTITY(1,1) PRIMARY KEY,      -- 文件ID，主键
+    apiUsername  VARCHAR(255) NOT NULL,        -- 用户
+    apiName  VARCHAR(255) NOT NULL,        -- API名称
+    apiKey  VARCHAR(255) NOT NULL,        -- API密钥   
+    remark  VARCHAR(255) NOT NULL,   -- 备注
+);
+``` 
+### 8. 构筑物价格查询表 (`OfficeApp.dbo.BuildingsPrice`)
+``` 
+CREATE TABLE OfficeApp.dbo.BuildingsPrice (
+    buildingsPriceid INT IDENTITY(1,1) PRIMARY KEY,  -- ID，主键
+    name NVARCHAR(100) NOT NULL,                     -- 名称
+    structure NVARCHAR(100),                         -- 结构
+    area NVARCHAR(100),                              -- 区域
+    unit NVARCHAR(50),                               -- 单位
+    price NVARCHAR(50),                              -- 价格
+createdDate DATE NOT NULL DEFAULT GETDATE(),      -- 日期字段，默认当前日期
+    notes NVARCHAR(MAX)                              -- 备注
+);
+``` 
+### 8. 构筑物价格图片查询表 (`OfficeApp.dbo.BuildingsPricePicture`)
+``` 
+CREATE TABLE OfficeApp.dbo.BuildingsPricePicture (
+    pictureId INT IDENTITY(1,1) PRIMARY KEY,       -- 图片ID，主键，自增长
+    pictureFileName NVARCHAR(100) NOT NULL,         -- 图片文件名
+    buildingsPriceid INT NOT NULL,                  -- 外键字段，关联 BuildingsPrice 表
+    FOREIGN KEY (buildingsPriceid) REFERENCES OfficeApp.dbo.BuildingsPrice(buildingsPriceid) 
+        ON DELETE CASCADE                          -- 外键约束，级联删除
+);
+``` 
+### 8. 苗木查询表 (`OfficeApp.dbo.TreeDB`)
+``` 
+CREATE TABLE OfficeApp.dbo.TreeDB (
+    id INT IDENTITY(1,1) PRIMARY KEY,      -- ID，主键
+    name VARCHAR(255) NOT NULL,             -- 名称
+    diameter DECIMAL(5,2),                  -- 米经
+    height DECIMAL(5,2),                    -- 高度
+    crown_width DECIMAL(5,2),               -- 冠幅
+    ground_diameter DECIMAL(5,2),           -- 地径
+    price DECIMAL(10,2),                    -- 价格
+    region VARCHAR(255),                    -- 区域
+    species VARCHAR(255),                   -- 种类
+    notes TEXT                              -- 备注
+);
+``` 
+### 8. 机器设备查询表 (`OfficeApp.dbo.TreeDB`)
+``` 
+CREATE TABLE OfficeApp.dbo.MachineryEquipmentPricesTable (
+    id INT IDENTITY(1,1) PRIMARY KEY,   -- 自动递增的唯一标识符（主键）
+    name NVARCHAR(100) NOT NULL,         -- 设备名称，字符串类型，最大长度为100
+    model NVARCHAR(100) NOT NULL,        -- 规格型号，字符串类型，最大长度为100
+    manufacturer NVARCHAR(100) NOT NULL, -- 品牌，字符串类型，最大长度为100
+    unit NVARCHAR(50) NOT NULL,          -- 单位，字符串类型，最大长度为50
+    price DECIMAL(18, 2) NOT NULL        -- 价格，数值类型，保留两位小数
+);
+``` 
 ##  四、记账板块数据库 (`AccountingApp`)
 
 ### 1. 账单 (`AccountingApp.dbo.AccountingList`)

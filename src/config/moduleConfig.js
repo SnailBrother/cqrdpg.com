@@ -1,15 +1,14 @@
 // src/config/moduleConfig.js
 import React, { lazy } from 'react';
 
-// 核心页面 - 直接导入（常用页面）
-
-import AccountingDetails from '../pages/modules/accounting/AccountingDetails';
-import MusicHome from '../pages/modules/music/Home';
-import MusicRecommend from '../pages/modules/music/Recommend';
-import ChatChat from '../pages/modules/chat/Chat';
-import Musicplayer from '../pages/modules/music/Player';
-import SystemThemeSettings from '../pages/modules/system/SystemThemeSettings';
-import SystemReadExcelData from '../pages/modules/system/ReadExcelData';
+// 核心页面 - 全部改成懒加载 - 一个都不保留
+const AccountingDetails = lazy(() => import('../pages/modules/accounting/AccountingDetails'));
+const MusicHome = lazy(() => import('../pages/modules/music/Home'));
+const MusicRecommend = lazy(() => import('../pages/modules/music/Recommend'));
+const ChatChat = lazy(() => import('../pages/modules/chat/Chat'));
+const Musicplayer = lazy(() => import('../pages/modules/music/Player'));
+const SystemThemeSettings = lazy(() => import('../pages/modules/system/SystemThemeSettings'));
+const SystemReadExcelData = lazy(() => import('../pages/modules/system/ReadExcelData'));
 
 // 非核心页面 - 懒加载（不常用页面）
 const AccountingAdd = lazy(() => import('../pages/modules/accounting/AccountingAdd'));

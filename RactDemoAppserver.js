@@ -445,7 +445,7 @@ app.put('/api/changePassword', async (req, res) => {
         try {
             // 1. 首先获取数据库数据
             //pool = await sql.connect(config);
-            const result = await pool.request().query('SELECT * FROM Special_Tips');
+            const result = await pool.request().query('SELECT * FROM OfficeApp.dbo.Special_Tips');
 
             // 2. 立即向所有客户端广播更新
             io.emit('tips-update', result.recordset);
@@ -480,13 +480,13 @@ app.put('/api/changePassword', async (req, res) => {
                 .input('tip_content', sql.NVarChar(1000), tip_content)
                 .input('remark', sql.NVarChar(500), remark || null)
                 .query(`
-                INSERT INTO BillingApp.dbo.Special_Tips 
+                INSERT INTO OfficeApp.dbo.Special_Tips 
                 (asset_type, tip_content, remark) 
                 VALUES (@asset_type, @tip_content, @remark)
             `);
 
             // 获取更新后的完整列表
-            const result = await pool.request().query('SELECT * FROM Special_Tips');
+            const result = await pool.request().query('SELECT * FROM OfficeApp.dbo.Special_Tips');
 
             // 广播给所有客户端
             io.emit('tips-update', result.recordset);
@@ -512,7 +512,7 @@ app.put('/api/changePassword', async (req, res) => {
         try {
             // 1. 首先获取数据库数据
             // pool = await sql.connect(config);
-            const result = await pool.request().query('SELECT * FROM MessageDetail ORDER BY time DESC'); // 添加ORDER BY time DESC
+            const result = await pool.request().query('SELECT * FROM OfficeApp.dbo.MessageDetail ORDER BY time DESC'); // 添加ORDER BY time DESC
 
             // 2. 立即向所有客户端广播更新
             io.emit('message-update', result.recordset);
@@ -546,13 +546,13 @@ app.put('/api/changePassword', async (req, res) => {
                 .input('title', sql.NVarChar(255), title)
                 .input('content', sql.NVarChar(sql.MAX), content)
                 .query(`
-                INSERT INTO MessageDetail 
+                INSERT INTO OfficeApp.dbo.MessageDetail 
                 (title, content, time) 
                 VALUES (@title, @content, GETDATE())
             `);
 
             // 获取更新后的完整列表
-            const result = await pool.request().query('SELECT * FROM MessageDetail');
+            const result = await pool.request().query('SELECT * FROM OfficeApp.dbo.MessageDetail');
 
             // 广播给所有客户端
             io.emit('message-update', result.recordset);
@@ -839,7 +839,7 @@ app.put('/api/changePassword', async (req, res) => {
         try {
             // pool = await sql.connect(config);
             const query = `
-            INSERT INTO ChatApp.dbo.TreeDB (name, diameter, height, crown_width, ground_diameter, price, region, species, notes) 
+            INSERT INTO OfficeApp.dbo.TreeDB (name, diameter, height, crown_width, ground_diameter, price, region, species, notes) 
             OUTPUT INSERTED.*
             VALUES (@name, @diameter, @height, @crown_width, @ground_diameter, @price, @region, @species, @notes)
         `;
@@ -879,7 +879,7 @@ app.put('/api/changePassword', async (req, res) => {
         try {
             //  pool = await sql.connect(config);
             const query = `
-            UPDATE ChatApp.dbo.TreeDB 
+            UPDATE OfficeApp.dbo.TreeDB 
             SET name = @name, diameter = @diameter, height = @height, 
                 crown_width = @crown_width, ground_diameter = @ground_diameter, 
                 price = @price, region = @region, species = @species, notes = @notes
@@ -925,7 +925,7 @@ app.put('/api/changePassword', async (req, res) => {
 
         try {
             //  pool = await sql.connect(config);
-            const query = 'DELETE FROM ChatApp.dbo.TreeDB WHERE id = @id';
+            const query = 'DELETE FROM OfficeApp.dbo.TreeDB WHERE id = @id';
 
             const result = await pool.request()
                 .input('id', sql.Int, id)
@@ -950,7 +950,7 @@ app.put('/api/changePassword', async (req, res) => {
     // 获取随机4条苗木数据
     app.get('/api/getRandomTrees', async (req, res) => {
         try {
-            const treesResult = await pool.request().query('SELECT TOP 4 * FROM ChatApp.dbo.TreeDB ORDER BY NEWID()');
+            const treesResult = await pool.request().query('SELECT TOP 4 * FROM OfficeApp.dbo.TreeDB ORDER BY NEWID()');
             res.json({ Trees: treesResult.recordset });
         } catch (err) {
             console.error(err);
@@ -985,7 +985,7 @@ app.put('/api/changePassword', async (req, res) => {
             // 获取总数
             const countQuery = `
             SELECT COUNT(*) as totalCount 
-            FROM ChatApp.dbo.TreeDB
+            FROM OfficeApp.dbo.TreeDB
             WHERE name LIKE @term OR 
                   region LIKE @term OR 
                   species LIKE @term OR 
@@ -1001,7 +1001,7 @@ app.put('/api/changePassword', async (req, res) => {
             // 获取分页数据
             const offset = (pageNum - 1) * size;
             const dataQuery = `
-            SELECT * FROM ChatApp.dbo.TreeDB
+            SELECT * FROM OfficeApp.dbo.TreeDB
             WHERE name LIKE @term OR 
                   region LIKE @term OR 
                   species LIKE @term OR 
@@ -1059,7 +1059,7 @@ app.put('/api/changePassword', async (req, res) => {
                             .input('species', sql.VarChar, row.species || '')
                             .input('notes', sql.Text, row.notes || '')
                             .query(`
-                            INSERT INTO ChatApp.dbo.TreeDB 
+                            INSERT INTO OfficeApp.dbo.TreeDB 
                             (name, diameter, height, crown_width, ground_diameter, price, region, species, notes)
                             VALUES 
                             (@name, @diameter, @height, @crown_width, @ground_diameter, @price, @region, @species, @notes)
@@ -1334,7 +1334,7 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
     // 获取 UsedWebsites 常用网站数据
     app.get('/api/getUsedWebsitesData', async (req, res) => {
         try {
-            const result = await pool.query('SELECT * FROM UsedWebsites');
+            const result = await pool.query('SELECT * FROM OfficeApp.dbo.UsedWebsites');
 
             // 广播更新
             io.emit('websites-update', result.recordset);
@@ -1365,13 +1365,13 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
                 .input('name', sql.NVarChar(255), name)
                 .input('url', sql.NVarChar(500), url)
                 .query(`
-                INSERT INTO BillingApp.dbo.UsedWebsites 
+                INSERT INTO OfficeApp.dbo.UsedWebsites 
                 (type, name, url) 
                 VALUES (@type, @name, @url)
             `);
 
             // 获取更新后的完整列表
-            const result = await pool.request().query('SELECT * FROM UsedWebsites');
+            const result = await pool.request().query('SELECT * FROM OfficeApp.dbo.UsedWebsites');
 
             // 广播给所有客户端
             io.emit('websites-update', result.recordset);
@@ -1808,7 +1808,7 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
     app.get('/api/getMachineryEquipmentPricesTable', async (req, res) => {
         try {
             //const pool = await sql.connect(config);
-            const result = await pool.request().query('SELECT * FROM MachineryEquipmentPricesTable');
+            const result = await pool.request().query('SELECT * FROM OfficeApp.dbo.MachineryEquipmentPricesTable');
             res.json(result.recordset);
             //pool.close();
         } catch (err) {
@@ -1828,7 +1828,7 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
                 .input('manufacturer', sql.NVarChar, manufacturer)
                 .input('unit', sql.NVarChar, unit)
                 .input('price', sql.Decimal(18, 2), price)
-                .query('INSERT INTO MachineryEquipmentPricesTable (name, model, manufacturer, unit, price) OUTPUT INSERTED.id VALUES (@name, @model, @manufacturer, @unit, @price)');
+                .query('INSERT INTO OfficeApp.dbo.MachineryEquipmentPricesTable (name, model, manufacturer, unit, price) OUTPUT INSERTED.id VALUES (@name, @model, @manufacturer, @unit, @price)');
 
             res.status(201).json({ ID: result.recordset[0].id });
             //pool.close();
@@ -1851,7 +1851,7 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
                 .input('manufacturer', sql.NVarChar, manufacturer)
                 .input('unit', sql.NVarChar, unit)
                 .input('price', sql.Decimal(18, 2), price)
-                .query('UPDATE MachineryEquipmentPricesTable SET name = @name, model = @model, manufacturer = @manufacturer, unit = @unit, price = @price WHERE id = @id');
+                .query('UPDATE OfficeApp.dbo.MachineryEquipmentPricesTable SET name = @name, model = @model, manufacturer = @manufacturer, unit = @unit, price = @price WHERE id = @id');
 
             res.sendStatus(204); // No Content
             //pool.close();
@@ -1868,7 +1868,7 @@ app.delete('/api/deleteRealEstateData/:id', async (req, res) => {
             //const pool = await sql.connect(config);
             await pool.request()
                 .input('id', sql.Int, id)
-                .query('DELETE FROM MachineryEquipmentPricesTable WHERE id = @id');
+                .query('DELETE FROM OfficeApp.dbo.MachineryEquipmentPricesTable WHERE id = @id');
 
             res.sendStatus(204); // No Content
             //pool.close();
@@ -7514,7 +7514,7 @@ app.delete('/api/auntflo/records', async (req, res) => {
 //获取
 app.get('/api/getTemplateManagement', async (req, res) => {
     try {
-        let templateResult = await pool.request().query('SELECT * FROM ChatApp.dbo.TemplateManagement');
+        let templateResult = await pool.request().query('SELECT * FROM OfficeApp.dbo.TemplateManagement');
 
         // Transform the data to match frontend structure
         const transformedData = templateResult.recordset.map(item => ({
@@ -7700,7 +7700,7 @@ app.get('/api/getEvaluationFilePreview', async (req, res) => {
         // let pool = await sql.connect(config);
         //  console.log('数据库连接成功');
         let result = await pool.request()
-            .query('SELECT CategoryName, FileName, Remarks FROM ChatApp.dbo.EvaluationFilePreview ORDER BY CategoryName, FileName');
+            .query('SELECT CategoryName, FileName, Remarks FROM OfficeApp.dbo.EvaluationFilePreview ORDER BY CategoryName, FileName');
 
         // 将结果按分类分组
         const groupedData = {};
@@ -7760,7 +7760,7 @@ process.on('SIGINT', async () => {
 app.get('/api/getApiDatabas', async (req, res) => {
     try {
         //const pool = await sql.connect(config);
-        const result = await pool.request().query('SELECT * FROM WebWordReports.dbo.ApiDatabas');
+        const result = await pool.request().query('SELECT * FROM OfficeApp.dbo.ApiDatabas');
         res.status(200).json(result.recordset);
     } catch (error) {
         console.error('获取数据失败:', error);
@@ -7773,7 +7773,7 @@ app.get('/api/getApiDatabas', async (req, res) => {
 app.get('/api/getWordReportOptions', async (req, res) => {
     try {
         //const pool = await sql.connect(config);
-        const result = await pool.request().query('SELECT * FROM WebWordReports.dbo.WordReportOptions');
+        const result = await pool.request().query('SELECT * FROM OfficeApp.dbo.WordReportOptions');
         res.status(200).json(result.recordset);
     } catch (error) {
         console.error('获取数据失败:', error);
@@ -7829,7 +7829,7 @@ app.post('/api/syncWordReportOptions', async (req, res) => {
                 // 查询该列中是否已存在该值
                 const checkQuery = `
                     SELECT COUNT(*) as count 
-                    FROM WebWordReports.dbo.WordReportOptions 
+                    FROM OfficeApp.dbo.WordReportOptions 
                     WHERE ${dbColumn} = @value
                 `;
                 
@@ -7840,7 +7840,7 @@ app.post('/api/syncWordReportOptions', async (req, res) => {
                 if (checkResult.recordset[0].count === 0) {
                     // 不存在，找一行该列为NULL的记录进行更新
                     const updateQuery = `
-                        UPDATE TOP (1) WebWordReports.dbo.WordReportOptions
+                        UPDATE TOP (1) OfficeApp.dbo.WordReportOptions
                         SET ${dbColumn} = @value
                         WHERE ${dbColumn} IS NULL
                     `;
@@ -7852,7 +7852,7 @@ app.post('/api/syncWordReportOptions', async (req, res) => {
                     // 如果没有NULL行可更新，才插入新行
                     if (updateResult.rowsAffected[0] === 0) {
                         const insertQuery = `
-                            INSERT INTO WebWordReports.dbo.WordReportOptions (${dbColumn})
+                            INSERT INTO OfficeApp.dbo.WordReportOptions (${dbColumn})
                             VALUES (@value)
                         `;
                         await pool.request()
@@ -7883,7 +7883,7 @@ app.get('/api/searchWordReportsold', async (req, res) => {
             .input('searchTerm', sql.VarChar(255), `%${documentNo}%`) // 扩大长度以防长搜索词
             .query(`
         SELECT * 
-        FROM WebWordReports.dbo.WordReportsInformation 
+        FROM OfficeApp.dbo.WordReportsInformation 
         WHERE 
           documentNo LIKE @searchTerm
           OR entrustingParty LIKE @searchTerm
@@ -7916,7 +7916,7 @@ app.get('/api/searchWordReports', async (req, res) => {
             .input('searchTerm', sql.VarChar(255), `%${documentNo}%`)
             .query(`
                 SELECT COUNT(*) as total 
-                FROM WebWordReports.dbo.WordReportsInformation 
+                FROM OfficeApp.dbo.WordReportsInformation 
                 WHERE 
                     documentNo LIKE @searchTerm
                     OR entrustingParty LIKE @searchTerm
@@ -7939,7 +7939,7 @@ app.get('/api/searchWordReports', async (req, res) => {
             .input('pageSize', sql.Int, size)
             .query(`
                 SELECT * 
-                FROM WebWordReports.dbo.WordReportsInformation 
+                FROM OfficeApp.dbo.WordReportsInformation 
                 WHERE 
                     documentNo LIKE @searchTerm
                     OR entrustingParty LIKE @searchTerm
@@ -7975,7 +7975,7 @@ app.get('/api/checkReportByReportID', async (req, res) => {
     try {
         const result = await pool.request()
             .input('reportID', sql.VarChar(255), reportID)
-            .query('SELECT TOP 1 * FROM WebWordReports.dbo.WordReportsInformation WHERE reportID = @reportID');
+            .query('SELECT TOP 1 * FROM OfficeApp.dbo.WordReportsInformation WHERE reportID = @reportID');
 
         if (result.recordset.length > 0) {
             res.status(200).json(result.recordset[0]);
@@ -7994,7 +7994,7 @@ app.delete('/api/deleteWordReport/:id', async (req, res) => {
     try {
         await pool.request()
             .input('reportsID', sql.Int, reportId)
-            .query('DELETE FROM WebWordReports.dbo.WordReportsInformation WHERE reportsID = @reportsID');
+            .query('DELETE FROM OfficeApp.dbo.WordReportsInformation WHERE reportsID = @reportsID');
 
         // 通知所有客户端有报告删除
         io.emit('report_deleted', parseInt(reportId));
@@ -8073,7 +8073,7 @@ app.post('/api/createWordReport', async (req, res) => {
             .input('seizureStatus', sql.Bit, reportData.seizureStatus)//查封状况
             .input('isLeaseConsidered', sql.Bit, reportData.isLeaseConsidered)//是否考虑租约
             .input('rent', sql.Decimal(18, 2), reportData.rent)//建面月租金
-            .query(`INSERT INTO WebWordReports.dbo.WordReportsInformation (
+            .query(`INSERT INTO OfficeApp.dbo.WordReportsInformation (
         documentNo, entrustDate, entrustingParty, assessmentCommissionDocument, valueDateRequirements, location, 
         buildingArea, interiorArea, propertyCertificateNo, housePurpose,
         propertyUnitNo, rightsHolder, landPurpose, sharedLandArea,
@@ -8188,7 +8188,7 @@ app.put('/api/updateWordReport/:id', async (req, res) => {
             .input('seizureStatus', sql.Bit, reportData.seizureStatus)//查封状况
             .input('isLeaseConsidered', sql.Bit, reportData.isLeaseConsidered)//是否考虑租约
             .input('rent', sql.Decimal(18, 2), reportData.rent)//建面月租金
-            .query(`UPDATE WebWordReports.dbo.WordReportsInformation SET
+            .query(`UPDATE OfficeApp.dbo.WordReportsInformation SET
         documentNo = @documentNo,
         entrustDate = @entrustDate,
         entrustingParty = @entrustingParty,
@@ -8407,7 +8407,7 @@ app.get('/api/searchWordReportsReportQrCode/:reportsID', async (req, res) => {
             .input('reportsID', sql.VarChar(255), reportsID)
             .query(`
                 SELECT * 
-                FROM WebWordReports.dbo.WordReportsInformation 
+                FROM OfficeApp.dbo.WordReportsInformation 
                 WHERE reportsID = @reportsID
             `);
 
@@ -8470,7 +8470,7 @@ app.get('/cyywork/api/searchHousePrice', async (req, res) => {
         const countResult = await pool.request()
             .query(`
                 SELECT COUNT(*) as total 
-                FROM WebWordReports.dbo.WordReportsInformation 
+                FROM OfficeApp.dbo.WordReportsInformation 
                 ${whereClause}
             `);
 
@@ -8534,7 +8534,7 @@ app.get('/cyywork/api/searchHousePrice', async (req, res) => {
                     utilizationStatus,
                     isLeaseConsidered,
                     rent
-                FROM WebWordReports.dbo.WordReportsInformation 
+                FROM OfficeApp.dbo.WordReportsInformation 
                 ${whereClause}
                 ORDER BY ${sortField} ${sortOrder}
                 OFFSET ${offset} ROWS
@@ -8593,7 +8593,7 @@ app.get('/api/searchBoxHouseItemsSource', async (req, res) => {
             FROM (
                 -- 搜索location字段
                 SELECT DISTINCT location AS suggestion
-                FROM WebWordReports.dbo.WordReportsInformation 
+                FROM OfficeApp.dbo.WordReportsInformation 
                 WHERE location LIKE @fuzzyPattern
                     AND location IS NOT NULL 
                     AND location != ''
@@ -8603,7 +8603,7 @@ app.get('/api/searchBoxHouseItemsSource', async (req, res) => {
                 
                 -- 搜索communityName字段
                 SELECT DISTINCT communityName AS suggestion
-                FROM WebWordReports.dbo.WordReportsInformation 
+                FROM OfficeApp.dbo.WordReportsInformation 
                 WHERE communityName LIKE @fuzzyPattern
                     AND communityName IS NOT NULL 
                     AND communityName != ''
@@ -8691,7 +8691,7 @@ app.get('/api/searchHousePrice', async (req, res) => {
         const countResult = await pool.request()
             .query(`
                 SELECT COUNT(*) as total 
-                FROM WebWordReports.dbo.WordReportsInformation 
+                FROM OfficeApp.dbo.WordReportsInformation 
                 ${whereClause}
             `);
 
@@ -8755,7 +8755,7 @@ app.get('/api/searchHousePrice', async (req, res) => {
                     utilizationStatus,
                     isLeaseConsidered,
                     rent
-                FROM WebWordReports.dbo.WordReportsInformation 
+                FROM OfficeApp.dbo.WordReportsInformation 
                 ${whereClause}
                 ORDER BY ${sortField} ${sortOrder}
                 OFFSET ${offset} ROWS
@@ -8835,7 +8835,7 @@ const uploadUploadHousePricePicture = multer({
 
     //         const query = `
     //             SELECT pictureFileName 
-    //             FROM WebWordReports.dbo.HousePricePicture 
+    //             FROM OfficeApp.dbo.HousePricePicture 
     //             WHERE reportsID = @reportsID
     //         `;
 
@@ -8868,7 +8868,7 @@ const uploadUploadHousePricePicture = multer({
 
     //         const query = `
     //             SELECT pictureFileName 
-    //             FROM WebWordReports.dbo.HousePricePicture 
+    //             FROM OfficeApp.dbo.HousePricePicture 
     //             WHERE reportsID = @reportsID
     //         `;
 
@@ -8920,7 +8920,7 @@ app.post('/api/UploadHousePricePicture',
             const checkRequest = new sql.Request(pool);
             const checkQuery = `
                 SELECT pictureFileName 
-                FROM WebWordReports.dbo.HousePricePicture 
+                FROM OfficeApp.dbo.HousePricePicture 
                 WHERE reportsID = @reportsID
             `;
             checkRequest.input('reportsID', sql.Int, parseInt(reportsID));
@@ -8956,7 +8956,7 @@ app.post('/api/UploadHousePricePicture',
 
                 const imageRequest = new sql.Request(pool);
                 const imageQuery = `
-                    INSERT INTO WebWordReports.dbo.HousePricePicture 
+                    INSERT INTO OfficeApp.dbo.HousePricePicture 
                         (pictureFileName, reportsID)
                     VALUES 
                         (@pictureFileName, @reportsID)
@@ -9019,7 +9019,7 @@ app.get('/api/GetHousePricePictures', async (req, res) => {
         // 查询该报告的所有图片
         const query = `
             SELECT pictureFileName
-            FROM WebWordReports.dbo.HousePricePicture 
+            FROM OfficeApp.dbo.HousePricePicture 
             WHERE reportsID = @reportsID
         `;
 
@@ -9059,7 +9059,7 @@ app.get('/api/GetHousePricePicturesWordReportInfo', async (req, res) => {
         // 查询报告详细信息
         const query = `
             SELECT *
-            FROM WebWordReports.dbo.WordReportsInformation 
+            FROM OfficeApp.dbo.WordReportsInformation 
             WHERE reportsID = @reportsID
         `;
 
@@ -11851,7 +11851,7 @@ app.get('/api/react-demo/background-image/:email/:themeId', (req, res) => {
                 valueDate,
                 entrustingParty,
                 rightsHolder
-            FROM WebWordReports.dbo.WordReportsInformation
+            FROM OfficeApp.dbo.WordReportsInformation
             WHERE 1=1
         `;
 
@@ -11955,7 +11955,7 @@ app.get('/api/react-demo/background-image/:email/:themeId', (req, res) => {
                 direction,
                 orientation,
                 distance
-            FROM WebWordReports.dbo.WordReportsInformation r
+            FROM OfficeApp.dbo.WordReportsInformation r
             WHERE EXISTS (
                 SELECT 1 FROM @Neighborhoods n 
                 WHERE (
@@ -12060,7 +12060,7 @@ app.get('/api/react-demo/background-image/:email/:themeId', (req, res) => {
                     direction,
                     orientation,
                     distance
-                FROM WebWordReports.dbo.WordReportsInformation r
+                FROM OfficeApp.dbo.WordReportsInformation r
                 WHERE EXISTS (
                     SELECT 1 FROM @Neighborhoods n 
                     WHERE (
@@ -12113,7 +12113,7 @@ app.get('/api/react-demo/background-image/:email/:themeId', (req, res) => {
                     direction,
                     orientation,
                     distance
-                FROM WebWordReports.dbo.WordReportsInformation r
+                FROM OfficeApp.dbo.WordReportsInformation r
                 WHERE location LIKE @location OR communityName LIKE @location
             `;
 
@@ -12176,7 +12176,7 @@ app.get('/api/react-demo/background-image/:email/:themeId', (req, res) => {
                 MAX(yearBuilt) as newestYear,
                 AVG(buildingArea) as avgArea,
                 AVG(interiorArea) as avgInteriorArea
-            FROM WebWordReports.dbo.WordReportsInformation
+            FROM OfficeApp.dbo.WordReportsInformation
             WHERE communityName LIKE @communityName
             GROUP BY communityName
             ORDER BY reportCount DESC
@@ -12245,7 +12245,7 @@ app.get('/api/react-demo/background-image/:email/:themeId', (req, res) => {
                 distance,
                 -- 计算每平方米价格
                 CAST(valuationPrice AS FLOAT) / NULLIF(buildingArea, 0) as pricePerSqm
-            FROM WebWordReports.dbo.WordReportsInformation
+            FROM OfficeApp.dbo.WordReportsInformation
             WHERE 1=1
         `;
 
@@ -12342,7 +12342,7 @@ app.get('/api/react-demo/background-image/:email/:themeId', (req, res) => {
                 .input('price', sql.NVarChar(50), price || null)
                 .input('notes', sql.NVarChar(sql.MAX), notes || null)
                 .query(`
-                INSERT INTO Buildings.dbo.BuildingsPrice 
+                INSERT INTO OfficeApp.dbo.BuildingsPrice 
                 (name, structure, area, unit, price, notes, createdDate) 
                 VALUES (@name, @structure, @area, @unit, @price, @notes, GETDATE())
             `);
@@ -12404,7 +12404,7 @@ app.get('/api/react-demo/background-image/:email/:themeId', (req, res) => {
             // 获取总记录数
             const countQuery = `
             SELECT COUNT(*) as totalCount 
-            FROM Buildings.dbo.BuildingsPrice 
+            FROM OfficeApp.dbo.BuildingsPrice 
             ${whereClause}
         `;
 
@@ -12431,7 +12431,7 @@ app.get('/api/react-demo/background-image/:email/:themeId', (req, res) => {
                     createdDate,
                     notes,
                     ROW_NUMBER() OVER (ORDER BY ${sortField} ${sortOrder}) as rowNum
-                FROM Buildings.dbo.BuildingsPrice 
+                FROM OfficeApp.dbo.BuildingsPrice 
                 ${whereClause}
             ) as numbered
             WHERE rowNum > @offset AND rowNum <= @offset + @pageSize
@@ -12502,7 +12502,7 @@ app.get('/api/react-demo/background-image/:email/:themeId', (req, res) => {
             const result = await pool.request()
                 .input('id', sql.Int, id)
                 .query(`
-                SELECT * FROM Buildings.dbo.BuildingsPrice 
+                SELECT * FROM OfficeApp.dbo.BuildingsPrice 
                 WHERE buildingsPriceid = @id
             `);
 
@@ -12568,7 +12568,7 @@ app.get('/api/react-demo/background-image/:email/:themeId', (req, res) => {
                 .input('price', sql.NVarChar(50), price || null)
                 .input('notes', sql.NVarChar(sql.MAX), notes || null)
                 .query(`
-                UPDATE Buildings.dbo.BuildingsPrice 
+                UPDATE OfficeApp.dbo.BuildingsPrice 
                 SET name = @name,
                     structure = @structure,
                     area = @area,
@@ -12609,7 +12609,7 @@ app.get('/api/react-demo/background-image/:email/:themeId', (req, res) => {
             const result = await pool.request()
                 .input('id', sql.Int, id)
                 .query(`
-                DELETE FROM Buildings.dbo.BuildingsPrice 
+                DELETE FROM OfficeApp.dbo.BuildingsPrice 
                 WHERE buildingsPriceid = @id
             `);
 
@@ -12660,7 +12660,7 @@ app.get('/api/react-demo/background-image/:email/:themeId', (req, res) => {
             // 查询该建筑物的所有图片
             const query = `
             SELECT pictureFileName, buildingsPriceid
-            FROM Buildings.dbo.BuildingsPricePicture
+            FROM OfficeApp.dbo.BuildingsPricePicture
             WHERE buildingsPriceid = @buildingsPriceid
             ORDER BY pictureId DESC
         `;
@@ -12756,7 +12756,7 @@ app.get('/api/react-demo/background-image/:email/:themeId', (req, res) => {
                 const checkRequest = new sql.Request(pool);
                 const checkQuery = `
                 SELECT pictureFileName 
-                FROM Buildings.dbo.BuildingsPricePicture
+                FROM OfficeApp.dbo.BuildingsPricePicture
                 WHERE buildingsPriceid = @buildingsPriceid
             `;
                 checkRequest.input('buildingsPriceid', sql.Int, parseInt(buildingsPriceid));
@@ -12787,13 +12787,13 @@ app.get('/api/react-demo/background-image/:email/:themeId', (req, res) => {
                     });
                 }
 
-                // 插入新图片数据到Buildings.dbo.BuildingsPricePicture表
+                // 插入新图片数据到OfficeApp.dbo.BuildingsPricePicture表
                 for (let i = 0; i < newFiles.length; i++) {
                     const file = newFiles[i];
 
                     const imageRequest = new sql.Request(pool);
                     const imageQuery = `
-                    INSERT INTO Buildings.dbo.BuildingsPricePicture 
+                    INSERT INTO OfficeApp.dbo.BuildingsPricePicture 
                         (pictureFileName, buildingsPriceid)
                     VALUES 
                         (@pictureFileName, @buildingsPriceid)
@@ -12862,7 +12862,7 @@ app.get('/api/react-demo/background-image/:email/:themeId', (req, res) => {
                 price,
                 createdDate,
                 notes
-            FROM Buildings.dbo.BuildingsPrice 
+            FROM OfficeApp.dbo.BuildingsPrice 
             WHERE buildingsPriceid = @buildingsPriceid
         `;
 
@@ -12913,7 +12913,7 @@ app.get('/api/react-demo/background-image/:email/:themeId', (req, res) => {
             let request = pool.request();
 
             if (username) {
-                const query = 'SELECT companyName FROM PdfFileData.dbo.PdfPrintFileCompanyPersonnel WHERE username = @username';
+                const query = 'SELECT companyName FROM OfficeApp.dbo.PdfPrintFileCompanyPersonnel WHERE username = @username';
                 request.input('username', sql.NVarChar(50), username);
                 const result = await request.query(query);
 
@@ -12929,7 +12929,7 @@ app.get('/api/react-demo/background-image/:email/:themeId', (req, res) => {
                     });
                 }
             } else {
-                const query = 'SELECT companyName FROM PdfFileData.dbo.PdfPrintFileCompanyPersonnel WHERE email = @email';
+                const query = 'SELECT companyName FROM OfficeApp.dbo.PdfPrintFileCompanyPersonnel WHERE email = @email';
                 request.input('email', sql.NVarChar(100), email);
                 const result = await request.query(query);
 
@@ -12976,7 +12976,7 @@ app.get('/api/react-demo/background-image/:email/:themeId', (req, res) => {
     paperSize, 
     companyName
 FROM 
-    PdfFileData.dbo.ReportPdfPrintFile
+    OfficeApp.dbo.ReportPdfPrintFile
 WHERE 
     companyName = @companyName
 ORDER BY 
@@ -13436,7 +13436,7 @@ ORDER BY
                 // 1. 先从数据库获取所有小区名
                 const communityQuery = `
             SELECT DISTINCT communityName 
-            FROM WebWordReports.dbo.WordReportsInformation 
+            FROM OfficeApp.dbo.WordReportsInformation 
             WHERE communityName IS NOT NULL AND communityName != ''
         `;
 
@@ -13662,7 +13662,7 @@ ORDER BY
                 MIN(valuationPrice) AS 最低单价,
                 MAX(valuationPrice) AS 最高单价,
                 CAST(AVG(yearBuilt) AS DECIMAL(10,0)) AS 平均建成年份
-            FROM WebWordReports.dbo.WordReportsInformation
+            FROM OfficeApp.dbo.WordReportsInformation
             ${whereClause}
             GROUP BY 
                 CASE 
@@ -13752,7 +13752,7 @@ ORDER BY
                 CONVERT(VARCHAR(10), valueDate, 120) AS 价值时点,
                 decorationStatus AS 装修状况,
                 spaceLayout AS 空间布局
-            FROM WebWordReports.dbo.WordReportsInformation
+            FROM OfficeApp.dbo.WordReportsInformation
             ${whereClause}
             ORDER BY valueDate DESC
         `;
@@ -13807,7 +13807,7 @@ ORDER BY
                 CAST(AVG(buildingArea) AS DECIMAL(10,2)) AS 月均建筑面积,
                 MIN(valuationPrice) AS 月度最低单价,
                 MAX(valuationPrice) AS 月度最高单价
-            FROM WebWordReports.dbo.WordReportsInformation
+            FROM OfficeApp.dbo.WordReportsInformation
             ${whereClause}
             GROUP BY FORMAT(valueDate, 'yyyy-MM')
             ORDER BY FORMAT(valueDate, 'yyyy-MM') DESC
@@ -13895,7 +13895,7 @@ ORDER BY
                 AVG(CASE WHEN elevator = 1 THEN 1.0 ELSE 0.0 END) * 100 AS 电梯比例,
                 MIN(communityName) AS 小区名称,
                 MIN(location) AS 位置
-            FROM WebWordReports.dbo.WordReportsInformation
+            FROM OfficeApp.dbo.WordReportsInformation
             ${whereClause}
         `;
 
@@ -13943,7 +13943,7 @@ ORDER BY
                         MAX(valuationPrice) AS 最高单价,
                         CAST(AVG(valuationPrice) AS DECIMAL(10,0)) AS 平均单价,
                         CAST(AVG(buildingArea) AS DECIMAL(10,1)) AS 平均面积
-                    FROM WebWordReports.dbo.WordReportsInformation
+                    FROM OfficeApp.dbo.WordReportsInformation
                     ${fallbackWhereClause}
                 `;
 
@@ -14017,7 +14017,7 @@ ORDER BY
                 CONVERT(VARCHAR(10), valueDate, 120) AS 价值时点,
                 decorationStatus AS 装修状况,
                 spaceLayout AS 空间布局
-            FROM WebWordReports.dbo.WordReportsInformation
+            FROM OfficeApp.dbo.WordReportsInformation
             ${whereClause}
             ORDER BY valueDate DESC
         `;

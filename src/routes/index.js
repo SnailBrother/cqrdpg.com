@@ -20,10 +20,10 @@ const NotFound = React.lazy(() => import('../components/Animation/NotFound'));
 
 
 // 判断组件是否是懒加载的
-const isLazyComponent = (component) => {
-  // 检查是否为 React Lazy 组件
-  return component && component.$$typeof === Symbol.for('react.lazy');
-};
+// const isLazyComponent = (component) => {
+//   // 检查是否为 React Lazy 组件
+//   return component && component.$$typeof === Symbol.for('react.lazy');
+// };
 
 // 优化的加载组件
 const OptimizedLoadingFallback = () => (
@@ -32,19 +32,25 @@ const OptimizedLoadingFallback = () => (
     <Loading message="正在加载中..." />
   </div>
 );
-
-// 通用组件渲染器：处理懒加载 Suspense
 const RenderComponent = ({ component: Component, ...props }) => {
-  if (isLazyComponent(Component)) {
-    return (
-      <Suspense fallback={<OptimizedLoadingFallback />}>
-        <Component {...props} />
-      </Suspense>
-    );
-  }
-  // 直接导入的组件
-  return <Component {...props} />;
+  return (
+    <Suspense fallback={<OptimizedLoadingFallback />}>
+      <Component {...props} />
+    </Suspense>
+  );
 };
+// 通用组件渲染器：处理懒加载 Suspense
+// const RenderComponent = ({ component: Component, ...props }) => {
+//   if (isLazyComponent(Component)) {
+//     return (
+//       <Suspense fallback={<OptimizedLoadingFallback />}>
+//         <Component {...props} />
+//       </Suspense>
+//     );
+//   }
+//   // 直接导入的组件
+//   return <Component {...props} />;
+// };
 
 const AppRoutes = () => {
   const { isAuthenticated } = useAuth();
