@@ -8283,7 +8283,7 @@ app.post('/api/generateEncodedReportUrl', async (req, res) => {
 
         // 1. 获取所有映射关系 (0-9)
         const mappingResult = await pool.request()
-            .query('SELECT OriginalValue, DecodedText FROM WebWordReports.dbo.ReportqrCodepageDecodeMapping WHERE OriginalValue BETWEEN 0 AND 9');
+            .query('SELECT OriginalValue, DecodedText FROM OfficeApp.dbo.ReportqrCodepageDecodeMapping WHERE OriginalValue BETWEEN 0 AND 9');
 
         const map = {};
         mappingResult.recordset.forEach(row => {
@@ -8336,7 +8336,7 @@ app.get('/api/ReportqrCodepageDecodeMapping/:encodedValue', async (req, res) => 
         // 2. 获取所有映射关系，构建反向查找表 (Text -> Value)
         const result = await pool.request().query(`
             SELECT OriginalValue, DecodedText 
-            FROM WebWordReports.dbo.ReportqrCodepageDecodeMapping 
+            FROM OfficeApp.dbo.ReportqrCodepageDecodeMapping 
             WHERE OriginalValue BETWEEN 0 AND 9
         `);
 
@@ -9131,7 +9131,7 @@ app.get('/api/theme/:username', async (req, res) => {
         //const pool = await sql.connect(config);
         const result = await pool.request()
             .input('username', sql.NVarChar(100), username)
-            .query('SELECT * FROM WebWordReports.dbo.SystemThemeDB WHERE username = @username');
+            .query('SELECT * FROM OfficeApp.dbo.SystemThemeDB WHERE username = @username');
 
         if (result.recordset.length > 0) {
             res.json({
@@ -9193,7 +9193,7 @@ app.post('/api/theme', async (req, res) => {
         // 首先检查用户是否已有主题设置
         const checkResult = await pool.request()
             .input('username', sql.NVarChar(100), username)
-            .query('SELECT id FROM WebWordReports.dbo.SystemThemeDB WHERE username = @username');
+            .query('SELECT id FROM OfficeApp.dbo.SystemThemeDB WHERE username = @username');
 
         if (checkResult.recordset.length > 0) {
             // 更新现有记录
@@ -9209,7 +9209,7 @@ app.post('/api/theme', async (req, res) => {
                 .input('fontFamily', sql.VarChar(255), fontFamily)
                 .input('backgroundAnimation', sql.VarChar(100), backgroundAnimation || 'WaterWave')
                 .query(`
-          UPDATE WebWordReports.dbo.SystemThemeDB 
+          UPDATE OfficeApp.dbo.SystemThemeDB 
           SET fontColor = @fontColor, 
               hoverBackground = @hoverBackground,
               hoverFontColor = @hoverFontColor,
@@ -9235,7 +9235,7 @@ app.post('/api/theme', async (req, res) => {
                 .input('fontFamily', sql.VarChar(255), fontFamily)
                 .input('backgroundAnimation', sql.VarChar(100), backgroundAnimation || 'WaterWave')
                 .query(`
-          INSERT INTO WebWordReports.dbo.SystemThemeDB 
+          INSERT INTO OfficeApp.dbo.SystemThemeDB 
             (username, fontColor, hoverBackground, hoverFontColor, background, borderBrush, hoverBorderBrush, watermarkForeground, fontFamily, backgroundAnimation) 
           VALUES 
             (@username, @fontColor, @hoverBackground, @hoverFontColor, @background, @borderBrush, @hoverBorderBrush, @watermarkForeground, @fontFamily, @backgroundAnimation)

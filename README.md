@@ -442,7 +442,7 @@ CREATE TABLE OfficeApp.dbo.Special_Tips (
     remark NVARCHAR(500) NULL                 -- 备注，最大长度 500 字符，允许为空
 );
  ``` 
-  ### 8. 房价查询图片表 (`OfficeApp.dbo.HousePricePicture`)
+### 9. 房价查询图片表 (`OfficeApp.dbo.HousePricePicture`)
 ``` 
 CREATE TABLE OfficeApp.dbo.HousePricePicture (
     pictureId INT IDENTITY(1,1) PRIMARY KEY,         -- 图片ID，主键，自增长
@@ -452,7 +452,7 @@ CREATE TABLE OfficeApp.dbo.HousePricePicture (
         ON DELETE CASCADE                            -- 外键约束
 );
 ``` 
-  ### 8. 地图找房Api (`OfficeApp.dbo.ApiDatabas`)
+### 10. 地图找房Api (`OfficeApp.dbo.ApiDatabas`)
 ``` 
 CREATE TABLE OfficeApp.dbo.ApiDatabas (
     id INT IDENTITY(1,1) PRIMARY KEY,      -- 文件ID，主键
@@ -462,7 +462,7 @@ CREATE TABLE OfficeApp.dbo.ApiDatabas (
     remark  VARCHAR(255) NOT NULL,   -- 备注
 );
 ``` 
-### 8. 构筑物价格查询表 (`OfficeApp.dbo.BuildingsPrice`)
+### 11. 构筑物价格查询表 (`OfficeApp.dbo.BuildingsPrice`)
 ``` 
 CREATE TABLE OfficeApp.dbo.BuildingsPrice (
     buildingsPriceid INT IDENTITY(1,1) PRIMARY KEY,  -- ID，主键
@@ -475,7 +475,7 @@ createdDate DATE NOT NULL DEFAULT GETDATE(),      -- 日期字段，默认当前
     notes NVARCHAR(MAX)                              -- 备注
 );
 ``` 
-### 8. 构筑物价格图片查询表 (`OfficeApp.dbo.BuildingsPricePicture`)
+### 12. 构筑物价格图片查询表 (`OfficeApp.dbo.BuildingsPricePicture`)
 ``` 
 CREATE TABLE OfficeApp.dbo.BuildingsPricePicture (
     pictureId INT IDENTITY(1,1) PRIMARY KEY,       -- 图片ID，主键，自增长
@@ -485,7 +485,7 @@ CREATE TABLE OfficeApp.dbo.BuildingsPricePicture (
         ON DELETE CASCADE                          -- 外键约束，级联删除
 );
 ``` 
-### 8. 苗木查询表 (`OfficeApp.dbo.TreeDB`)
+### 13. 苗木查询表 (`OfficeApp.dbo.TreeDB`)
 ``` 
 CREATE TABLE OfficeApp.dbo.TreeDB (
     id INT IDENTITY(1,1) PRIMARY KEY,      -- ID，主键
@@ -500,7 +500,7 @@ CREATE TABLE OfficeApp.dbo.TreeDB (
     notes TEXT                              -- 备注
 );
 ``` 
-### 8. 机器设备查询表 (`OfficeApp.dbo.TreeDB`)
+### 14. 机器设备查询表 (`OfficeApp.dbo.MachineryEquipmentPricesTable`)
 ``` 
 CREATE TABLE OfficeApp.dbo.MachineryEquipmentPricesTable (
     id INT IDENTITY(1,1) PRIMARY KEY,   -- 自动递增的唯一标识符（主键）
@@ -511,6 +511,26 @@ CREATE TABLE OfficeApp.dbo.MachineryEquipmentPricesTable (
     price DECIMAL(18, 2) NOT NULL        -- 价格，数值类型，保留两位小数
 );
 ``` 
+### 15. 二维码解码映射表 (`OfficeApp.dbo.ReportqrCodepageDecodeMapping`)
+``` 
+CREATE TABLE OfficeApp.dbo.ReportqrCodepageDecodeMapping (
+    Id INT IDENTITY(1,1) PRIMARY KEY,  -- 自增主键
+    OriginalValue INT NOT NULL,             -- 需要解码的数据 (0-9)
+    DecodedText NVARCHAR(255) NOT NULL, -- 解码后的文本
+    Description NVARCHAR(500),          -- 可选：描述信息
+);
+0 → Ks71 
+1→ p2G2 
+2→ 9zR3 
+3→ Fd54 
+4→ q8S5 
+5→ Bn36 
+6→ xT17 
+7→ mJ98 
+8→ Lv49 
+9→ cH6
+``` 
+
 ##  四、记账板块数据库 (`AccountingApp`)
 
 ### 1. 账单 (`AccountingApp.dbo.AccountingList`)
@@ -603,8 +623,23 @@ CREATE TABLE SystemSettingsApp.dbo.SystemUserThemeSettings (
         ON DELETE CASCADE, -- 外键约束    如果用户被删除，相关的主题设置也删除  
 );
 ``` 
-
-   # 项目结构
+### 4. 系统主题设置数据库表 (`OfficeApp.dbo.SystemThemeDB`)
+``` 好像是聊天的主题
+CREATE TABLE OfficeApp.dbo.SystemThemeDB (
+    id INT IDENTITY(1,1) PRIMARY KEY,      -- ID，主键
+    username nvarchar(100) NOT NULL,             -- 用户名
+    fontColor NVARCHAR(9) DEFAULT '#000000FF',  -- 字体颜色，默认黑色，完全不透明
+    background NVARCHAR(9) DEFAULT '#ffffffFF',  -- 背景颜色，默认白色，完全不透明   
+    borderBrush NVARCHAR(9) DEFAULT '#efefefFF',  -- 黑色边框，完全不透明
+    hoverBorderBrush NVARCHAR(9) DEFAULT '#000000FF',  -- 悬浮边框颜色，黑色，完全不透明
+    hoverBackground NVARCHAR(9) DEFAULT '#cdcecfFF',  -- 悬浮背景颜色，完全不透明
+    hoverFontColor NVARCHAR(9) DEFAULT '#000000FF',  -- 悬浮字体颜色，完全不透明
+    watermarkForeground NVARCHAR(9) DEFAULT '#b3b5b6FF',  -- 占位符（placeholder）字体颜色，完全不透明
+    fontFamily VARCHAR(255) DEFAULT 'Arial',  -- 字体家族
+    backgroundAnimation VARCHAR(100) DEFAULT 'WaterWave'
+);
+``` 
+# 项目结构
   ```
   src/
 ├── components/           # 仅用于user页面的私有组件

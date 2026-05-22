@@ -903,14 +903,11 @@ CREATE TABLE WebWordReports.dbo.SystemThemeDB (
     background NVARCHAR(9) DEFAULT '#ffffffFF',  -- 背景颜色，默认白色，完全不透明   
     borderBrush NVARCHAR(9) DEFAULT '#efefefFF',  -- 黑色边框，完全不透明
     hoverBorderBrush NVARCHAR(9) DEFAULT '#000000FF',  -- 悬浮边框颜色，黑色，完全不透明
-
-
-     hoverBackground NVARCHAR(9) DEFAULT '#cdcecfFF',  -- 悬浮背景颜色，完全不透明
-     hoverFontColor NVARCHAR(9) DEFAULT '#000000FF',  -- 悬浮字体颜色，完全不透明
-     watermarkForeground NVARCHAR(9) DEFAULT '#b3b5b6FF',  -- 占位符（placeholder）字体颜色，完全不透明
-     fontFamily VARCHAR(255) DEFAULT 'Arial',  -- 字体家族
-     backgroundAnimation VARCHAR(100) DEFAULT 'WaterWave'
-
+    hoverBackground NVARCHAR(9) DEFAULT '#cdcecfFF',  -- 悬浮背景颜色，完全不透明
+    hoverFontColor NVARCHAR(9) DEFAULT '#000000FF',  -- 悬浮字体颜色，完全不透明
+    watermarkForeground NVARCHAR(9) DEFAULT '#b3b5b6FF',  -- 占位符（placeholder）字体颜色，完全不透明
+    fontFamily VARCHAR(255) DEFAULT 'Arial',  -- 字体家族
+    backgroundAnimation VARCHAR(100) DEFAULT 'WaterWave'
 );
 8位带透明度的格式（如 #376fbcFF）
 十六进制	透明度百分比	十进制值
