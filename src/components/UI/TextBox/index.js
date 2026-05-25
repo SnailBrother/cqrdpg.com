@@ -7,6 +7,7 @@ const getFirstDayOfMonth = (year, month) => new Date(year, month, 1).getDay();
 
 const TextBox = ({
   label = "标签",
+   labelWidth, // 新增：label宽度属性
   onChange,
   value,
   searchList = [],
@@ -941,7 +942,9 @@ const TextBox = ({
 
   return (
     <div className={styles.container} ref={containerRef}>
-      <label className={styles.label}
+      <label 
+        className={styles.label}
+        style={labelWidth ? { width: labelWidth, minWidth: labelWidth } : {}}
         onDoubleClick={(e) => {
           if (onLabelDoubleClick) {
             onLabelDoubleClick(e);

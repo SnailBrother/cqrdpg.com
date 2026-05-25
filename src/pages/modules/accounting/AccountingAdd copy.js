@@ -57,7 +57,7 @@ const AccountingAdd = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-
+        
         // 如果交易类型发生变化，重置类别
         if (name === 'transaction_type') {
             setFormData(prev => ({
@@ -104,7 +104,7 @@ const AccountingAdd = () => {
                     description: ''
                 });
 
-
+                 
             } else {
                 //alert(response.data.message || '添加失败');
                 // 使用自定义通知替代 alert
@@ -127,7 +127,7 @@ const AccountingAdd = () => {
 
     return (
         <div className="accountingadd-tab-content"
-        >
+            >
             {/* 添加通知管理器 */}
             <NotificationManager ref={notificationRef} />
             {/* 添加加载遮罩组件 */}
@@ -136,86 +136,99 @@ const AccountingAdd = () => {
 
             <form className="accountingadd-add-form" onSubmit={handleSubmit}>
                 {/* 交易日期 */}
-                <TextBox
-                    label="日&nbsp;&nbsp;&nbsp;期:"
-                    Type="DatePicker"
-                    leftIcon="#icon-edit"
-                    dateFormat="YYYY/MM/DD"
-                    value={formData.transaction_date}
-                    onChange={(date) => setFormData(prev => ({ ...prev, transaction_date: date }))}
-                    required
-                    labelWidth="40px" 
-                />
-                {/* 金额 */}
-                <TextBox
-                    label="金&nbsp;&nbsp;&nbsp;额:"
-                    Type="NumberInput"
-                    leftIcon="#icon-edit"
-                    min={0}
-                    step={0.01}
-                    placeholder="0.00"
-                    value={formData.amount}
-                    onChange={(value) => setFormData(prev => ({ ...prev, amount: value }))}
-                    required
-                    labelWidth="40px" 
-                />
-                {/* 交易类型 */}
-               
-                    <TextBox
-                        label="类&nbsp;&nbsp;&nbsp;型:"
-                        Type="SearchBox"
-                        placeholder="请选择交易类型"
-                        searchList={["支出", "收入"]}
-                        value={formData.transaction_type}
-                        onChange={(value) => {
-                            // 当交易类型改变时，重置类别选择
-                            setFormData(prev => ({
-                                ...prev,
-                                transaction_type: value,
-                                category: '' // 重置类别
-                            }));
-                        }}
+                <div className="accountingadd-form-group">
+                    <label className="accountingadd-form-label">日&nbsp;&nbsp;&nbsp;期:</label>
+                    <input
+                        type="date"
+                        name="transaction_date"
+                        value={formData.transaction_date}
+                        onChange={handleChange}
+                        className="accountingadd-form-input"
                         required
-                        labelWidth="40px" 
                     />
-            
+                </div>
+
+                {/* 金额 */}
+                <div className="accountingadd-form-group">
+                    <label className="accountingadd-form-label">金&nbsp;&nbsp;&nbsp;额:</label>
+                    <input
+                        type="number"
+                        name="amount"
+                        value={formData.amount}
+                        onChange={handleChange}
+                        className="accountingadd-form-input"
+                        required
+                        step="0.01"
+                        min="0"
+                        placeholder="0.00"
+                    />
+                </div>
+
+                {/* 交易类型 */}
+                <div className="accountingadd-form-group">
+                    <label className="accountingadd-form-label">类&nbsp;&nbsp;&nbsp;型:</label>
+                    <select
+                        name="transaction_type"
+                        value={formData.transaction_type}
+                        onChange={handleChange}
+                        className="accountingadd-form-select"
+                        required
+                    >
+                        <option value="支出">支出</option>
+                        <option value="收入">收入</option>
+                    </select>
+                </div>
+
                 {/* 类别 */}
-                <TextBox
-                    label="类&nbsp;&nbsp;&nbsp;别:"
-                    Type="SearchBox"
-                    placeholder="请选择类别"
-                    searchList={getFilteredCategories().map(category => category.icon_name)}
-                    value={formData.category}
-                    onChange={(value) => setFormData(prev => ({ ...prev, category: value }))}
-                    required
-                    labelWidth="40px" 
-                />
+                <div className="accountingadd-form-group">
+                    <label className="accountingadd-form-label">类&nbsp;&nbsp;&nbsp;别:</label>
+                    <select
+                        name="category"
+                        value={formData.category}
+                        onChange={handleChange}
+                        className="accountingadd-form-select"
+                    >
+                        <option value="">请选择类别</option>
+                        {getFilteredCategories().map(category => (
+                            <option key={category.icon_name} value={category.icon_name}>
+                                {category.icon_name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
                 {/* 支付方式 */}
-                <TextBox
-                    label="方&nbsp;&nbsp;&nbsp;式:"
-                    Type="SearchBox"
-                    placeholder="请选择支付方式"
-                    searchList={paymentMethods}  // 已经是字符串数组
-                    value={formData.payment_method}
-                    onChange={(value) => setFormData(prev => ({ ...prev, payment_method: value }))}
-                    required
-                    labelWidth="40px" 
-                />
+                <div className="accountingadd-form-group">
+                    <label className="accountingadd-form-label">方&nbsp;&nbsp;&nbsp;式:</label>
+                    <select
+                        name="payment_method"
+                        value={formData.payment_method}
+                        onChange={handleChange}
+                        className="accountingadd-form-select"
+                    >
+                        <option value="">请选择支付方式</option>
+                        {paymentMethods.map(method => (
+                            <option key={method} value={method}>{method}</option>
+                        ))}
+                    </select>
+                </div>
+
                 {/* 描述 */}
-                <TextBox
-                    label="描述:"
-                    Type="SearchBox"
-                    leftIcon="#icon-edit"
-                    rightIcon="#icon-a-duicuocuo"
-                    placeholder="简要描述交易内容"
-                    tooltipPosition="bottom"
-                    tooltipDelay={500}
-                    tooltip="请输入简要描述交易内容"
-                    value={formData.description}
-                    onChange={(value) => setFormData(prev => ({ ...prev, description: value }))}
-                    required
-                    labelWidth="40px" 
-                />
+               <div className="accountingadd-form-group">
+                    <label className="accountingadd-form-label">描&nbsp;&nbsp;&nbsp;述:</label>
+                    <input
+                        type="text"
+                        name="description"
+                        value={formData.description}
+                        onChange={handleChange}
+                        className="accountingadd-form-input"
+                        placeholder="简要描述交易内容"
+                        maxLength="255"
+                    />
+                </div> 
+
+
+
                 <button type="submit" className="accountingadd-form-submit">
                     提交
                 </button>

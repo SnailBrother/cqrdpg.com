@@ -12,6 +12,7 @@
   color: var(--font-color);
   white-space: nowrap;
   min-width: 80px;
+  width: auto;      /* 默认自动宽度 */
   font-weight: bold;
   text-align: right;
   flex-shrink: 0;
