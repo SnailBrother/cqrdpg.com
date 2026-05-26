@@ -316,60 +316,68 @@ CREATE TABLE OfficeApp.dbo.WordReportOptions (
  ``` 
 CREATE TABLE OfficeApp.dbo.WordReportsInformation (
     reportsID INT IDENTITY(1,1) PRIMARY KEY,         -- ID，主键，自动增长
-    documentNo VARCHAR(50) NOT NULL,                 -- 委托书编号 可以存储字母、数字或特殊字符，最大长度为 50 个字符
-    entrustDate DATE NOT NULL,                       -- 委托日期
-    entrustingParty VARCHAR(100) NOT NULL,           -- 委托方
-    location VARCHAR(255) NOT NULL,                  -- 房产坐落
-    buildingArea DECIMAL(10, 2) NOT NULL,            -- 建筑面积，精度为 10 位数，保留 2 位小数
-    interiorArea DECIMAL(10, 2) NOT NULL,            -- 套内面积，精度为 10 位数，保留 2 位小数
-    valueDate DATE NOT NULL,                         -- 价值时点
-    reportDate DATE NOT NULL,                        -- 报告日期
-    appraiserNameA VARCHAR(50) NOT NULL,             -- 估价师 A 姓名
-    appraiserRegNoA VARCHAR(50) NOT NULL,            -- 估价师 A 注册号
-    appraiserNameB VARCHAR(50) NOT NULL,              -- 估价师 B 姓名
-    appraiserRegNoB VARCHAR(50) NOT NULL,             -- 估价师 B 注册号
-    communityName VARCHAR(100) NOT NULL,              -- 小区名称
-    totalFloors INT NOT NULL,                          -- 总层数
-    floorNumber NVARCHAR(20) NOT NULL,                          -- 所在楼层
-    housePurpose VARCHAR(100) NOT NULL,                -- 房屋用途
-    propertyUnitNo VARCHAR(50) NOT NULL,               -- 不动产单元号
-    rightsHolder VARCHAR(100) NOT NULL,                -- 权利人
-    landPurpose VARCHAR(100) NOT NULL,                 -- 土地用途
-    sharedLandArea DECIMAL(10, 2) NOT NULL,            -- 共有宗地面积
-    landUseRightEndDate DATE NOT NULL,                 -- 土地使用权终止日期
-    houseStructure VARCHAR(100) NOT NULL,              -- 房屋结构
-    coOwnershipStatus VARCHAR(100) NOT NULL,           -- 共有情况
-    rightsNature VARCHAR(50) NOT NULL,                 -- 权利性质（出让、划拨）
-    elevator BIT NOT NULL,                             -- 电梯（有、无）
-    decorationStatus VARCHAR(500) NOT NULL,            -- 装饰装修
-    ventilationStatus BIT NOT NULL,                    -- 通气（是、否）
-    spaceLayout VARCHAR(100) NOT NULL,                 -- 空间布局
-    exteriorWallMaterial VARCHAR(100) NOT NULL,        -- 外墙面
-    yearBuilt INT NOT NULL,                            -- 建成年份
-    boundaries VARCHAR(255) NOT NULL,                  -- 四至
-    valuationMethod VARCHAR(100) NOT NULL              -- 估价方法
-    propertyCertificateNo VARCHAR(50) NOT NULL         -- 产权证号
-    projectID VARCHAR(50) NOT NULL,                    -- 项目编号
-    reportID VARCHAR(50) NOT NULL,                      -- 报告编号
-    valuationPrice DECIMAL(15, 0) NOT NULL,            -- 评估单价 (没有小数)
-    assessmentCommissionDocument VARCHAR(255)  NOT NULL  -- 评估委托文书（选项值）
-    hasFurnitureElectronics BIT NOT NULL DEFAULT 0,     -- 是否包含家具家电，默认值为 0（即否）
+    documentNo VARCHAR(100) NOT NULL,               -- 委托书编号 可以存储字母、数字或特殊字符
+    entrustDate DATE NOT NULL,                      -- 委托日期
+    entrustingParty VARCHAR(200) NOT NULL,          -- 委托方
+    location VARCHAR(500) NOT NULL,                 -- 房产坐落
+    buildingArea DECIMAL(10, 2) NOT NULL,           -- 建筑面积，精度为 10 位数，保留 2 位小数
+    interiorArea DECIMAL(10, 2) NOT NULL,           -- 套内面积，精度为 10 位数，保留 2 位小数
+    valueDate DATE NOT NULL,                        -- 价值时点
+    reportDate DATE NOT NULL,                       -- 报告日期
+    appraiserNameA VARCHAR(100) NOT NULL,           -- 估价师 A 姓名
+    appraiserRegNoA VARCHAR(100) NOT NULL,          -- 估价师 A 注册号
+    appraiserNameB VARCHAR(100) NOT NULL,           -- 估价师 B 姓名
+    appraiserRegNoB VARCHAR(100) NOT NULL,          -- 估价师 B 注册号
+    communityName VARCHAR(200) NOT NULL,             -- 小区名称
+    totalFloors INT NOT NULL,                       -- 总层数
+    floorNumber NVARCHAR(50) NOT NULL,              -- 所在楼层
+    housePurpose VARCHAR(200) NOT NULL,             -- 房屋用途
+    propertyUnitNo VARCHAR(100) NOT NULL,           -- 不动产单元号
+    rightsHolder VARCHAR(200) NOT NULL,             -- 权利人
+    landPurpose VARCHAR(200) NOT NULL,              -- 土地用途
+    sharedLandArea DECIMAL(10, 2) NOT NULL,         -- 共有宗地面积
+    landUseRightEndDate DATE NOT NULL,              -- 土地使用权终止日期
+    houseStructure VARCHAR(200) NOT NULL,           -- 房屋结构
+    coOwnershipStatus VARCHAR(200) NOT NULL,        -- 共有情况
+    rightsNature VARCHAR(100) NOT NULL,             -- 权利性质（出让、划拨）
+    elevator BIT NOT NULL,                          -- 电梯（有、无）
+    decorationStatus VARCHAR(1000) NOT NULL,        -- 装饰装修
+    ventilationStatus BIT NOT NULL,                 -- 通气（是、否）
+    spaceLayout VARCHAR(200) NOT NULL,              -- 空间布局
+    exteriorWallMaterial VARCHAR(200) NOT NULL,     -- 外墙面
+    yearBuilt INT NOT NULL,                         -- 建成年份
+    boundaries VARCHAR(500) NOT NULL,               -- 四至
+    valuationMethod VARCHAR(200) NOT NULL,          -- 估价方法
+    propertyCertificateNo VARCHAR(100) NOT NULL,    -- 产权证号
+    projectID VARCHAR(100) NOT NULL,                -- 项目编号
+    reportID VARCHAR(100) NOT NULL,                 -- 报告编号
+    valuationPrice DECIMAL(15, 0) NOT NULL,         -- 评估单价 (没有小数)
+    assessmentCommissionDocument VARCHAR(500) NOT NULL,  -- 评估委托文书（选项值）
+    hasFurnitureElectronics BIT NOT NULL DEFAULT 0, -- 是否包含家具家电，默认值为 0（即否）
     furnitureElectronicsEstimatedPrice DECIMAL(6, 0) NOT NULL,  -- 家具家电评估总价，整数类型
-    valueDateRequirements VARCHAR(500) NOT NULL;          -- 价值时点要求，最大长度500字符
-    landShape VARCHAR(500) NULL,               -- 土地形状
-    streetStatus VARCHAR(500) NULL,            -- 临街状况
-    direction VARCHAR(500) NULL,                -- 方位
-    orientation VARCHAR(500) NULL,              -- 朝向
-    distance VARCHAR(500) NULL,                 -- 距离
-    parkingStatus VARCHAR(500) NULL;           -- 停车状况
-    mortgageStatus BIT NULL DEFAULT 1,                       -- 抵押状况 默认是1
-    mortgageBasis VARCHAR(500) NULL,                          -- 抵押依据
-    seizureStatus BIT NULL DEFAULT 1,                         -- 查封状况 默认是1
-    seizureBasis VARCHAR(500) NULL,                           -- 查封依据
-    utilizationStatus VARCHAR(500) NULL,                      -- 利用状况
-    isLeaseConsidered BIT NULL DEFAULT 0                      -- 是否考虑租约（1 = 是，0 = 否） 默认是0
-    rent DECIMAL(18, 2) NOT NULL DEFAULT 0.00;  -- 租金字段，类型为 DECIMAL，默认值为 0.00
-); 
+    valueDateRequirements VARCHAR(1000) NOT NULL,   -- 价值时点要求
+    landShape VARCHAR(1000) NULL,                  -- 土地形状
+    streetStatus VARCHAR(1000) NULL,               -- 临街状况
+    direction VARCHAR(1000) NULL,                 -- 方位
+    orientation VARCHAR(1000) NULL,               -- 朝向
+    distance VARCHAR(1000) NULL,                  -- 距离
+    parkingStatus VARCHAR(1000) NULL,             -- 停车状况
+    mortgageStatus BIT NULL DEFAULT 1,            -- 抵押状况 默认是1
+    mortgageBasis VARCHAR(1000) NULL,             -- 抵押依据
+    seizureStatus BIT NULL DEFAULT 1,              -- 查封状况 默认是1
+    seizureBasis VARCHAR(1000) NULL,              -- 查封依据
+    utilizationStatus VARCHAR(1000) NULL,         -- 利用状况
+    isLeaseConsidered BIT NULL DEFAULT 0,         -- 是否考虑租约（1 = 是，0 = 否） 默认是0
+    rent DECIMAL(18, 2) NOT NULL DEFAULT 0.00,    -- 租金字段，类型为 DECIMAL，默认值为 0.00
+    bank VARCHAR(500) NULL,                       -- 附近银行
+    supermarket VARCHAR(1000) NULL,               -- 附近超市
+    hospital VARCHAR(1000) NULL,                  -- 附近医院
+    school VARCHAR(1000) NULL,                    -- 附近学校
+    nearbyCommunity VARCHAR(1000) NULL,           -- 附近小区
+    busStopName VARCHAR(1000) NULL,               -- 附近公交站名
+    busRoutes VARCHAR(1000) NULL,                 -- 附近公交线路
+    areaRoad VARCHAR(1000) NULL                   -- 附近区域道路
+);
  ``` 
 
 ### 3. 评估报告附件装订pdf用户管理 (`OfficeApp.dbo.PdfPrintFileCompanyPersonnel`)
