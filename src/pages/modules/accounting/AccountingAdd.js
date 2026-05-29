@@ -1,11 +1,9 @@
 import axios from 'axios';
-import React, { useState, useContext, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import './AccountingAdd.css';
-import { useAccounting } from './AccountingDataContext/AccountingContext';
 import { useAuth } from '../../../context/AuthContext';
 import { TextBox } from '../../../components/UI';
 
-// 导入自定义通知组件
 import ConfirmationDialogManager from './Notification/ConfirmationDialogManager';
 import WordReportGeneratorLoader from './Notification/WordReportGeneratorLoader';
 import NotificationManager from './Notification/NotificationManager';
@@ -14,77 +12,75 @@ const AccountingAdd = () => {
     const [formData, setFormData] = useState({
         transaction_date: new Date().toISOString().slice(0, 10),
         amount: '',
-        transaction_type: '支出',
-        category: '餐饮',
-        payment_method: '微信支付',
+        transaction_type: '',
+        category: '',
+        payment_method: '',
         description: ''
     });
-    const [categories, setCategories] = useState([]); // 从API获取的分类数据
-    const [showLoader, setShowLoader] = useState(false);;//添加WordReportGeneratorLoader的引用
+    const [transactionTypes, setTransactionTypes] = useState([]);
+    const [categoryNames, setCategoryNames] = useState([]);
+    const [paymentMethods, setPaymentMethods] = useState([]);
+    const [showLoader, setShowLoader] = useState(false);
     const { user } = useAuth();
-    const username = user?.username; // 从 user 对象中获取 username
-    const { socket } = useAccounting();
+    const username = user?.username;
 
-    // 创建通知组件的引用
     const notificationRef = useRef();
 
-    const paymentMethods = ["现金", "微信支付", "支付宝", "银行卡", "信用卡"];
-
-    // 获取分类图标数据
-    useEffect(() => {
-        const fetchCategories = async () => {
-            try {
-                const response = await axios.get('/api/AccountingApp/getCategoryIcons');
-                if (response.data) {
-                    setCategories(response.data);
+    const fetchOptions = async () => {
+        try {
+            const response = await axios.get('/api/AccountingApp/getAccountingOptions');
+            if (response.data) {
+                if (response.data.transactionTypes) {
+                    setTransactionTypes(response.data.transactionTypes);
                 }
-            } catch (error) {
-                console.error('获取分类图标失败:', error);
-                notificationRef.current.addNotification(
-                    `获取分类图标失败: ${error.response?.data?.message || error.message}`,
-                    'error'
-                );
+                
+                if (response.data.categories) {
+                    const names = response.data.categories.map(cat => cat.name);
+                    setCategoryNames(names);
+                }
+                
+                if (response.data.paymentMethods) {
+                    setPaymentMethods(response.data.paymentMethods);
+                }
             }
-        };
-
-        fetchCategories();
-    }, []);
-
-    // 根据交易类型过滤分类
-    const getFilteredCategories = () => {
-        return categories.filter(category => category.icon_type === formData.transaction_type);
-    };
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-
-        // 如果交易类型发生变化，重置类别
-        if (name === 'transaction_type') {
-            setFormData(prev => ({
-                ...prev,
-                [name]: value,
-                category: '' // 重置类别选择
-            }));
-        } else {
-            setFormData(prev => ({
-                ...prev,
-                [name]: value
-            }));
+        } catch (error) {
+            console.error('获取选项数据失败:', error);
         }
     };
 
+    useEffect(() => {
+        fetchOptions();
+    }, []);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // 显示加载遮罩
         setShowLoader(true);
-        const submitData = {
-            ...formData,
-            created_by: username,
-            amount: parseFloat(formData.amount),
-            transaction_date: formData.transaction_date
-        };
 
         try {
+            // 先同步新增的选项
+            const isNewType = formData.transaction_type && !transactionTypes.includes(formData.transaction_type);
+            const isNewCategory = formData.category && !categoryNames.includes(formData.category);
+            const isNewPayment = formData.payment_method && !paymentMethods.includes(formData.payment_method);
+
+            if (isNewType || isNewCategory || isNewPayment) {
+                await axios.post('/api/AccountingApp/addAccountingOptions', {
+                    transaction_type: isNewType ? formData.transaction_type : null,
+                    category: isNewCategory ? formData.category : null,
+                    payment_method: isNewPayment ? formData.payment_method : null
+                });
+
+                // 重新获取选项列表
+                await fetchOptions();
+            }
+
+            // 提交记录
+            const submitData = {
+                ...formData,
+                created_by: username,
+                amount: parseFloat(formData.amount),
+                transaction_date: formData.transaction_date
+            };
+
             const response = await axios.post(
                 '/api/AccountingApp/lifebookkeepingaddRecord',
                 submitData,
@@ -92,50 +88,37 @@ const AccountingAdd = () => {
             );
 
             if (response.data.success) {
-                //alert('记录添加成功');
-                // 使用自定义通知替代 alert
                 notificationRef.current.addNotification('记录添加成功', 'success');
                 setFormData({
                     transaction_date: new Date().toISOString().slice(0, 10),
                     amount: '',
-                    transaction_type: '支出',
+                    transaction_type: '',
                     category: '',
-                    payment_method: '微信支付',
+                    payment_method: '',
                     description: ''
                 });
-
-
             } else {
-                //alert(response.data.message || '添加失败');
-                // 使用自定义通知替代 alert
                 notificationRef.current.addNotification(
                     response.data.message || '添加失败',
                     'error'
                 );
             }
         } catch (error) {
-            // console.error('添加失败:', error);
             notificationRef.current.addNotification(
                 `添加失败: ${error.response?.data?.message || error.message}`,
                 'error'
             );
         } finally {
-            // 无论成功或失败，都隐藏加载遮罩
             setShowLoader(false);
         }
     };
 
     return (
-        <div className="accountingadd-tab-content"
-        >
-            {/* 添加通知管理器 */}
+        <div className="accountingadd-tab-content">
             <NotificationManager ref={notificationRef} />
-            {/* 添加加载遮罩组件 */}
-            {/* 有条件的显示加载遮罩组件 */}
             {showLoader && <WordReportGeneratorLoader />}
 
             <form className="accountingadd-add-form" onSubmit={handleSubmit}>
-                {/* 交易日期 */}
                 <TextBox
                     label="日&nbsp;&nbsp;&nbsp;期:"
                     Type="DatePicker"
@@ -146,7 +129,7 @@ const AccountingAdd = () => {
                     required
                     labelWidth="40px" 
                 />
-                {/* 金额 */}
+                
                 <TextBox
                     label="金&nbsp;&nbsp;&nbsp;额:"
                     Type="NumberInput"
@@ -159,49 +142,46 @@ const AccountingAdd = () => {
                     required
                     labelWidth="40px" 
                 />
-                {/* 交易类型 */}
-               
-                    <TextBox
-                        label="类&nbsp;&nbsp;&nbsp;型:"
-                        Type="SearchBox"
-                        placeholder="请选择交易类型"
-                        searchList={["支出", "收入"]}
-                        value={formData.transaction_type}
-                        onChange={(value) => {
-                            // 当交易类型改变时，重置类别选择
-                            setFormData(prev => ({
-                                ...prev,
-                                transaction_type: value,
-                                category: '' // 重置类别
-                            }));
-                        }}
-                        required
-                        labelWidth="40px" 
-                    />
+                
+                <TextBox
+                    label="类&nbsp;&nbsp;&nbsp;型:"
+                    Type="SearchBox"
+                    placeholder="请选择交易类型"
+                    searchList={transactionTypes}
+                    value={formData.transaction_type}
+                    onChange={(value) => {
+                        setFormData(prev => ({
+                            ...prev,
+                            transaction_type: value,
+                            category: ''
+                        }));
+                    }}
+                    required
+                    labelWidth="40px" 
+                />
             
-                {/* 类别 */}
                 <TextBox
                     label="类&nbsp;&nbsp;&nbsp;别:"
                     Type="SearchBox"
                     placeholder="请选择类别"
-                    searchList={getFilteredCategories().map(category => category.icon_name)}
+                    searchList={categoryNames}
                     value={formData.category}
                     onChange={(value) => setFormData(prev => ({ ...prev, category: value }))}
                     required
                     labelWidth="40px" 
                 />
-                {/* 支付方式 */}
+                
                 <TextBox
                     label="方&nbsp;&nbsp;&nbsp;式:"
                     Type="SearchBox"
                     placeholder="请选择支付方式"
-                    searchList={paymentMethods}  // 已经是字符串数组
+                    searchList={paymentMethods}
                     value={formData.payment_method}
                     onChange={(value) => setFormData(prev => ({ ...prev, payment_method: value }))}
                     required
                     labelWidth="40px" 
                 />
-                {/* 描述 */}
+                
                 <TextBox
                     label="描述:"
                     Type="SearchBox"
@@ -216,6 +196,7 @@ const AccountingAdd = () => {
                     required
                     labelWidth="40px" 
                 />
+                
                 <button type="submit" className="accountingadd-form-submit">
                     提交
                 </button>

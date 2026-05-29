@@ -5775,9 +5775,91 @@ app.delete('/api/lifebookkeepingdeleteRecord/:id', async (req, res) => {
     }
 });
 
+//增加报账选项
+app.post('/api/AccountingApp/addAccountingOptions', async (req, res) => {
+    try {
+        const { transaction_type, category, payment_method } = req.body;
+        
+        const addedItems = [];
+
+        // 处理交易类型
+        if (transaction_type && transaction_type.trim()) {
+            const checkResult = await pool.request()
+                .input('value', sql.NVarChar, transaction_type)
+                .query('SELECT COUNT(*) as count FROM AccountingApp.dbo.AccountingOptions WHERE transactiontypeOptions = @value');
+            
+            if (checkResult.recordset[0].count === 0) {
+                const updateResult = await pool.request()
+                    .input('value', sql.NVarChar, transaction_type)
+                    .query('UPDATE TOP (1) AccountingApp.dbo.AccountingOptions SET transactiontypeOptions = @value WHERE transactiontypeOptions IS NULL');
+                
+                if (updateResult.rowsAffected[0] === 0) {
+                    await pool.request()
+                        .input('value', sql.NVarChar, transaction_type)
+                        .query('INSERT INTO AccountingApp.dbo.AccountingOptions (transactiontypeOptions) VALUES (@value)');
+                }
+                addedItems.push({ field: 'transaction_type', value: transaction_type });
+            }
+        }
+
+        // 处理类别
+        if (category && category.trim()) {
+            const checkResult = await pool.request()
+                .input('value', sql.NVarChar, category)
+                .query('SELECT COUNT(*) as count FROM AccountingApp.dbo.AccountingOptions WHERE categoryOptions = @value');
+            
+            if (checkResult.recordset[0].count === 0) {
+                // 新类别默认使用 icon-qitashouru 图标
+                const unicode = 'icon-qitashouru';
+                
+                const updateResult = await pool.request()
+                    .input('value', sql.NVarChar, category)
+                    .input('unicode', sql.NVarChar, unicode)
+                    .query('UPDATE TOP (1) AccountingApp.dbo.AccountingOptions SET categoryOptions = @value, categoryunicodeOptions = @unicode WHERE categoryOptions IS NULL');
+                
+                if (updateResult.rowsAffected[0] === 0) {
+                    await pool.request()
+                        .input('value', sql.NVarChar, category)
+                        .input('unicode', sql.NVarChar, unicode)
+                        .query('INSERT INTO AccountingApp.dbo.AccountingOptions (categoryOptions, categoryunicodeOptions) VALUES (@value, @unicode)');
+                }
+                addedItems.push({ field: 'category', value: category, unicode: unicode });
+            }
+        }
+
+        // 处理支付方式
+        if (payment_method && payment_method.trim()) {
+            const checkResult = await pool.request()
+                .input('value', sql.NVarChar, payment_method)
+                .query('SELECT COUNT(*) as count FROM AccountingApp.dbo.AccountingOptions WHERE paymentmethodOptions = @value');
+            
+            if (checkResult.recordset[0].count === 0) {
+                const updateResult = await pool.request()
+                    .input('value', sql.NVarChar, payment_method)
+                    .query('UPDATE TOP (1) AccountingApp.dbo.AccountingOptions SET paymentmethodOptions = @value WHERE paymentmethodOptions IS NULL');
+                
+                if (updateResult.rowsAffected[0] === 0) {
+                    await pool.request()
+                        .input('value', sql.NVarChar, payment_method)
+                        .query('INSERT INTO AccountingApp.dbo.AccountingOptions (paymentmethodOptions) VALUES (@value)');
+                }
+                addedItems.push({ field: 'payment_method', value: payment_method });
+            }
+        }
+
+        res.status(200).json({ 
+            message: '选项同步完成', 
+            added: addedItems 
+        });
+        
+    } catch (error) {
+        console.error('同步选项失败:', error);
+        res.status(500).json({ message: '同步选项失败', error: error.message });
+    }
+});
 //获取详细列表的ico图标
 // 获取分类图标API
-app.get('/api/AccountingApp/getCategoryIcons', async (req, res) => {
+app.get('/api/AccountingApp/getCategoryIcons-old', async (req, res) => {
     try {
         //const pool = await sql.connect(config);
         const result = await pool.request()
@@ -5787,6 +5869,24 @@ app.get('/api/AccountingApp/getCategoryIcons', async (req, res) => {
     } catch (err) {
         console.error('获取分类图标失败:', err);
         res.status(500).json({ error: '获取分类图标失败' });
+    }
+});
+app.get('/api/AccountingApp/getAccountingOptions', async (req, res) => {
+    try {
+        const [typeResult, categoryResult, payResult] = await Promise.all([
+            pool.request().query('SELECT DISTINCT transactiontypeOptions FROM AccountingApp.dbo.AccountingOptions WHERE transactiontypeOptions IS NOT NULL'),
+            pool.request().query('SELECT DISTINCT categoryOptions, categoryunicodeOptions FROM AccountingApp.dbo.AccountingOptions WHERE categoryOptions IS NOT NULL'),
+            pool.request().query('SELECT DISTINCT paymentmethodOptions FROM AccountingApp.dbo.AccountingOptions WHERE paymentmethodOptions IS NOT NULL')
+        ]);
+
+        res.json({
+            transactionTypes: typeResult.recordset.map(r => r.transactiontypeOptions),
+            categories: categoryResult.recordset.map(r => ({ name: r.categoryOptions, unicode: r.categoryunicodeOptions })),
+            paymentMethods: payResult.recordset.map(r => r.paymentmethodOptions)
+        });
+    } catch (err) {
+        console.error('获取选项数据失败:', err);
+        res.status(500).json({ error: '获取选项数据失败' });
     }
 });
 

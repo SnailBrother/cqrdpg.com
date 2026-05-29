@@ -560,6 +560,18 @@ CREATE TABLE AccountingApp.dbo.AccountingList (
 );
  ``` 
 > **设计建议**：此表数据量大，建议按月份分区或使用存储。
+
+### 2. 账单选项 (`AccountingApp.dbo.AccountingOptions`)
+
+ ``` 
+CREATE TABLE AccountingApp.dbo.AccountingOptions (
+    id INT IDENTITY(1,1) PRIMARY KEY,     -- 交易ID，唯一标识
+    transactiontypeOptions NVARCHAR(50),            -- 交易类型 (收入 / 支出)
+    categoryOptions NVARCHAR(100),                  -- 交易类别 (例如: 购物 娱乐 交通 餐饮)
+    categoryunicodeOptions  VARCHAR(MAX),          -- 交易类别图标的Unicode表示（现在可以存储更长的文本）
+    paymentmethodOptions NVARCHAR(50),                       -- 支付方式 (现金、银行卡、支付宝、微信等)
+);
+ ``` 
 ---
 
 

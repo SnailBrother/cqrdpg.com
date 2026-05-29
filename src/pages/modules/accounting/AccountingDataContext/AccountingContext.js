@@ -54,7 +54,7 @@ export const AccountingProvider = ({ children }) => {
             
             const [recordsResponse, iconsResponse] = await Promise.all([
                 axios.get('/api/accountingApp/lifebookkeepinggetRecords'),
-                axios.get('/api/AccountingApp/getCategoryIcons')
+                axios.get('/api/AccountingApp/getAccountingOptions')
             ]);
 
             setRecords(recordsResponse.data);

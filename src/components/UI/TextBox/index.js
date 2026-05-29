@@ -7,7 +7,7 @@ const getFirstDayOfMonth = (year, month) => new Date(year, month, 1).getDay();
 
 const TextBox = ({
   label = "标签",
-   labelWidth, // 新增：label宽度属性
+  labelWidth, // 新增：label宽度属性
   onChange,
   value,
   searchList = [],
@@ -40,7 +40,7 @@ const TextBox = ({
     }
     return value || '';
   });
-  
+
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const containerRef = useRef(null);
@@ -85,11 +85,11 @@ const TextBox = ({
   // Tooltip 位置计算 - 关键修复：在计算时就考虑 transform 偏移
   const calculateTooltipPosition = () => {
     if (!inputWrapperRef.current) return;
-    
+
     const rect = inputWrapperRef.current.getBoundingClientRect();
     let top = 0;
     let left = 0;
-    
+
     switch (tooltipPosition) {
       case 'top':
         top = rect.top - 8;
@@ -111,7 +111,7 @@ const TextBox = ({
         top = rect.top - 8;
         left = rect.left + rect.width / 2;
     }
-    
+
     setTooltipPositionState({ top, left });
   };
 
@@ -124,12 +124,12 @@ const TextBox = ({
   // Tooltip 显示处理
   const handleMouseEnter = () => {
     if (!tooltip) return;
-    
+
     if (tooltipTimeoutRef.current) {
       clearTimeout(tooltipTimeoutRef.current);
       tooltipTimeoutRef.current = null;
     }
-    
+
     tooltipTimeoutRef.current = setTimeout(() => {
       showTooltipImmediately();
     }, tooltipDelay);
@@ -231,32 +231,32 @@ const TextBox = ({
   // 解析日期
   function parseDate(dateStr) {
     if (!dateStr) return new Date();
-    
+
     if (dateStr instanceof Date) {
       return new Date(dateStr.getFullYear(), dateStr.getMonth(), dateStr.getDate());
     }
-    
+
     if (typeof dateStr === 'number') {
       const date = new Date(dateStr);
       if (!isNaN(date.getTime())) return date;
     }
-    
+
     const str = String(dateStr);
-    
+
     let match = str.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
     if (match) return new Date(parseInt(match[1]), parseInt(match[2]) - 1, parseInt(match[3]));
-    
+
     match = str.match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/);
     if (match) return new Date(parseInt(match[1]), parseInt(match[2]) - 1, parseInt(match[3]));
-    
+
     match = str.match(/^(\d{4})年(\d{1,2})月(\d{1,2})日$/);
     if (match) return new Date(parseInt(match[1]), parseInt(match[2]) - 1, parseInt(match[3]));
-    
+
     const date = new Date(str);
     if (!isNaN(date.getTime())) {
       return new Date(date.getFullYear(), date.getMonth(), date.getDate());
     }
-    
+
     const today = new Date();
     return new Date(today.getFullYear(), today.getMonth(), today.getDate());
   }
@@ -264,7 +264,7 @@ const TextBox = ({
   // 格式化日期
   function formatDate(dateInput, formatStr = dateFormat) {
     if (!dateInput) return '';
-    
+
     let d;
     if (dateInput instanceof Date) {
       d = new Date(dateInput.getFullYear(), dateInput.getMonth(), dateInput.getDate());
@@ -273,20 +273,20 @@ const TextBox = ({
       if (isNaN(parsed.getTime())) return '';
       d = parsed;
     }
-    
+
     const year = d.getFullYear();
     const month = d.getMonth() + 1;
     const day = d.getDate();
 
     let result = formatStr;
     result = result.replace('YYYY', year.toString());
-    
+
     if (formatStr.includes('MM')) {
       result = result.replace('MM', String(month).padStart(2, '0'));
     } else {
       result = result.replace('M', month.toString());
     }
-    
+
     if (formatStr.includes('DD')) {
       result = result.replace('DD', String(day).padStart(2, '0'));
     } else {
@@ -351,7 +351,7 @@ const TextBox = ({
   const handleSelectDate = (date) => {
     const isoFormat = formatDate(date, 'YYYY-MM-DD');
     const displayFormat = formatDate(date, dateFormat);
-    
+
     setInputValue(displayFormat);
     onChange?.(isoFormat);
     setIsDatePickerOpen(false);
@@ -372,7 +372,7 @@ const TextBox = ({
     const today = new Date();
     const isoFormat = formatDate(today, 'YYYY-MM-DD');
     const displayFormat = formatDate(today, dateFormat);
-    
+
     setInputValue(displayFormat);
     onChange?.(isoFormat);
     setTempDate(new Date(today.getFullYear(), today.getMonth(), today.getDate()));
@@ -429,8 +429,9 @@ const TextBox = ({
     } else if (Type === "SearchBox") {
       setInputValue(val);
       onChange && onChange(val);
-      if (enableInputSearch) {
-        setSearchQuery(val);
+      setSearchQuery(val || '');
+      if (!isDropdownVisible) {
+        setIsDropdownVisible(true);
       }
     } else if (Type === "Switch") {
       return;
@@ -441,23 +442,36 @@ const TextBox = ({
   };
 
   // 清空输入框
-  const handleClear = () => {
-    if (Type === "Switch") {
-      setInputValue('');
-      setSwitchValue(null);
-      onChange?.(null);
-    } else {
-      setInputValue('');
-      if (Type === "ComboBox" && multiple) {
-        setSelectedItems([]);
-      }
-      onChange && onChange(multiple ? [] : '');
-      if (enableInputSearch && (Type === "SearchBox" || Type === "ComboBox")) {
-        setSearchQuery('');
-      }
+const handleClear = () => {
+  if (Type === "Switch") {
+    setInputValue('');
+    setSwitchValue(null);
+    setSearchQuery('');
+    setIsDropdownVisible(true);
+    onChange?.(null);
+  } else {
+    setInputValue('');
+    setSearchQuery('');
+
+    if (Type === "ComboBox" && multiple) {
+      setSelectedItems([]);
     }
+
+    if (Type === "ComboBox" && !multiple) {
+      setSelectedItems([]);
+    }
+
+    onChange && onChange(multiple ? [] : '');
+
+    if (Type === "SearchBox" || Type === "ComboBox") {
+      setIsDropdownVisible(true);
+    }
+  }
+
+  setTimeout(() => {
     inputRef.current?.focus();
-  };
+  }, 0);
+};
 
   // NumberInput 增减
   const handleIncrement = () => {
@@ -565,6 +579,10 @@ const TextBox = ({
 
   // 搜索过滤
   const getFilteredData = () => {
+    if (Type === "SearchBox" && !searchQuery.trim()) {
+      return searchList;
+    }
+
     return searchList.filter(item =>
       item.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -684,7 +702,7 @@ const TextBox = ({
                       <input
                         type="checkbox"
                         checked={isChecked}
-                        onChange={() => {}}
+                        onChange={() => { }}
                         onClick={(e) => e.stopPropagation()}
                       />
                     </span>
@@ -888,7 +906,7 @@ const TextBox = ({
       position: 'fixed',
       zIndex: 1000,
     };
-    
+
     // 根据方向设置不同的位置和 transform
     switch (tooltipPosition) {
       case 'top':
@@ -942,7 +960,7 @@ const TextBox = ({
 
   return (
     <div className={styles.container} ref={containerRef}>
-      <label 
+      <label
         className={styles.label}
         style={labelWidth ? { width: labelWidth, minWidth: labelWidth } : {}}
         onDoubleClick={(e) => {
@@ -954,8 +972,8 @@ const TextBox = ({
         {label}
       </label>
 
-      <div 
-        className={styles.inputWrapper} 
+      <div
+        className={styles.inputWrapper}
         ref={inputWrapperRef}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
@@ -1056,7 +1074,7 @@ const TextBox = ({
 
       {/* Tooltip */}
       {showTooltip && tooltip && (
-        <div 
+        <div
           ref={tooltipRef}
           className={getTooltipClassName()}
           style={getTooltipStyle()}

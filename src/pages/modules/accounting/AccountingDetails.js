@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './AccountingDetails.css';
 import useSocketEvents from './useSocketEvents';
 import AccountingDetailsChange from './AccountingDetailsChange';
-import { Loading } from '../../../components/UI';
+import { Loading, ToastContainer, useToast } from '../../../components/UI';
 import ErrorMessage from './ErrorMessage';
 import Modal from 'react-modal';
 import axios from 'axios';
@@ -16,6 +16,7 @@ const AccountingDetails = () => {
     const [socket, setSocket] = useState(null);
     //  中添加一个状态来存储原始分类数据
     const [allCategories, setAllCategories] = useState([]); // 存储所有分类数据
+    const { toasts, addToast, removeToast } = useToast();
     // 默认日期范围（当月）
     const getStartOfMonth = () => {
         const now = new Date();
@@ -64,19 +65,24 @@ const AccountingDetails = () => {
             setLoading(true);
             setError(null);
 
-            const [recordsResponse, iconsResponse] = await Promise.all([
+            const [recordsResponse, optionsResponse] = await Promise.all([
                 axios.get('/api/accountingApp/lifebookkeepinggetRecords'),
-                axios.get('/api/AccountingApp/getCategoryIcons')
+                axios.get('/api/AccountingApp/getAccountingOptions')
             ]);
 
             setRecords(recordsResponse.data);
-            setAllCategories(iconsResponse.data); // 保存所有分类数据
 
             const iconMap = {};
-            iconsResponse.data.forEach((icon) => {
-                iconMap[icon.icon_name] = icon.unicode;
-            });
+            if (optionsResponse.data && optionsResponse.data.categories) {
+                optionsResponse.data.categories.forEach((cat) => {
+                    iconMap[cat.name] = cat.unicode;
+                });
+            }
             setCategoryIcons(iconMap);
+
+            // 保存完整的选项数据给弹窗使用
+            setAllCategories(optionsResponse.data);
+
         } catch (err) {
             console.error('获取数据失败:', err);
             setError('获取数据失败，请稍后重试');
@@ -290,10 +296,8 @@ const AccountingDetails = () => {
     }
 
     return (
-        <div className="accountingdetails-container"
- 
-        >
-
+        <div className="accountingdetails-container">
+            <ToastContainer toasts={toasts} removeToast={removeToast} />
             <div className="accountingdetails-header">
                 <div className="accountingdetails-date-selector" onClick={openDateModal}>
                     <div className="date-display-wrapper">
@@ -416,7 +420,8 @@ const AccountingDetails = () => {
                         onClose={handleCloseModal}
                         onUpdateSuccess={handleUpdateSuccess}
                         onDeleteSuccess={handleDeleteSuccess}
-                        allCategories={allCategories} // 传递分类数据
+                        allCategories={allCategories}
+                        onToast={(message, type) => addToast(message, type)}
                     />
                 )}
             </div>
