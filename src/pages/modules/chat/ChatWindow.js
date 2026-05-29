@@ -1228,8 +1228,16 @@ const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) 
                                         type="file"
                                         id="image-upload"
                                         accept="image/*"
-                                        style={{ display: 'none' }}
+                                        style={{
+                                            position: 'absolute',
+                                            opacity: 0,
+                                            width: '1px',
+                                            height: '1px',
+                                            overflow: 'hidden',
+                                            pointerEvents: 'none'
+                                        }}
                                         onChange={(e) => {
+                                            console.log('image input changed:', e.target.files, e.target.files?.[0]);
                                             handleImageUpload(e);
                                             setShowImageMenu(false);
                                         }}

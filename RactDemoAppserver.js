@@ -5779,7 +5779,7 @@ app.delete('/api/lifebookkeepingdeleteRecord/:id', async (req, res) => {
 app.post('/api/AccountingApp/addAccountingOptions', async (req, res) => {
     try {
         const { transaction_type, category, payment_method } = req.body;
-        
+
         const addedItems = [];
 
         // 处理交易类型
@@ -5787,12 +5787,12 @@ app.post('/api/AccountingApp/addAccountingOptions', async (req, res) => {
             const checkResult = await pool.request()
                 .input('value', sql.NVarChar, transaction_type)
                 .query('SELECT COUNT(*) as count FROM AccountingApp.dbo.AccountingOptions WHERE transactiontypeOptions = @value');
-            
+
             if (checkResult.recordset[0].count === 0) {
                 const updateResult = await pool.request()
                     .input('value', sql.NVarChar, transaction_type)
                     .query('UPDATE TOP (1) AccountingApp.dbo.AccountingOptions SET transactiontypeOptions = @value WHERE transactiontypeOptions IS NULL');
-                
+
                 if (updateResult.rowsAffected[0] === 0) {
                     await pool.request()
                         .input('value', sql.NVarChar, transaction_type)
@@ -5807,16 +5807,16 @@ app.post('/api/AccountingApp/addAccountingOptions', async (req, res) => {
             const checkResult = await pool.request()
                 .input('value', sql.NVarChar, category)
                 .query('SELECT COUNT(*) as count FROM AccountingApp.dbo.AccountingOptions WHERE categoryOptions = @value');
-            
+
             if (checkResult.recordset[0].count === 0) {
                 // 新类别默认使用 icon-qitashouru 图标
                 const unicode = 'icon-qitashouru';
-                
+
                 const updateResult = await pool.request()
                     .input('value', sql.NVarChar, category)
                     .input('unicode', sql.NVarChar, unicode)
                     .query('UPDATE TOP (1) AccountingApp.dbo.AccountingOptions SET categoryOptions = @value, categoryunicodeOptions = @unicode WHERE categoryOptions IS NULL');
-                
+
                 if (updateResult.rowsAffected[0] === 0) {
                     await pool.request()
                         .input('value', sql.NVarChar, category)
@@ -5832,12 +5832,12 @@ app.post('/api/AccountingApp/addAccountingOptions', async (req, res) => {
             const checkResult = await pool.request()
                 .input('value', sql.NVarChar, payment_method)
                 .query('SELECT COUNT(*) as count FROM AccountingApp.dbo.AccountingOptions WHERE paymentmethodOptions = @value');
-            
+
             if (checkResult.recordset[0].count === 0) {
                 const updateResult = await pool.request()
                     .input('value', sql.NVarChar, payment_method)
                     .query('UPDATE TOP (1) AccountingApp.dbo.AccountingOptions SET paymentmethodOptions = @value WHERE paymentmethodOptions IS NULL');
-                
+
                 if (updateResult.rowsAffected[0] === 0) {
                     await pool.request()
                         .input('value', sql.NVarChar, payment_method)
@@ -5847,11 +5847,11 @@ app.post('/api/AccountingApp/addAccountingOptions', async (req, res) => {
             }
         }
 
-        res.status(200).json({ 
-            message: '选项同步完成', 
-            added: addedItems 
+        res.status(200).json({
+            message: '选项同步完成',
+            added: addedItems
         });
-        
+
     } catch (error) {
         console.error('同步选项失败:', error);
         res.status(500).json({ message: '同步选项失败', error: error.message });
@@ -7648,7 +7648,7 @@ app.get('/api/downloadTemplateManagement', (req, res) => {
     }
 
     const fileList = files.split(',');
-    
+
     // 构建安全路径
     const safeAssetType = path.normalize(assetType).replace(/^(\.\.(\/|\\|$))+/, '');
     const safeValuationPurpose = path.normalize(valuationPurpose).replace(/^(\.\.(\/|\\|$))+/, '');
@@ -7699,7 +7699,7 @@ app.get('/api/downloadTemplateManagement', (req, res) => {
         // 修复：确保文件名以 .zip 结尾
         const zipFileName = `template_files_${Date.now()}.zip`;
         const zipFilePath = path.join(__dirname, './temp', zipFileName);
-        
+
         // 确保临时目录存在
         const tempDir = path.join(__dirname, './temp');
         if (!fs.existsSync(tempDir)) {
@@ -7764,7 +7764,7 @@ app.get('/api/downloadTemplateManagement', (req, res) => {
 
                         zipStream.on('error', (err) => {
                             console.error('ZIP文件流错误:', err);
-                            fs.unlink(zipFilePath, () => {});
+                            fs.unlink(zipFilePath, () => { });
                             if (!res.headersSent) {
                                 res.status(500).send('Zip download error');
                             }
@@ -7772,7 +7772,7 @@ app.get('/api/downloadTemplateManagement', (req, res) => {
                     })
                     .on('error', (err) => {
                         console.error('写入ZIP文件失败:', err);
-                        fs.unlink(zipFilePath, () => {});
+                        fs.unlink(zipFilePath, () => { });
                         if (!res.headersSent) {
                             res.status(500).send('Error creating zip file');
                         }
@@ -7885,11 +7885,11 @@ app.get('/api/getWordReportOptions', async (req, res) => {
 app.post('/api/syncWordReportOptions', async (req, res) => {
     try {
         const { optionsData } = req.body;
-        
+
         if (!optionsData || typeof optionsData !== 'object') {
             return res.status(400).json({ message: 'optionsData参数无效' });
         }
-        
+
         // 定义字段映射：前端字段名 -> 数据库列名
         const fieldMapping = {
             assessmentCommissionDocument: 'assessmentCommissionDocumentOptions',
@@ -7908,22 +7908,22 @@ app.post('/api/syncWordReportOptions', async (req, res) => {
             seizureBasis: 'seizureBasisOptions',
             utilizationStatus: 'utilizationStatusOptions'
         };
-        
+
         const addedItems = [];
-        
+
         // 遍历每个字段，检查并插入新值
         for (const [frontendField, dbColumn] of Object.entries(fieldMapping)) {
             const newValues = optionsData[frontendField];
-            
+
             if (!newValues || !Array.isArray(newValues) || newValues.length === 0) {
                 continue;
             }
-            
+
             // 去重并过滤空字符串
             const uniqueValues = [...new Set(newValues.filter(v => v && v.trim()))];
-            
+
             if (uniqueValues.length === 0) continue;
-            
+
             // 检查每个新值是否已存在
             for (const value of uniqueValues) {
                 // 查询该列中是否已存在该值
@@ -7932,11 +7932,11 @@ app.post('/api/syncWordReportOptions', async (req, res) => {
                     FROM OfficeApp.dbo.WordReportOptions 
                     WHERE ${dbColumn} = @value
                 `;
-                
+
                 const checkResult = await pool.request()
                     .input('value', sql.NVarChar, value)
                     .query(checkQuery);
-                
+
                 if (checkResult.recordset[0].count === 0) {
                     // 不存在，找一行该列为NULL的记录进行更新
                     const updateQuery = `
@@ -7944,11 +7944,11 @@ app.post('/api/syncWordReportOptions', async (req, res) => {
                         SET ${dbColumn} = @value
                         WHERE ${dbColumn} IS NULL
                     `;
-                    
+
                     const updateResult = await pool.request()
                         .input('value', sql.NVarChar, value)
                         .query(updateQuery);
-                    
+
                     // 如果没有NULL行可更新，才插入新行
                     if (updateResult.rowsAffected[0] === 0) {
                         const insertQuery = `
@@ -7959,17 +7959,17 @@ app.post('/api/syncWordReportOptions', async (req, res) => {
                             .input('value', sql.NVarChar, value)
                             .query(insertQuery);
                     }
-                    
+
                     addedItems.push({ field: frontendField, added: value });
                 }
             }
         }
-        
-        res.status(200).json({ 
-            message: '选项同步完成', 
-            added: addedItems 
+
+        res.status(200).json({
+            message: '选项同步完成',
+            added: addedItems
         });
-        
+
     } catch (error) {
         console.error('同步选项失败:', error);
         res.status(500).json({ message: '同步选项失败', error: error.message });
@@ -11330,12 +11330,12 @@ app.get('/api/auth/users', async (req, res) => {
         }
 
         const result = await request.query(query);
-        
+
         res.json({
             success: true,
             data: result.recordset
         });
-        
+
     } catch (err) {
         console.error('获取用户列表错误:', err);
         res.status(500).json({
@@ -14801,7 +14801,7 @@ ORDER BY
                 try {
                     //await poolConnect;
                     const result = await pool.request()
-                        .query('SELECT TOP 50 * FROM RdpgCode.dbo.CqrdpgBusiness ORDER BY submitted DESC');
+                        .query('SELECT TOP 50 * FROM OfficeApp.dbo.EvaluationBusinessMessage ORDER BY submitted DESC');
 
                     socket.emit('initial_messages', result.recordset);
                 } catch (err) {
@@ -15080,7 +15080,7 @@ ORDER BY
                     .input('contact', sql.NVarChar(50), contact || null)
                     .input('description', sql.NVarChar(sql.MAX), description)
                     .query(`
-                INSERT INTO RdpgCode.dbo.CqrdpgBusiness (requestername, contact, description, isread, submitted)
+                INSERT INTO OfficeApp.dbo.EvaluationBusinessMessage (requestername, contact, description, isread, submitted)
                 VALUES (@requestername, @contact, @description, 0, GETDATE());
                 SELECT SCOPE_IDENTITY() as newId;
             `);
@@ -15112,7 +15112,7 @@ ORDER BY
             try {
                 //await poolConnect;
                 const result = await pool.request()
-                    .query('SELECT * FROM RdpgCode.dbo.CqrdpgBusiness ORDER BY submitted DESC');
+                    .query('SELECT * FROM OfficeApp.dbo.EvaluationBusinessMessage ORDER BY submitted DESC');
 
                 res.json({ success: true, data: result.recordset });
             } catch (err) {
@@ -15128,7 +15128,7 @@ ORDER BY
                 //await poolConnect;
                 await pool.request()
                     .input('id', sql.Int, id)
-                    .query('UPDATE RdpgCode.dbo.CqrdpgBusiness SET isread = 1, responded = GETDATE() WHERE id = @id');
+                    .query('UPDATE OfficeApp.dbo.EvaluationBusinessMessage SET isread = 1, responded = GETDATE() WHERE id = @id');
 
                 // 通知前端列表更新
                 io.emit('message_updated', { id: parseInt(id), isread: 1, responded: new Date().toISOString() });
@@ -15155,7 +15155,7 @@ ORDER BY
                 // 执行删除操作
                 const result = await request
                     .input('id', sql.Int, parseInt(id))
-                    .query('DELETE FROM RdpgCode.dbo.CqrdpgBusiness WHERE id = @id');
+                    .query('DELETE FROM OfficeApp.dbo.EvaluationBusinessMessage WHERE id = @id');
 
                 // 如果影响行数为 0，说明没找到该 ID
                 if (result.rowsAffected[0] === 0) {
@@ -15169,6 +15169,30 @@ ORDER BY
             } catch (err) {
                 console.error('删除消息错误:', err);
                 res.status(500).json({ success: false, message: '服务器内部错误', error: err.message });
+            }
+        });
+        // 5. 统计未读留言数量 (MessageManagement 初始化或轮询使用)
+        app.get('/api/CodeDatabase/getUnreadCount', async (req, res) => {
+            try {
+                // 查询未读留言总数（isread = 0）
+                const result = await pool.request()
+                    .query('SELECT COUNT(*) as unreadCount FROM OfficeApp.dbo.EvaluationBusinessMessage WHERE isread = 0');
+
+                const unreadCount = result.recordset[0].unreadCount;
+
+                res.json({
+                    success: true,
+                    data: {
+                        unreadCount: unreadCount
+                    }
+                });
+            } catch (err) {
+                console.error('统计未读消息错误:', err);
+                res.status(500).json({
+                    success: false,
+                    message: '统计未读消息失败',
+                    error: err.message
+                });
             }
         });
 
@@ -16932,7 +16956,7 @@ ORDER BY
         }
     }
 
-    
+
     // ========== 统一OCR+AI提取接口 ==========
     app.post('/api/AIStudio/ocr-and-extract', async (req, res) => {
         try {

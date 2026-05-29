@@ -539,6 +539,20 @@ CREATE TABLE OfficeApp.dbo.ReportqrCodepageDecodeMapping (
 9→ cH6
 ``` 
 
+### 15. 评估工作留言 (`OfficeApp.dbo.EvaluationBusinessMessage`)
+``` 
+CREATE TABLE OfficeApp.dbo.EvaluationBusinessMessage ( 
+    id INT IDENTITY(1,1) PRIMARY KEY,-- 问题ID (主键)，使用自增整数类型，确保唯一性 
+    requestername NVARCHAR(50) NOT NULL,-- 提问人姓名，可变字符类型，长度50足够存储姓名 
+    contact NVARCHAR(50) NULL,-- 联系方式，可变字符类型，长度20可存储手机号/座机号等 
+    description NVARCHAR(MAX) NOT NULL,-- 问题描述，文本类型存储较长内容 
+    isread BIT DEFAULT(0) NOT NULL,-- 是否已读，BIT类型（0=未读，1=已读），默认值0
+    submitted DATETIME DEFAULT(GETDATE()) NOT NULL,-- 提交时间，日期时间类型，默认值为当前时间
+    responded DATETIME NULL -- 回复时间，日期时间类型，可空（未回复时为NULL）
+);
+``` 
+
+
 ##  四、记账板块数据库 (`AccountingApp`)
 
 ### 1. 账单 (`AccountingApp.dbo.AccountingList`)
