@@ -6,12 +6,12 @@ import './ChatWindow.css';
 import { Loading } from '../../../components/UI';
 import VideoCall from './VideoCall';
 import GroupVideoCall from './GroupVideoCall';
-import { ConfirmationDialog } from '../../../components/UI/';
+import { ConfirmationDialog } from '../../../components/UI'; 
 
 import Circularrotatingtext from './.././../../components/Animation/Circularrotatingtext'; // 加载动画里面的环形旋转文字
 const socket = io('https://www.cqrdpg.com:5202');
 
-
+ 
 
 const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) => {
     const [messages, setMessages] = useState([]);
@@ -27,8 +27,7 @@ const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) 
     const messageListRef = useRef(null); // 用于引用消息列表
     const [isModalOpen, setIsModalOpen] = useState(false); // 模拟框图片
     const [selectedImage, setSelectedImage] = useState(null); // 用于存储当前选中的图片
-    // 2. 添加产出消息状态
-    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);//删除消息
     // 分页相关状态
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(20); // 每页消息数量
@@ -913,9 +912,35 @@ const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) 
     };
 
     // 在前端的 handleDeleteMessages 函数中
-    const handleDeleteMessages = () => {
+    const handleDeleteMessages = async () => {
         if (selectedMessages.length === 0) return;
-        setIsDeleteDialogOpen(true);
+
+        // 确认删除
+        const confirmDelete = window.confirm(`确定要删除选中的 ${selectedMessages.length} 条消息吗？`);
+        if (!confirmDelete) return;
+
+        try {
+            await axios.delete('/api/messages', {
+                data: { messageIds: selectedMessages }
+            });
+
+            // 删除成功后，更新消息列表
+            setMessages((prevMessages) =>
+                prevMessages.filter(msg => !selectedMessages.includes(msg.message_id))
+            );
+
+            // 关闭设置菜单并清空选中列表
+            setIsSettingOpen(false);
+            setSelectedMessages([]);
+            setIsAllSelected(false);
+
+            // 显示删除成功提示
+            // alert('消息删除成功');
+
+        } catch (error) {
+            console.error('删除消息失败:', error);
+            alert('删除消息失败: ' + (error.response?.data || error.message));
+        }
     };
 
     // 输入框获得焦点时标记未读消息为已读
@@ -1418,31 +1443,6 @@ const ChatWindow = ({ selectedFriend, username, themeSettings, userHeadImage }) 
                     </div>
                 </div>
             )}
-            <ConfirmationDialog
-                isOpen={isDeleteDialogOpen}
-                title="确认删除"
-                message={`确定要删除选中的 ${selectedMessages.length} 条消息吗？`}
-                confirmText="确定删除"
-                onConfirm={async () => {
-                    try {
-                        await axios.delete('/api/messages', {
-                            data: { messageIds: selectedMessages }
-                        });
-                        setMessages((prevMessages) =>
-                            prevMessages.filter(msg => !selectedMessages.includes(msg.message_id))
-                        );
-                        setIsSettingOpen(false);
-                        setSelectedMessages([]);
-                        setIsAllSelected(false);
-                    } catch (error) {
-                        console.error('删除消息失败:', error);
-                        alert('删除消息失败: ' + (error.response?.data || error.message));
-                    } finally {
-                        setIsDeleteDialogOpen(false);
-                    }
-                }}
-                onCancel={() => setIsDeleteDialogOpen(false)}
-            />
         </div>
     );
 };
