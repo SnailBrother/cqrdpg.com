@@ -2852,7 +2852,7 @@ app.get('/api/checkImageExists', (req, res) => {
             res.status(500).send(err.message);
         }
     });
-    // 发送消息
+
     // 发送消息（修改支持消息类型）
     app.post('/api/messages', async (req, res) => {
         const {
@@ -11212,6 +11212,38 @@ app.get('/api/ListenTogetherMusic/ChangePlaySong', async (req, res) => {
 
 
 //reactdemo 登录注册 👇
+
+//获取所有用户信息  根据邮箱查询用户
+app.get('/api/auth/users', async (req, res) => {
+    const email = req.query.email; // 获取查询参数
+    try {
+        let query = 'SELECT * FROM SystemSettingsApp.dbo.SystemUserAccounts';
+        if (email) {
+            query += ' WHERE email = @email ORDER BY id DESC';
+        } else {
+            query += ' ORDER BY id DESC'; // 保持原有逻辑，查询所有用户
+        }
+
+        const request = pool.request();
+        if (email) {
+            request.input('email', sql.VarChar, email);
+        }
+
+        const result = await request.query(query);
+        
+        res.json({
+            success: true,
+            data: result.recordset
+        });
+        
+    } catch (err) {
+        console.error('获取用户列表错误:', err);
+        res.status(500).json({
+            success: false,
+            message: '获取用户列表失败'
+        });
+    }
+});
 // 注册接口
 app.post('/api/auth/register', async (req, res) => {
     const { username, email, password } = req.body;
@@ -11348,7 +11380,7 @@ app.post('/api/ChatRegister', async (req, res) => {
 });
 
 
-app.post('/api/auth/login', async (req, res) => {
+app.post('/api/auth/login/old', async (req, res) => {
     const { email, password } = req.body;
 
     // console.log('登录请求:', { email, password });
@@ -11397,6 +11429,81 @@ app.post('/api/auth/login', async (req, res) => {
             permission_level: user.permission_level,
             is_locked: user.is_locked,
             notes: user.notes
+        };
+
+        res.json({
+            success: true,
+            user: userResponse,
+            token: `jwt-token-${user.id}-${Date.now()}`
+        });
+
+    } catch (err) {
+        console.error('登录错误:', err);
+        res.status(500).json({
+            success: false,
+            message: '服务器错误'
+        });
+    }
+});
+
+app.post('/api/auth/login', async (req, res) => {
+    const { email, password, device_id, device_type } = req.body;  // 新增两个字段
+
+    // console.log('登录请求:', { email, password });
+
+    try {
+        //await poolConnect;
+
+        const result = await pool.request()
+            .input('email', sql.NVarChar, email)
+            .query('SELECT * FROM SystemSettingsApp.dbo.SystemUserAccounts WHERE email = @email');
+
+        if (result.recordset.length === 0) {
+            return res.status(401).json({
+                success: false,
+                message: '用户不存在'
+            });
+        }
+
+        const user = result.recordset[0];
+
+        if (user.is_locked) {
+            return res.status(401).json({
+                success: false,
+                message: '账户已被锁定，请联系管理员'
+            });
+        }
+
+        if (password !== user.password) {
+            return res.status(401).json({
+                success: false,
+                message: '密码错误'
+            });
+        }
+
+        // 更新最后登录时间和设备信息
+        await pool.request()
+            .input('id', sql.Int, user.id)
+            .input('device_id', sql.NVarChar, device_id || null)
+            .input('device_type', sql.NVarChar, device_type || null)
+            .query(`UPDATE SystemSettingsApp.dbo.SystemUserAccounts 
+                    SET last_login_time = GETDATE(),
+                        device_id = @device_id,
+                        device_type = @device_type 
+                    WHERE id = @id`);
+
+        const userResponse = {
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            registration_date: user.registration_date,
+            last_login_time: user.last_login_time,
+            profile_picture: user.profile_picture,
+            permission_level: user.permission_level,
+            is_locked: user.is_locked,
+            notes: user.notes,
+            device_id: device_id,      // 可选：返回给前端
+            device_type: device_type   // 可选：返回给前端
         };
 
         res.json({

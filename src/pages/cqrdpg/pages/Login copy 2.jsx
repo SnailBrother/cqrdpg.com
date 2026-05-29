@@ -111,48 +111,6 @@ function Login() {
   const [purpleMouthShape, setPurpleMouthShape] = useState('circle');
   const [showPassword, setShowPassword] = useState(false);
 
-
-// 添加设备识别函数
-  const getDeviceInfo = () => {
-  // 生成或获取设备ID
-  let deviceId = localStorage.getItem('device_id');
-  if (!deviceId) {
-    deviceId = Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
-    localStorage.setItem('device_id', deviceId);
-  }
-
-  // 识别设备类型
-  const getDeviceType = () => {
-    const ua = navigator.userAgent.toLowerCase();
-    
-    // 平板判断
-    if (
-      /(ipad|tablet|(android(?!.*mobile)))/i.test(ua) ||
-      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
-    ) {
-      return 'tablet';
-    }
-    
-    // 手机判断
-    if (/mobile|android|iphone|ipod|blackberry|iemobile|opera mini/i.test(ua)) {
-      // 进一步区分 Android 和 iOS
-      if (/android/i.test(ua)) return 'android';
-      if (/iphone|ipod|ios/i.test(ua)) return 'ios';
-      return 'mobile';
-    }
-    
-    // 电脑判断
-    return 'pc';
-  };
-
-  const deviceType = getDeviceType();
-  
-  return { deviceId, deviceType };
-};
-
-
-
-
   // DOM元素引用
   const purpleRef = useRef(null);
   const blackRef = useRef(null);
@@ -435,60 +393,49 @@ function Login() {
 
     setLoading(true);
 
+    try {
+      const response = await axios.post('/api/auth/login', {
+        email: email,
+        password: password
+      });
 
+      console.log('登录响应:', response.data);
 
-     // 获取设备信息
-  const { deviceId, deviceType } = getDeviceInfo();
+      if (response.data.success) {
+        const userData = {
+          ...response.data.user,
+          loginTime: new Date().toISOString()
+        };
 
-  try {
-    const response = await axios.post('/api/auth/login', {
-      email: email,
-      password: password,
-      device_id: deviceId,      // 新增
-      device_type: deviceType   // 新增
-    });
+        const token = response.data.token;
 
-    console.log('登录响应:', response.data);
+        if (!token) {
+          throw new Error('服务器未返回Token');
+        }
 
-    if (response.data.success) {
-      // 保存设备信息到 localStorage（可选）
-      localStorage.setItem('device_id', deviceId);
-      localStorage.setItem('device_type', deviceType);
-      
-      const userData = {
-        ...response.data.user,
-        loginTime: new Date().toISOString()
-      };
+        setUserInfo(userData, token);
 
-      const token = response.data.token;
+        const from = location.state?.from?.pathname || '/home';
+        navigate(from, { replace: true });
+      } else {
+        throw new Error(response.data.message || '登录失败');
+      }
+    } catch (error) {
+      console.error('登录错误:', error);
+      let errorMessage = '登录失败，请检查网络或账号密码';
 
-      if (!token) {
-        throw new Error('服务器未返回Token');
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.message) {
+        errorMessage = error.message;
       }
 
-      setUserInfo(userData, token);
-
-      const from = location.state?.from?.pathname || '/home';
-      navigate(from, { replace: true });
-    } else {
-      throw new Error(response.data.message || '登录失败');
+      setSubmitError(errorMessage);
+      refreshCaptcha();
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    console.error('登录错误:', error);
-    let errorMessage = '登录失败，请检查网络或账号密码';
-
-    if (error.response?.data?.message) {
-      errorMessage = error.response.data.message;
-    } else if (error.message) {
-      errorMessage = error.message;
-    }
-
-    setSubmitError(errorMessage);
-    refreshCaptcha();
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   const goToRegister = () => {
     navigate('/register');

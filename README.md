@@ -580,6 +580,8 @@ CREATE TABLE SystemSettingsApp.dbo.SystemUserAccounts (
     permission_level NVARCHAR(50) DEFAULT 0,    -- 权限级别，例如管理员、普通用户、VIP等 
     notes NVARCHAR(500),                       -- 管理员备注信息
     is_locked BIT DEFAULT 0,                    -- 账户锁定状态，默认为0（未锁定）
+    device_id NVARCHAR(255),                   -- 登录客户端生成的唯一设备ID
+    device_type NVARCHAR(50)                   -- 设备类型：pc、mobile、tablet、android、ios
 );
 ``` 
 
