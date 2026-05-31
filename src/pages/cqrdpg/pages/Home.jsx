@@ -228,10 +228,10 @@ const HomeOptions = () => {
               ))}
             </div>
             <div className={styles.navRight}>
-              <div className={styles.searchBox}>
+              {/* <div className={styles.searchBox}>
                 <input type="text" placeholder="搜索..." className={styles.searchInput} />
                 <button className={styles.searchButton}>🔍</button>
-              </div>
+              </div> */}
               <Link to="/login" className={styles.loginButton}>登录</Link>
               <button className={styles.menuToggle} onClick={toggleMenu} aria-label="菜单">
                 <span className={styles.menuIcon}></span>
@@ -241,14 +241,14 @@ const HomeOptions = () => {
             </div>
             {isMenuOpen && (
               <div className={styles.mobileMenu} ref={menuRef}>
-                <div className={styles.mobileMenuHeader}>
+                {/* <div className={styles.mobileMenuHeader}>
                   <span className={styles.mobileCompanyName}>重庆评估资产评估</span>
                   <button className={styles.mobileCloseBtn} onClick={toggleMenu}>×</button>
-                </div>
-                <div className={styles.mobileSearchBox}>
+                </div> */}
+                {/* <div className={styles.mobileSearchBox}>
                   <input type="text" placeholder="搜索..." className={styles.mobileSearchInput} />
                   <button className={styles.mobileSearchButton}>🔍</button>
-                </div>
+                </div> */}
                 <div className={styles.mobileNavItems}>
                   {navItems.map((item, index) => (
                     <button

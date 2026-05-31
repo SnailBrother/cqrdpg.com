@@ -2,9 +2,17 @@
 import React from 'react';
 import styles from './Footer.module.css';
 import { Link } from 'react-router-dom';
-
+//import { useAuth } from '../../../context/AuthContext';
+import { useAuth } from '../../../../context/AuthContext';
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+ const { user, isAuthenticated } = useAuth(); //获取用户名 
+   // 判断是否显示"关于我们"链接
+  const shouldShowLoveHome = () => {
+    if (!isAuthenticated || !user?.username) return false;
+    const username = user.username;
+    return username === '陈彦羽' || username === '李中敬';
+  };
 
   return (
     <footer className={styles.footer}>
@@ -23,7 +31,7 @@ const Footer = () => {
 
           {/* 快速链接列 */}
           <div className={styles.footerColumn}>
-            <h3 className={styles.columnTitle}>快速链接</h3>
+            <h3 className={styles.columnTitle}>链接</h3>
             <ul className={styles.linkList}>
               <li>
                 <Link to="/qrcodeRealcheck" className={styles.link}>
@@ -41,7 +49,14 @@ const Footer = () => {
                   易估价
                 </Link>
               </li>
-
+               {shouldShowLoveHome() && (
+                <li>
+                  <Link to="/lovehome" className={styles.link}>
+                    关于我们
+                  </Link>
+                </li>
+              )}
+         
             </ul>
           </div>
 
@@ -57,19 +72,12 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* 联系方式列 */}
+          {/* 工作时间 */}
           <div className={styles.footerColumn}>
-            <h3 className={styles.columnTitle}>联系方式</h3>
+            <h3 className={styles.columnTitle}>工作时间</h3>
             <div className={styles.contactInfo}>
               
-              <p className={styles.contactItem}>
-                <span className={styles.contactIcon}>📞</span>
-                18983033184
-              </p>
-              <p className={styles.contactItem}>
-                <span className={styles.contactIcon}>📧</span>
-                644260249@qq.com
-              </p>
+             
               <p className={styles.contactItem}>
                 <span className={styles.contactIcon}>🕒</span>
                 周一至周五 9:00 - 18:00
@@ -81,11 +89,11 @@ const Footer = () => {
         {/* 底部版权信息 */}
         <div className={styles.footerBottom}>
           <p className={styles.copyright}>
-            © {currentYear} 评估工作室 版权所有
+            © {currentYear} 版权所有
           </p>
           <p className={styles.beian}>
-            <a href="#" className={styles.beianLink}>渝ICP备xxxxxxxx号</a>
-            <a href="#" className={styles.beianLink}>渝公网安备 xxxxxxxxxxxx号</a>
+            <a href="https://beian.miit.gov.cn/" className={styles.beianLink}>渝ICP备2026003834号-1</a>
+            {/* <a href="#" className={styles.beianLink}>渝公网安备 xxxxxxxxxxxx号</a> */}
           </p>
         </div>
       </div>

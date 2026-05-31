@@ -67,7 +67,7 @@ const AppRoutes = () => {
       }
 
       // 情况2: 特定的被屏蔽IP -> 屏蔽 (true)
-      if (hostname === '121.4.22.55') {
+      if (hostname === '81.71.88.191') {
         setIsBlockedIp(true);
         return;
       }
@@ -167,7 +167,7 @@ const AppRoutes = () => {
       {/* 动态生成的模块路由 */}
       {renderModuleRoutes()}
       {/* <Route path="*" element={<SystemProfile />} /> */}
-      <Route path="*" element={<Navigate to="/home" replace />} /> 
+      <Route path="*" element={<Navigate to="/companyhome" replace />} /> 
     </Routes>
   );
 };

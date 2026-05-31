@@ -50,8 +50,8 @@ const ContactUs = () => {
         
         {/* 【修改点】先渲染右侧表单区域 (移动端会显示在上面) */}
         <div className={styles.rightCol}>
-          <h3 className={styles.formTitle}>需要评估</h3>
-          <h4 className={styles.formTitleprompt}>有需要帮助？请告诉我们，我们会第一时间联系您</h4>
+          <h3 className={styles.formTitle}>专业评估服务</h3>
+          <h4 className={styles.formTitleprompt}>如需评估咨询或业务帮助，欢迎随时联系我们</h4>
          
           <form className={styles.contactForm} onSubmit={handleSubmit}>
             <div className={styles.formGroup}>
@@ -119,7 +119,7 @@ const ContactUs = () => {
             <h3 className={styles.infoTitle}>联系方式</h3>
             <ul className={styles.infoList}>
               <li className={styles.infoItem}><span className={styles.label}>联系人：</span><span className={styles.value}>李老师</span></li>
-              <li className={styles.infoItem}><span className={styles.label}>电话：</span><span className={styles.value}>18983033184</span></li>
+              <li className={styles.infoItem}><span className={styles.label}>电话：</span><span className={styles.value}>18223626490</span></li>
               <li className={styles.infoItem}><span className={styles.label}>公司邮箱：</span><span className={styles.value}>644260249@qq.com</span></li>
               <li className={styles.infoItem}><span className={styles.label}>公司邮编：</span><span className={styles.value}>400010</span></li>
               <li className={styles.infoItem}><span className={styles.label}>客服QQ：</span><span className={styles.value}>644260249</span></li>

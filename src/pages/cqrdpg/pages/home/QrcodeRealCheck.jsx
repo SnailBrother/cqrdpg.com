@@ -78,18 +78,18 @@ const QrcodeRealCheck = () => {
         <div className={styles.header}>
           <div className={styles.iconWrapper}>🛡️</div>
           <h1 className={styles.title}>报告真伪查验</h1>
-          <p className={styles.subtitle}>请输入报告上的防伪校验码 (如：Q8S5...)</p>
+          {/* <p className={styles.subtitle}>请输入报告上的防伪校验码 (如：Q8S5...)</p> */}
         </div>
 
         <form onSubmit={handleVerify} className={styles.form}>
           <div className={styles.inputGroup}>
-            <label htmlFor="safeCode" className={styles.label}>防伪校验码</label>
+            {/* <label htmlFor="safeCode" className={styles.label}>防伪校验码</label> */}
             <input
               id="safeCode"
               type="text"
               value={safeCode}
               onChange={handleInputChange}
-              placeholder="请输入完整的混淆码"
+              placeholder="请输入完整的防伪校验码"
               className={styles.input}
               disabled={loading}
               autoComplete="off"
