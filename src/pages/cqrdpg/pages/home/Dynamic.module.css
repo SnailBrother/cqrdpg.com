@@ -1,48 +1,40 @@
-.carouseltypethird-container {
+/* 主容器 */
+.carousel-container {
     width: 100%;
-    height: 100dvh;
+    min-height: 100vh;
+    background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
     position: relative;
-    background-color: #ffffff4b;
     overflow: hidden;
-    border-radius: 10px;
+    padding: 40px 0 60px;
 }
 
-/* #region start 标题 */
-
-/* 标题容器 */
-.carouseltypethird-header {
+/* ========== 标题区域 ========== */
+.carousel-header {
     width: 100%;
     display: flex;
     justify-content: center;
-    margin: 30px 0;
-    position: relative;
+    margin-bottom: 20px;
 }
 
-/* 标题背景容器 */
-.carouseltypethird-title-container {
+.title-container {
     position: relative;
     padding: 10px 100px;
     overflow: hidden;
 }
 
-/* 水墨风格背景 */
-.carouseltypethird-title-bg {
+.title-bg {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: 
-      linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(245,245,245,0.9) 100%),
-      url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><path d="M20,100 Q50,20 100,100 T180,100" fill="none" stroke="%23d1c4b8" stroke-width="1" stroke-opacity="0.3"/></svg>');
-    background-size: cover, auto;
+    background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(245,245,245,0.9) 100%);
     z-index: -1;
     border-radius: 5px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
 }
 
-/* 主标题样式 */
-.carouseltypethird-title {
+.title {
     position: relative;
     margin: 0;
     font-family: 'STXingkai', 'KaiTi', '楷体', serif;
@@ -53,8 +45,7 @@
     letter-spacing: 10px;
 }
 
-/* 标题文字效果 - 金色渐变 */
-.carouseltypethird-title-text {
+.title-text {
     position: absolute;
     top: 0;
     left: 0;
@@ -62,20 +53,18 @@
     background: linear-gradient(to right, #c9a769, #8c6d3d, #c9a769);
     -webkit-background-clip: text;
     background-clip: text;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.05);
     color: #000;
 }
 
-/* 标题阴影效果 */
-.carouseltypethird-title-shadow {
+.title-shadow {
     display: block;
-    color: rgba(0,0,0,0.05);
+    color: rgba(0,0,0,0.03);
     filter: blur(4px);
     transform: translateY(5px);
 }
 
-/* 装饰元素 - 中国风窗花纹样 */
-.carouseltypethird-decoration {
+.decoration {
     position: absolute;
     width: 100%;
     height: 20px;
@@ -85,105 +74,228 @@
     justify-content: space-between;
 }
 
-.carouseltypethird-decoration-left,
-.carouseltypethird-decoration-right {
+.decoration-left,
+.decoration-right {
     width: 80px;
     height: 100%;
     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="80" height="20" viewBox="0 0 80 20"><path d="M0,10 Q10,0 20,10 T40,10 T60,10 T80,10" fill="none" stroke="%23c9a769" stroke-width="1"/></svg>');
     background-repeat: no-repeat;
 }
 
-.carouseltypethird-decoration-right {
+.decoration-right {
     transform: scaleX(-1);
 }
 
-/* 响应式设计 */
-@media (max-width: 768px) {
-    .carouseltypethird-title-container {
-        padding: 20px 60px;
+/* ========== 横向滚动文字 ========== */
+.marquee-wrapper {
+    width: 100%;
+    margin-bottom: 40px;
+    overflow: hidden;
+    background: #f8f9fa;
+    padding: 12px 0;
+    border-top: 1px solid rgba(201, 169, 130, 0.2);
+    border-bottom: 1px solid rgba(201, 169, 130, 0.2);
+}
+
+.marquee {
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.marquee-content {
+    display: inline-block;
+    animation: marqueeScroll 20s linear infinite;
+}
+
+.marquee-text {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.6;
+    padding: 0 40px;
+    position: relative;
+}
+
+.marquee-text::before {
+    content: '✦';
+    position: absolute;
+    left: 10px;
+    color: #c9a982;
+    font-size: 12px;
+}
+
+@keyframes marqueeScroll {
+    0% {
+        transform: translateX(0);
     }
-    
-    .carouseltypethird-title {
-        font-size: 2.2rem;
-        letter-spacing: 5px;
-    }
-    
-    .carouseltypethird-decoration-left,
-    .carouseltypethird-decoration-right {
-        width: 50px;
+    100% {
+        transform: translateX(-33.33%);
     }
 }
 
-@media (max-width: 480px) {
-    .carouseltypethird-title-container {
-        padding: 15px 40px;
-    }
-    
-    .carouseltypethird-title {
-        font-size: 1.8rem;
-        letter-spacing: 3px;
-    }
-    
-    .carouseltypethird-decoration {
-        height: 15px;
-        bottom: 5px;
-    }
+.marquee:hover .marquee-content {
+    animation-play-state: paused;
 }
-/*  #endregion end */
 
-.carouseltypethird-banner {
+/* ========== 电脑端轮播图样式 - 全屏大气 ========== */
+.carousel-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.banner {
     list-style: none;
     padding: 0;
     margin: 0;
     width: 100%;
-    height: 700px;
+    height: 550px;
     position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.slide {
+    position: absolute;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
-    top: 40%;
-    transform: translateY(-50%);
 }
 
-.carouseltypethird-slide {
-    position: absolute;
-    transition: all 0.4s ease;
-}
-
-.carouseltypethird-img {
-    width: 100%;
-    height: 100%;
-    border-radius: 10px;
-    object-fit: cover;
-}
-
-/* 描述文字 - 固定在图片内部顶部 */
-.carouseltypethird-description {
-    position: absolute;
-    top: 20px;  /* 距离图片顶部20px */
+/* 中间图片 */
+.slide.center {
+    z-index: 100;
     left: 50%;
     transform: translateX(-50%);
-    padding: 15px 25px;
-    /* background: rgba(0, 0, 0, 0.062); */
-    color: white;
-    border-radius: 8px;
-    font-size: 16px;
-    line-height: 1.6;
-    text-align: left;
-    word-wrap: break-word;
-    white-space: normal;
-    /* box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); */
-    backdrop-filter: blur(5px);
-    /* border: 1px solid rgba(255, 255, 255, 0.2); */
-    z-index: 200;
-    box-sizing: border-box;
-    max-width: calc(100% - 40px);  /* 左右各留20px边距 */
-    width: auto;
-    min-width: 200px;
+    width: 70%;
+    opacity: 1;
 }
 
-/* 圆点包装器 - 固定在图片下方 */
-.carouseltypethird-dots-wrapper {
+/* 左侧图片 */
+.slide.left {
+    z-index: 50;
+    left: 5%;
+    transform: translateX(0);
+    width: 45%;
+    opacity: 0.5;
+}
+
+/* 右侧图片 */
+.slide.right {
+    z-index: 50;
+    right: 5%;
+    left: auto;
+    transform: translateX(0);
+    width: 45%;
+    opacity: 0.5;
+}
+
+/* 隐藏其他图片 */
+.slide.hidden {
+    display: none;
+}
+
+/* 图片容器 - 16:9比例 */
+.image-wrapper {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%; /* 16:9比例 */
+    overflow: hidden;
+    border-radius: 20px;
+    background: #f0f0f0;
+    transition: all 0.5s ease;
+}
+
+.slide.center .image-wrapper {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.slide.left .image-wrapper,
+.slide.right .image-wrapper {
+    box-shadow: 0 10px 30px -8px rgba(0, 0, 0, 0.15);
+}
+
+.img {
     position: absolute;
-    bottom: -60px;  /* 在图片下方60px */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.slide.center:hover .img {
+    transform: scale(1.05);
+}
+
+/* 图片描述 - 显示在中间图片上 */
+.image-description {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #c9a982, #b08d6a);
+    color: white;
+    padding: 10px 30px;
+    border-radius: 40px;
+    font-size: 16px;
+    font-weight: 500;
+    white-space: nowrap;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+    animation: fadeInUp 0.4s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+/* 导航按钮 */
+.nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 200;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 50px;
+    height: 50px;
+    border: none;
+    background: rgba(201, 169, 130, 0.8);
+    color: white;
+    font-size: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.nav:hover {
+    transform: translateY(-50%) scale(1.1);
+    background: #c9a982;
+}
+
+.nav-left {
+    left: 30px;
+}
+
+.nav-right {
+    right: 30px;
+}
+
+/* 圆点导航 */
+.dots-wrapper {
+    position: absolute;
+    bottom: -50px;
     left: 0;
     width: 100%;
     display: flex;
@@ -191,131 +303,186 @@
     z-index: 200;
 }
 
-/* 圆点导航 */
-.carouseltypethird-dots {
+.dots {
     display: flex;
     justify-content: center;
-    gap: 15px;
-    /* background: rgba(255, 255, 255, 0.9); */
-    padding: 10px 20px;
-    border-radius: 30px;
-    /* box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); */
+    gap: 12px;
+    padding: 8px 20px;
 }
 
-.carouseltypethird-dot {
-    width: 12px;
-    height: 12px;
-    border: 2px solid rgba(0, 0, 0, 0.3);
+.dot {
+    width: 10px;
+    height: 10px;
+    border: 2px solid #c9a982;
     border-radius: 50%;
     cursor: pointer;
     transition: all 0.3s ease;
-    background-color: white;
+    background-color: transparent;
 }
 
-.carouseltypethird-dot-active {
-    background-color: black;
-    border-color: black;
+.dot-active {
+    background-color: #c9a982;
+    border-color: #c9a982;
     transform: scale(1.2);
 }
 
-.carouseltypethird-dot:hover {
-    background-color: rgba(0, 0, 0, 0.7);
+.dot:hover {
+    background-color: #c9a982;
     transform: scale(1.1);
 }
 
-/* 导航按钮 */
-.carouseltypethird-nav {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 200;
-    cursor: pointer;
-    transition: transform 0.2s ease;
-    width: 40px;
-    height: 40px;
-    border: none;
-    background: rgba(0, 0, 0, 0.5);
-    color: white;
-    font-size: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-}
+/* ========== 手机端瀑布流布局 (1024px以下) ========== */
+@media (max-width: 1024px) {
+    .carousel-container {
+        padding: 10px 0 40px;
+    }
 
-.carouseltypethird-nav:hover {
-    transform: translateY(-50%) scale(1.1);
-    background: rgba(0, 0, 0, 0.8);
-}
+    .title-container {
+        padding: 0px 60px;
+    }
 
-.carouseltypethird-left {
-    left: 100px;
-}
+    .title {
+        font-size: 2rem;
+        letter-spacing: 6px;
+    }
 
-.carouseltypethird-right {
-    right: 100px;
-}
+    .decoration-left,
+    .decoration-right {
+        width: 50px;
+    }
 
-/* 响应式调整 */
-@media (max-width: 768px) {
-    .carouseltypethird-banner {
-        height: 400px;
+    .marquee-wrapper {
+        margin-bottom: 30px;
+        padding: 10px 0;
     }
-    
-    .carouseltypethird-description {
-        top: 15px;
-        padding: 12px 20px;
-        font-size: 14px;
-        line-height: 1.5;
-        max-width: calc(100% - 30px);
-    }
-    
-    .carouseltypethird-dots-wrapper {
-        bottom: -50px;
-    }
-    
-    .carouseltypethird-dot {
-        width: 10px;
-        height: 10px;
-    }
-    
-    .carouseltypethird-left {
-        left: 50px;
-    }
-    
-    .carouseltypethird-right {
-        right: 50px;
-    }
-}
 
-@media (max-width: 480px) {
-    .carouseltypethird-banner {
-        height: 300px;
-    }
-    
-    .carouseltypethird-description {
-        top: 10px;
-        padding: 10px 15px;
+    .marquee-text {
         font-size: 12px;
-        line-height: 1.4;
-        max-width: calc(100% - 20px);
-        min-width: 150px;
+        padding: 0 30px;
+    }
+
+    /* 瀑布流布局 */
+    .waterfall {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+        padding: 0 20px;
+    }
+
+    .card {
+        background: #ffffff;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        animation: fadeIn 0.5s ease forwards;
+        opacity: 0;
+    }
+
+    .card:nth-child(1) { animation-delay: 0.05s; }
+    .card:nth-child(2) { animation-delay: 0.1s; }
+    .card:nth-child(3) { animation-delay: 0.15s; }
+    .card:nth-child(4) { animation-delay: 0.2s; }
+    .card:nth-child(5) { animation-delay: 0.25s; }
+    .card:nth-child(6) { animation-delay: 0.3s; }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(201, 169, 130, 0.15);
+    }
+
+    .card-image {
+        position: relative;
+        width: 100%;
+        padding-bottom: 100%;
+        overflow: hidden;
+    }
+
+    .card-image img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+    }
+
+    .card:hover .card-image img {
+        transform: scale(1.05);
+    }
+
+    .card-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+        padding: 20px 12px 12px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .card:hover .card-overlay {
+        opacity: 1;
+    }
+
+    .card-tag {
+        display: inline-block;
+        background: linear-gradient(135deg, #c9a982, #b08d6a);
+        color: white;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+}
+
+/* 标题响应式 */
+@media (max-width: 1024px) {
+    .title-container {
+        padding: 8px 60px;
     }
     
-    .carouseltypethird-dots-wrapper {
-        bottom: -40px;
+    .title {
+        font-size: 2rem;
+        letter-spacing: 4px;
     }
     
-    .carouseltypethird-dot {
-        width: 8px;
-        height: 8px;
+    .decoration {
+        height: 15px;
+        bottom: 5px;
     }
     
-    .carouseltypethird-left {
-        left: 20px;
+    .decoration-left,
+    .decoration-right {
+        width: 40px;
+    }
+}
+
+/* 大屏幕优化 */
+@media (min-width: 1600px) {
+    .slide.center {
+        width: 60%;
     }
     
-    .carouseltypethird-right {
-        right: 20px;
+    .slide.left,
+    .slide.right {
+        width: 35%;
+    }
+    
+    .banner {
+        height: 650px;
     }
 }

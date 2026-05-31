@@ -1,18 +1,21 @@
 /* Service.module.css */
 .serviceWrapper {
   width: 100%;
-  min-height: 100vh;
+  min-height: 100dvh;
   background: linear-gradient(135deg, #f5f7fa 0%, #e9edf2 100%);
   position: relative;
   overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 .serviceContainer {
-  max-width: 1400px;
+  max-width: 1600px;
   margin: 0 auto;
-  padding: 60px 40px;
+  padding: 10px 40px;
   position: relative;
   z-index: 2;
+   box-sizing: border-box;
+ 
 }
 
 /* 背景装饰动画 - 所有设备保持相同效果 */
@@ -78,10 +81,11 @@
 /* 头部区域 - 所有设备相同布局 */
 .header {
   text-align: center;
-  margin-bottom: 60px;
+  margin-bottom: 10px;
   opacity: 0;
   transform: translateY(30px);
   transition: all 0.6s ease;
+ 
 }
 
 .headerVisible {
@@ -96,7 +100,7 @@
   letter-spacing: 3px;
   color: #667eea;
   font-weight: 600;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   position: relative;
 }
 
@@ -124,7 +128,7 @@
 .title {
   font-size: 3rem;
   color: #1a1a2e;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   font-weight: 700;
 }
 
@@ -150,6 +154,7 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 30px;
   margin-bottom: 60px;
+  box-sizing: border-box;
 }
 
 /* 卡片样式 */
@@ -321,7 +326,7 @@
   align-items: center;
   background: white;
   border-radius: 60px;
-  padding: 30px 40px;
+  padding: 20px 40px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
   opacity: 0;
   transform: scale(0.9);
@@ -364,7 +369,7 @@
 /* ========== 移动端响应式 (≤1020px) - 等比缩小，保持相同布局 ========== */
 @media (max-width: 1020px) {
   .serviceContainer {
-    padding: 20px 10px;
+    padding: 10px 10px;
   }
 
   /* 背景装饰等比缩小 */
@@ -385,7 +390,7 @@
 
   /* 头部等比缩小 */
   .header {
-    margin-bottom: 12px;
+    margin-bottom: 5px;
   }
 
   .subtitle {
@@ -410,7 +415,7 @@
   /* 网格：保持3列，但间距缩小 */
   .gridContainer {
     gap: 10px;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
   }
 
   /* 卡片等比缩小 */
@@ -465,7 +470,8 @@
   /* 统计区域等比缩小 */
   .stats {
     border-radius: 50px;
-    padding: 25px 35px;
+    padding: 20px 35px;
+    box-sizing: border-box;
   }
 
   .statNumber {
@@ -483,13 +489,8 @@
 
 /* 小屏手机 (≤768px) - 进一步等比缩小，但保持3列布局 */
 @media (max-width: 768px) {
-  .serviceContainer {
-    padding: 30px 20px;
-  }
-
-  .gridContainer {
-    gap: 15px;
-  }
+ 
+ 
 
   .card {
     height: 260px;
@@ -546,14 +547,9 @@
 
 /* 超小屏手机 (≤480px) - 保持3列但确保文字不折行 */
 @media (max-width: 480px) {
-  .serviceContainer {
-    padding: 25px 15px;
-  }
+  
 
-  .gridContainer {
-    gap: 12px;
-  }
-
+ 
   .card {
     height: 240px;
   }
@@ -596,9 +592,7 @@
     gap: 5px;
   }
 
-  .stats {
-    padding: 15px 20px;
-  }
+ 
 
   .statNumber {
     font-size: 1.5rem;

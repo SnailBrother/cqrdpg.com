@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from './ContactUs.module.css';
 import axios from 'axios';
 
@@ -10,6 +10,26 @@ const ContactUs = () => {
   });
   const [status, setStatus] = useState({ type: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -44,102 +64,128 @@ const ContactUs = () => {
     }
   };
 
+  const contactMethods = [
+    { icon: '👤', label: '联系人', value: '李老师' },
+    { icon: '📞', label: '电话', value: '18223626490' },
+    { icon: '✉️', label: '邮箱', value: '644260249@qq.com' },
+ 
+  ];
+
   return (
-    <section className={styles.contactSection}>
+    <section className={styles.contactSection} ref={sectionRef}>
       <div className={styles.container}>
-        
-        {/* 【修改点】先渲染右侧表单区域 (移动端会显示在上面) */}
-        <div className={styles.rightCol}>
-          <h3 className={styles.formTitle}>专业评估服务</h3>
-          <h4 className={styles.formTitleprompt}>如需评估咨询或业务帮助，欢迎随时联系我们</h4>
-         
-          <form className={styles.contactForm} onSubmit={handleSubmit}>
-            <div className={styles.formGroup}>
-              <label className={styles.formLabel}>姓名：</label>
-              <input
-                type="text"
-                name="requestername"
-                className={styles.formInput}
-                placeholder="请输入您的姓名"
-                value={formData.requestername}
-                onChange={handleChange}
-                required
-              />
+        <div className={`${styles.contactCard} ${isVisible ? styles.cardVisible : ''}`}>
+          {/* 头部品牌区 - 白色主题 */}
+          <div className={styles.brandHeader}>
+            <div className={styles.tagLine}>
+              <span className={styles.tagDot}></span>
+              <span>一对一专业咨询</span>
             </div>
+            <h2 className={styles.mainTitle}>
+              让评估
+              <span className={styles.gradientText}>更简单</span>
+            </h2>
 
-            <div className={styles.formGroup}>
-              <label className={styles.formLabel}>电话：</label>
-              <input
-                type="tel"
-                name="contact"
-                className={styles.formInput}
-                placeholder="请输入您的电话"
-                value={formData.contact}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div className={styles.formGroup}>
-              <label className={styles.formLabel}>描述：</label>
-              <textarea
-                name="description"
-                className={styles.formTextarea}
-                placeholder="请输入您的需求描述"
-                rows="4"
-                value={formData.description}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <button type="submit" className={styles.submitBtn} disabled={isSubmitting}>
-              {isSubmitting ? '提交中...' : '提交'}
-            </button>
-
-            {status.message && (
-              <div className={`${styles.statusMessage} ${status.type === 'success' ? styles.success : styles.error}`}>
-                {status.message}
+            
+            <div className={styles.statsRow}>
+              <div className={styles.statItem}>
+                <div className={styles.statNumber}>25000+</div>
+                <div className={styles.statLabel}>服务客户</div>
               </div>
-            )}
-          </form>
-        </div>
+              <div className={styles.statDivider}></div>
+              <div className={styles.statItem}>
+                <div className={styles.statNumber}>98%</div>
+                <div className={styles.statLabel}>满意度</div>
+              </div>
+              <div className={styles.statDivider}></div>
+              <div className={styles.statItem}>
+                <div className={styles.statNumber}>20年</div>
+                <div className={styles.statLabel}>专业经验</div>
+              </div>
+            </div>
+          </div>
 
-        {/* 【修改点】后渲染左侧图片和信息区域 (移动端会显示在下面) */}
-        <div className={styles.leftCol}>
-          {/* <div className={styles.imageWrapper}>
-            <img
-              src='/images/cqrdpg/home/ContactUs/1.jpg'
-              alt="联系我们"
-              className={styles.contactImage}
-              onError={(e) => { e.target.src = 'https://via.placeholder.com/600x400?text=Contact+Image'; }}
-            />
-          </div> */}
+          {/* 表单区域 */}
+          <div className={styles.formWrapper}>
+            <form onSubmit={handleSubmit} className={styles.form}>
+              <div className={styles.inputGroup}>
+                <input
+                  type="text"
+                  name="requestername"
+                  placeholder="您的姓名 *"
+                  value={formData.requestername}
+                  onChange={handleChange}
+                  className={styles.input}
+                  required
+                />
+              </div>
 
-          <div className={styles.contactInfo}>
-            <h3 className={styles.infoTitle}>联系方式</h3>
-            <ul className={styles.infoList}>
-              <li className={styles.infoItem}><span className={styles.label}>联系人：</span><span className={styles.value}>李老师</span></li>
-              <li className={styles.infoItem}><span className={styles.label}>电话：</span><span className={styles.value}>18223626490</span></li>
-              <li className={styles.infoItem}><span className={styles.label}>公司邮箱：</span><span className={styles.value}>644260249@qq.com</span></li>
-              <li className={styles.infoItem}><span className={styles.label}>公司邮编：</span><span className={styles.value}>400010</span></li>
-              <li className={styles.infoItem}><span className={styles.label}>客服QQ：</span><span className={styles.value}>644260249</span></li>
+              <div className={styles.inputGroup}>
+                <input
+                  type="tel"
+                  name="contact"
+                  placeholder="联系电话 *"
+                  value={formData.contact}
+                  onChange={handleChange}
+                  className={styles.input}
+                />
+              </div>
 
-              <li className={styles.qrCodeItem}>
-                <div className={styles.qrCodeWrapper}>
-                  <span className={styles.qrLabel}>QQ</span>
-                  <img src='/images/cqrdpg/home/ContactUs/qq.jpg' alt="QQ二维码" className={styles.qrImage} />
+              <div className={styles.inputGroup}>
+                <textarea
+                  name="description"
+                  placeholder="请描述您的需求或问题 *"
+                  value={formData.description}
+                  onChange={handleChange}
+                  className={styles.textarea}
+                  rows="3"
+                  required
+                ></textarea>
+              </div>
+
+              <button type="submit" className={styles.submitBtn} disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <span className={styles.loader}></span>
+                ) : (
+                  '提交咨询'
+                )}
+              </button>
+
+              {status.message && (
+                <div className={`${styles.message} ${status.type === 'success' ? styles.successMsg : styles.errorMsg}`}>
+                  {status.message}
                 </div>
-                <div className={styles.qrCodeWrapper}>
-                  <span className={styles.qrLabel}>微信</span>
-                  <img src='/images/cqrdpg/home/ContactUs/wechat.png' alt="微信二维码" className={styles.qrImage} />
-                </div>
-                
-                
-              </li>
-            </ul>
+              )}
+            </form>
+
+            {/* 快捷联系方式 - 手机端一行显示 */}
+            <div className={styles.quickContact}>
+              <div className={styles.contactGrid}>
+                {contactMethods.map((method, idx) => (
+                  <div key={idx} className={styles.contactChip}>
+                    <span className={styles.chipIcon}>{method.icon}</span>
+                    <div className={styles.chipInfo}>
+                      <div className={styles.chipLabel}>{method.label}</div>
+                      <div className={styles.chipValue}>{method.value}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* 二维码区域 */}
+            <div className={styles.qrArea}>
+              <div className={styles.qrWrapper}>
+                <img src='/images/cqrdpg/home/ContactUs/qq.jpg' alt="QQ" />
+                <span>QQ客服</span>
+              </div>
+              <div className={styles.qrWrapper}>
+                <img src='/images/cqrdpg/home/ContactUs/wechat.png' alt="微信" />
+                <span>微信客服</span>
+              </div>
+            </div>
           </div>
         </div>
-
       </div>
     </section>
   );

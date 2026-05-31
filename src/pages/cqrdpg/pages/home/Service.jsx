@@ -14,9 +14,10 @@ const Service = () => {
       icon: '💎',
       gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
       description: [
-        '作价入股、资产转让、使用许可、特许经营',
-        '专利技术、动植物品种权、专有技术评估',
-        '商标专用权价值评估'
+        '作价入股',
+        '资产转让',
+        '资产转让',
+        '特许经营'
       ]
     },
     {
@@ -25,9 +26,9 @@ const Service = () => {
       icon: '⚖️',
       gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
       description: [
-        '重庆市各级人民法院指定司法鉴定评估机构',
-        '房地产、土地使用权、机器设备评估',
-        '机动车等各项资产的鉴定评估'
+        '房地产',
+        '土地使用权',
+        '机器设备评估'
       ]
     },
     {
@@ -36,10 +37,10 @@ const Service = () => {
       icon: '🏢',
       gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
       description: [
-        '设立公司、组建集团、中外合资合作评估',
-        '企业资产重组、股份制改造评估',
-        '企业股份转让、兼并收购评估',
-        '企业投融资、破产清算评估'
+        '中外合资合作评估',
+        '企业资产重组',
+        '企业股份转让、兼并收购',
+        '破产清算评估'
       ]
     },
     {
@@ -48,9 +49,10 @@ const Service = () => {
       icon: '📊',
       gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
       description: [
-        '资产转让、资产抵押、资产拍卖',
-        '资产租赁、诉讼清偿评估',
-        '机器设备、建筑物、债权评估'
+        '资产转让、拍卖、抵押',
+        '资产租赁、诉讼清偿',
+        '机器设备、建筑物',
+        '债权评估'
       ]
     },
     {
@@ -59,9 +61,9 @@ const Service = () => {
       icon: '🏠',
       gradient: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
       description: [
-        '抵押价值、转让价格、租赁价格评估',
-        '课税价格、分割合并价格评估',
-        '城市房屋征收、可行性研究分析'
+        '抵押价值、转让、租赁',
+        '课税、分割合并价格评估',
+        '城市房屋征收'
       ]
     },
     {
@@ -70,9 +72,9 @@ const Service = () => {
       icon: '🌍',
       gradient: 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)',
       description: [
-        '土地收储、收购、出让底价评估',
-        '土地使用权出让、转让、抵押评估',
-        '企业兼并、破产、清产核算评估'
+        '土地收储、收购、出让底价',
+        '土地使用权出让、转让、抵押',
+        '企业兼并、破产、清产核算'
       ]
     }
   ];
@@ -168,7 +170,7 @@ const Service = () => {
         {/* 底部统计区域 */}
         <div className={`${styles.stats} ${isVisible ? styles.statsVisible : ''}`}>
           <div className={styles.statItem}>
-            <div className={styles.statNumber}>5000+</div>
+            <div className={styles.statNumber}>25000+</div>
             <div className={styles.statLabel}>服务客户</div>
           </div>
           <div className={styles.statDivider}></div>

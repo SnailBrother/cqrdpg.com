@@ -5,22 +5,14 @@ const Examples = () => {
   // 一级分类状态
   const [activeMainCategory, setActiveMainCategory] = useState('expropriation');
   
-  // 二级分类状态 (默认选中第一个子项)
-  const [activeSubCategory, setActiveSubCategory] = useState('enterpriseReform');
-
   // 内容区域引用，用于切换时滚动到顶部
   const contentRef = useRef(null);
 
-  // 切换一级分类时，重置滚动条并处理二级分类默认值
+  // 切换一级分类时，重置滚动条
   const handleMainCategoryChange = (category) => {
     if (activeMainCategory === category) return;
     
     setActiveMainCategory(category);
-    
-    // 如果切换到资产评估，且当前没有选中的子项，默认选中第一个
-    if (category === 'asset') {
-      setActiveSubCategory('enterpriseReform');
-    }
     
     // 切换后滚动到内容区顶部
     setTimeout(() => {
@@ -30,17 +22,7 @@ const Examples = () => {
     }, 50);
   };
 
-  // 切换二级分类
-  const handleSubCategoryChange = (subCategory) => {
-    setActiveSubCategory(subCategory);
-    setTimeout(() => {
-      if (contentRef.current) {
-        contentRef.current.scrollTop = 0;
-      }
-    }, 50);
-  };
-
-  // --- 数据定义 (保持不变) ---
+  // --- 数据定义 ---
   const expropriationCases = [
     "渝中区十八梯危旧房改造、土地整治储备拆迁项目", "渝中区千厮门大桥(渝中段)一标段拆迁项目",
     "南岸区东水门大桥南立交工程征收项目", "南岸区轨道交通环线莲花村站至上新街站征收项目",
@@ -77,34 +59,37 @@ const Examples = () => {
     "各大企业资产入账，处置等涉及的土地价格评估", "土地租金价格评估"
   ];
 
-  const assetCases = {
-    enterpriseReform: [
-      "重庆食品工业研究所企业改制评估项目", "四川渝建研建设工程质量检测有限责任公司企业改制评估项目",
-      "重庆市建拓工程造价咨询有限公司企业改制评估项目", "重庆建筑科学研究院企业改制评估项目",
-      "重庆市建科工程技术有限公司企业改制评估项目", "重庆市建设工程质量检验测试中心企业改制评估项目",
-      "忠县园艺场企业改制评估项目"
-    ],
-    bankruptcyLiquidation: [
-      "重庆流云房地产开发有限公司破产清算评估项目", "重庆市农产品集团云阳农产品市场有限公司破产清算评估项目",
-      "重庆市馨葳机械制造有限公司破产清算评估项目", "重庆云河水电股份有限公司破产清算评估项目"
-    ],
-    enterpriseValue: [
-      "重庆长江塑料编织厂整体价值评估项目", "重庆药用包装容器厂整体价值评估项目",
-      "重庆浦渝投资管理有限公司整体价值评估项目", "重庆小型自动化装置厂整体价值评估项目",
-      "重庆市聚鑫机动车驾驶培训学校整体价值评估项目"
-    ],
-    debtValue: [
-      "处置重庆三江羽绒（集团）有限公司债权价值评估项目", "处置重庆华创药业有限公司债权价值评估项目",
-      "处置重庆融创园林景观设计工程有限公司债权价值评估项目", "处置重庆铭嘉实业有限公司债权价值评估项目",
-      "处置重庆缤淘商贸有限公司债权价值评估项目", "处置重庆市白沙地产开发集团有限公司债权价值评估项目",
-      "处置重庆智力建筑安装工程有限公司债权价值评估项目"
-    ],
-    other: [
-      "中国石油天然气股份有限公司委估中卫 - 贵阳联络线工程（重庆段、贵州段）压覆相关矿业资产评估项目",
-      "重庆紫光天原化工有限责任公司拟对外投资评估项目", "重庆川仪自动化股份有限公司拟处置资产评估项目",
-      "重庆市江津区国有资产管理中心拟协议转让资产评估项目", "重庆市铜梁区卫生和计划生育委员会拟划转资产评估项目"
-    ]
-  };
+  // 资产评估 - 合并所有项目
+  const assetCases = [
+    "重庆食品工业研究所企业改制评估项目",
+    "四川渝建研建设工程质量检测有限责任公司企业改制评估项目",
+    "重庆市建拓工程造价咨询有限公司企业改制评估项目",
+    "重庆建筑科学研究院企业改制评估项目",
+    "重庆市建科工程技术有限公司企业改制评估项目",
+    "重庆市建设工程质量检验测试中心企业改制评估项目",
+    "忠县园艺场企业改制评估项目",
+     "重庆流云房地产开发有限公司破产清算评估项目",
+     "重庆市农产品集团云阳农产品市场有限公司破产清算评估项目",
+     "重庆市馨葳机械制造有限公司破产清算评估项目",
+     "重庆云河水电股份有限公司破产清算评估项目",
+     "重庆长江塑料编织厂整体价值评估项目",
+     "重庆药用包装容器厂整体价值评估项目",
+     "重庆浦渝投资管理有限公司整体价值评估项目",
+     "重庆小型自动化装置厂整体价值评估项目",
+     "重庆市聚鑫机动车驾驶培训学校整体价值评估项目",
+     "处置重庆三江羽绒（集团）有限公司债权价值评估项目",
+     "处置重庆华创药业有限公司债权价值评估项目",
+     "处置重庆融创园林景观设计工程有限公司债权价值评估项目",
+     "处置重庆铭嘉实业有限公司债权价值评估项目",
+     "处置重庆缤淘商贸有限公司债权价值评估项目",
+     "处置重庆市白沙地产开发集团有限公司债权价值评估项目",
+     "处置重庆智力建筑安装工程有限公司债权价值评估项目",
+     "中国石油天然气股份有限公司委估中卫 - 贵阳联络线工程（重庆段、贵州段）压覆相关矿业资产评估项目",
+     "重庆紫光天原化工有限责任公司拟对外投资评估项目",
+     "重庆川仪自动化股份有限公司拟处置资产评估项目",
+     "重庆市江津区国有资产管理中心拟协议转让资产评估项目",
+     "重庆市铜梁区卫生和计划生育委员会拟划转资产评估项目"
+  ];
 
   const judicialCases = [
     "重庆市第五中级人民法院拟执行隆鑫控股有限公司持有的重庆农村商业银行1500万股社会法人股司法鉴定评估项目",
@@ -112,28 +97,20 @@ const Examples = () => {
     "重庆市第五中级人民法院拟执行重庆长寿晏家河泉南路1号所在地块土地用途为工业用地红线范围内厂区的整体现状司法鉴定评估项目"
   ];
 
-  // 辅助函数：获取当前显示的内容列表
+  // 获取当前显示的内容列表
   const getCurrentCases = () => {
-    if (activeMainCategory === 'expropriation') return { title: '征收（拆迁）评估', desc: '部分项目展示如下：', list: expropriationCases };
-    if (activeMainCategory === 'land') return { title: '土地评估项目', desc: '近年估价师完成项目类型展示：', list: landCases };
-    if (activeMainCategory === 'judicial') return { title: '司法鉴定评估', desc: '部分项目展示如下：', list: judicialCases };
-    
-    // 资产评估逻辑
-    if (activeMainCategory === 'asset') {
-      const subMap = {
-        enterpriseReform: '企业改制评估',
-        bankruptcyLiquidation: '企业破产清算评估',
-        enterpriseValue: '企业整体价值评估',
-        debtValue: '债权价值评估项目',
-        other: '其他资产评估项目'
-      };
-      return { 
-        title: subMap[activeSubCategory], 
-        desc: `以下是关于 ${subMap[activeSubCategory]} 的部分代表性案例：`, 
-        list: assetCases[activeSubCategory] 
-      };
+    switch(activeMainCategory) {
+      case 'expropriation':
+        return { title: '征收（拆迁）评估', desc: '部分项目如下：', list: expropriationCases };
+      case 'land':
+        return { title: '土地评估项目', desc: '部分项目如下：', list: landCases };
+      case 'asset':
+        return { title: '资产评估项目', desc: '部分项目如下：', list: assetCases };
+      case 'judicial':
+        return { title: '司法鉴定评估', desc: '部分项目如下：', list: judicialCases };
+      default:
+        return { list: [] };
     }
-    return { list: [] };
   };
 
   const currentData = getCurrentCases();
@@ -159,7 +136,7 @@ const Examples = () => {
                 onClick={() => handleMainCategoryChange('expropriation')}
               >
                 <span className={styles.navNumber}>01</span>
-                <span className={styles.navText}>征收（拆迁）评估</span>
+                <span className={styles.navText}>征收（拆迁）</span>
               </div>
 
               <div 
@@ -167,55 +144,15 @@ const Examples = () => {
                 onClick={() => handleMainCategoryChange('land')}
               >
                 <span className={styles.navNumber}>02</span>
-                <span className={styles.navText}>土地评估项目</span>
+                <span className={styles.navText}>土地评估</span>
               </div>
 
-              {/* 带二级菜单的一级项：资产评估 */}
-              <div className={styles.navGroup}>
-                <div 
-                  className={`${styles.navItem} ${activeMainCategory === 'asset' ? styles.active : ''}`}
-                  onClick={() => handleMainCategoryChange('asset')}
-                >
-                  <span className={styles.navNumber}>03</span>
-                  <span className={styles.navText}>资产评估项目</span>
-                  <span className={styles.arrowIcon}>{activeMainCategory === 'asset' ? '▲' : '▼'}</span>
-                </div>
-                
-                {/* 二级菜单 (仅当一级选中时显示) */}
-                {activeMainCategory === 'asset' && (
-                  <div className={styles.subNavList}>
-                    <div 
-                      className={`${styles.subNavItem} ${activeSubCategory === 'enterpriseReform' ? styles.active : ''}`}
-                      onClick={(e) => { e.stopPropagation(); handleSubCategoryChange('enterpriseReform'); }}
-                    >
-                      企业改制评估
-                    </div>
-                    <div 
-                      className={`${styles.subNavItem} ${activeSubCategory === 'bankruptcyLiquidation' ? styles.active : ''}`}
-                      onClick={(e) => { e.stopPropagation(); handleSubCategoryChange('bankruptcyLiquidation'); }}
-                    >
-                      企业破产清算评估
-                    </div>
-                    <div 
-                      className={`${styles.subNavItem} ${activeSubCategory === 'enterpriseValue' ? styles.active : ''}`}
-                      onClick={(e) => { e.stopPropagation(); handleSubCategoryChange('enterpriseValue'); }}
-                    >
-                      企业整体价值评估
-                    </div>
-                    <div 
-                      className={`${styles.subNavItem} ${activeSubCategory === 'debtValue' ? styles.active : ''}`}
-                      onClick={(e) => { e.stopPropagation(); handleSubCategoryChange('debtValue'); }}
-                    >
-                      债权价值评估项目
-                    </div>
-                    <div 
-                      className={`${styles.subNavItem} ${activeSubCategory === 'other' ? styles.active : ''}`}
-                      onClick={(e) => { e.stopPropagation(); handleSubCategoryChange('other'); }}
-                    >
-                      其他资产评估项目
-                    </div>
-                  </div>
-                )}
+              <div 
+                className={`${styles.navItem} ${activeMainCategory === 'asset' ? styles.active : ''}`}
+                onClick={() => handleMainCategoryChange('asset')}
+              >
+                <span className={styles.navNumber}>03</span>
+                <span className={styles.navText}>资产评估</span>
               </div>
 
               <div 
@@ -223,7 +160,7 @@ const Examples = () => {
                 onClick={() => handleMainCategoryChange('judicial')}
               >
                 <span className={styles.navNumber}>04</span>
-                <span className={styles.navText}>司法鉴定评估</span>
+                <span className={styles.navText}>司法鉴定</span>
               </div>
             </nav>
           </aside>

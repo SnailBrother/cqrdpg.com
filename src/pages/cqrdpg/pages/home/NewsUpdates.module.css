@@ -55,7 +55,7 @@
   margin-bottom: 10px;
 }
 
-/* 分类导航 */
+/* 分类导航 - 桌面端居中 */
 .categoryNav {
   display: flex;
   justify-content: center;
@@ -73,6 +73,7 @@
   border-radius: 30px;
   cursor: pointer;
   transition: all 0.3s ease;
+  white-space: nowrap;
 }
 
 .categoryBtn:hover {
@@ -115,7 +116,7 @@
   background: #b08d6a;
 }
 
-/* 新闻网格 */
+/* 新闻网格 - 桌面端3列 */
 .newsGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -287,84 +288,40 @@
   grid-column: 1 / -1;
 }
 
-/* 响应式设计 */
-@media (max-width: 1200px) {
+.loadingState {
+  text-align: center;
+  padding: 40px;
+  font-size: 16px;
+  color: #666;
+  grid-column: 1 / -1;
+}
+
+/* ========== 响应式设计 ========== */
+
+/* 平板端 (768px - 1024px) - 显示2列 */
+@media (max-width: 1024px) and (min-width: 769px) {
   .newsGrid {
     grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 992px) {
-  .container {
-    padding: 0 25px;
+    gap: 25px;
   }
   
-  .headerFixed {
-    padding: 10px 0 15px 0;
-  }
-  
-  .sectionTitle {
-    font-size: 32px;
-  }
-}
-
-@media (max-width: 768px) {
-  .container {
-    padding: 0 20px;
-  }
-
-  .headerFixed {
-    padding: 25px 0 15px 0;
-  }
-
-  .sectionTitle {
-    font-size: 28px;
-    padding-bottom: 15px;
-  }
-
-  .sectionTitle::after {
-    width: 60px;
-  }
-
-  .sectionSubtitle {
-    font-size: 14px;
-    margin-bottom: 20px;
-  }
-
-  .categoryNav {
-    gap: 10px;
-  }
-
-  .categoryBtn {
-    padding: 8px 20px;
-    font-size: 14px;
-  }
-
-  .newsGrid {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-
   .newsImageWrapper {
     height: 180px;
   }
-
+  
   .newsTitle {
     font-size: 16px;
     min-height: 44px;
   }
-
+  
   .newsSummary {
     font-size: 13px;
     -webkit-line-clamp: 2;
   }
-  
-  .scrollableContent {
-    padding-right: 5px;
-  }
 }
 
-@media (max-width: 480px) {
+/* 手机端 (≤768px) - 显示2列，分类导航横向滚动 */
+@media (max-width: 768px) {
   .container {
     padding: 0 15px;
   }
@@ -385,54 +342,206 @@
   }
 
   .sectionSubtitle {
-    font-size: 13px;
+    font-size: 12px;
     margin-bottom: 15px;
+  }
+
+  /* 分类导航 - 横向滚动，放在一行 */
+  .categoryNav {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    justify-content: flex-start;
+    gap: 12px;
+    padding-bottom: 12px;
+    margin-bottom: 5px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+  
+  /* 隐藏横向滚动条但保留功能（可选） */
+  .categoryNav::-webkit-scrollbar {
+    height: 3px;
+  }
+  
+  .categoryNav::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 3px;
+  }
+  
+  .categoryNav::-webkit-scrollbar-thumb {
+    background: #c9a982;
+    border-radius: 3px;
   }
 
   .categoryBtn {
-    padding: 6px 15px;
+    padding: 8px 18px;
     font-size: 13px;
+    flex-shrink: 0;
+  }
+
+  /* 新闻网格 - 手机端显示2列 */
+  .newsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
   }
 
   .newsImageWrapper {
-    height: 160px;
+    height: 120px;
+  }
+  
+  .newsCategory {
+    top: 8px;
+    right: 8px;
+    padding: 3px 10px;
+    font-size: 10px;
   }
 
   .newsContent {
-    padding: 15px;
+    padding: 12px;
   }
 
   .newsMeta {
-    font-size: 12px;
-    margin-bottom: 8px;
+    font-size: 10px;
+    margin-bottom: 6px;
+  }
+  
+  .newsDate::before {
+    font-size: 10px;
   }
 
   .newsTitle {
-    font-size: 15px;
-    min-height: 42px;
-    margin-bottom: 8px;
+    font-size: 13px;
+    min-height: 36px;
+    margin-bottom: 6px;
+    line-height: 1.3;
+    -webkit-line-clamp: 2;
   }
 
   .newsSummary {
-    font-size: 12px;
-    line-height: 1.5;
-    margin-bottom: 15px;
+    font-size: 11px;
+    line-height: 1.4;
+    margin-bottom: 12px;
+    -webkit-line-clamp: 2;
   }
 
   .readMoreBtn {
-    padding: 6px 16px;
-    font-size: 13px;
+    padding: 5px 12px;
+    font-size: 11px;
+    border-width: 1.5px;
   }
 
   .loadMoreBtn {
-    padding: 10px 30px;
-    font-size: 14px;
+    padding: 8px 25px;
+    font-size: 13px;
+  }
+  
+  .scrollableContent {
+    padding-right: 5px;
+  }
+  
+  .loadingState, .emptyState {
+    padding: 30px 0;
+    font-size: 13px;
   }
 }
-.loadingState, .emptyState {
-  text-align: center;
-  padding: 40px;
-  font-size: 16px;
-  color: #666;
-  grid-column: 1 / -1; /* 让提示占满整行 */
+
+/* 超小屏手机 (≤480px) - 仍然保持2列，但进一步缩小 */
+@media (max-width: 480px) {
+  .container {
+    padding: 0 12px;
+  }
+
+  .headerFixed {
+    padding: 15px 0 8px 0;
+  }
+
+  .sectionTitle {
+    font-size: 20px;
+    padding-bottom: 10px;
+  }
+
+  .sectionTitle::after {
+    width: 40px;
+  }
+
+  .sectionSubtitle {
+    font-size: 11px;
+    margin-bottom: 12px;
+  }
+
+  .categoryBtn {
+    padding: 6px 14px;
+    font-size: 12px;
+  }
+
+  .newsGrid {
+    gap: 10px;
+  }
+
+  .newsImageWrapper {
+    height: 100px;
+  }
+  
+  .newsCategory {
+    top: 6px;
+    right: 6px;
+    padding: 2px 8px;
+    font-size: 9px;
+  }
+
+  .newsContent {
+    padding: 10px;
+  }
+
+  .newsMeta {
+    font-size: 9px;
+    margin-bottom: 5px;
+  }
+
+  .newsTitle {
+    font-size: 12px;
+    min-height: 32px;
+    margin-bottom: 5px;
+  }
+
+  .newsSummary {
+    font-size: 10px;
+    margin-bottom: 10px;
+    -webkit-line-clamp: 2;
+  }
+
+  .readMoreBtn {
+    padding: 4px 10px;
+    font-size: 10px;
+  }
+
+  .loadMoreBtn {
+    padding: 6px 20px;
+    font-size: 12px;
+  }
+}
+
+/* 超宽屏优化 */
+@media (min-width: 1600px) {
+  .container {
+    max-width: 1600px;
+  }
+  
+  .newsGrid {
+    gap: 35px;
+  }
+  
+  .newsImageWrapper {
+    height: 220px;
+  }
+  
+  .newsTitle {
+    font-size: 20px;
+  }
+  
+  .newsSummary {
+    font-size: 15px;
+  }
 }
