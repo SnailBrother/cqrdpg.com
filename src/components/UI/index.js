@@ -14,4 +14,5 @@ export { default as Sidebar } from './Sidebar';
 export { default as Loading } from './Loading';
 export { default as TextBox } from './TextBox';
 export { default as Toast, ToastContainer, useToast } from './Toast';
+export { default as PendingBox } from './PendingBox';
 export { default as ConfirmationDialog } from './ConfirmationDialog';//自定义确认对话框
