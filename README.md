@@ -659,9 +659,9 @@ CREATE TABLE SystemSettingsApp.dbo.SystemUserThemeSettings (
         ON DELETE CASCADE, -- 外键约束    如果用户被删除，相关的主题设置也删除  
 );
 ``` 
-### 4. 系统主题设置数据库表 (`OfficeApp.dbo.SystemThemeDB`)
+### 4. 系统主题设置数据库表 (`SystemSettingsApp.dbo.SystemThemeDB`)
 ``` 好像是聊天的主题
-CREATE TABLE OfficeApp.dbo.SystemThemeDB (
+CREATE TABLE SystemSettingsApp.dbo.SystemThemeDB (
     id INT IDENTITY(1,1) PRIMARY KEY,      -- ID，主键
     username nvarchar(100) NOT NULL,             -- 用户名
     fontColor NVARCHAR(9) DEFAULT '#000000FF',  -- 字体颜色，默认黑色，完全不透明
@@ -675,6 +675,40 @@ CREATE TABLE OfficeApp.dbo.SystemThemeDB (
     backgroundAnimation VARCHAR(100) DEFAULT 'WaterWave'
 );
 ``` 
+### 5. 网站访客监控 (`SystemSettingsApp.dbo.WebsiteRecord`)
+``` 
+CREATE TABLE SystemSettingsApp.dbo.WebsiteRecord (
+    -- 1. 主键
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    -- 2. 核心标识字段 (用于计算 UV 和去重)
+    visitorid NVARCHAR(64) NOT NULL,       -- 客户端生成的唯一ID (如 UUID/Fingerprint)，用于计算 UV
+    sessionid NVARCHAR(64) NOT NULL,       -- 会话ID (同一会话内多次请求ID相同)，用于计算 Sessions 和 跳出率
+    ipaddress NVARCHAR(45) NOT NULL,       -- 用户IP (支持IPv6)，用于计算 IP数 和地域分析   
+    username NVARCHAR(100) NOT NULL DEFAULT 'unknowusername',          -- 用户姓名
+    email NVARCHAR(100) NOT NULL DEFAULT 'unknowemail',       -- 用户邮箱，唯一
+    -- 3. 时间字段 (用于时间范围筛选和时长计算)
+    visittime DATETIME2 NOT NULL DEFAULT GETDATE(), -- 访问发生的具体时间
+    pageloadtime INT,                     -- 页面加载耗时(毫秒)，可选，用于性能分析   
+    -- 4. 页面与来源字段 (用于统计 PV, 来路, 入口, 受访)
+    currenturl NVARCHAR(2048) NOT NULL,    -- 当前访问的页面 URL (受访页)
+    referrerurl NVARCHAR(900),            -- 来源 URL (HTTP Referer)，用于统计“来路”
+    entryurl NVARCHAR(2048),               -- 本次会话的入口 URL (通常在会话第一条记录时写入，或后端推导) 
+    -- 5. 设备与环境信息 (可选，用于未来扩展分析)
+    useragent NVARCHAR(1024),              -- 浏览器 UA，用于解析设备类型(OS, Browser)
+    countrycode CHAR(2),                   -- 国家代码 (可通过IP库解析后存入)
+    cityname NVARCHAR(100),                -- 城市名称  
+    -- 6. 行为标记 (用于优化查询性能)
+    isbounce BIT DEFAULT 1,                -- 是否跳出 (1:是, 0:否)。后端在会话结束时更新此字段
+    stayduration INT                       -- 在该页面的停留时长(秒)。如果是单页应用或最后一步，需特殊计算
+    -- 索引建议 (非常重要，否则大数据量下查询极慢)
+);
+-- 创建索引以加速查询
+CREATE INDEX IDXVisitTime ON SystemSettingsApp.dbo.WebsiteRecord (visittime);
+CREATE INDEX IDXSessionId ON SystemSettingsApp.dbo.WebsiteRecord (sessionid);
+CREATE INDEX IDXVisitorId ON SystemSettingsApp.dbo.WebsiteRecord (visitorid);
+CREATE INDEX IDXReferrer ON SystemSettingsApp.dbo.WebsiteRecord (referrerurl);
+``` 
+
 # 项目结构
   ```
   src/

@@ -9231,7 +9231,7 @@ app.get('/api/theme/:username', async (req, res) => {
         //const pool = await sql.connect(config);
         const result = await pool.request()
             .input('username', sql.NVarChar(100), username)
-            .query('SELECT * FROM OfficeApp.dbo.SystemThemeDB WHERE username = @username');
+            .query('SELECT * FROM SystemSettingsApp.dbo.SystemThemeDB WHERE username = @username');
 
         if (result.recordset.length > 0) {
             res.json({
@@ -9293,7 +9293,7 @@ app.post('/api/theme', async (req, res) => {
         // 首先检查用户是否已有主题设置
         const checkResult = await pool.request()
             .input('username', sql.NVarChar(100), username)
-            .query('SELECT id FROM OfficeApp.dbo.SystemThemeDB WHERE username = @username');
+            .query('SELECT id FROM SystemSettingsApp.dbo.SystemThemeDB WHERE username = @username');
 
         if (checkResult.recordset.length > 0) {
             // 更新现有记录
@@ -9309,7 +9309,7 @@ app.post('/api/theme', async (req, res) => {
                 .input('fontFamily', sql.VarChar(255), fontFamily)
                 .input('backgroundAnimation', sql.VarChar(100), backgroundAnimation || 'WaterWave')
                 .query(`
-          UPDATE OfficeApp.dbo.SystemThemeDB 
+          UPDATE SystemSettingsApp.dbo.SystemThemeDB 
           SET fontColor = @fontColor, 
               hoverBackground = @hoverBackground,
               hoverFontColor = @hoverFontColor,
@@ -9335,7 +9335,7 @@ app.post('/api/theme', async (req, res) => {
                 .input('fontFamily', sql.VarChar(255), fontFamily)
                 .input('backgroundAnimation', sql.VarChar(100), backgroundAnimation || 'WaterWave')
                 .query(`
-          INSERT INTO OfficeApp.dbo.SystemThemeDB 
+          INSERT INTO SystemSettingsApp.dbo.SystemThemeDB 
             (username, fontColor, hoverBackground, hoverFontColor, background, borderBrush, hoverBorderBrush, watermarkForeground, fontFamily, backgroundAnimation) 
           VALUES 
             (@username, @fontColor, @hoverBackground, @hoverFontColor, @background, @borderBrush, @hoverBorderBrush, @watermarkForeground, @fontFamily, @backgroundAnimation)
@@ -15202,7 +15202,7 @@ ORDER BY
         // ==========================================
         // 1. 接收监控数据的 API
         // ========================================== √√√√√√√√
-        app.post('/api/website/record', async (req, res) => {
+        app.post('/api/website/record-old', async (req, res) => {
             try {
                 const {
                     visitor_id, session_id, current_url, referrer_url, entry_url, user_agent,
@@ -15253,7 +15253,7 @@ ORDER BY
                     // 注意：这里我们查找的是数据库中已存在的记录
                     const checkQuery = `
                         SELECT TOP 1 id, visittime, sessionid 
-                        FROM RdpgCode.dbo.WebsiteRecord 
+                        FROM SystemSettingsApp.dbo.WebsiteRecord 
                         WHERE username = @username OR email = @email
                         ORDER BY visittime DESC 
                     `;
@@ -15274,7 +15274,7 @@ ORDER BY
                         // 为了简单，我们这里数据库不更新时间，但发送给前端时用当前时间，让前端把他排前面。
 
                         const updateQuery = `
-                            UPDATE RdpgCode.dbo.WebsiteRecord 
+                            UPDATE SystemSettingsApp.dbo.WebsiteRecord 
                             SET 
                                 ipaddress = @ipaddress,
                                 currenturl = @currenturl,
@@ -15299,7 +15299,7 @@ ORDER BY
                 // 【3. 如果不是特殊用户，或者是特殊用户但没找到旧数据 -> 执行 INSERT】
                 if (!isUpdated) {
                     const insertQuery = `
-                        INSERT INTO RdpgCode.dbo.WebsiteRecord 
+                        INSERT INTO SystemSettingsApp.dbo.WebsiteRecord 
                         (visitorid, sessionid, ipaddress, currenturl, referrerurl, entryurl, useragent, visittime, isbounce, stayduration, username, email)
                         VALUES 
                         (@visitorid, @sessionid, @ipaddress, @currenturl, @referrerurl, @entryurl, @useragent, GETDATE(), 1, 0, @username, @email)
@@ -15332,7 +15332,140 @@ ORDER BY
                 res.status(500).json({ error: 'Database error', details: err.message });
             }
         });
+app.post('/api/website/record', async (req, res) => {
+    try {
+        const {
+            visitor_id, session_id, current_url, referrer_url, entry_url, user_agent,
+            username: rawUsername, email: rawEmail
+        } = req.body;
 
+        const username = rawUsername || 'unknowusername';
+        const email = rawEmail || 'unknowemail';
+
+        const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() ||
+            req.headers['x-real-ip'] ||
+            req.connection.remoteAddress ||
+            req.socket.remoteAddress ||
+            '127.0.0.1';
+
+        if (!visitor_id || !session_id || !current_url) {
+            return res.status(400).json({ error: 'Missing required fields' });
+        }
+
+        // 【1. 后端定义特殊用户名单】
+        const specialUsers = ['李中敬', '陈彦羽'];
+        const specialEmails = ['471883209@qq.com', '644260249@qq.com', '782248932@qq.com'];
+
+        const isSpecialUser = specialUsers.includes(username);
+        const isSpecialEmail = specialEmails.includes(email);
+        const isSpecial = isSpecialUser || isSpecialEmail;
+
+        const request = new sql.Request(pool);
+
+        // 准备参数
+        request.input('visitorid', sql.NVarChar(64), visitor_id);
+        request.input('sessionid', sql.NVarChar(64), session_id);
+        request.input('ipaddress', sql.NVarChar(45), ip);
+        request.input('currenturl', sql.NVarChar(2048), current_url);
+        request.input('referrerurl', sql.NVarChar(2048), referrer_url || null);
+        request.input('entryurl', sql.NVarChar(2048), entry_url || current_url);
+        request.input('useragent', sql.NVarChar(1024), user_agent);
+        request.input('username', sql.NVarChar(100), username);
+        request.input('email', sql.NVarChar(100), email);
+
+        let isUpdated = false;
+        let recordVisittime = new Date();
+        let finalSessionId = session_id;
+        let existingRecordId = null;
+
+        // 【2. 核心优化：优先通过 visitor_id 查找同设备的历史记录】
+        // 无论是否特殊用户，只要 visitor_id 存在就更新，不新增重复记录
+        const findExistingQuery = `
+            SELECT TOP 1 id, visittime, sessionid, username, email
+            FROM SystemSettingsApp.dbo.WebsiteRecord 
+            WHERE visitorid = @visitorid
+            ORDER BY visittime DESC
+        `;
+        
+        const existingRecord = await request.query(findExistingQuery);
+        
+        if (existingRecord.recordset.length > 0) {
+            // 找到了同设备的记录 -> 执行 UPDATE
+            existingRecordId = existingRecord.recordset[0].id;
+            const oldUsername = existingRecord.recordset[0].username;
+            const oldEmail = existingRecord.recordset[0].email;
+            
+            // 检查是否需要更新用户信息（从未登录变成登录状态）
+            const needUpdateUserInfo = (oldUsername === 'unknowusername' && username !== 'unknowusername') ||
+                                       (oldEmail === 'unknowemail' && email !== 'unknowemail');
+            
+            // 构建更新语句，动态决定是否更新 username/email
+            let updateQuery = `
+                UPDATE SystemSettingsApp.dbo.WebsiteRecord 
+                SET 
+                    ipaddress = @ipaddress,
+                    currenturl = @currenturl,
+                    referrerurl = @referrerurl,
+                    entryurl = @entryurl,
+                    useragent = @useragent,
+                    sessionid = @sessionid,
+                    visittime = GETDATE()  -- 更新访问时间为当前时间
+            `;
+            
+            // 如果是特殊用户或者需要更新用户信息，则同时更新用户名和邮箱
+            if (isSpecial || needUpdateUserInfo) {
+                updateQuery += `, username = @username, email = @email`;
+            }
+            
+            updateQuery += ` WHERE id = @id`;
+            
+            request.input('id', sql.Int, existingRecordId);
+            await request.query(updateQuery);
+            
+            isUpdated = true;
+            recordVisittime = new Date();
+            finalSessionId = session_id;
+            
+            const logMsg = `✅ 更新记录: visitor_id=${visitor_id.slice(-8)}, ${oldUsername} -> ${username}`;
+            console.log(logMsg);
+        }
+        
+        // 【3. 如果没有找到同设备的记录，才执行 INSERT】
+        if (!isUpdated) {
+            const insertQuery = `
+                INSERT INTO SystemSettingsApp.dbo.WebsiteRecord 
+                (visitorid, sessionid, ipaddress, currenturl, referrerurl, entryurl, useragent, visittime, isbounce, stayduration, username, email)
+                VALUES 
+                (@visitorid, @sessionid, @ipaddress, @currenturl, @referrerurl, @entryurl, @useragent, GETDATE(), 1, 0, @username, @email)
+            `;
+            await request.query(insertQuery);
+            console.log(`✅ 插入新记录: ${username} (visitor_id: ${visitor_id.slice(-8)})`);
+        }
+
+        res.status(200).json({ success: true, updated: isUpdated });
+
+        // 4. 触发统计广播
+        broadcastStats();
+
+        // 5. 构造推送给前端的数据
+        const newRecord = {
+            currenturl: current_url,
+            visittime: recordVisittime.toISOString(),
+            username: username,
+            email: email,
+            useragent: user_agent,
+            ipaddress: ip,
+            sessionid: finalSessionId,
+            isUpdate: isUpdated
+        };
+
+        io.emit('new-visit-record', newRecord);
+
+    } catch (err) {
+        console.error('❌ Error recording visit:', err);
+        res.status(500).json({ error: 'Database error', details: err.message });
+    }
+});
         // ==========================================
         // 2. 获取初始历史数据的 API
         // ==========================================
@@ -15377,7 +15510,7 @@ ORDER BY
                         useragent,
                         ipaddress,
                         sessionid
-                    FROM RdpgCode.dbo.WebsiteRecord 
+                    FROM SystemSettingsApp.dbo.WebsiteRecord 
                     ORDER BY visittime DESC
                 `;
 
@@ -15407,23 +15540,23 @@ ORDER BY
                 // --- 1. 最近 15 分钟活跃访客 ---
                 const req1 = new sql.Request(pool);
                 req1.input('fifteenMinsAgo', sql.DateTime2, fifteenMinsAgo);
-                const recentActiveRes = await req1.query(`SELECT COUNT(DISTINCT visitorid) as count FROM RdpgCode.dbo.WebsiteRecord WHERE visittime > @fifteenMinsAgo`);
+                const recentActiveRes = await req1.query(`SELECT COUNT(DISTINCT visitorid) as count FROM SystemSettingsApp.dbo.WebsiteRecord WHERE visittime > @fifteenMinsAgo`);
 
                 // --- 2. 今日数据 ---
                 const req2 = new sql.Request(pool);
                 req2.input('todayStart', sql.DateTime2, todayStart);
-                const todayRes = await req2.query(`SELECT COUNT(DISTINCT ipaddress) as ip, COUNT(*) as pv, COUNT(DISTINCT visitorid) as uv, COUNT(DISTINCT sessionid) as sessions FROM RdpgCode.dbo.WebsiteRecord WHERE visittime >= @todayStart`);
+                const todayRes = await req2.query(`SELECT COUNT(DISTINCT ipaddress) as ip, COUNT(*) as pv, COUNT(DISTINCT visitorid) as uv, COUNT(DISTINCT sessionid) as sessions FROM SystemSettingsApp.dbo.WebsiteRecord WHERE visittime >= @todayStart`);
 
                 // --- 3. 昨日数据 ---
                 const req3 = new sql.Request(pool);
                 req3.input('yesterdayStart', sql.DateTime2, yesterdayStart);
                 req3.input('todayStart', sql.DateTime2, todayStart);
-                const yesterdayRes = await req3.query(`SELECT COUNT(DISTINCT ipaddress) as ip, COUNT(*) as pv, COUNT(DISTINCT visitorid) as uv, COUNT(DISTINCT sessionid) as sessions FROM RdpgCode.dbo.WebsiteRecord WHERE visittime >= @yesterdayStart AND visittime < @todayStart`);
+                const yesterdayRes = await req3.query(`SELECT COUNT(DISTINCT ipaddress) as ip, COUNT(*) as pv, COUNT(DISTINCT visitorid) as uv, COUNT(DISTINCT sessionid) as sessions FROM SystemSettingsApp.dbo.WebsiteRecord WHERE visittime >= @yesterdayStart AND visittime < @todayStart`);
 
                 // --- 4. 跳出率 ---
                 const req4 = new sql.Request(pool);
                 req4.input('todayStart', sql.DateTime2, todayStart);
-                const bounceRes = await req4.query(`WITH SessionCounts AS (SELECT sessionid, COUNT(*) as cnt FROM RdpgCode.dbo.WebsiteRecord WHERE visittime >= @todayStart GROUP BY sessionid) SELECT SUM(CASE WHEN cnt = 1 THEN 1 ELSE 0 END) * 1.0 / COUNT(*) as rate FROM SessionCounts`);
+                const bounceRes = await req4.query(`WITH SessionCounts AS (SELECT sessionid, COUNT(*) as cnt FROM SystemSettingsApp.dbo.WebsiteRecord WHERE visittime >= @todayStart GROUP BY sessionid) SELECT SUM(CASE WHEN cnt = 1 THEN 1 ELSE 0 END) * 1.0 / COUNT(*) as rate FROM SessionCounts`);
 
                 const bounceRateVal = bounceRes.recordset[0].rate;
                 const bounceRate = bounceRateVal ? (bounceRateVal * 100).toFixed(2) + '%' : '0.00%';
@@ -15431,17 +15564,17 @@ ORDER BY
                 // --- 5. 来路 Top 5 ---
                 const req5 = new sql.Request(pool);
                 req5.input('todayStart', sql.DateTime2, todayStart);
-                const referrersRes = await req5.query(`SELECT TOP 5 ISNULL(NULLIF(referrerurl, ''), '直接输入网址访问') as name, COUNT(DISTINCT visitorid) as count FROM RdpgCode.dbo.WebsiteRecord WHERE visittime >= @todayStart GROUP BY referrerurl ORDER BY count DESC`);
+                const referrersRes = await req5.query(`SELECT TOP 5 ISNULL(NULLIF(referrerurl, ''), '直接输入网址访问') as name, COUNT(DISTINCT visitorid) as count FROM SystemSettingsApp.dbo.WebsiteRecord WHERE visittime >= @todayStart GROUP BY referrerurl ORDER BY count DESC`);
 
                 // --- 6. 受访页 Top 7 ---
                 const req6 = new sql.Request(pool);
                 req6.input('todayStart', sql.DateTime2, todayStart);
-                const landingRes = await req6.query(`SELECT TOP 7 currenturl as url, COUNT(*) as count FROM RdpgCode.dbo.WebsiteRecord WHERE visittime >= @todayStart GROUP BY currenturl ORDER BY count DESC`);
+                const landingRes = await req6.query(`SELECT TOP 7 currenturl as url, COUNT(*) as count FROM SystemSettingsApp.dbo.WebsiteRecord WHERE visittime >= @todayStart GROUP BY currenturl ORDER BY count DESC`);
 
                 // --- 7. 入口页 Top 7 ---
                 const req7 = new sql.Request(pool);
                 req7.input('todayStart', sql.DateTime2, todayStart);
-                const entryRes = await req7.query(`WITH RankedEntries AS (SELECT sessionid, currenturl, ROW_NUMBER() OVER (PARTITION BY sessionid ORDER BY visittime ASC) as rn FROM RdpgCode.dbo.WebsiteRecord WHERE visittime >= @todayStart) SELECT TOP 7 currenturl as url, COUNT(*) as count FROM RankedEntries WHERE rn = 1 GROUP BY currenturl ORDER BY count DESC`);
+                const entryRes = await req7.query(`WITH RankedEntries AS (SELECT sessionid, currenturl, ROW_NUMBER() OVER (PARTITION BY sessionid ORDER BY visittime ASC) as rn FROM SystemSettingsApp.dbo.WebsiteRecord WHERE visittime >= @todayStart) SELECT TOP 7 currenturl as url, COUNT(*) as count FROM RankedEntries WHERE rn = 1 GROUP BY currenturl ORDER BY count DESC`);
                 // --- 新增：今日新老访客统计 ---
                 // 逻辑：如果一个 visitorid 在今天之前 (visittime < @todayStart) 出现过，则是老用户，否则是新用户
                 const reqNewToday = new sql.Request(pool);
@@ -15454,8 +15587,8 @@ ORDER BY
             FROM (
                 SELECT DISTINCT visitorid, 
                     CASE WHEN MIN(visittime) < @todayStart THEN 1 ELSE 0 END as HasHistory
-                FROM RdpgCode.dbo.WebsiteRecord
-                WHERE visitorid IN (SELECT DISTINCT visitorid FROM RdpgCode.dbo.WebsiteRecord WHERE visittime >= @todayStart)
+                FROM SystemSettingsApp.dbo.WebsiteRecord
+                WHERE visitorid IN (SELECT DISTINCT visitorid FROM SystemSettingsApp.dbo.WebsiteRecord WHERE visittime >= @todayStart)
                 GROUP BY visitorid
             ) as UserStatus
         `;
@@ -15463,7 +15596,7 @@ ORDER BY
                 // 更高效的写法：先找出今日所有 UV，再左连接历史数据
                 const sqlNewTodayOptimized = `
             WITH TodayUsers AS (
-                SELECT DISTINCT visitorid FROM RdpgCode.dbo.WebsiteRecord WHERE visittime >= @todayStart
+                SELECT DISTINCT visitorid FROM SystemSettingsApp.dbo.WebsiteRecord WHERE visittime >= @todayStart
             ),
             HistoryCheck AS (
                 SELECT T.visitorid, 
@@ -15471,7 +15604,7 @@ ORDER BY
                 FROM TodayUsers T
                 LEFT JOIN (
                     SELECT DISTINCT visitorid 
-                    FROM RdpgCode.dbo.WebsiteRecord 
+                    FROM SystemSettingsApp.dbo.WebsiteRecord 
                     WHERE visittime < @todayStart
                 ) H ON T.visitorid = H.visitorid
             )
@@ -15492,7 +15625,7 @@ ORDER BY
 
                 const sqlNewYesterdayOptimized = `
             WITH YesterdayUsers AS (
-                SELECT DISTINCT visitorid FROM RdpgCode.dbo.WebsiteRecord 
+                SELECT DISTINCT visitorid FROM SystemSettingsApp.dbo.WebsiteRecord 
                 WHERE visittime >= @yesterdayStart AND visittime < @todayStart
             ),
             HistoryCheck AS (
@@ -15501,7 +15634,7 @@ ORDER BY
                 FROM YesterdayUsers Y
                 LEFT JOIN (
                     SELECT DISTINCT visitorid 
-                    FROM RdpgCode.dbo.WebsiteRecord 
+                    FROM SystemSettingsApp.dbo.WebsiteRecord 
                     WHERE visittime < @yesterdayStart
                 ) H ON Y.visitorid = H.visitorid
             )
@@ -15517,7 +15650,7 @@ ORDER BY
                 // --- 8. 趋势分析 ---
                 const req8 = new sql.Request(pool);
                 req8.input('todayStart', sql.DateTime2, todayStart);
-                const trendRes = await req8.query(`SELECT DATEPART(HOUR, visittime) as hour, COUNT(*) as pv FROM RdpgCode.dbo.WebsiteRecord WHERE visittime >= @todayStart GROUP BY DATEPART(HOUR, visittime) ORDER BY hour`);
+                const trendRes = await req8.query(`SELECT DATEPART(HOUR, visittime) as hour, COUNT(*) as pv FROM SystemSettingsApp.dbo.WebsiteRecord WHERE visittime >= @todayStart GROUP BY DATEPART(HOUR, visittime) ORDER BY hour`);
 
                 const trendData = Array(24).fill(0);
                 if (trendRes.recordset) {
