@@ -11346,6 +11346,122 @@ app.get('/api/auth/users', async (req, res) => {
 });
 // 注册接口
 app.post('/api/auth/register', async (req, res) => {
+    const { username, email, password, inviteCode } = req.body;
+
+    // 1. 验证邀请码
+    const validInviteCode = 'F8d@jR1*wC5$vE7^aL';
+    if (!inviteCode || inviteCode !== validInviteCode) {
+        return res.status(400).json({
+            success: false,
+            message: '邀请码错误，无法注册'
+        });
+    }
+
+    // console.log('注册请求:', { username, email, password });
+
+    try {
+        // await poolConnect;
+
+        const existingUser = await pool.request()
+            .input('email', sql.NVarChar, email)
+            .query('SELECT id FROM SystemSettingsApp.dbo.SystemUserAccounts WHERE email = @email');
+
+        if (existingUser.recordset.length > 0) {
+            return res.status(400).json({
+                success: false,
+                message: '该邮箱已被注册'
+            });
+        }
+
+        const transaction = new sql.Transaction(pool);
+        await transaction.begin();
+
+        try {
+            const userResult = await transaction.request()
+                .input('username', sql.NVarChar, username)
+                .input('email', sql.NVarChar, email)
+                .input('password', sql.NVarChar, password)
+                .query(`
+                    INSERT INTO SystemSettingsApp.dbo.SystemUserAccounts 
+                    (username, email, password, permission_level) 
+                    OUTPUT INSERTED.* 
+                    VALUES (@username, @email, @password, 'user')
+                `);
+
+            const newUser = userResult.recordset[0];
+
+            // 为用户创建默认主题设置
+            await transaction.request()
+                .input('email', sql.NVarChar, email)
+                .input('theme_name', sql.NVarChar, '默认主题')
+                .input('background_color', sql.NVarChar, '#FFFFFFFF')
+                .input('secondary_background_color', sql.NVarChar, '#F8F9FAFF')
+                .input('hover_background_color', sql.NVarChar, '#E9ECEEFF')
+                .input('focus_background_color', sql.NVarChar, '#DEE2E6FF')
+                .input('font_color', sql.NVarChar, '#000000FF')
+                .input('secondary_font_color', sql.NVarChar, '#6C757DFF')
+                .input('hover_font_color', sql.NVarChar, '#0078D4FF')
+                .input('focus_font_color', sql.NVarChar, '#0056B3FF')
+                .input('watermark_font_color', sql.NVarChar, '#B3B5B6FF')
+                .input('font_family', sql.NVarChar, 'system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif')
+                .input('border_color', sql.NVarChar, '#DEE2E6FF')
+                .input('secondary_border_color', sql.NVarChar, '#E9ECEEFF')
+                .input('hover_border_color', sql.NVarChar, '#0078D4FF')
+                .input('focus_border_color', sql.NVarChar, '#0056B3FF')
+                .input('shadow_color', sql.NVarChar, '#00000019')
+                .input('hover_shadow_color', sql.NVarChar, '#00000026')
+                .input('focus_shadow_color', sql.NVarChar, '#0078D440')
+                .query(`
+                    INSERT INTO SystemSettingsApp.dbo.SystemUserThemeSettings 
+                    (
+                        email, theme_name,
+                        background_color, secondary_background_color, hover_background_color, focus_background_color,
+                        font_color, secondary_font_color, hover_font_color, focus_font_color, watermark_font_color, font_family,
+                        border_color, secondary_border_color, hover_border_color, focus_border_color,
+                        shadow_color, hover_shadow_color, focus_shadow_color, is_active
+                    ) 
+                    VALUES (
+                        @email, @theme_name,
+                        @background_color, @secondary_background_color, @hover_background_color, @focus_background_color,
+                        @font_color, @secondary_font_color, @hover_font_color, @focus_font_color, @watermark_font_color, @font_family,
+                        @border_color, @secondary_border_color, @hover_border_color, @focus_border_color,
+                        @shadow_color, @hover_shadow_color, @focus_shadow_color, 1
+                    )
+                `);
+
+            await transaction.commit();
+
+            // console.log(`用户 ${username} 注册成功，并创建了默认主题`);
+
+            const userResponse = {
+                id: newUser.id,
+                username: newUser.username,
+                email: newUser.email,
+                registration_date: newUser.registration_date,
+                permission_level: newUser.permission_level
+            };
+
+            res.json({
+                success: true,
+                message: '注册成功',
+                user: userResponse
+            });
+
+        } catch (error) {
+            await transaction.rollback();
+            console.error('注册事务错误:', error);
+            throw error;
+        }
+
+    } catch (err) {
+        console.error('注册错误:', err);
+        res.status(500).json({
+            success: false,
+            message: '注册失败，请稍后重试'
+        });
+    }
+});
+app.post('/api/auth/register-old', async (req, res) => {
     const { username, email, password } = req.body;
 
     //console.log('注册请求:', { username, email, password });
@@ -15497,7 +15613,7 @@ app.post('/api/website/record', async (req, res) => {
             recordVisittime = new Date();
             finalSessionId = session_id;
             
-            const logMsg = `✅ 更新记录: visitor_id=${visitor_id.slice(-8)}, ${oldUsername} -> ${username}`;
+            //const logMsg = `✅ 更新记录: visitor_id=${visitor_id.slice(-8)}, ${oldUsername} -> ${username}`;
             console.log(logMsg);
         }
         
@@ -15510,7 +15626,7 @@ app.post('/api/website/record', async (req, res) => {
                 (@visitorid, @sessionid, @ipaddress, @currenturl, @referrerurl, @entryurl, @useragent, GETDATE(), 1, 0, @username, @email)
             `;
             await request.query(insertQuery);
-            console.log(`✅ 插入新记录: ${username} (visitor_id: ${visitor_id.slice(-8)})`);
+           // console.log(`✅ 插入新记录: ${username} (visitor_id: ${visitor_id.slice(-8)})`);
         }
 
         res.status(200).json({ success: true, updated: isUpdated });
@@ -15533,7 +15649,7 @@ app.post('/api/website/record', async (req, res) => {
         io.emit('new-visit-record', newRecord);
 
     } catch (err) {
-        console.error('❌ Error recording visit:', err);
+        //console.error('❌ Error recording visit:', err);
         res.status(500).json({ error: 'Database error', details: err.message });
     }
 });
@@ -15593,7 +15709,7 @@ app.post('/api/website/record', async (req, res) => {
                 });
 
             } catch (err) {
-                console.error('❌ Error fetching history records:', err);
+                //console.error('❌ Error fetching history records:', err);
                 res.status(500).json({ error: 'Failed to fetch history records', details: err.message });
             }
         });
@@ -15766,7 +15882,7 @@ app.post('/api/website/record', async (req, res) => {
                 };
 
             } catch (err) {
-                console.error("❌ Detailed SQL Error in calculateStats:", err);
+                //console.error("❌ Detailed SQL Error in calculateStats:", err);
                 throw err;
             }
         }
@@ -15779,7 +15895,7 @@ app.post('/api/website/record', async (req, res) => {
                 const stats = await calculateStats();
                 io.emit('stats-update', stats);
             } catch (err) {
-                console.error('Error broadcasting stats:', err);
+               // console.error('Error broadcasting stats:', err);
             }
         }
 
@@ -15869,7 +15985,7 @@ app.post('/api/website/record', async (req, res) => {
 
                 res.json({ success: true });
             } catch (err) {
-                console.error('Error posting suggestion:', err);
+               // console.error('Error posting suggestion:', err);
                 res.status(500).json({ error: 'Failed to post comment' });
             }
         });
@@ -15977,7 +16093,7 @@ app.post('/api/website/record', async (req, res) => {
                 res.json(finalData);
 
             } catch (err) {
-                console.error('Error fetching list with replies:', err);
+              //  console.error('Error fetching list with replies:', err);
                 res.status(500).json({ error: 'Failed to fetch comments' });
             }
         });
@@ -16025,7 +16141,7 @@ app.post('/api/website/record', async (req, res) => {
 
                 res.json(comments);
             } catch (err) {
-                console.error('Error fetching more children:', err);
+                //console.error('Error fetching more children:', err);
                 res.status(500).json({ error: 'Failed' });
             }
         });
@@ -16078,7 +16194,7 @@ app.post('/api/website/record', async (req, res) => {
 
                 res.json({ success: true, likes: newLikes });
             } catch (err) {
-                console.error('Like error:', err);
+                //console.error('Like error:', err);
                 res.status(500).json({ error: 'Like failed', details: err.message });
             }
         });
@@ -16145,7 +16261,7 @@ app.post('/api/website/record', async (req, res) => {
                 // 【修改点】SELECT 中移除了 Summary
                 let query = `
             SELECT Id, Title, Category, Content, ImageUrl, PublishDate, ViewCount 
-            FROM RdpgCode.dbo.PublishNews 
+            FROM OfficeApp.dbo.PublishNews 
             WHERE IsActive = 1
         `;
 
@@ -16170,7 +16286,7 @@ app.post('/api/website/record', async (req, res) => {
 
                 res.json({ list: rows, total: rows.length });
             } catch (err) {
-                console.error('Get news list error:', err);
+                //console.error('Get news list error:', err);
                 res.status(500).json({ error: 'Failed to fetch news' });
             }
         });
@@ -16198,7 +16314,7 @@ app.post('/api/website/record', async (req, res) => {
 
                 // 【修改点】INSERT 语句中移除了 Summary 列
                 const query = `
-            INSERT INTO RdpgCode.dbo.PublishNews (Title, Category, Content, PublishDate, ImageUrl, ViewCount, IsActive, UpdatedAt)
+            INSERT INTO OfficeApp.dbo.PublishNews (Title, Category, Content, PublishDate, ImageUrl, ViewCount, IsActive, UpdatedAt)
             OUTPUT INSERTED.Id
             VALUES (@title, @category, @content, @publishDate, 'Defaultbackground.jpg', 50, 1, GETDATE())
         `;
@@ -16237,7 +16353,7 @@ app.post('/api/website/record', async (req, res) => {
                 request.input('now', sql.DateTime, new Date());
 
                 const query = `
-            UPDATE RdpgCode.dbo.PublishNews 
+            UPDATE OfficeApp.dbo.PublishNews 
             SET ImageUrl = @imageUrl, UpdatedAt = @now 
             WHERE Id = @id
         `;
@@ -16273,7 +16389,7 @@ app.post('/api/website/record', async (req, res) => {
 
                 // 【修改点】UPDATE 语句中移除了 Summary
                 const query = `
-            UPDATE RdpgCode.dbo.PublishNews 
+            UPDATE OfficeApp.dbo.PublishNews 
             SET Title = @title, Category = @category, Content = @content, 
                 PublishDate = @publishDate, UpdatedAt = @now
             WHERE Id = @id
@@ -16298,7 +16414,7 @@ app.post('/api/website/record', async (req, res) => {
                 const request = pool.request();
                 request.input('id', sql.Int, parseInt(id));
 
-                await request.query(`UPDATE RdpgCode.dbo.PublishNews SET IsActive = 0 WHERE Id = @id`);
+                await request.query(`UPDATE OfficeApp.dbo.PublishNews SET IsActive = 0 WHERE Id = @id`);
                 res.json({ success: true });
             } catch (err) {
                 res.status(500).json({ error: 'Delete failed' });
@@ -16322,7 +16438,7 @@ app.post('/api/website/record', async (req, res) => {
 
                 const query = `
             SELECT Id, Title, Category, Content, ImageUrl, PublishDate, ViewCount, IsActive, UpdatedAt 
-            FROM RdpgCode.dbo.PublishNews 
+            FROM OfficeApp.dbo.PublishNews 
             WHERE Id = @id AND IsActive = 1
         `;
 
@@ -16361,7 +16477,7 @@ app.post('/api/website/record', async (req, res) => {
 
                 const query = `
                     SELECT Id, Title, Category, Content, ImageUrl, PublishDate, ViewCount, IsActive, UpdatedAt 
-                    FROM RdpgCode.dbo.PublishNews 
+                    FROM OfficeApp.dbo.PublishNews 
                     WHERE Id = @id AND IsActive = 1
                 `;
 
@@ -16380,7 +16496,7 @@ app.post('/api/website/record', async (req, res) => {
                     updateRequest.input('id', sql.Int, parseInt(id));
 
                     const updateQuery = `
-                        UPDATE RdpgCode.dbo.PublishNews 
+                        UPDATE OfficeApp.dbo.PublishNews 
                         SET ViewCount = ISNULL(ViewCount, 0) + 1, 
                             UpdatedAt = GETDATE() 
                         WHERE Id = @id

@@ -1,7 +1,7 @@
 .contactSection {
   width: 100%;
   min-height: 100vh;
-  background: linear-gradient(145deg, #f5f7fa 0%, #ffffff 100%);
+  /* background: linear-gradient(145deg, #f5f7fa 0%, #ffffff 100%); */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -18,9 +18,9 @@
 
 /* 主卡片 */
 .contactCard {
-  background: #ffffff;
+  /* background: #ffffff; */
   border-radius: 32px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.04);
+  /* box-shadow: 0 20px 40px rgba(0, 0, 0, 0.04); */
   overflow: hidden;
   opacity: 0;
   transform: translateY(30px);
@@ -310,6 +310,64 @@
   display: block;
 }
 
+/* ========== 验证码样式（修改后） ========== */
+.captchaGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.captchaWrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.captchaCanvas {
+  border: 1.5px solid #e8e4e0;
+  border-radius: 16px;
+  background: #faf9f8;
+  /* width: 200px;
+  height: 40px; */
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.captchaCanvas:hover {
+  border-color: #c9a982;
+}
+
+.refreshCaptchaBtn {
+  padding: 10px 16px;
+  background: #faf9f8;
+  border: 1.5px solid #e8e4e0;
+  border-radius: 16px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #666;
+  transition: all 0.3s ease;
+}
+
+.refreshCaptchaBtn:hover {
+  background: #f5efe8;
+  border-color: #c9a982;
+  color: #c9a982;
+}
+
+.captchaInput {
+  /* 继承 .input 的所有样式，无需额外定义 */
+}
+
+.errorInput {
+  border-color: #f56565;
+  background-color: #fff5f5;
+}
+
+.errorInput:focus {
+  border-color: #f56565;
+  box-shadow: 0 0 0 3px rgba(245, 101, 101, 0.08);
+}
+
 /* ========== 手机端响应式 (1024px以下) ========== */
 @media (max-width: 1024px) {
   .contactSection {
@@ -384,6 +442,17 @@
   .qrWrapper img {
     width: 70px;
     height: 70px;
+  }
+
+  /* 验证码响应式 */
+  /* .captchaCanvas {
+    width: 100px;
+    height: 38px;
+  } */
+  
+  .refreshCaptchaBtn {
+    padding: 8px 14px;
+    font-size: 13px;
   }
 }
 
@@ -469,57 +538,19 @@
   .qrWrapper span {
     font-size: 11px;
   }
-}
-/* 验证码样式 */
-.captchaGroup {
-    margin-bottom: 20px;
-}
 
-.captchaWrapper {
-    display: flex;
-    align-items: center;
+  /* 验证码小屏响应式 */
+  .captchaGroup {
     gap: 10px;
-    margin-bottom: 10px;
-}
-
-.captchaCanvas {
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-    background: #f8f9fa;
-    width: 120px;
-    height: 40px;
-}
-
-.refreshCaptchaBtn {
-    padding: 6px 12px;
-    background: #f0f0f0;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    cursor: pointer;
+  }
+  
+  /* .captchaCanvas {
+    width: 90px;
+    height: 35px;
+  } */
+  
+  .refreshCaptchaBtn {
+    padding: 7px 12px;
     font-size: 12px;
-    transition: all 0.3s ease;
-}
-
-.refreshCaptchaBtn:hover {
-    background: #e0e0e0;
-}
-
-.captchaInput {
-    width: 100%;
-    padding: 10px 12px;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-    font-size: 14px;
-    transition: all 0.3s ease;
-}
-
-.captchaInput:focus {
-    outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
-}
-
-.errorInput {
-    border-color: #f56565;
-    background-color: #fff5f5;
+  }
 }

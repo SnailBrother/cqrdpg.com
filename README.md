@@ -552,7 +552,20 @@ CREATE TABLE OfficeApp.dbo.EvaluationBusinessMessage (
     ip_address NVARCHAR(45) NULL,        -- 存储客户端IP地址
 );
 ``` 
-
+### 16. 评估动态新闻 (`OfficeApp.dbo.PublishNews`)
+``` 
+CREATE TABLE OfficeApp.dbo.PublishNews (
+    Id INT IDENTITY(1,1) PRIMARY KEY,                    -- 主键，自增
+    Title NVARCHAR(200) NOT NULL,                        -- 标题，不能为空
+    Category NVARCHAR(50) NOT NULL,                      -- 分类  公司新闻、行业动态、政策法规
+    Content NVARCHAR(MAX),                               -- 正文内容 (预留)
+    ImageUrl NVARCHAR(255) DEFAULT 'Defaultbackground.jpg',                   -- 图片路径 Defaultbackground.jpg
+    PublishDate DATE DEFAULT GETDATE(),        -- 发布日期 默认当前日期                
+    ViewCount INT DEFAULT 50,                             -- 浏览量，默认50
+    IsActive BIT DEFAULT 1,                              -- 是否显示，默认显示
+    UpdatedAt DATE DEFAULT GETDATE()                 -- 更新时间
+);
+``` 
 
 ##  四、记账板块数据库 (`AccountingApp`)
 

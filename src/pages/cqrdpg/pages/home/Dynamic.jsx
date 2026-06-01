@@ -3,12 +3,12 @@ import styles from './Dynamic.module.css';
 
 const CarouselTypeThird = () => {
     const images = [
-        { src: '/images/cqrdpg/home/CompanyProfile/Purpose.jpg', description: '高效响应' },
-        { src: '/images/cqrdpg/home/CompanyProfile/Honor.jpg', description: '快速出稿' },
-        { src: '/images/cqrdpg/home/CompanyProfile/Qualification.jpg', description: '精准评估' },
-        { src: '/images/cqrdpg/home/CompanyProfile/Service.jpg', description: '按时交付' },
-        { src: '/images/cqrdpg/home/CompanyProfile/Team.jpg', description: '全程高效' },
-        { src: '/images/cqrdpg/home/CompanyProfile/Purpose.jpg', description: '专业服务' },
+        { src: 'https://www.cqrdpg.com/backend/images/CompanyHome/one.jpg', description: '高效响应' },
+        { src: 'https://www.cqrdpg.com/backend/images/CompanyHome/two.jpg', description: '快速出稿' },
+        { src: 'https://www.cqrdpg.com/backend/images/CompanyHome/tree.jpg', description: '精准评估' },
+        { src: 'https://www.cqrdpg.com/backend/images/CompanyHome/four.jpg', description: '按时交付' },
+        { src: 'https://www.cqrdpg.com/backend/images/CompanyHome/five.jpg', description: '全程高效' },
+        { src: 'https://www.cqrdpg.com/backend/images/CompanyHome/six.jpg', description: '专业服务' },
     ];
 
     const [slides, setSlides] = useState([]);

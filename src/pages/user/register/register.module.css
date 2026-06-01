@@ -400,3 +400,46 @@
         transition: none;
     }
 }
+/* 验证码区域样式 */
+.captchaWrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    margin-top: 12px;
+}
+
+.captchaCanvas {
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    background-color: #f5f5f5;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.captchaCanvas:hover {
+    border-color: #0078d4;
+    box-shadow: 0 0 5px rgba(0, 120, 212, 0.3);
+}
+
+.refreshCaptchaBtn {
+    padding: 8px 16px;
+    background-color: #f5f5f5;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #666;
+    transition: all 0.3s ease;
+}
+
+.refreshCaptchaBtn:hover {
+    background-color: #e8e8e8;
+    border-color: #0078d4;
+    color: #0078d4;
+}
+
+.captchaInput {
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}

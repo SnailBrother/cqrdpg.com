@@ -54,7 +54,7 @@ const images = [
   }
 ];
 
-const CarouselTypeSecond = () => {
+const CompanyProfile = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovering, setIsHovering] = useState(false);
 
@@ -226,4 +226,4 @@ const CarouselTypeSecond = () => {
   );
 };
 
-export default CarouselTypeSecond;
+export default CompanyProfile;

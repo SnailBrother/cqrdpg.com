@@ -274,12 +274,24 @@ const ContactUs = () => {
                 ></textarea>
               </div>
 
-              {/* 验证码区域 */}
+              {/* 验证码区域 - 输入框在上，验证码图片在下 */}
               <div className={styles.captchaGroup}>
+                <input
+                  type="text"
+                  placeholder="请输入验证码 *"
+                  value={userInputCode}
+                  onChange={(e) => {
+                    setUserInputCode(e.target.value.toUpperCase());
+                    setCaptchaError(false);
+                  }}
+                  className={`${styles.input} ${styles.captchaInput} ${captchaError ? styles.errorInput : ''}`}
+                  maxLength="4"
+                  required
+                />
                 <div className={styles.captchaWrapper}>
                   <canvas
                     ref={canvasRef}
-                    width="120"
+                    width="200"
                     height="40"
                     className={styles.captchaCanvas}
                     onClick={refreshCaptcha}
@@ -293,18 +305,6 @@ const ContactUs = () => {
                     ↻ 刷新
                   </button>
                 </div>
-                <input
-                  type="text"
-                  placeholder="请输入验证码 *"
-                  value={userInputCode}
-                  onChange={(e) => {
-                    setUserInputCode(e.target.value.toUpperCase());
-                    setCaptchaError(false);
-                  }}
-                  className={`${styles.captchaInput} ${captchaError ? styles.errorInput : ''}`}
-                  maxLength="4"
-                  required
-                />
               </div>
 
               <button type="submit" className={styles.submitBtn} disabled={isSubmitting}>

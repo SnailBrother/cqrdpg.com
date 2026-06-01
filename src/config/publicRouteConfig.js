@@ -31,13 +31,13 @@ export const publicRouteConfig = [
     path: '/login',
     component: Login,
     requiresAuth: false, // 标记：不需要登录，但如果已登录需跳转
-    redirectIfAuth: '/apps'
+   // redirectIfAuth: '/login' // 就算登录了也能设置跳转    /apps
   },
   {
     path: '/register',
     component: Register,
     requiresAuth: false,
-    redirectIfAuth: '/apps'
+    // redirectIfAuth: '/companyhome'//如果用户已经登录，访问注册页面时，自动重定向到 /companyhome 页面
   },
   {
     path: '/lovehome',
