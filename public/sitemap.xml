@@ -2,19 +2,25 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <!-- 首页 -->
   <url>
-    <loc>https://www.cqrdpg.com/</loc>
-    <lastmod>2026-03-13</lastmod>
+    <loc>https://www.cqrdpg.com/companyhome</loc>
+    <lastmod>2026-06-01T00:00:00+00:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   
   <!-- 关于我们 -->
   <url>
-    <loc>https://www.cqrdpg.com/home</loc>
-    <lastmod>2026-03-13</lastmod>
+    <loc>https://www.cqrdpg.com/lovehome</loc>
+    <lastmod>2026-06-01T00:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-  
+    <!-- 新闻消息 -->
+    <url>
+    <loc>https://www.cqrdpg.com/newsdetails/2</loc>
+    <lastmod>2026-06-01T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
  
 </urlset>
