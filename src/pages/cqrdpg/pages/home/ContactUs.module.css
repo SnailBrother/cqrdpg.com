@@ -470,3 +470,56 @@
     font-size: 11px;
   }
 }
+/* 验证码样式 */
+.captchaGroup {
+    margin-bottom: 20px;
+}
+
+.captchaWrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.captchaCanvas {
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    background: #f8f9fa;
+    width: 120px;
+    height: 40px;
+}
+
+.refreshCaptchaBtn {
+    padding: 6px 12px;
+    background: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.3s ease;
+}
+
+.refreshCaptchaBtn:hover {
+    background: #e0e0e0;
+}
+
+.captchaInput {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.captchaInput:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+}
+
+.errorInput {
+    border-color: #f56565;
+    background-color: #fff5f5;
+}

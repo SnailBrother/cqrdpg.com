@@ -15061,9 +15061,80 @@ ORDER BY
     { //www.cqwrdpg.com 客户业务需要留言 联系我们
 
 
+app.post('/api/CodeDatabase/submitContact', async (req, res) => {
+    const { requestername, contact, description } = req.body;
 
+    if (!requestername || !description) {
+        return res.status(400).json({ success: false, message: '姓名和描述不能为空' });
+    }
+
+    // 获取客户端真实IP
+    const clientIp = req.headers['x-forwarded-for']?.split(',')[0] || 
+                     req.connection.remoteAddress || 
+                     req.socket.remoteAddress ||
+                     'unknown';
+
+    try {
+        const request = new sql.Request(pool);
+
+        // 检查同一IP在10分钟内的提交次数（限制10次）
+        const checkResult = await request
+            .input('ip', sql.NVarChar(45), clientIp)
+            .input('minutes', sql.Int, 10)
+            .query(`
+                SELECT COUNT(*) as count 
+                FROM OfficeApp.dbo.EvaluationBusinessMessage 
+                WHERE ip_address = @ip 
+                AND submitted > DATEADD(MINUTE, -@minutes, GETDATE())
+            `);
+
+        const submitCount = checkResult.recordset[0].count;
+        
+        // 如果10分钟内提交超过10次，拒绝提交
+        if (submitCount >= 10) {
+            return res.status(429).json({ 
+                success: false, 
+                message: '提交过于频繁，请10分钟后再试' 
+            });
+        }
+
+        // 插入数据（包含IP地址）
+        const result = await request
+            .input('requestername', sql.NVarChar(50), requestername)
+            .input('contact', sql.NVarChar(50), contact || null)
+            .input('description', sql.NVarChar(sql.MAX), description)
+            .input('ip_address', sql.NVarChar(45), clientIp)
+            .query(`
+                INSERT INTO OfficeApp.dbo.EvaluationBusinessMessage (requestername, contact, description, isread, submitted, ip_address)
+                VALUES (@requestername, @contact, @description, 0, GETDATE(), @ip_address);
+                SELECT SCOPE_IDENTITY() as newId;
+            `);
+
+        const newId = result.recordset[0].newId;
+
+        // 实时通知所有连接的管理端用户
+        const newMessage = {
+            id: parseInt(newId),
+            requestername,
+            contact: contact || '未提供',
+            description,
+            isread: 0,
+            submitted: new Date().toISOString(),
+            responded: null,
+            ip_address: clientIp
+        };
+
+        io.emit('new_message_received', newMessage);
+
+        res.json({ success: true, message: '提交成功', id: newId });
+        
+    } catch (err) {
+        console.error('数据库插入错误:', err);
+        res.status(500).json({ success: false, message: '服务器内部错误', error: err.message });
+    }
+});
         // 1. 提交联系表单 (ContactUs 使用) 用户留言
-        app.post('/api/CodeDatabase/submitContact', async (req, res) => {
+        app.post('/api/CodeDatabase/submitContact/old', async (req, res) => {
             const { requestername, contact, description } = req.body;
 
             if (!requestername || !description) {

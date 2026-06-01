@@ -548,7 +548,8 @@ CREATE TABLE OfficeApp.dbo.EvaluationBusinessMessage (
     description NVARCHAR(MAX) NOT NULL,-- 问题描述，文本类型存储较长内容 
     isread BIT DEFAULT(0) NOT NULL,-- 是否已读，BIT类型（0=未读，1=已读），默认值0
     submitted DATETIME DEFAULT(GETDATE()) NOT NULL,-- 提交时间，日期时间类型，默认值为当前时间
-    responded DATETIME NULL -- 回复时间，日期时间类型，可空（未回复时为NULL）
+    responded DATETIME NULL, -- 回复时间，日期时间类型，可空（未回复时为NULL）
+    ip_address NVARCHAR(45) NULL,        -- 存储客户端IP地址
 );
 ``` 
 
