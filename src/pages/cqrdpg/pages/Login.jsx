@@ -1,11 +1,8 @@
-// src/pages/Login.jsx
 import { useState, useRef, useEffect, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../../../hooks/useAuth';
 import styles from './Login.module.css';
-
-// --- 辅助组件（动画角色）---
 
 /**
  * 瞳孔组件
@@ -90,16 +87,17 @@ function Login() {
   const location = useLocation();
   const { setUserInfo } = useAuth();
 
-  // 表单状态
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [userInputCode, setUserInputCode] = useState('');
-  const [captchaCode, setCaptchaCode] = useState('');
+  const [captchaId, setCaptchaId] = useState('');
+  const [captchaSvg, setCaptchaSvg] = useState('');
   const [captchaError, setCaptchaError] = useState(false);
+  const [captchaLoading, setCaptchaLoading] = useState(false);
+
   const [loading, setLoading] = useState(false);
   const [submitError, setSubmitError] = useState('');
 
-  // 动画状态
   const [mouseX, setMouseX] = useState(0);
   const [mouseY, setMouseY] = useState(0);
   const [isTyping, setIsTyping] = useState(false);
@@ -111,49 +109,6 @@ function Login() {
   const [purpleMouthShape, setPurpleMouthShape] = useState('circle');
   const [showPassword, setShowPassword] = useState(false);
 
-
-  // 添加设备识别函数
-  const getDeviceInfo = () => {
-    // 生成或获取设备ID
-    let deviceId = localStorage.getItem('device_id');
-    if (!deviceId) {
-      deviceId = Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
-      localStorage.setItem('device_id', deviceId);
-    }
-
-    // 识别设备类型
-    const getDeviceType = () => {
-      const ua = navigator.userAgent.toLowerCase();
-
-      // 平板判断
-      if (
-        /(ipad|tablet|(android(?!.*mobile)))/i.test(ua) ||
-        (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
-      ) {
-        return 'tablet';
-      }
-
-      // 手机判断
-      if (/mobile|android|iphone|ipod|blackberry|iemobile|opera mini/i.test(ua)) {
-        // 进一步区分 Android 和 iOS
-        if (/android/i.test(ua)) return 'android';
-        if (/iphone|ipod|ios/i.test(ua)) return 'ios';
-        return 'mobile';
-      }
-
-      // 电脑判断
-      return 'pc';
-    };
-
-    const deviceType = getDeviceType();
-
-    return { deviceId, deviceType };
-  };
-
-
-
-
-  // DOM元素引用
   const purpleRef = useRef(null);
   const blackRef = useRef(null);
   const yellowRef = useRef(null);
@@ -163,83 +118,66 @@ function Login() {
   const eyeBlackLeftRef = useRef(null);
   const eyeBlackRightRef = useRef(null);
 
-  const canvasRef = useRef(null);
-
-  // 静态资源 images\cqrdpg\home\CompanyProfile
-  //const logoImg = '/images\ruida';
-const logoImg = 'https://www.cqrdpg.com/images/ruida/favicon.ico';
+  const logoImg = 'https://www.cqrdpg.com/images/ruida/favicon.ico';
   const companyName = '重庆评估';
-  //const backgroundImg = '/images/love/Background.jpg';
-  //https://www.cqrdpg.com/
   const backgroundImg = 'https://www.cqrdpg.com/images/cqrdpg/home/CompanyProfile/Service.jpg';
-  // --- Canvas 验证码逻辑 ---
-  const generateCaptcha = () => {
-    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ0123456789';
-    let code = '';
-    for (let i = 0; i < 4; i++) {
-      code += chars[Math.floor(Math.random() * chars.length)];
+
+  const getDeviceInfo = () => {
+    let deviceId = localStorage.getItem('device_id');
+    if (!deviceId) {
+      deviceId = Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
+      localStorage.setItem('device_id', deviceId);
     }
-    setCaptchaCode(code);
-    drawCaptcha(code);
+
+    const getDeviceType = () => {
+      const ua = navigator.userAgent.toLowerCase();
+
+      if (
+        /(ipad|tablet|(android(?!.*mobile)))/i.test(ua) ||
+        (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+      ) {
+        return 'tablet';
+      }
+
+      if (/mobile|android|iphone|ipod|blackberry|iemobile|opera mini/i.test(ua)) {
+        if (/android/i.test(ua)) return 'android';
+        if (/iphone|ipod|ios/i.test(ua)) return 'ios';
+        return 'mobile';
+      }
+
+      return 'pc';
+    };
+
+    return { deviceId, deviceType: getDeviceType() };
   };
 
-  const drawCaptcha = (code) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+  const fetchCaptcha = async () => {
+    try {
+      setCaptchaLoading(true);
+      const response = await axios.get('/api/CodeDatabase/captcha');
 
-    const ctx = canvas.getContext('2d');
-    const w = canvas.width;
-    const h = canvas.height;
-
-    ctx.clearRect(0, 0, w, h);
-    ctx.fillStyle = '#f0f0f0';
-    ctx.fillRect(0, 0, w, h);
-
-    // 干扰线
-    ctx.strokeStyle = '#ccc';
-    ctx.lineWidth = 1;
-    for (let i = 0; i < 5; i++) {
-      ctx.beginPath();
-      ctx.moveTo(Math.random() * w, Math.random() * h);
-      ctx.lineTo(Math.random() * w, Math.random() * h);
-      ctx.stroke();
-    }
-
-    // 干扰点
-    ctx.fillStyle = '#999';
-    for (let i = 0; i < 30; i++) {
-      ctx.beginPath();
-      ctx.arc(Math.random() * w, Math.random() * h, Math.random() * 3, 0, 2 * Math.PI);
-      ctx.fill();
-    }
-
-    // 文字
-    const charWidth = w / code.length;
-    for (let i = 0; i < code.length; i++) {
-      ctx.fillStyle = `rgb(${Math.random() * 100}, ${Math.random() * 100}, ${Math.random() * 100})`;
-      const fontSize = 28 + Math.random() * 6;
-      ctx.font = `bold ${fontSize}px 'Arial', sans-serif`;
-      const angle = (Math.random() - 0.5) * 0.3;
-
-      ctx.save();
-      const x = charWidth * i + charWidth * 0.3 + Math.random() * 8;
-      const y = h * 0.7 + Math.random() * 8;
-
-      ctx.translate(x, y);
-      ctx.rotate(angle);
-      ctx.fillText(code[i], 0, 0);
-      ctx.restore();
+      if (response.data.success) {
+        setCaptchaId(response.data.captchaId);
+        setCaptchaSvg(response.data.captchaSvg);
+        setUserInputCode('');
+        setCaptchaError(false);
+      } else {
+        setSubmitError(response.data.message || '验证码加载失败');
+      }
+    } catch (error) {
+      console.error('获取验证码失败:', error);
+      setSubmitError('验证码加载失败，请稍后重试');
+    } finally {
+      setCaptchaLoading(false);
     }
   };
 
   const refreshCaptcha = () => {
-    generateCaptcha();
+    fetchCaptcha();
     setUserInputCode('');
     setCaptchaError(false);
-    setSubmitError('');
   };
 
-  // 全局鼠标监听
   useEffect(() => {
     const handleMouseMove = (e) => {
       setMouseX(e.clientX);
@@ -249,7 +187,6 @@ const logoImg = 'https://www.cqrdpg.com/images/ruida/favicon.ico';
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-  // 橙色角色的嘴巴形状逻辑
   useEffect(() => {
     const updateMouth = () => {
       if (!orangeRef.current) return;
@@ -274,7 +211,6 @@ const logoImg = 'https://www.cqrdpg.com/images/ruida/favicon.ico';
     updateMouth();
   }, [mouseX, mouseY, showPassword, password]);
 
-  // 紫色角色的嘴巴形状逻辑
   useEffect(() => {
     const updatePurpleMouth = () => {
       if (isTyping) {
@@ -288,7 +224,6 @@ const logoImg = 'https://www.cqrdpg.com/images/ruida/favicon.ico';
     updatePurpleMouth();
   }, [isTyping, password, showPassword]);
 
-  // 眨眼逻辑
   useEffect(() => {
     const createBlinker = (setState) => {
       const schedule = () => {
@@ -313,7 +248,6 @@ const logoImg = 'https://www.cqrdpg.com/images/ruida/favicon.ico';
     };
   }, []);
 
-  // 打字交互逻辑
   useEffect(() => {
     if (isTyping) {
       setIsLookingAtEachOther(true);
@@ -323,7 +257,6 @@ const logoImg = 'https://www.cqrdpg.com/images/ruida/favicon.ico';
     setIsLookingAtEachOther(false);
   }, [isTyping]);
 
-  // 偷看逻辑
   useEffect(() => {
     if (password.length > 0 && showPassword) {
       const schedulePeek = () => {
@@ -339,7 +272,6 @@ const logoImg = 'https://www.cqrdpg.com/images/ruida/favicon.ico';
     setIsPurplePeeking(false);
   }, [password, showPassword]);
 
-  // 位置计算辅助函数
   const calculatePosition = (ref) => {
     if (!ref?.current) return { faceX: 0, faceY: 0, bodySkew: 0 };
     const rect = ref.current.getBoundingClientRect();
@@ -362,7 +294,6 @@ const logoImg = 'https://www.cqrdpg.com/images/ruida/favicon.ico';
 
   const isHidingPassword = password.length > 0 && !showPassword;
 
-  // 动态样式计算
   const getPurpleStyle = () => ({
     height: isTyping || isHidingPassword ? '440px' : '400px',
     transform: (password.length > 0 && showPassword)
@@ -390,7 +321,6 @@ const logoImg = 'https://www.cqrdpg.com/images/ruida/favicon.ico';
     transform: (password.length > 0 && showPassword) ? `skewX(0deg)` : `skewX(${yellowPos.bodySkew}deg)`,
   });
 
-  // 强制看向位置辅助
   const purpleForce = (password.length > 0 && showPassword)
     ? { x: isPurplePeeking ? 4 : -4, y: isPurplePeeking ? 5 : -4 }
     : isLookingAtEachOther ? { x: 3, y: 4 } : {};
@@ -402,22 +332,17 @@ const logoImg = 'https://www.cqrdpg.com/images/ruida/favicon.ico';
   const othersForce = (password.length > 0 && showPassword) ? { x: -5, y: -4 } : {};
 
   useEffect(() => {
-    generateCaptcha();
+    fetchCaptcha();
 
     if (location.state?.email) {
       setEmail(location.state.email);
     }
-    if (location.state?.message) {
-      console.log(location.state.message);
-    }
   }, []);
 
-  // 监听输入变化，更新打字状态
   useEffect(() => {
     setIsTyping(email.length > 0 || password.length > 0);
   }, [email, password]);
 
-  // 核心登录逻辑
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitError('');
@@ -428,32 +353,33 @@ const logoImg = 'https://www.cqrdpg.com/images/ruida/favicon.ico';
       return;
     }
 
-    if (userInputCode.toUpperCase() !== captchaCode) {
+    if (!userInputCode.trim()) {
       setCaptchaError(true);
-      refreshCaptcha();
-      setSubmitError('验证码错误');
+      setSubmitError('请输入验证码');
+      return;
+    }
+
+    if (!captchaId) {
+      setCaptchaError(true);
+      setSubmitError('验证码无效，请刷新后重试');
       return;
     }
 
     setLoading(true);
 
-
-
-    // 获取设备信息
     const { deviceId, deviceType } = getDeviceInfo();
 
     try {
       const response = await axios.post('/api/auth/login', {
-        email: email,
-        password: password,
-        device_id: deviceId,      // 新增
-        device_type: deviceType   // 新增
+        email,
+        password,
+        device_id: deviceId,
+        device_type: deviceType,
+        captchaId,
+        captchaCode: userInputCode
       });
 
-      console.log('登录响应:', response.data);
-
       if (response.data.success) {
-        // 保存设备信息到 localStorage（可选）
         localStorage.setItem('device_id', deviceId);
         localStorage.setItem('device_type', deviceType);
 
@@ -477,6 +403,7 @@ const logoImg = 'https://www.cqrdpg.com/images/ruida/favicon.ico';
       }
     } catch (error) {
       console.error('登录错误:', error);
+
       let errorMessage = '登录失败，请检查网络或账号密码';
 
       if (error.response?.data?.message) {
@@ -486,6 +413,7 @@ const logoImg = 'https://www.cqrdpg.com/images/ruida/favicon.ico';
       }
 
       setSubmitError(errorMessage);
+      setCaptchaError(true);
       refreshCaptcha();
     } finally {
       setLoading(false);
@@ -507,13 +435,9 @@ const logoImg = 'https://www.cqrdpg.com/images/ruida/favicon.ico';
     >
       <div className={styles.overlay}></div>
 
-      {/* 左右布局容器 */}
       <div className={styles.splitContainer}>
-        {/* 左侧 - 动画角色区域 (桌面端显示) */}
         <div className={styles.charactersArea}>
           <div className={styles.charactersContainer}>
-
-            {/* 紫色角色 */}
             <div ref={purpleRef} className={styles.purpleCharacter} style={getPurpleStyle()} data-mouth={purpleMouthShape}>
               <div className={styles.purpleEyes} style={{
                 left: (password.length > 0 && showPassword) ? '20px' : isLookingAtEachOther ? '55px' : `${45 + purplePos.faceX}px`,
@@ -532,7 +456,6 @@ const logoImg = 'https://www.cqrdpg.com/images/ruida/favicon.ico';
               </div>
             </div>
 
-            {/* 黑色角色 */}
             <div ref={blackRef} className={styles.blackCharacter} style={getBlackStyle()}>
               <div className={styles.blackEyes} style={{
                 left: (password.length > 0 && showPassword) ? '10px' : isLookingAtEachOther ? '32px' : `${26 + blackPos.faceX}px`,
@@ -543,7 +466,6 @@ const logoImg = 'https://www.cqrdpg.com/images/ruida/favicon.ico';
               </div>
             </div>
 
-            {/* 橙色角色 */}
             <div ref={orangeRef} className={styles.orangeCharacter} data-mouth={mouthShape} style={getOrangeStyle()}>
               <div className={styles.orangeEyes} style={{
                 left: (password.length > 0 && showPassword) ? '50px' : `${82 + orangePos.faceX}px`,
@@ -562,7 +484,6 @@ const logoImg = 'https://www.cqrdpg.com/images/ruida/favicon.ico';
               </div>
             </div>
 
-            {/* 黄色角色 */}
             <div ref={yellowRef} className={styles.yellowCharacter} style={getYellowStyle()}>
               <div className={styles.yellowEyes} style={{
                 left: (password.length > 0 && showPassword) ? '20px' : `${52 + yellowPos.faceX}px`,
@@ -576,11 +497,9 @@ const logoImg = 'https://www.cqrdpg.com/images/ruida/favicon.ico';
                 top: (password.length > 0 && showPassword) ? '88px' : `${88 + yellowPos.faceY}px`,
               }} />
             </div>
-
           </div>
         </div>
 
-        {/* 右侧 - 登录表单 */}
         <div className={styles.formArea}>
           <div className={styles.loginBox}>
             <div className={styles.header}>
@@ -631,19 +550,22 @@ const logoImg = 'https://www.cqrdpg.com/images/ruida/favicon.ico';
               </div>
 
               <div className={styles.captchaBox}>
-                <canvas
-                  ref={canvasRef}
-                  width="150"
-                  height="50"
-                  className={styles.captchaCanvas}
+                <div
+                  className={styles.captchaSvgBox}
                   title="点击刷新"
                   onClick={refreshCaptcha}
-                ></canvas>
+                >
+                  {captchaLoading ? (
+                    <span>加载中...</span>
+                  ) : (
+                    <div dangerouslySetInnerHTML={{ __html: captchaSvg }} />
+                  )}
+                </div>
                 <button
                   type="button"
                   className={styles.refreshBtn}
                   onClick={refreshCaptcha}
-                  disabled={loading}
+                  disabled={loading || captchaLoading}
                 >
                   ↻ 刷新
                 </button>
@@ -655,8 +577,9 @@ const logoImg = 'https://www.cqrdpg.com/images/ruida/favicon.ico';
                   required
                   value={userInputCode}
                   onChange={(e) => {
-                    setUserInputCode(e.target.value);
-                    setCaptchaError(false);
+                    setUserInputCode(e.target.value.toUpperCase());// 👈 这里自动转成了大写
+                  //  setUserInputCode(e.target.value); // 不自动转换
+                  setCaptchaError(false);
                     if (submitError) setSubmitError('');
                   }}
                   className={`${captchaError ? styles.errorInput : ''}`}
@@ -672,36 +595,18 @@ const logoImg = 'https://www.cqrdpg.com/images/ruida/favicon.ico';
                   {submitError}
                 </div>
               )}
+
               <button
                 type="submit"
                 className={styles.submitButton}
-                disabled={loading}
+                disabled={loading || captchaLoading}
               >
-                {/* 保留4个动画边框，不让布局变形 */}
                 <span></span>
                 <span></span>
                 <span></span>
                 <span></span>
-
                 {loading ? '登录中...' : '登 录'}
               </button>
-              {/* <button
-                type="submit"
-                className={styles.submitButton}
-                disabled={loading}
-              >
-                {loading ? (
-                  <span>登录中...</span>
-                ) : (
-                  <>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    登 录
-                  </>
-                )}
-              </button> */}
             </form>
 
             <div className={styles.loginFooter}>

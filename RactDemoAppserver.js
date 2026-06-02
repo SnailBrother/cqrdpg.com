@@ -11347,54 +11347,138 @@ app.get('/api/auth/users', async (req, res) => {
     }
 });
 // 注册接口
+const bcrypt = require('bcrypt');
+
+const VALID_INVITE_CODE = process.env.VALID_INVITE_CODE || 'F8d@jR1*wC5$vE7^aL';
+
 app.post('/api/auth/register', async (req, res) => {
-    const { username, email, password, inviteCode } = req.body;
-
-    // 1. 验证邀请码
-    const validInviteCode = 'F8d@jR1*wC5$vE7^aL';
-    if (!inviteCode || inviteCode !== validInviteCode) {
-        return res.status(400).json({
-            success: false,
-            message: '邀请码错误，无法注册'
-        });
-    }
-
-    // console.log('注册请求:', { username, email, password });
+    const { username, email, password, inviteCode, captchaId, captchaCode } = req.body;
 
     try {
-        // await poolConnect;
-
-        const existingUser = await pool.request()
-            .input('email', sql.NVarChar, email)
-            .query('SELECT id FROM SystemSettingsApp.dbo.SystemUserAccounts WHERE email = @email');
-
-        if (existingUser.recordset.length > 0) {
+        // 1. 基础校验
+        if (!username || !email || !password || !inviteCode) {
             return res.status(400).json({
                 success: false,
-                message: '该邮箱已被注册'
+                message: '用户名、邮箱、密码和邀请码不能为空'
             });
         }
 
+        if (!captchaId || !captchaCode) {
+            return res.status(400).json({
+                success: false,
+                message: '验证码不能为空'
+            });
+        }
+
+        if (username.trim().length < 2 || username.trim().length > 50) {
+            return res.status(400).json({
+                success: false,
+                message: '用户名长度应为2到50个字符'
+            });
+        }
+
+        if (!/\S+@\S+\.\S+/.test(email)) {
+            return res.status(400).json({
+                success: false,
+                message: '邮箱格式不正确'
+            });
+        }
+
+        if (password.length < 6) {
+            return res.status(400).json({
+                success: false,
+                message: '密码至少6位'
+            });
+        }
+
+        // 2. 验证邀请码
+        if (inviteCode !== VALID_INVITE_CODE) {
+            return res.status(400).json({
+                success: false,
+                message: '邀请码错误，无法注册'
+            });
+        }
+
+        // 3. 验证码校验
+        const captchaRecord = captchaStore.get(captchaId);
+
+        if (!captchaRecord) {
+            return res.status(400).json({
+                success: false,
+                message: '验证码不存在或已过期，请刷新后重试'
+            });
+        }
+
+        if (captchaRecord.expiresAt < Date.now()) {
+            captchaStore.delete(captchaId);
+            return res.status(400).json({
+                success: false,
+                message: '验证码已过期，请刷新后重试'
+            });
+        }
+
+        if (captchaRecord.code !== String(captchaCode).toUpperCase()) {
+            captchaStore.delete(captchaId);
+            return res.status(400).json({
+                success: false,
+                message: '验证码错误，请刷新后重试'
+            });
+        }
+
+        // 验证成功后销毁验证码
+        captchaStore.delete(captchaId);
+
+        // 4. 检查用户名和邮箱是否已存在
+        const existingUser = await pool.request()
+            .input('username', sql.NVarChar, username.trim())
+            .input('email', sql.NVarChar, email.trim())
+            .query(`
+                SELECT id, username, email
+                FROM SystemSettingsApp.dbo.SystemUserAccounts
+                WHERE email = @email OR username = @username
+            `);
+
+        if (existingUser.recordset.length > 0) {
+            const existed = existingUser.recordset[0];
+
+            if (existed.email === email.trim()) {
+                return res.status(400).json({
+                    success: false,
+                    message: '该邮箱已被注册'
+                });
+            }
+
+            if (existed.username === username.trim()) {
+                return res.status(400).json({
+                    success: false,
+                    message: '用户名已存在'
+                });
+            }
+        }
+
+        // 5. 密码加密
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // 6. 开启事务
         const transaction = new sql.Transaction(pool);
         await transaction.begin();
 
         try {
             const userResult = await transaction.request()
-                .input('username', sql.NVarChar, username)
-                .input('email', sql.NVarChar, email)
-                .input('password', sql.NVarChar, password)
+                .input('username', sql.NVarChar, username.trim())
+                .input('email', sql.NVarChar, email.trim())
+                .input('password', sql.NVarChar, hashedPassword)
                 .query(`
-                    INSERT INTO SystemSettingsApp.dbo.SystemUserAccounts 
-                    (username, email, password, permission_level) 
-                    OUTPUT INSERTED.* 
+                    INSERT INTO SystemSettingsApp.dbo.SystemUserAccounts
+                    (username, email, password, permission_level)
+                    OUTPUT INSERTED.*
                     VALUES (@username, @email, @password, 'user')
                 `);
 
             const newUser = userResult.recordset[0];
 
-            // 为用户创建默认主题设置
             await transaction.request()
-                .input('email', sql.NVarChar, email)
+                .input('email', sql.NVarChar, email.trim())
                 .input('theme_name', sql.NVarChar, '默认主题')
                 .input('background_color', sql.NVarChar, '#FFFFFFFF')
                 .input('secondary_background_color', sql.NVarChar, '#F8F9FAFF')
@@ -11414,14 +11498,14 @@ app.post('/api/auth/register', async (req, res) => {
                 .input('hover_shadow_color', sql.NVarChar, '#00000026')
                 .input('focus_shadow_color', sql.NVarChar, '#0078D440')
                 .query(`
-                    INSERT INTO SystemSettingsApp.dbo.SystemUserThemeSettings 
+                    INSERT INTO SystemSettingsApp.dbo.SystemUserThemeSettings
                     (
                         email, theme_name,
                         background_color, secondary_background_color, hover_background_color, focus_background_color,
                         font_color, secondary_font_color, hover_font_color, focus_font_color, watermark_font_color, font_family,
                         border_color, secondary_border_color, hover_border_color, focus_border_color,
                         shadow_color, hover_shadow_color, focus_shadow_color, is_active
-                    ) 
+                    )
                     VALUES (
                         @email, @theme_name,
                         @background_color, @secondary_background_color, @hover_background_color, @focus_background_color,
@@ -11432,8 +11516,6 @@ app.post('/api/auth/register', async (req, res) => {
                 `);
 
             await transaction.commit();
-
-            // console.log(`用户 ${username} 注册成功，并创建了默认主题`);
 
             const userResponse = {
                 id: newUser.id,
@@ -11598,83 +11680,66 @@ app.post('/api/ChatRegister', async (req, res) => {
 });
 
 
-app.post('/api/auth/login/old', async (req, res) => {
-    const { email, password } = req.body;
+//const bcrypt = require('bcrypt');
 
-    // console.log('登录请求:', { email, password });
 
-    try {
-        //await poolConnect;
-
-        const result = await pool.request()
-            .input('email', sql.NVarChar, email)
-            .query('SELECT * FROM SystemSettingsApp.dbo.SystemUserAccounts WHERE email = @email');
-
-        if (result.recordset.length === 0) {
-            return res.status(401).json({
-                success: false,
-                message: '用户不存在'
-            });
-        }
-
-        const user = result.recordset[0];
-
-        if (user.is_locked) {
-            return res.status(401).json({
-                success: false,
-                message: '账户已被锁定，请联系管理员'
-            });
-        }
-
-        if (password !== user.password) {
-            return res.status(401).json({
-                success: false,
-                message: '密码错误'
-            });
-        }
-
-        await pool.request()
-            .input('id', sql.Int, user.id)
-            .query('UPDATE SystemSettingsApp.dbo.SystemUserAccounts SET last_login_time = GETDATE() WHERE id = @id');
-
-        const userResponse = {
-            id: user.id,
-            username: user.username,
-            email: user.email,
-            registration_date: user.registration_date,
-            last_login_time: user.last_login_time,
-            profile_picture: user.profile_picture,
-            permission_level: user.permission_level,
-            is_locked: user.is_locked,
-            notes: user.notes
-        };
-
-        res.json({
-            success: true,
-            user: userResponse,
-            token: `jwt-token-${user.id}-${Date.now()}`
-        });
-
-    } catch (err) {
-        console.error('登录错误:', err);
-        res.status(500).json({
-            success: false,
-            message: '服务器错误'
-        });
-    }
-});
+function looksLikeBcryptHash(value) {
+    return typeof value === 'string' && /^\$2[aby]\$\d{2}\$/.test(value);
+}
 
 app.post('/api/auth/login', async (req, res) => {
-    const { email, password, device_id, device_type } = req.body;  // 新增两个字段
-
-    // console.log('登录请求:', { email, password });
+    const { email, password, device_id, device_type, captchaId, captchaCode } = req.body;
 
     try {
-        //await poolConnect;
+        if (!email || !password) {
+            return res.status(400).json({
+                success: false,
+                message: '邮箱和密码不能为空'
+            });
+        }
+
+        if (!captchaId || !captchaCode) {
+            return res.status(400).json({
+                success: false,
+                message: '验证码不能为空'
+            });
+        }
+
+        const captchaRecord = captchaStore.get(captchaId);
+
+        if (!captchaRecord) {
+            return res.status(400).json({
+                success: false,
+                message: '验证码不存在或已过期，请刷新后重试'
+            });
+        }
+
+        if (captchaRecord.expiresAt < Date.now()) {
+            captchaStore.delete(captchaId);
+            return res.status(400).json({
+                success: false,
+                message: '验证码已过期，请刷新后重试'
+            });
+        }
+
+        if (captchaRecord.code !== String(captchaCode).toUpperCase()) {
+            captchaStore.delete(captchaId);
+            return res.status(400).json({
+                success: false,
+                message: '验证码错误，请刷新后重试'
+            });
+        }
+
+        // 验证码通过后销毁
+        captchaStore.delete(captchaId);
 
         const result = await pool.request()
-            .input('email', sql.NVarChar, email)
-            .query('SELECT * FROM SystemSettingsApp.dbo.SystemUserAccounts WHERE email = @email');
+            .input('email', sql.NVarChar, email.trim())
+            .query(`
+                SELECT *
+                FROM SystemSettingsApp.dbo.SystemUserAccounts
+                WHERE email = @email
+            `);
 
         if (result.recordset.length === 0) {
             return res.status(401).json({
@@ -11692,23 +11757,51 @@ app.post('/api/auth/login', async (req, res) => {
             });
         }
 
-        if (password !== user.password) {
+        let passwordMatched = false;
+        let needsUpgradeToBcrypt = false;
+
+        if (looksLikeBcryptHash(user.password)) {
+            passwordMatched = await bcrypt.compare(password, user.password);
+        } else {
+            // 兼容旧版明文密码
+            passwordMatched = password === user.password;
+            needsUpgradeToBcrypt = passwordMatched;
+        }
+
+        if (!passwordMatched) {
             return res.status(401).json({
                 success: false,
                 message: '密码错误'
             });
         }
 
-        // 更新最后登录时间和设备信息
+        // 如果是旧版明文密码，登录成功后自动升级成 bcrypt
+        if (needsUpgradeToBcrypt) {
+            const hashedPassword = await bcrypt.hash(password, 10);
+
+            await pool.request()
+                .input('id', sql.Int, user.id)
+                .input('password', sql.NVarChar, hashedPassword)
+                .query(`
+                    UPDATE SystemSettingsApp.dbo.SystemUserAccounts
+                    SET password = @password
+                    WHERE id = @id
+                `);
+
+            user.password = hashedPassword;
+        }
+
         await pool.request()
             .input('id', sql.Int, user.id)
             .input('device_id', sql.NVarChar, device_id || null)
             .input('device_type', sql.NVarChar, device_type || null)
-            .query(`UPDATE SystemSettingsApp.dbo.SystemUserAccounts 
-                    SET last_login_time = GETDATE(),
-                        device_id = @device_id,
-                        device_type = @device_type 
-                    WHERE id = @id`);
+            .query(`
+                UPDATE SystemSettingsApp.dbo.SystemUserAccounts
+                SET last_login_time = GETDATE(),
+                    device_id = @device_id,
+                    device_type = @device_type
+                WHERE id = @id
+            `);
 
         const userResponse = {
             id: user.id,
@@ -11720,8 +11813,8 @@ app.post('/api/auth/login', async (req, res) => {
             permission_level: user.permission_level,
             is_locked: user.is_locked,
             notes: user.notes,
-            device_id: device_id,      // 可选：返回给前端
-            device_type: device_type   // 可选：返回给前端
+            device_id: device_id,
+            device_type: device_type
         };
 
         res.json({
@@ -15252,180 +15345,124 @@ ORDER BY
     }
 
     { //www.cqwrdpg.com 客户业务需要留言 联系我们
-        //验证码存储
-const captchaStore = new Map();
 
-setInterval(() => {
-    const now = Date.now();
-    for (const [key, value] of captchaStore.entries()) {
-        if (value.expiresAt <= now) {
-            captchaStore.delete(key);
-        }
-    }
-}, 60 * 1000);
+        app.post('/api/CodeDatabase/submitContact', async (req, res) => {
+            const { requestername, contact, description, captchaId, captchaCode } = req.body;
 
-function getClientIp(req) {
-    const xForwardedFor = req.headers['x-forwarded-for'];
-    if (xForwardedFor) {
-        return xForwardedFor.split(',')[0].trim();
-    }
+            if (!requestername || !description) {
+                return res.status(400).json({
+                    success: false,
+                    message: '姓名和描述不能为空'
+                });
+            }
 
-    return (
-        req.connection?.remoteAddress ||
-        req.socket?.remoteAddress ||
-        req.ip ||
-        'unknown'
-    );
-}
-app.get('/api/CodeDatabase/captcha', async (req, res) => {
-    try {
-        const captcha = svgCaptcha.create({
-            size: 4,
-            ignoreChars: '0oO1iIlL',
-            noise: 3,
-            color: true,
-            background: '#f4f6f8',
-            width: 160,
-            height: 50,
-            fontSize: 42
-        });
+            if (!captchaId || !captchaCode) {
+                return res.status(400).json({
+                    success: false,
+                    message: '验证码不能为空'
+                });
+            }
 
-        const captchaId = uuidv4();
+            // 校验验证码
+            const captchaRecord = captchaStore.get(captchaId);
 
-        captchaStore.set(captchaId, {
-            code: captcha.text.toUpperCase(),
-            expiresAt: Date.now() + 5 * 60 * 1000
-        });
+            if (!captchaRecord) {
+                return res.status(400).json({
+                    success: false,
+                    message: '验证码不存在或已过期，请刷新后重试'
+                });
+            }
 
-        res.json({
-            success: true,
-            captchaId,
-            captchaSvg: captcha.data
-        });
-    } catch (err) {
-        console.error('生成验证码失败:', err);
-        res.status(500).json({
-            success: false,
-            message: '生成验证码失败'
-        });
-    }
-});
-app.post('/api/CodeDatabase/submitContact', async (req, res) => {
-    const { requestername, contact, description, captchaId, captchaCode } = req.body;
+            if (captchaRecord.expiresAt < Date.now()) {
+                captchaStore.delete(captchaId);
+                return res.status(400).json({
+                    success: false,
+                    message: '验证码已过期，请刷新后重试'
+                });
+            }
 
-    if (!requestername || !description) {
-        return res.status(400).json({
-            success: false,
-            message: '姓名和描述不能为空'
-        });
-    }
+            if (captchaRecord.code !== String(captchaCode).toUpperCase()) {
+                captchaStore.delete(captchaId); // 验证失败即作废，防止暴力尝试
+                return res.status(400).json({
+                    success: false,
+                    message: '验证码错误，请刷新后重试'
+                });
+            }
 
-    if (!captchaId || !captchaCode) {
-        return res.status(400).json({
-            success: false,
-            message: '验证码不能为空'
-        });
-    }
+            // 验证成功后销毁，防止重复使用
+            captchaStore.delete(captchaId);
 
-    // 校验验证码
-    const captchaRecord = captchaStore.get(captchaId);
+            // 获取客户端真实IP
+            const clientIp = getClientIp(req);
 
-    if (!captchaRecord) {
-        return res.status(400).json({
-            success: false,
-            message: '验证码不存在或已过期，请刷新后重试'
-        });
-    }
+            try {
+                const request = new sql.Request(pool);
 
-    if (captchaRecord.expiresAt < Date.now()) {
-        captchaStore.delete(captchaId);
-        return res.status(400).json({
-            success: false,
-            message: '验证码已过期，请刷新后重试'
-        });
-    }
-
-    if (captchaRecord.code !== String(captchaCode).toUpperCase()) {
-        captchaStore.delete(captchaId); // 验证失败即作废，防止暴力尝试
-        return res.status(400).json({
-            success: false,
-            message: '验证码错误，请刷新后重试'
-        });
-    }
-
-    // 验证成功后销毁，防止重复使用
-    captchaStore.delete(captchaId);
-
-    // 获取客户端真实IP
-    const clientIp = getClientIp(req);
-
-    try {
-        const request = new sql.Request(pool);
-
-        // 检查同一IP在10分钟内的提交次数（限制10次）
-        const checkResult = await request
-            .input('ip', sql.NVarChar(45), clientIp)
-            .input('minutes', sql.Int, 10)
-            .query(`
+                // 检查同一IP在10分钟内的提交次数（限制10次）
+                const checkResult = await request
+                    .input('ip', sql.NVarChar(45), clientIp)
+                    .input('minutes', sql.Int, 10)
+                    .query(`
                 SELECT COUNT(*) as count 
                 FROM OfficeApp.dbo.EvaluationBusinessMessage 
                 WHERE ip_address = @ip 
                 AND submitted > DATEADD(MINUTE, -@minutes, GETDATE())
             `);
 
-        const submitCount = checkResult.recordset[0].count;
+                const submitCount = checkResult.recordset[0].count;
 
-        // 如果10分钟内提交超过10次，拒绝提交
-        if (submitCount >= 10) {
-            return res.status(429).json({
-                success: false,
-                message: '提交过于频繁，请10分钟后再试'
-            });
-        }
+                // 如果10分钟内提交超过10次，拒绝提交
+                if (submitCount >= 10) {
+                    return res.status(429).json({
+                        success: false,
+                        message: '提交过于频繁，请10分钟后再试'
+                    });
+                }
 
-        // 插入数据（包含IP地址）
-        const result = await request
-            .input('requestername', sql.NVarChar(50), requestername)
-            .input('contact', sql.NVarChar(50), contact || null)
-            .input('description', sql.NVarChar(sql.MAX), description)
-            .input('ip_address', sql.NVarChar(45), clientIp)
-            .query(`
+                // 插入数据（包含IP地址）
+                const result = await request
+                    .input('requestername', sql.NVarChar(50), requestername)
+                    .input('contact', sql.NVarChar(50), contact || null)
+                    .input('description', sql.NVarChar(sql.MAX), description)
+                    .input('ip_address', sql.NVarChar(45), clientIp)
+                    .query(`
                 INSERT INTO OfficeApp.dbo.EvaluationBusinessMessage (requestername, contact, description, isread, submitted, ip_address)
                 VALUES (@requestername, @contact, @description, 0, GETDATE(), @ip_address);
                 SELECT SCOPE_IDENTITY() as newId;
             `);
 
-        const newId = result.recordset[0].newId;
+                const newId = result.recordset[0].newId;
 
-        // 实时通知所有连接的管理端用户
-        const newMessage = {
-            id: parseInt(newId, 10),
-            requestername,
-            contact: contact || '未提供',
-            description,
-            isread: 0,
-            submitted: new Date().toISOString(),
-            responded: null,
-            ip_address: clientIp
-        };
+                // 实时通知所有连接的管理端用户
+                const newMessage = {
+                    id: parseInt(newId, 10),
+                    requestername,
+                    contact: contact || '未提供',
+                    description,
+                    isread: 0,
+                    submitted: new Date().toISOString(),
+                    responded: null,
+                    ip_address: clientIp
+                };
 
-        io.emit('new_message_received', newMessage);
+                io.emit('new_message_received', newMessage);
 
-        res.json({
-            success: true,
-            message: '提交成功',
-            id: newId
+                res.json({
+                    success: true,
+                    message: '提交成功',
+                    id: newId
+                });
+
+            } catch (err) {
+                console.error('数据库插入错误:', err);
+                res.status(500).json({
+                    success: false,
+                    message: '服务器内部错误',
+                    error: err.message
+                });
+            }
         });
 
-    } catch (err) {
-        console.error('数据库插入错误:', err);
-        res.status(500).json({
-            success: false,
-            message: '服务器内部错误',
-            error: err.message
-        });
-    }
-});
         // 1. 提交联系表单 (ContactUs 使用) 用户留言
         app.post('/api/CodeDatabase/submitContact/old', async (req, res) => {
             const { requestername, contact, description } = req.body;
@@ -15696,75 +15733,75 @@ app.post('/api/CodeDatabase/submitContact', async (req, res) => {
                 res.status(500).json({ error: 'Database error', details: err.message });
             }
         });
-app.post('/api/website/record', async (req, res) => {
-    try {
-        const {
-            visitor_id, session_id, current_url, referrer_url, entry_url, user_agent,
-            username: rawUsername, email: rawEmail
-        } = req.body;
+        app.post('/api/website/record', async (req, res) => {
+            try {
+                const {
+                    visitor_id, session_id, current_url, referrer_url, entry_url, user_agent,
+                    username: rawUsername, email: rawEmail
+                } = req.body;
 
-        const username = rawUsername || 'unknowusername';
-        const email = rawEmail || 'unknowemail';
+                const username = rawUsername || 'unknowusername';
+                const email = rawEmail || 'unknowemail';
 
-        const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() ||
-            req.headers['x-real-ip'] ||
-            req.connection.remoteAddress ||
-            req.socket.remoteAddress ||
-            '127.0.0.1';
+                const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() ||
+                    req.headers['x-real-ip'] ||
+                    req.connection.remoteAddress ||
+                    req.socket.remoteAddress ||
+                    '127.0.0.1';
 
-        if (!visitor_id || !session_id || !current_url) {
-            return res.status(400).json({ error: 'Missing required fields' });
-        }
+                if (!visitor_id || !session_id || !current_url) {
+                    return res.status(400).json({ error: 'Missing required fields' });
+                }
 
-        // 【1. 后端定义特殊用户名单】
-        const specialUsers = ['李中敬', '陈彦羽'];
-        const specialEmails = ['471883209@qq.com', '644260249@qq.com', '782248932@qq.com'];
+                // 【1. 后端定义特殊用户名单】
+                const specialUsers = ['李中敬', '陈彦羽'];
+                const specialEmails = ['471883209@qq.com', '644260249@qq.com', '782248932@qq.com'];
 
-        const isSpecialUser = specialUsers.includes(username);
-        const isSpecialEmail = specialEmails.includes(email);
-        const isSpecial = isSpecialUser || isSpecialEmail;
+                const isSpecialUser = specialUsers.includes(username);
+                const isSpecialEmail = specialEmails.includes(email);
+                const isSpecial = isSpecialUser || isSpecialEmail;
 
-        const request = new sql.Request(pool);
+                const request = new sql.Request(pool);
 
-        // 准备参数
-        request.input('visitorid', sql.NVarChar(64), visitor_id);
-        request.input('sessionid', sql.NVarChar(64), session_id);
-        request.input('ipaddress', sql.NVarChar(45), ip);
-        request.input('currenturl', sql.NVarChar(2048), current_url);
-        request.input('referrerurl', sql.NVarChar(2048), referrer_url || null);
-        request.input('entryurl', sql.NVarChar(2048), entry_url || current_url);
-        request.input('useragent', sql.NVarChar(1024), user_agent);
-        request.input('username', sql.NVarChar(100), username);
-        request.input('email', sql.NVarChar(100), email);
+                // 准备参数
+                request.input('visitorid', sql.NVarChar(64), visitor_id);
+                request.input('sessionid', sql.NVarChar(64), session_id);
+                request.input('ipaddress', sql.NVarChar(45), ip);
+                request.input('currenturl', sql.NVarChar(2048), current_url);
+                request.input('referrerurl', sql.NVarChar(2048), referrer_url || null);
+                request.input('entryurl', sql.NVarChar(2048), entry_url || current_url);
+                request.input('useragent', sql.NVarChar(1024), user_agent);
+                request.input('username', sql.NVarChar(100), username);
+                request.input('email', sql.NVarChar(100), email);
 
-        let isUpdated = false;
-        let recordVisittime = new Date();
-        let finalSessionId = session_id;
-        let existingRecordId = null;
+                let isUpdated = false;
+                let recordVisittime = new Date();
+                let finalSessionId = session_id;
+                let existingRecordId = null;
 
-        // 【2. 核心优化：优先通过 visitor_id 查找同设备的历史记录】
-        // 无论是否特殊用户，只要 visitor_id 存在就更新，不新增重复记录
-        const findExistingQuery = `
+                // 【2. 核心优化：优先通过 visitor_id 查找同设备的历史记录】
+                // 无论是否特殊用户，只要 visitor_id 存在就更新，不新增重复记录
+                const findExistingQuery = `
             SELECT TOP 1 id, visittime, sessionid, username, email
             FROM SystemSettingsApp.dbo.WebsiteRecord 
             WHERE visitorid = @visitorid
             ORDER BY visittime DESC
         `;
-        
-        const existingRecord = await request.query(findExistingQuery);
-        
-        if (existingRecord.recordset.length > 0) {
-            // 找到了同设备的记录 -> 执行 UPDATE
-            existingRecordId = existingRecord.recordset[0].id;
-            const oldUsername = existingRecord.recordset[0].username;
-            const oldEmail = existingRecord.recordset[0].email;
-            
-            // 检查是否需要更新用户信息（从未登录变成登录状态）
-            const needUpdateUserInfo = (oldUsername === 'unknowusername' && username !== 'unknowusername') ||
-                                       (oldEmail === 'unknowemail' && email !== 'unknowemail');
-            
-            // 构建更新语句，动态决定是否更新 username/email
-            let updateQuery = `
+
+                const existingRecord = await request.query(findExistingQuery);
+
+                if (existingRecord.recordset.length > 0) {
+                    // 找到了同设备的记录 -> 执行 UPDATE
+                    existingRecordId = existingRecord.recordset[0].id;
+                    const oldUsername = existingRecord.recordset[0].username;
+                    const oldEmail = existingRecord.recordset[0].email;
+
+                    // 检查是否需要更新用户信息（从未登录变成登录状态）
+                    const needUpdateUserInfo = (oldUsername === 'unknowusername' && username !== 'unknowusername') ||
+                        (oldEmail === 'unknowemail' && email !== 'unknowemail');
+
+                    // 构建更新语句，动态决定是否更新 username/email
+                    let updateQuery = `
                 UPDATE SystemSettingsApp.dbo.WebsiteRecord 
                 SET 
                     ipaddress = @ipaddress,
@@ -15775,61 +15812,61 @@ app.post('/api/website/record', async (req, res) => {
                     sessionid = @sessionid,
                     visittime = GETDATE()  -- 更新访问时间为当前时间
             `;
-            
-            // 如果是特殊用户或者需要更新用户信息，则同时更新用户名和邮箱
-            if (isSpecial || needUpdateUserInfo) {
-                updateQuery += `, username = @username, email = @email`;
-            }
-            
-            updateQuery += ` WHERE id = @id`;
-            
-            request.input('id', sql.Int, existingRecordId);
-            await request.query(updateQuery);
-            
-            isUpdated = true;
-            recordVisittime = new Date();
-            finalSessionId = session_id;
-            
-            //const logMsg = `✅ 更新记录: visitor_id=${visitor_id.slice(-8)}, ${oldUsername} -> ${username}`;
-            console.log(logMsg);
-        }
-        
-        // 【3. 如果没有找到同设备的记录，才执行 INSERT】
-        if (!isUpdated) {
-            const insertQuery = `
+
+                    // 如果是特殊用户或者需要更新用户信息，则同时更新用户名和邮箱
+                    if (isSpecial || needUpdateUserInfo) {
+                        updateQuery += `, username = @username, email = @email`;
+                    }
+
+                    updateQuery += ` WHERE id = @id`;
+
+                    request.input('id', sql.Int, existingRecordId);
+                    await request.query(updateQuery);
+
+                    isUpdated = true;
+                    recordVisittime = new Date();
+                    finalSessionId = session_id;
+
+                    //const logMsg = `✅ 更新记录: visitor_id=${visitor_id.slice(-8)}, ${oldUsername} -> ${username}`;
+                    console.log(logMsg);
+                }
+
+                // 【3. 如果没有找到同设备的记录，才执行 INSERT】
+                if (!isUpdated) {
+                    const insertQuery = `
                 INSERT INTO SystemSettingsApp.dbo.WebsiteRecord 
                 (visitorid, sessionid, ipaddress, currenturl, referrerurl, entryurl, useragent, visittime, isbounce, stayduration, username, email)
                 VALUES 
                 (@visitorid, @sessionid, @ipaddress, @currenturl, @referrerurl, @entryurl, @useragent, GETDATE(), 1, 0, @username, @email)
             `;
-            await request.query(insertQuery);
-           // console.log(`✅ 插入新记录: ${username} (visitor_id: ${visitor_id.slice(-8)})`);
-        }
+                    await request.query(insertQuery);
+                    // console.log(`✅ 插入新记录: ${username} (visitor_id: ${visitor_id.slice(-8)})`);
+                }
 
-        res.status(200).json({ success: true, updated: isUpdated });
+                res.status(200).json({ success: true, updated: isUpdated });
 
-        // 4. 触发统计广播
-        broadcastStats();
+                // 4. 触发统计广播
+                broadcastStats();
 
-        // 5. 构造推送给前端的数据
-        const newRecord = {
-            currenturl: current_url,
-            visittime: recordVisittime.toISOString(),
-            username: username,
-            email: email,
-            useragent: user_agent,
-            ipaddress: ip,
-            sessionid: finalSessionId,
-            isUpdate: isUpdated
-        };
+                // 5. 构造推送给前端的数据
+                const newRecord = {
+                    currenturl: current_url,
+                    visittime: recordVisittime.toISOString(),
+                    username: username,
+                    email: email,
+                    useragent: user_agent,
+                    ipaddress: ip,
+                    sessionid: finalSessionId,
+                    isUpdate: isUpdated
+                };
 
-        io.emit('new-visit-record', newRecord);
+                io.emit('new-visit-record', newRecord);
 
-    } catch (err) {
-        //console.error('❌ Error recording visit:', err);
-        res.status(500).json({ error: 'Database error', details: err.message });
-    }
-});
+            } catch (err) {
+                //console.error('❌ Error recording visit:', err);
+                res.status(500).json({ error: 'Database error', details: err.message });
+            }
+        });
         // ==========================================
         // 2. 获取初始历史数据的 API
         // ==========================================
@@ -16072,7 +16109,7 @@ app.post('/api/website/record', async (req, res) => {
                 const stats = await calculateStats();
                 io.emit('stats-update', stats);
             } catch (err) {
-               // console.error('Error broadcasting stats:', err);
+                // console.error('Error broadcasting stats:', err);
             }
         }
 
@@ -16098,285 +16135,418 @@ app.post('/api/website/record', async (req, res) => {
     {   //网站建议 //www.cqrdpg.com网站建议 意见反馈  都是使用的全局连接池
 
 
-        // 辅助函数：格式化日期
+        const crypto = require('crypto');
+        const validator = require('validator');
+        const rateLimit = require('express-rate-limit');
+        const { ipKeyGenerator } = require('express-rate-limit');
+
+        // ==========================================
+        // 建议：如果你在 nginx / cloudflare / 反向代理后面
+        // 按实际情况设置 trust proxy
+        // 例如只有一层代理：
+        // app.set('trust proxy', 1);
+        // ==========================================
+
+        // ==========================================
+        // 工具函数
+        // ==========================================
         const formatDate = (dateObj) => {
             if (!dateObj) return '';
             const d = new Date(dateObj);
             return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
         };
 
-        // 辅助函数：解析 UA
         const parseUserAgent = (ua) => {
             if (!ua) return 'Unknown';
             let browser = 'Other';
             let os = 'Unknown';
+
             if (ua.includes('Edg/')) browser = `Edge${ua.match(/Edg\/([\d.]+)/)?.[1]?.split('.')[0] || ''}`;
             else if (ua.includes('Chrome/')) browser = 'Chrome';
+            else if (ua.includes('Firefox/')) browser = 'Firefox';
+            else if (ua.includes('Safari/') && !ua.includes('Chrome/')) browser = 'Safari';
             else if (ua.includes('Huawei')) browser = 'Huawei Browser';
 
-            if (ua.includes('Windows NT 10')) os = 'Windows 10';
-            else if (ua.includes('Windows NT 11')) os = 'Windows 11';
-            else if (ua.includes('iOS')) os = 'iOS';
-            else if (ua.includes('OpenHarmony')) os = 'OpenHarmony';
+            if (ua.includes('Windows NT 10.0')) os = 'Windows';
+            else if (ua.includes('Android')) os = 'Android';
+            else if (ua.includes('iPhone') || ua.includes('iPad')) os = 'iOS';
+            else if (ua.includes('Mac OS X')) os = 'macOS';
 
             return `${browser} | ${os}`;
         };
 
-
-
-        // 提交评论 API (保持不变，支持 parentid 即可)  √√√√√√√√
-        app.post('/api/suggestion', async (req, res) => {
-            const { content, authorname, authoremail, authortelephone, parentid } = req.body;
-
-            if (!content || content.trim() === '') {
-                return res.status(400).json({ error: '评论内容不能为空' });
+        const getRealIp = (req) => {
+            const forwarded = req.headers['x-forwarded-for'];
+            if (forwarded) {
+                return forwarded.split(',')[0].trim();
             }
+            return req.headers['x-real-ip'] || req.socket?.remoteAddress || req.ip || 'unknown';
+        };
 
-            try {
-                //await poolConnect;
-                const request = new sql.Request(pool);
+        const sanitizePlainText = (input, maxLength = 1000) => {
+            const raw = String(input || '');
 
-                const realIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress || '0.0.0.0';
-                const realUa = req.headers['user-agent'] || 'Unknown';
-                const finalAuthor = authorname && authorname.trim() !== '' ? authorname.trim() : '匿名';
+            // 保留纯文本，不允许 HTML
+            const trimmed = validator.trim(raw);
+            const strippedLow = validator.stripLow(trimmed, true);
+            const normalized = strippedLow.replace(/\s+/g, ' ').trim();
+            const sliced = normalized.slice(0, maxLength);
 
-                const insertQuery = `
-            INSERT INTO RdpgCode.dbo.Suggestion 
-            (content, authorname, authoremail, authortelephone, useragent, ipaddress, parentid, likes, createdat)
-            VALUES 
-            (@content, @authorname, @authoremail, @authortelephone, @useragent, @ipaddress, @parentid, 0, GETDATE())
-        `;
+            // escape 成 HTML 实体，防止 XSS
+            return validator.escape(sliced);
+        };
 
-                request.input('content', sql.NVarChar, content);
-                request.input('authorname', sql.NVarChar, finalAuthor);
-                request.input('authoremail', sql.NVarChar, authoremail || null);
-                request.input('authortelephone', sql.NVarChar, authortelephone || null);
-                request.input('useragent', sql.NVarChar, realUa);
-                request.input('ipaddress', sql.VarChar, realIp);
-                request.input('parentid', sql.Int, parentid || null);
+        const createContentHash = ({ content, authoridentity, parentid, replytoid }) => {
+            const raw = `${content}|${authoridentity || ''}|${parentid || 0}|${replytoid || 0}`;
+            return crypto.createHash('sha256').update(raw).digest('hex');
+        };
 
-                await request.query(insertQuery);
+        const looksLikeGuest = (authoridentity) => {
+            return typeof authoridentity === 'string' && authoridentity.startsWith('guest:');
+        };
 
-                // 广播刷新信号
-                io.emit('refresh_comments');
-
-                res.json({ success: true });
-            } catch (err) {
-               // console.error('Error posting suggestion:', err);
-                res.status(500).json({ error: 'Failed to post comment' });
+        // ==========================================
+        // 评论接口限流
+        // 目标：基础防刷 + IP 限流
+        // 说明：真正“未登录访客每天最多100条”会在 DB 里再做一次严格校验
+        // ==========================================
+        const suggestionPostLimiter = rateLimit({
+            windowMs: 60 * 1000,
+            limit: 15,
+            standardHeaders: true,
+            legacyHeaders: false,
+            keyGenerator: (req) => ipKeyGenerator(getRealIp(req), 56),
+            handler: (req, res) => {
+                return res.status(429).json({
+                    success: false,
+                    error: '操作过于频繁，请稍后再试'
+                });
             }
         });
 
         // ==========================================
-        // 1. 获取根评论列表 (带前 10 条子评论)
+        // 1. 提交评论 / 回复（安全增强版）
+        // ==========================================
+        app.post('/api/suggestion', suggestionPostLimiter, async (req, res) => {
+            const {
+                content,
+                authorname,
+                authoremail,
+                parentid,
+                replytoid,
+                replytoauthor,
+                authoridentity
+            } = req.body;
+
+            try {
+                // 1. 基础校验
+                if (!content || String(content).trim() === '') {
+                    return res.status(400).json({ success: false, error: '评论内容不能为空' });
+                }
+
+                const realIp = getRealIp(req);
+                const realUa = req.headers['user-agent'] || 'Unknown';
+
+                const safeAuthor = sanitizePlainText(authorname || '匿名', 50) || '匿名';
+                const safeEmail = authoremail ? sanitizePlainText(authoremail, 100) : null;
+                const safeContent = sanitizePlainText(content, 1000);
+                const safeReplyToAuthor = replytoauthor ? sanitizePlainText(replytoauthor, 50) : null;
+                const safeAuthorIdentity = sanitizePlainText(authoridentity || '', 100) || null;
+
+                if (!safeContent || safeContent.trim() === '') {
+                    return res.status(400).json({ success: false, error: '评论内容不能为空' });
+                }
+
+                if (safeContent.length < 2) {
+                    return res.status(400).json({ success: false, error: '评论内容至少需要2个字符' });
+                }
+
+                // 2. 同一 IP 的短时间频率限制（数据库层再拦一次）
+                const ipCheckRequest = new sql.Request(pool);
+                const ipCheck = await ipCheckRequest
+                    .input('ipaddress', sql.VarChar(45), realIp)
+                    .query(`
+                SELECT COUNT(*) AS count
+                FROM RdpgCode.dbo.Suggestion
+                WHERE ipaddress = @ipaddress
+                  AND createdat > DATEADD(MINUTE, -1, GETDATE())
+            `);
+
+                if (ipCheck.recordset[0].count >= 5) {
+                    return res.status(429).json({
+                        success: false,
+                        error: '发送过于频繁，请稍后再试'
+                    });
+                }
+
+                // 3. 未登录访客每天最多 100 条
+                if (looksLikeGuest(safeAuthorIdentity)) {
+                    const guestDailyRequest = new sql.Request(pool);
+                    const guestDailyResult = await guestDailyRequest
+                        .input('authoridentity', sql.NVarChar(100), safeAuthorIdentity)
+                        .query(`
+                    SELECT COUNT(*) AS count
+                    FROM RdpgCode.dbo.Suggestion
+                    WHERE authoridentity = @authoridentity
+                      AND createdat >= CONVERT(date, GETDATE())
+                      AND createdat < DATEADD(DAY, 1, CONVERT(date, GETDATE()))
+                `);
+
+                    if (guestDailyResult.recordset[0].count >= 100) {
+                        return res.status(429).json({
+                            success: false,
+                            error: '未登录访客今日评论已达上限（100条）'
+                        });
+                    }
+                }
+
+                // 4. 内容去重：同身份/同父评论/同回复对象/同内容，10分钟内不允许重复
+                const contentHash = createContentHash({
+                    content: safeContent,
+                    authoridentity: safeAuthorIdentity,
+                    parentid: parentid || 0,
+                    replytoid: replytoid || 0
+                });
+
+                const duplicateRequest = new sql.Request(pool);
+                const duplicateResult = await duplicateRequest
+                    .input('contenthash', sql.NVarChar(64), contentHash)
+                    .query(`
+                SELECT COUNT(*) AS count
+                FROM RdpgCode.dbo.Suggestion
+                WHERE contenthash = @contenthash
+                  AND createdat > DATEADD(MINUTE, -10, GETDATE())
+            `);
+
+                if (duplicateResult.recordset[0].count > 0) {
+                    return res.status(400).json({
+                        success: false,
+                        error: '请勿重复提交相同内容'
+                    });
+                }
+
+                // 5. 如果是子评论，校验父评论是否存在
+                if (parentid) {
+                    const parentCheckRequest = new sql.Request(pool);
+                    const parentCheck = await parentCheckRequest
+                        .input('id', sql.Int, parseInt(parentid, 10))
+                        .query(`
+                    SELECT id, parentid
+                    FROM RdpgCode.dbo.Suggestion
+                    WHERE id = @id
+                `);
+
+                    if (parentCheck.recordset.length === 0) {
+                        return res.status(400).json({
+                            success: false,
+                            error: '父评论不存在'
+                        });
+                    }
+
+                    // 强制所有回复都挂到父评论下面
+                    if (parentCheck.recordset[0].parentid !== null) {
+                        return res.status(400).json({
+                            success: false,
+                            error: '回复目标无效'
+                        });
+                    }
+                }
+
+                const insertRequest = new sql.Request(pool);
+
+                const insertQuery = `
+            INSERT INTO RdpgCode.dbo.Suggestion
+            (
+                content,
+                authorname,
+                authoremail,
+                useragent,
+                ipaddress,
+                parentid,
+                replytoid,
+                replytoauthor,
+                authoridentity,
+                contenthash,
+                likes,
+                createdat,
+                updatedat
+            )
+            OUTPUT INSERTED.*
+            VALUES
+            (
+                @content,
+                @authorname,
+                @authoremail,
+                @useragent,
+                @ipaddress,
+                @parentid,
+                @replytoid,
+                @replytoauthor,
+                @authoridentity,
+                @contenthash,
+                0,
+                GETDATE(),
+                GETDATE()
+            )
+        `;
+
+                insertRequest.input('content', sql.NVarChar(1000), safeContent);
+                insertRequest.input('authorname', sql.NVarChar(50), safeAuthor);
+                insertRequest.input('authoremail', sql.NVarChar(100), safeEmail);
+                insertRequest.input('useragent', sql.NVarChar(500), realUa);
+                insertRequest.input('ipaddress', sql.VarChar(45), realIp);
+                insertRequest.input('parentid', sql.Int, parentid || null);
+                insertRequest.input('replytoid', sql.Int, replytoid || null);
+                insertRequest.input('replytoauthor', sql.NVarChar(50), safeReplyToAuthor);
+                insertRequest.input('authoridentity', sql.NVarChar(100), safeAuthorIdentity);
+                insertRequest.input('contenthash', sql.NVarChar(64), contentHash);
+
+                const result = await insertRequest.query(insertQuery);
+                const inserted = result.recordset[0];
+
+                const newCommentPayload = {
+                    id: inserted.id,
+                    author: inserted.authorname || '匿名',
+                    date: formatDate(inserted.createdat),
+                    browser: inserted.parentid ? '' : parseUserAgent(inserted.useragent),
+                    content: inserted.content,
+                    likes: inserted.likes || 0,
+                    parentId: inserted.parentid || null,
+                    replyToId: inserted.replytoid || null,
+                    replyToAuthor: inserted.replytoauthor || null
+                };
+
+                if (inserted.parentid) {
+                    io.emit('new_reply_added', {
+                        parentId: inserted.parentid,
+                        reply: newCommentPayload
+                    });
+                } else {
+                    io.emit('new_comment_added', {
+                        comment: {
+                            ...newCommentPayload,
+                            replyCount: 0
+                        }
+                    });
+                }
+
+                return res.json({
+                    success: true,
+                    comment: newCommentPayload
+                });
+            } catch (err) {
+                console.error('Error posting suggestion:', err);
+                return res.status(500).json({
+                    success: false,
+                    error: '评论提交失败'
+                });
+            }
+        });
+
+        // ==========================================
+        // 2. 获取父评论列表（只返回父评论 + replyCount）
         // ==========================================
         app.get('/api/suggestion/list', async (req, res) => {
             const page = parseInt(req.query.page) || 1;
-            const limit = 100; // 父级每次加载 100 条
+            const limit = parseInt(req.query.limit) || 20;
             const offset = (page - 1) * limit;
 
             try {
-                //await poolConnect;
                 const request = new sql.Request(pool);
 
-                // 第一步：查根评论
-                const rootQuery = `
-            SELECT id, content, authorname, authoremail, authortelephone, useragent, ipaddress, likes, createdat 
-            FROM RdpgCode.dbo.Suggestion 
-            WHERE parentid IS NULL
-            ORDER BY createdat DESC
-            OFFSET @offset ROWS FETCH NEXT @limit ROWS ONLY
-        `;
-
-                request.input('offset', sql.Int, offset);
-                request.input('limit', sql.Int, limit);
-
-                const rootResult = await request.query(rootQuery);
-                const rootRows = rootResult.recordset;
-
-                if (rootRows.length === 0) {
-                    return res.json([]);
-                }
-
-                // 提取所有根评论 ID
-                const rootIds = rootRows.map(r => r.id);
-
-                // 第二步：批量查这些根评论下的前 10 条子评论
-                // 使用 IN 查询提高效率
-                const childrenQuery = `
-            SELECT id, content, authorname, authoremail, authortelephone, useragent, likes, createdat, parentid
-            FROM RdpgCode.dbo.Suggestion 
-            WHERE parentid IN (@rootIds)
-            ORDER BY parentid, createdat ASC -- 按父ID分组，再按时间正序
-        `;
-
-                // 注意：mssql 的 input 对 IN 查询支持有限，通常需要在 JS 层过滤或构建动态 SQL
-                // 这里为了简单稳妥，我们在 JS 层过滤，或者构建动态 SQL 字符串
-                // 方案：构建动态 SQL 字符串 (注意防注入，id 是整数，直接拼接是安全的)
-                const idsString = rootIds.join(',');
-                const dynamicChildrenQuery = `
-            SELECT id, content, authorname, authoremail, authortelephone, useragent, likes, createdat, parentid
-            FROM RdpgCode.dbo.Suggestion 
-            WHERE parentid IN (${idsString})
-            ORDER BY parentid, createdat ASC
-        `;
-
-                const childrenResult = await request.query(dynamicChildrenQuery);
-                const allChildren = childrenResult.recordset;
-
-                // 第三步：在内存中组装数据
-                // 将子评论按 parentId 分组
-                const childrenMap = new Map();
-                allChildren.forEach(child => {
-                    if (!childrenMap.has(child.parentid)) {
-                        childrenMap.set(child.parentid, []);
-                    }
-                    // 每个父节点只取前 10 条用于初始渲染
-                    if (childrenMap.get(child.parentid).length < 10) {
-                        childrenMap.get(child.parentid).push({
-                            id: child.id,
-                            author: child.authorname || '匿名',
-                            date: formatDate(child.createdat),
-                            content: child.content,
-                            likes: child.likes || 0,
-                            parentId: child.parentid
-                            // 注意：子评论不再需要复杂的回复关系，只展示基本信息
-                        });
-                    }
-                });
-
-                // 第四步：构建最终返回结构
-                const finalData = rootRows.map(row => {
-                    const replies = childrenMap.get(row.id) || [];
-                    // 判断是否有更多子评论：如果数据库里该父ID下的总数 > 10，则 hasMore 为 true
-                    // 由于我们上面只查了部分，这里有个小瑕疵：我们需要知道总数。
-                    // 优化：可以在第一步查根评论时，带一个子评论数量的子查询，或者这里简单假设：
-                    // 如果拿到的子评论等于 10 条，我们就标记 hasMore 为 true，让前端去加载第 11 条验证。
-                    // 更严谨的做法是再查一次 count，但为了性能，我们先假设拿到 10 条就是有剩余。
-                    // 实际上，如果该父节点刚好只有 10 条，前端点了加载更多会发现没数据，这也是可接受的。
-
-                    return {
-                        id: row.id,
-                        author: row.authorname || '匿名',
-                        date: formatDate(row.createdat),
-                        browser: parseUserAgent(row.useragent),
-                        content: row.content,
-                        likes: row.likes || 0, // 确保点赞数传过去了
-                        replies: replies,      // 直接带上前 10 条子评论
-                        hasMoreReplies: replies.length === 10 // 标记是否可能有更多
-                    };
-                });
-
-                res.json(finalData);
-
-            } catch (err) {
-              //  console.error('Error fetching list with replies:', err);
-                res.status(500).json({ error: 'Failed to fetch comments' });
-            }
-        });
-
-        // ==========================================
-        // 2. 加载子评论的剩余部分 (分页)
-        // ==========================================
-        app.get('/api/suggestion/children', async (req, res) => {
-            const parentId = req.query.parentId;
-            const page = parseInt(req.query.page) || 1;
-            const limit = 10;
-            const offset = (page - 1) * limit;
-
-            if (!parentId) return res.status(400).json({ error: 'Parent ID required' });
-
-            try {
-                //await poolConnect;
-                const request = new sql.Request(pool);
-
-                // 跳过前 10 条（因为首页已经加载了），从第 11 条开始查
-                // 注意：前端传过来的 page=2 时，offset 应该是 10
                 const query = `
-            SELECT id, content, authorname, authoremail, authortelephone, useragent, likes, createdat, parentid
-            FROM RdpgCode.dbo.Suggestion 
-            WHERE parentid = @parentId
-            ORDER BY createdat ASC
+            SELECT
+                s.id,
+                s.content,
+                s.authorname,
+                s.authoremail,
+                s.useragent,
+                s.ipaddress,
+                s.likes,
+                s.createdat,
+                (
+                    SELECT COUNT(*)
+                    FROM RdpgCode.dbo.Suggestion c
+                    WHERE c.parentid = s.id
+                ) AS replyCount
+            FROM RdpgCode.dbo.Suggestion s
+            WHERE s.parentid IS NULL
+            ORDER BY s.createdat DESC
             OFFSET @offset ROWS FETCH NEXT @limit ROWS ONLY
         `;
 
-                request.input('parentId', sql.Int, parseInt(parentId));
                 request.input('offset', sql.Int, offset);
                 request.input('limit', sql.Int, limit);
 
                 const result = await request.query(query);
-                const rows = result.recordset;
 
-                const comments = rows.map(row => ({
+                const finalData = result.recordset.map(row => ({
+                    id: row.id,
+                    author: row.authorname || '匿名',
+                    date: formatDate(row.createdat),
+                    browser: parseUserAgent(row.useragent),
+                    content: row.content,
+                    likes: row.likes || 0,
+                    replyCount: row.replyCount || 0
+                }));
+
+                return res.json(finalData);
+            } catch (err) {
+                console.error('Error fetching root comments:', err);
+                return res.status(500).json({ error: 'Failed to fetch comments' });
+            }
+        });
+
+        // ==========================================
+        // 3. 获取某父评论的全部子评论
+        // ==========================================
+        app.get('/api/suggestion/children', async (req, res) => {
+            const parentId = parseInt(req.query.parentId, 10);
+
+            if (!parentId) {
+                return res.status(400).json({ error: 'Parent ID required' });
+            }
+
+            try {
+                const request = new sql.Request(pool);
+                request.input('parentId', sql.Int, parentId);
+
+                const query = `
+            SELECT
+                id,
+                content,
+                authorname,
+                authoremail,
+                useragent,
+                likes,
+                createdat,
+                parentid,
+                replytoid,
+                replytoauthor
+            FROM RdpgCode.dbo.Suggestion
+            WHERE parentid = @parentId
+            ORDER BY createdat ASC
+        `;
+
+                const result = await request.query(query);
+
+                const comments = result.recordset.map(row => ({
                     id: row.id,
                     author: row.authorname || '匿名',
                     date: formatDate(row.createdat),
                     content: row.content,
                     likes: row.likes || 0,
-                    parentId: row.parentid
+                    parentId: row.parentid,
+                    replyToId: row.replytoid || null,
+                    replyToAuthor: row.replytoauthor || null
                 }));
 
-                res.json(comments);
+                return res.json(comments);
             } catch (err) {
-                //console.error('Error fetching more children:', err);
-                res.status(500).json({ error: 'Failed' });
+                console.error('Error fetching replies:', err);
+                return res.status(500).json({ error: 'Failed to fetch replies' });
             }
         });
-
-        // ==========================================
-        // 3. 点赞 API (保持不变，确保返回最新数值)
-        // ==========================================
-        // 点赞 API (修复 req.connection 弃用警告 + 优化 IP 获取)
-        const likedCache = new Set(); // 内存缓存，重启后清空
-
-        app.post('/api/suggestion/like', async (req, res) => {
-            const { id } = req.body;
-
-            // 【重要】确保 id 是整数，防止 SQL 注入和类型错误
-            const intId = parseInt(id, 10);
-            if (!intId) return res.status(400).json({ error: 'Valid ID required' });
-
-            const forwarded = req.headers['x-forwarded-for'];
-            const userIp = forwarded
-                ? forwarded.split(',')[0].trim()
-                : (req.headers['x-real-ip'] || (req.socket && req.socket.remoteAddress) || 'unknown');
-
-            const cacheKey = `${userIp}_${intId}`;
-
-            if (likedCache.has(cacheKey)) {
-                return res.status(400).json({ error: 'Already liked', success: false });
-            }
-
-            try {
-                //await poolConnect;
-                const request = new sql.Request(pool);
-
-                // 【修复点】明确定义输入参数，类型必须匹配数据库字段类型 (通常是 Int)
-                request.input('id', sql.Int, intId);
-
-                // 更新操作
-                // 注意：这里直接使用普通字符串，不要用过度的模板插值，虽然 @id 在里面是安全的
-                const updateSql = "UPDATE RdpgCode.dbo.Suggestion SET likes = likes + 1 WHERE id = @id";
-                await request.query(updateSql);
-
-                likedCache.add(cacheKey);
-
-                // 查询最新数值
-                const selectSql = "SELECT likes FROM RdpgCode.dbo.Suggestion WHERE id = @id";
-                const resCount = await request.query(selectSql);
-
-                const newLikes = resCount.recordset[0] ? resCount.recordset[0].likes : 0;
-
-                io.emit('like_update', { id: intId, likes: newLikes });
-
-                res.json({ success: true, likes: newLikes });
-            } catch (err) {
-                //console.error('Like error:', err);
-                res.status(500).json({ error: 'Like failed', details: err.message });
-            }
-        });
-
-
 
     }
 
@@ -17624,6 +17794,71 @@ app.post('/api/website/record', async (req, res) => {
     });
 
 }
+
+
+
+//这个是验证码服务，所有的验证码，都可以调用这个👇
+
+//验证码存储
+const captchaStore = new Map();
+
+setInterval(() => {
+    const now = Date.now();
+    for (const [key, value] of captchaStore.entries()) {
+        if (value.expiresAt <= now) {
+            captchaStore.delete(key);
+        }
+    }
+}, 60 * 1000);
+
+function getClientIp(req) {
+    const xForwardedFor = req.headers['x-forwarded-for'];
+    if (xForwardedFor) {
+        return xForwardedFor.split(',')[0].trim();
+    }
+
+    return (
+        req.connection?.remoteAddress ||
+        req.socket?.remoteAddress ||
+        req.ip ||
+        'unknown'
+    );
+}
+app.get('/api/CodeDatabase/captcha', async (req, res) => {
+    try {
+        const captcha = svgCaptcha.create({
+            size: 4,
+            ignoreChars: '0oO1iIlL',
+            noise: 3,
+            color: true,
+            background: '#f4f6f8',
+            width: 160,
+            height: 50,
+            fontSize: 42
+        });
+
+        const captchaId = uuidv4();
+
+        captchaStore.set(captchaId, {
+            code: captcha.text.toUpperCase(),
+            expiresAt: Date.now() + 5 * 60 * 1000
+        });
+
+        res.json({
+            success: true,
+            captchaId,
+            captchaSvg: captcha.data
+        });
+    } catch (err) {
+        console.error('生成验证码失败:', err);
+        res.status(500).json({
+            success: false,
+            message: '生成验证码失败'
+        });
+    }
+});
+
+//这个是验证码服务，所有的验证码，都可以调用这个👆
 
 
 // 启动服务器
