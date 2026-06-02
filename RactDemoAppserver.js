@@ -11738,7 +11738,6 @@ app.post('/api/auth/login', async (req, res) => {
 });
 // 后端新增：严格验证账号状态接口（三重校验）
 app.post('/api/auth/verify', async (req, res) => {
-    // 1. 接收前端传来的三个核心字段
     const { userId, username, email } = req.body;
 
     if (!userId || !username || !email) {
@@ -11749,17 +11748,26 @@ app.post('/api/auth/verify', async (req, res) => {
     }
 
     try {
-        // 2. 重点：SQL查询时，必须同时匹配 id、username 和 email
-        // 只有当数据库里这一行数据的三个字段完全等于前端传来的值，才算验证通过
+        // 只查询前端需要的字段（排除密码等敏感信息）
         const result = await pool.request()
             .input('id', sql.Int, userId)
             .input('username', sql.NVarChar, username)
             .input('email', sql.NVarChar, email)
-            .query(`SELECT id, username, email, is_locked 
+            .query(`SELECT 
+                        id, 
+                        username, 
+                        email, 
+                        registration_date, 
+                        last_login_time, 
+                        profile_picture, 
+                        permission_level, 
+                        notes, 
+                        is_locked, 
+                        device_id, 
+                        device_type 
                     FROM SystemSettingsApp.dbo.SystemUserAccounts 
                     WHERE id = @id AND username = @username AND email = @email`);
 
-        // 3. 如果查不到记录，说明 ID 不存在，或者 ID 对应的用户名/邮箱已经被换掉了
         if (result.recordset.length === 0) {
             return res.status(401).json({
                 success: false,
@@ -11769,7 +11777,7 @@ app.post('/api/auth/verify', async (req, res) => {
 
         const user = result.recordset[0];
 
-        // 4. 顺便再检查一下是否被锁定（双重保险）
+        // 检查账户是否被锁定
         if (user.is_locked) {
             return res.status(401).json({
                 success: false,
@@ -11777,13 +11785,21 @@ app.post('/api/auth/verify', async (req, res) => {
             });
         }
 
-        // 5. 三重校验全部通过
+        // 返回用户信息（不含密码）
         res.json({
             success: true,
             user: {
                 id: user.id,
                 username: user.username,
-                email: user.email
+                email: user.email,
+                registration_date: user.registration_date,
+                last_login_time: user.last_login_time,
+                profile_picture: user.profile_picture,
+                permission_level: user.permission_level,
+                notes: user.notes,
+                is_locked: user.is_locked,
+                device_id: user.device_id,
+                device_type: user.device_type
             }
         });
 
