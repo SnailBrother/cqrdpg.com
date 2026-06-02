@@ -86,7 +86,7 @@ export const publicRouteConfig = [
     requiresAuth: false
   },
   {
-    path: '/apps', // 模块选择页，通常需要登录
+    path: '/companysettings', // 模块选择页，通常需要登录
     component: () => {
       // 这里为了演示配置结构，实际逻辑中 /apps 需要 ProtectedRoute 包裹
       // 我们在 index.js 中会特殊处理这个路径

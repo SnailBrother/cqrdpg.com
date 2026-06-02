@@ -11736,6 +11736,65 @@ app.post('/api/auth/login', async (req, res) => {
         });
     }
 });
+// 后端新增：严格验证账号状态接口（三重校验）
+app.post('/api/auth/verify', async (req, res) => {
+    // 1. 接收前端传来的三个核心字段
+    const { userId, username, email } = req.body;
+
+    if (!userId || !username || !email) {
+        return res.status(400).json({
+            success: false,
+            message: '验证参数缺失'
+        });
+    }
+
+    try {
+        // 2. 重点：SQL查询时，必须同时匹配 id、username 和 email
+        // 只有当数据库里这一行数据的三个字段完全等于前端传来的值，才算验证通过
+        const result = await pool.request()
+            .input('id', sql.Int, userId)
+            .input('username', sql.NVarChar, username)
+            .input('email', sql.NVarChar, email)
+            .query(`SELECT id, username, email, is_locked 
+                    FROM SystemSettingsApp.dbo.SystemUserAccounts 
+                    WHERE id = @id AND username = @username AND email = @email`);
+
+        // 3. 如果查不到记录，说明 ID 不存在，或者 ID 对应的用户名/邮箱已经被换掉了
+        if (result.recordset.length === 0) {
+            return res.status(401).json({
+                success: false,
+                message: '账号信息已变更或不存在，请重新登录'
+            });
+        }
+
+        const user = result.recordset[0];
+
+        // 4. 顺便再检查一下是否被锁定（双重保险）
+        if (user.is_locked) {
+            return res.status(401).json({
+                success: false,
+                message: '账户已被锁定，请联系管理员'
+            });
+        }
+
+        // 5. 三重校验全部通过
+        res.json({
+            success: true,
+            user: {
+                id: user.id,
+                username: user.username,
+                email: user.email
+            }
+        });
+
+    } catch (err) {
+        console.error('严格验证账号状态错误:', err);
+        res.status(500).json({
+            success: false,
+            message: '服务器错误'
+        });
+    }
+});
 //reactdemo 登录注册 👆
 
 //reactdemo 主题管理 👇
@@ -16248,7 +16307,7 @@ app.post('/api/website/record', async (req, res) => {
         // ==========================================
         // API: 获取新闻列表 (已移除 Summary)
         // ==========================================
-        app.get('/api/publish-news/list', async (req, res) => {
+        app.get('/api/companysettings/publishnews/list', async (req, res) => {
             const page = parseInt(req.query.page) || 1;
             const limit = parseInt(req.query.limit) || 10;
             const category = req.query.category;
@@ -16294,7 +16353,7 @@ app.post('/api/website/record', async (req, res) => {
         // ==========================================
         // API: 创建新闻 (已移除 Summary)
         // ==========================================
-        app.post('/api/publish-news', async (req, res) => {
+        app.post('/api/companysettings/publishnews', async (req, res) => {
             // 【修改点】解构中移除了 summary
             const { title, category, content, publishDate } = req.body;
 
@@ -16332,7 +16391,7 @@ app.post('/api/website/record', async (req, res) => {
         // ==========================================
         // API: 上传图片 (保持不变)
         // ==========================================
-        app.post('/api/publish-news/upload-image', uploadPublishNews.single('image'), async (req, res) => {
+        app.post('/api/companysettings/publishnews/upload-image', uploadPublishNews.single('image'), async (req, res) => {
             const newsId = req.body.newsId;
 
             if (!req.file) {
@@ -16370,7 +16429,7 @@ app.post('/api/website/record', async (req, res) => {
         // ==========================================
         // API: 更新新闻信息 (已移除 Summary)
         // ==========================================
-        app.put('/api/publish-news/:id', async (req, res) => {
+        app.put('/api/companysettings/publishnews/:id', async (req, res) => {
             const { id } = req.params;
             // 【修改点】解构中移除了 summary
             const { title, category, content, publishDate } = req.body;
@@ -16406,7 +16465,7 @@ app.post('/api/website/record', async (req, res) => {
         // ==========================================
         // API: 删除新闻 (保持不变)
         // ==========================================
-        app.delete('/api/publish-news/:id', async (req, res) => {
+        app.delete('/api/companysettings/publishnews/:id', async (req, res) => {
             const { id } = req.params;
             try {
                 //await poolConnect;
@@ -16422,7 +16481,7 @@ app.post('/api/website/record', async (req, res) => {
         });
 
         // 查看新闻详细页面 没有增加阅读量
-        app.get('/api/publish-newsold/:id', async (req, res) => {
+        app.get('/api/companysettings/publishnewsold/:id', async (req, res) => {
             const { id } = req.params;
 
             if (isNaN(id)) {
@@ -16459,7 +16518,7 @@ app.post('/api/website/record', async (req, res) => {
 
         //新闻阅读量增加+1
         // 新闻详细页面 (带阅读量统计)
-        app.get('/api/publish-news/:id', async (req, res) => {
+        app.get('/api/companysettings/publishnews/:id', async (req, res) => {
             const { id } = req.params;
 
             if (isNaN(id)) {

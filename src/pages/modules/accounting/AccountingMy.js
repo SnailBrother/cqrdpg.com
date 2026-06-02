@@ -149,7 +149,7 @@ const AccountingMy = () => {
                         切换账号
                     </li>
                     <li className="accountingmy-settings-item">
-                        <Link to="/apps" className="accountingmy-link">首&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;页</Link>
+                        <Link to="/companysettings" className="accountingmy-link">首&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;页</Link>
                     </li>
 
                     <li className="accountingmy-settings-item">关&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;于</li>

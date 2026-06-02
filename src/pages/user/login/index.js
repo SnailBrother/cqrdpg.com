@@ -109,7 +109,7 @@ const Login = () => {
                     setUserInfo(userData, token);
 
                     // 登录成功后跳转
-                    const from = location.state?.from?.pathname || '/apps';
+                    const from = location.state?.from?.pathname || '/companysettings';
                     navigate(from, { replace: true });
                 } else {
                     throw new Error(response.data.message || '登录失败');

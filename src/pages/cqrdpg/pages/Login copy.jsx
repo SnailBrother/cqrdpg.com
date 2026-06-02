@@ -160,8 +160,8 @@ function Login() {
         setUserInfo(userData, token);
 
         // 7. 路由跳转
-        // 优先跳转到来源页面，否则跳转到模块选择页 (/apps)
-        const from = location.state?.from?.pathname || '/apps';
+        // 优先跳转到来源页面，否则跳转到模块选择页 (/companysettings)
+        const from = location.state?.from?.pathname || '/companysettings';
         navigate(from, { replace: true });
       } else {
         throw new Error(response.data.message || '登录失败');

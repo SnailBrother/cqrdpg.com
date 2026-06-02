@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styles from './PublishNews.module.css';
 
-const API_BASE = '/api/publish-news';
+const API_BASE = '/api/companysettings/publishnews';
 // 定义服务器基础地址
 const SERVER_BASE_URL = 'https://www.cqrdpg.com/backend';
 // 定义默认图片的完整路径

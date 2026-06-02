@@ -93,8 +93,8 @@ const AppRoutes = () => {
   // 1. 生成公开路由
   const renderPublicRoutes = () => {
     return publicRouteConfig.map((route, index) => {
-      // 特殊处理 /apps 路径，因为它需要 ProtectedRoute 且组件是固定的 ModuleSelect
-      if (route.isSpecialEntry && route.path === '/apps') {
+      // 特殊处理 /companysettings 路径，因为它需要 ProtectedRoute 且组件是固定的 ModuleSelect
+      if (route.isSpecialEntry && route.path === '/companysettings') {
         return (
           <Route
             key={route.path}

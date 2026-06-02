@@ -15,7 +15,7 @@ const Header = ({ title = "ChenBaby" }) => {
   const handleBackToHome = () => {
     // 如果用户已登录，跳转到模块选择页；如果未登录，跳转到登录页
     if (user) {
-      navigate('/apps', { replace: true });
+      navigate('/companysettings', { replace: true });
     } else {
       navigate('/login', { replace: true });
     }
