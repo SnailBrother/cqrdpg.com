@@ -4,7 +4,7 @@ const axios = require('axios');
 const sql = require('mssql');
 const xlsx = require('xlsx');
 const app = express();
-const port = 5202;
+const port = 6666;
 const { PDFDocument } = require('pdf-lib');
 
 // HTTPS 配置 - 读取证书文件
@@ -21,7 +21,7 @@ const credentials = {
 // SQL Server 配置
 const config = {
     user: 'sa',
-    password: 'Alan944926',
+    password: 'K9$s7pR2#xQ5@zB8',
     server: '81.71.88.191',
     database: 'BillingApp',
     options: {
