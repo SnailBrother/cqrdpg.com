@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom'; // 新增导入
 import './Specialtips.css';
 import { Loading, Toast, useToast, ToastContainer } from '../../../components/UI';
 
-const socket = io('https://www.cqrdpg.com:5202');
+const socket = io('https://www.cqrdpg.com:5209');
 
 export default function Specialtips() {
     const [tips, setTips] = useState([]);

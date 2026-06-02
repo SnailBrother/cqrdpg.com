@@ -34,7 +34,7 @@ import Reporttimer from '../../../components/Animation/Reporttimer';
 dayjs.locale('zh-cn');
 
 // 创建Socket.IO连接
-const socket = io('https://www.cqrdpg.com:5202');
+const socket = io('https://www.cqrdpg.com:5209');
 
 
 // 在组件内部添加这个自定义Hook 用来显示菜单功能键

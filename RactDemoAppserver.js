@@ -4,7 +4,9 @@ const axios = require('axios');
 const sql = require('mssql');
 const xlsx = require('xlsx');
 const app = express();
-const port = 6666;
+const svgCaptcha = require('svg-captcha');
+const { v4: uuidv4 } = require('uuid');
+const port = 5209;
 const { PDFDocument } = require('pdf-lib');
 
 // HTTPS 配置 - 读取证书文件
@@ -15250,20 +15252,112 @@ ORDER BY
     }
 
     { //www.cqwrdpg.com 客户业务需要留言 联系我们
+        //验证码存储
+const captchaStore = new Map();
 
+setInterval(() => {
+    const now = Date.now();
+    for (const [key, value] of captchaStore.entries()) {
+        if (value.expiresAt <= now) {
+            captchaStore.delete(key);
+        }
+    }
+}, 60 * 1000);
 
-app.post('/api/CodeDatabase/submitContact', async (req, res) => {
-    const { requestername, contact, description } = req.body;
-
-    if (!requestername || !description) {
-        return res.status(400).json({ success: false, message: '姓名和描述不能为空' });
+function getClientIp(req) {
+    const xForwardedFor = req.headers['x-forwarded-for'];
+    if (xForwardedFor) {
+        return xForwardedFor.split(',')[0].trim();
     }
 
+    return (
+        req.connection?.remoteAddress ||
+        req.socket?.remoteAddress ||
+        req.ip ||
+        'unknown'
+    );
+}
+app.get('/api/CodeDatabase/captcha', async (req, res) => {
+    try {
+        const captcha = svgCaptcha.create({
+            size: 4,
+            ignoreChars: '0oO1iIlL',
+            noise: 3,
+            color: true,
+            background: '#f4f6f8',
+            width: 160,
+            height: 50,
+            fontSize: 42
+        });
+
+        const captchaId = uuidv4();
+
+        captchaStore.set(captchaId, {
+            code: captcha.text.toUpperCase(),
+            expiresAt: Date.now() + 5 * 60 * 1000
+        });
+
+        res.json({
+            success: true,
+            captchaId,
+            captchaSvg: captcha.data
+        });
+    } catch (err) {
+        console.error('生成验证码失败:', err);
+        res.status(500).json({
+            success: false,
+            message: '生成验证码失败'
+        });
+    }
+});
+app.post('/api/CodeDatabase/submitContact', async (req, res) => {
+    const { requestername, contact, description, captchaId, captchaCode } = req.body;
+
+    if (!requestername || !description) {
+        return res.status(400).json({
+            success: false,
+            message: '姓名和描述不能为空'
+        });
+    }
+
+    if (!captchaId || !captchaCode) {
+        return res.status(400).json({
+            success: false,
+            message: '验证码不能为空'
+        });
+    }
+
+    // 校验验证码
+    const captchaRecord = captchaStore.get(captchaId);
+
+    if (!captchaRecord) {
+        return res.status(400).json({
+            success: false,
+            message: '验证码不存在或已过期，请刷新后重试'
+        });
+    }
+
+    if (captchaRecord.expiresAt < Date.now()) {
+        captchaStore.delete(captchaId);
+        return res.status(400).json({
+            success: false,
+            message: '验证码已过期，请刷新后重试'
+        });
+    }
+
+    if (captchaRecord.code !== String(captchaCode).toUpperCase()) {
+        captchaStore.delete(captchaId); // 验证失败即作废，防止暴力尝试
+        return res.status(400).json({
+            success: false,
+            message: '验证码错误，请刷新后重试'
+        });
+    }
+
+    // 验证成功后销毁，防止重复使用
+    captchaStore.delete(captchaId);
+
     // 获取客户端真实IP
-    const clientIp = req.headers['x-forwarded-for']?.split(',')[0] || 
-                     req.connection.remoteAddress || 
-                     req.socket.remoteAddress ||
-                     'unknown';
+    const clientIp = getClientIp(req);
 
     try {
         const request = new sql.Request(pool);
@@ -15280,12 +15374,12 @@ app.post('/api/CodeDatabase/submitContact', async (req, res) => {
             `);
 
         const submitCount = checkResult.recordset[0].count;
-        
+
         // 如果10分钟内提交超过10次，拒绝提交
         if (submitCount >= 10) {
-            return res.status(429).json({ 
-                success: false, 
-                message: '提交过于频繁，请10分钟后再试' 
+            return res.status(429).json({
+                success: false,
+                message: '提交过于频繁，请10分钟后再试'
             });
         }
 
@@ -15305,7 +15399,7 @@ app.post('/api/CodeDatabase/submitContact', async (req, res) => {
 
         // 实时通知所有连接的管理端用户
         const newMessage = {
-            id: parseInt(newId),
+            id: parseInt(newId, 10),
             requestername,
             contact: contact || '未提供',
             description,
@@ -15317,11 +15411,19 @@ app.post('/api/CodeDatabase/submitContact', async (req, res) => {
 
         io.emit('new_message_received', newMessage);
 
-        res.json({ success: true, message: '提交成功', id: newId });
-        
+        res.json({
+            success: true,
+            message: '提交成功',
+            id: newId
+        });
+
     } catch (err) {
         console.error('数据库插入错误:', err);
-        res.status(500).json({ success: false, message: '服务器内部错误', error: err.message });
+        res.status(500).json({
+            success: false,
+            message: '服务器内部错误',
+            error: err.message
+        });
     }
 });
         // 1. 提交联系表单 (ContactUs 使用) 用户留言

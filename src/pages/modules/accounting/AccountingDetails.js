@@ -40,7 +40,7 @@ const AccountingDetails = () => {
 
     // 初始化 WebSocket 连接
     useEffect(() => {
-        const newSocket = io('https://www.cqrdpg.com:5202');
+        const newSocket = io('https://www.cqrdpg.com:5209');
         setSocket(newSocket);
 
         // 监听服务器事件

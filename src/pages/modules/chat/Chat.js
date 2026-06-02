@@ -9,7 +9,7 @@ import ThemeSettings from './ThemeSettings';
 import AvatarSettings from './AvatarSettings';
 import io from 'socket.io-client';
 import './Chat.css';
-const socket = io('https://www.cqrdpg.com:5202');
+const socket = io('https://www.cqrdpg.com:5209');
 
 const Chat = () => {
     const { user, logout } = useAuth();

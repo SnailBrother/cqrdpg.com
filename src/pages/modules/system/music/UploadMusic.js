@@ -3,7 +3,7 @@ import axios from 'axios';
 import './UploadMusic.css';
 import io from 'socket.io-client';
 // 初始化 socket 连接
-const socket = io('https://www.cqrdpg.com:5202'); // 添加这行
+const socket = io('https://www.cqrdpg.com:5209'); // 添加这行
 
 const UploadMusic = () => {
     const [title, setTitle] = useState('');

@@ -28,7 +28,7 @@ http {
 
         # API 代理
         location /api/ {
-            proxy_pass https://www.cqrdpg.com:5202;   #proxy_pass https://www.cqrdpg.com:5202/api/;
+            proxy_pass https://www.cqrdpg.com:5209;   #proxy_pass https://www.cqrdpg.com:5209/api/;
             proxy_http_version 1.1;
             proxy_set_header Upgrade $http_upgrade;
             proxy_set_header Connection 'upgrade';
@@ -64,21 +64,21 @@ const response = await axios.get('/api/GetHousePricePictures');
 axios.get('/api/GetHousePricePictures')
         ↓
 浏览器实际请求:
-GET https://www.cqrdpg.com:5202/api/GetHousePricePictures
+GET https://www.cqrdpg.com:5209/api/GetHousePricePictures
         ↓
 Nginx 服务器接收到请求（当前端和 Nginx 同域时）
         ↓
 Nginx 匹配 location /api/
         ↓
 Nginx 转发请求到:
-https://www.cqrdpg.com:5202/api/GetHousePricePictures
+https://www.cqrdpg.com:5209/api/GetHousePricePictures
         ↓
 后端服务器处理:
 app.get('/api/GetHousePricePictures', ...)
 ```
 
 ## 关键配置说明
-- 通过 Nginx 反向代理，前端请求 /api/GetHousePricePictures 会被转发到 https://www.cqrdpg.com:5202/api/GetHousePricePictures，从而实现跨域请求。
+- 通过 Nginx 反向代理，前端请求 /api/GetHousePricePictures 会被转发到 https://www.cqrdpg.com:5209/api/GetHousePricePictures，从而实现跨域请求。
 
 <br>
  

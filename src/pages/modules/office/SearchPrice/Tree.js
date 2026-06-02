@@ -6,7 +6,7 @@ import "./Tree.css";
 import { useAuth } from '../../../../context/AuthContext';
 
 // 初始化Socket.io连接
-const socket = io('https://www.cqrdpg.com:5202');
+const socket = io('https://www.cqrdpg.com:5209');
 
 function Tree() {
      const { user } = useAuth();

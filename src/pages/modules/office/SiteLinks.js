@@ -11,7 +11,7 @@ const SiteLinks = () => {
 
   useEffect(() => {
     // 1. 初始化Socket连接
-    const newSocket = io('https://www.cqrdpg.com:5202');
+    const newSocket = io('https://www.cqrdpg.com:5209');
     setSocket(newSocket);
 
     // 2. 初始数据获取

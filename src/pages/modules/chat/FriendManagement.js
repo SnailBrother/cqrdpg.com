@@ -3,7 +3,7 @@ import axios from 'axios';
 
 import './FriendManagement.css';
 import io from 'socket.io-client';
-const socket = io('https://www.cqrdpg.com:5202'); // 与你的后端 socket 地址匹配
+const socket = io('https://www.cqrdpg.com:5209'); // 与你的后端 socket 地址匹配
 
 const FriendManagement = ({ username, refreshFriends }) => {
     const [friendRequests, setFriendRequests] = useState([]);

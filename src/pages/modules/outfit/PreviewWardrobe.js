@@ -48,7 +48,7 @@ const PreviewWardrobe = () => {
     };
 
     const getImageUrl = (item, isEffect = false) => {
-        const baseUrl = 'https://www.cqrdpg.com:5202/images/ReactWardrobeStewar';
+        const baseUrl = 'https://www.cqrdpg.com:5209/images/ReactWardrobeStewar';
         const suffix = isEffect ? 'effect' : '';
         const pngUrl = `${baseUrl}/${item.username}/${item.category}/${item.item_code}${suffix}.png`;
         const jpgUrl = `${baseUrl}/${item.username}/${item.category}/${item.item_code}${suffix}.jpg`;

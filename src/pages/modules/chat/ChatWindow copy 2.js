@@ -9,7 +9,7 @@ import GroupVideoCall from './GroupVideoCall';
 import { ConfirmationDialog } from '../../../components/UI'; 
 
 import Circularrotatingtext from './.././../../components/Animation/Circularrotatingtext'; // 加载动画里面的环形旋转文字
-const socket = io('https://www.cqrdpg.com:5202');
+const socket = io('https://www.cqrdpg.com:5209');
 
  
 

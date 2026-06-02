@@ -9,7 +9,7 @@ import MusicGridView from './homlistviews/MusicGridView';
 import { Loading } from '../../../components/UI';
 import io from 'socket.io-client';
 
-const socket = io('https://www.cqrdpg.com:5202');
+const socket = io('https://www.cqrdpg.com:5209');
 
 const Favorites = () => {
     const { user, isAuthenticated } = useAuth();

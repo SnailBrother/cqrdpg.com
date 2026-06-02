@@ -3,7 +3,7 @@ import axios from 'axios';
 import io from 'socket.io-client';
 import './AddNewSpecialtips.css';
 
-const socket = io('https://www.cqrdpg.com:5202');
+const socket = io('https://www.cqrdpg.com:5209');
 
 const AddNewSpecialtips = () => {
     const [assetType, setAssetType] = useState('');

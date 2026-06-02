@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 
 // 创建 Socket.IO 实例
-const socket = io('https://www.cqrdpg.com:5202');
+const socket = io('https://www.cqrdpg.com:5209');
 
 // 辅助函数：格式化时间
 const formatTime = (seconds) => {

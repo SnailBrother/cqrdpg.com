@@ -5,7 +5,7 @@ import io from 'socket.io-client';
 import { Loading } from '../../../components/UI';
 
 // 创建Socket连接
-const socket = io('https://www.cqrdpg.com:5202');
+const socket = io('https://www.cqrdpg.com:5209');
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);

@@ -4,7 +4,7 @@ import styles from './MergePrintPdf.module.css';
 import io from 'socket.io-client';
 import { useAuth } from '../../../../context/AuthContext';
 // 创建全局 socket 实例
-const socket = io('https://www.cqrdpg.com:5202');
+const socket = io('https://www.cqrdpg.com:5209');
 
 const MergePrintPdf = () => {
     const [categories, setCategories] = useState([]);
